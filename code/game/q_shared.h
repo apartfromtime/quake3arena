@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MAX_TEAMNAME 32
 
 #ifdef _WIN32
-
+#define _CRT_SECURE_NO_WARNINGS 1			// safe/unsafe deprecation warning
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4032)
 #pragma warning(disable : 4051)
