@@ -1126,11 +1126,6 @@
     <ClInclude Include="win32\win_local.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Construct" />
-    <None Include="unix\ChangeLog" />
-    <None Include="unix\Conscript-pk3" />
-    <None Include="win32\cursor2.cur" />
-    <None Include="win32\cursor3.cur" />
     <None Include="win32\qe3.ico" />
   </ItemGroup>
   <ItemGroup>

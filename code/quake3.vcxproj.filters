@@ -256,18 +256,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="win32\cursor2.cur">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="win32\cursor3.cur">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="win32\qe3.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="unix\ChangeLog" />
-    <None Include="unix\Conscript-pk3" />
-    <None Include="Construct" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="win32\winquake.rc">
