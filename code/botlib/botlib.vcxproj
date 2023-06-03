@@ -228,6 +228,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\system\posh.c" />
     <ClCompile Include="be_aas_bspq3.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -546,6 +547,8 @@
     <ClInclude Include="..\qcommon\qcommon.h" />
     <ClInclude Include="..\qcommon\qfiles.h" />
     <ClInclude Include="..\server\server.h" />
+    <ClInclude Include="..\system\posh.h" />
+    <ClInclude Include="..\system\sys_public.h" />
     <ClInclude Include="aasfile.h" />
     <ClInclude Include="be_aas_bsp.h" />
     <ClInclude Include="be_aas_cluster.h" />

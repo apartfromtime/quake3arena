@@ -318,6 +318,9 @@
     <ClCompile Include="..\ft2\ttsbit.c">
       <Filter>FreeType2</Filter>
     </ClCompile>
+    <ClCompile Include="..\system\posh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\qcommon\cm_public.h">
@@ -385,6 +388,12 @@
     </ClInclude>
     <ClInclude Include="..\jpeg-6\jversion.h">
       <Filter>jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\posh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\sys_public.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

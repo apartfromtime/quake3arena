@@ -1155,6 +1155,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='vector|Win32'">MaxSpeed</Optimization>
     </ClCompile>
+    <ClCompile Include="..\system\posh.c" />
     <ClCompile Include="..\win32\win_gamma.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -1796,6 +1797,8 @@
     <ClInclude Include="..\qcommon\cm_public.h" />
     <ClInclude Include="..\qcommon\qcommon.h" />
     <ClInclude Include="..\qcommon\qfiles.h" />
+    <ClInclude Include="..\system\posh.h" />
+    <ClInclude Include="..\system\sys_public.h" />
     <ClInclude Include="..\win32\glw_win.h" />
     <ClInclude Include="..\win32\win_local.h" />
     <ClInclude Include="qgl.h" />

@@ -48,6 +48,9 @@
     <ClCompile Include="ui_util.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\system\posh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ui.def">
@@ -80,5 +83,13 @@
     <CustomBuild Include="ui_shared.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\system\posh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\sys_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

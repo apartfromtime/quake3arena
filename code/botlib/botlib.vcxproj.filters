@@ -95,6 +95,9 @@
     <ClCompile Include="l_struct.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\system\posh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aasfile.h">
@@ -194,6 +197,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\game\surfaceflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\posh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\sys_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

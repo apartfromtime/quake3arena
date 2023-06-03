@@ -26,35 +26,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
+#include "../system/sys_public.h"
+
 #define	Q3_VERSION		"Q3 1.32b"
 // 1.32 released 7-10-2002
 
 #define MAX_TEAMNAME 32
-
-#ifdef _WIN32
-#define _CRT_SECURE_NO_WARNINGS 1			// safe/unsafe deprecation warning
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
-#pragma warning(disable : 4032)
-#pragma warning(disable : 4051)
-#pragma warning(disable : 4057)		// slightly different base types
-#pragma warning(disable : 4100)		// unreferenced formal parameter
-#pragma warning(disable : 4115)
-#pragma warning(disable : 4125)		// decimal digit terminates octal escape sequence
-#pragma warning(disable : 4127)		// conditional expression is constant
-#pragma warning(disable : 4136)
-#pragma warning(disable : 4152)		// nonstandard extension, function/data pointer conversion in expression
-//#pragma warning(disable : 4201)
-//#pragma warning(disable : 4214)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4142)		// benign redefinition
-//#pragma warning(disable : 4305)		// truncation from const double to float
-//#pragma warning(disable : 4310)		// cast truncates constant value
-//#pragma warning(disable:  4505) 	// unreferenced local function has been removed
-#pragma warning(disable : 4514)
-#pragma warning(disable : 4702)		// unreachable code
-#pragma warning(disable : 4711)		// selected for automatic inline expansion
-#pragma warning(disable : 4220)		// varargs matches remaining parameters
-#endif
 
 /**********************************************************************
   VM Considerations
@@ -133,29 +110,7 @@ float	FloatSwap (const float *f);
 #undef QDECL
 #define	QDECL	__cdecl
 
-// buildstring will be incorporated into the version string
-#ifdef NDEBUG
-#ifdef _M_IX86
-#define	CPUSTRING	"win-x86"
-#elif defined _M_ALPHA
-#define	CPUSTRING	"win-AXP"
-#endif
-#else
-#ifdef _M_IX86
-#define	CPUSTRING	"win-x86-debug"
-#elif defined _M_ALPHA
-#define	CPUSTRING	"win-AXP-debug"
-#endif
-#endif
-
 #define ID_INLINE __inline 
-
-static ID_INLINE short BigShort( short l) { return ShortSwap(l); }
-#define LittleShort
-static ID_INLINE int BigLong(int l) { LongSwap(l); }
-#define LittleLong
-static ID_INLINE float BigFloat(const float *l) { FloatSwap(l); }
-#define LittleFloat
 
 #define	PATH_SEP '\\'
 
@@ -170,14 +125,6 @@ static ID_INLINE float BigFloat(const float *l) { FloatSwap(l); }
 #define __declspec(x)
 #define stricmp strcasecmp
 #define ID_INLINE inline 
-
-#ifdef __ppc__
-#define CPUSTRING	"MacOSX-ppc"
-#elif defined __i386__
-#define CPUSTRING	"MacOSX-i386"
-#else
-#define CPUSTRING	"MacOSX-other"
-#endif
 
 #define	PATH_SEP	'/'
 
@@ -206,13 +153,6 @@ static inline float __fctiw(register float f) {
     return fi;
 }
 
-#define BigShort
-static inline short LittleShort(short l) { return ShortSwap(l); }
-#define BigLong
-static inline int LittleLong (int l) { return LongSwap(l); }
-#define BigFloat
-static inline float LittleFloat (const float l) { return FloatSwap(&l); }
-
 #endif
 
 //======================= MAC DEFINES =================================
@@ -223,18 +163,9 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	MAC_STATIC
 #define ID_INLINE inline 
 
-#define	CPUSTRING	"MacOS-PPC"
-
 #define	PATH_SEP ':'
 
 void Sys_PumpEvents( void );
-
-#define BigShort
-static inline short LittleShort(short l) { return ShortSwap(l); }
-#define BigLong
-static inline int LittleLong (int l) { return LongSwap(l); }
-#define BigFloat
-static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 
 #endif
 
@@ -250,14 +181,6 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	MAC_STATIC // bk: FIXME
 #define ID_INLINE inline 
 
-#ifdef __i386__
-#define	CPUSTRING	"linux-i386"
-#elif defined __axp__
-#define	CPUSTRING	"linux-alpha"
-#else
-#define	CPUSTRING	"linux-other"
-#endif
-
 #define	PATH_SEP '/'
 
 // bk001205 - try
@@ -266,22 +189,6 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	CGAME_HARD_LINKED
 #define	UI_HARD_LINKED
 #define	BOTLIB_HARD_LINKED
-#endif
-
-#if !idppc
-inline static short BigShort( short l) { return ShortSwap(l); }
-#define LittleShort
-inline static int BigLong(int l) { return LongSwap(l); }
-#define LittleLong
-inline static float BigFloat(const float *l) { return FloatSwap(l); }
-#define LittleFloat
-#else
-#define BigShort
-inline static short LittleShort(short l) { return ShortSwap(l); }
-#define BigLong
-inline static int LittleLong (int l) { return LongSwap(l); }
-#define BigFloat
-inline static float LittleFloat (const float *l) { return FloatSwap(l); }
 #endif
 
 #endif
@@ -294,35 +201,26 @@ inline static float LittleFloat (const float *l) { return FloatSwap(l); }
 #define MAC_STATIC
 #define ID_INLINE inline 
 
-#ifdef __i386__
-#define CPUSTRING       "freebsd-i386"
-#elif defined __axp__
-#define CPUSTRING       "freebsd-alpha"
-#else
-#define CPUSTRING       "freebsd-other"
-#endif
-
 #define	PATH_SEP '/'
 
 // bk010116 - omitted Q3STATIC (see Linux above), broken target
 
-#if !idppc
-static short BigShort( short l) { return ShortSwap(l); }
-#define LittleShort
-static int BigLong(int l) { LongSwap(l); }
-#define LittleLong
-static float BigFloat(const float *l) { FloatSwap(l); }
-#define LittleFloat
-#else
-#define BigShort
-static short LittleShort(short l) { return ShortSwap(l); }
-#define BigLong
-static int LittleLong (int l) { return LongSwap(l); }
-#define BigFloat
-static float LittleFloat (const float *l) { return FloatSwap(l); }
 #endif
 
-#endif
+/*
+============================================================================
+
+					BYTE ORDER FUNCTIONS
+
+============================================================================
+*/
+
+static ID_INLINE short BigShort(short l) { return POSH_BigI16(l); }
+static ID_INLINE short LittleShort(short l) { return POSH_LittleI16(l); }
+static ID_INLINE int BigLong(int l) { return POSH_BigI32(l); }
+static ID_INLINE int LittleLong(int l) { return POSH_LittleI32(l); }
+static ID_INLINE float BigFloat(const float* l) { return POSH_FloatFromBigBits(POSH_BigFloatBits(*l)); }
+static ID_INLINE float LittleFloat(const float l) { return POSH_FloatFromLittleBits(POSH_LittleFloatBits(l)); }
 
 //=============================================================
 
