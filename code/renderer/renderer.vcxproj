@@ -141,6 +141,7 @@
       <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>$(GLFW_DIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>.\Release\renderer.lib</OutputFile>
@@ -166,6 +167,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(GLFW_DIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>.\Debug\renderer.lib</OutputFile>
