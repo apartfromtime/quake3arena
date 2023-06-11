@@ -6,70 +6,44 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Radiant", "Radiant.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Splines", "splines\Splines.vcxproj", "{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmdlib", "..\libs\cmdlib\cmdlib.vcxproj", "{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmdlib", "..\libs\cmdlib\cmdlib.vcxproj", "{E3AF71CB-A1B5-4D4A-AE21-C84DDC0C46E9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg6", "..\libs\jpeg6\jpeg6.vcxproj", "{A862AD26-94DD-4618-A814-F6AACA0B2FE3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg6", "..\libs\jpeg6\jpeg6.vcxproj", "{98468DFD-0BD4-468C-8CF7-4B792750EAF2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pak", "..\libs\pak\pak.vcxproj", "{F2ACC9D7-D628-4624-864F-87FE58787625}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pak", "..\libs\pak\pak.vcxproj", "{D536C6ED-1432-4D7E-89F9-92B406C4080B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "q3map", "..\q3map\q3map.vcxproj", "{F1162C55-66E7-4486-B1F3-071CFAA78332}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
-		DebugTTimo|x86 = DebugTTimo|x86
 		Release|x86 = Release|x86
-		ReleaseTTimo|x86 = ReleaseTTimo|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.Debug|x86.ActiveCfg = Debug|Win32
 		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.Debug|x86.Build.0 = Debug|Win32
-		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.DebugTTimo|x86.ActiveCfg = DebugTTimo|Win32
-		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.DebugTTimo|x86.Build.0 = DebugTTimo|Win32
 		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.Release|x86.ActiveCfg = Release|Win32
 		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.Release|x86.Build.0 = Release|Win32
-		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.ReleaseTTimo|x86.ActiveCfg = ReleaseTTimo|Win32
-		{D92DD0A3-9D6B-4183-992C-0FF42BC59A62}.ReleaseTTimo|x86.Build.0 = ReleaseTTimo|Win32
 		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.Debug|x86.ActiveCfg = Debug|Win32
 		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.Debug|x86.Build.0 = Debug|Win32
-		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.DebugTTimo|x86.ActiveCfg = Debug|Win32
-		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.DebugTTimo|x86.Build.0 = Debug|Win32
 		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.Release|x86.ActiveCfg = Release|Win32
 		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.Release|x86.Build.0 = Release|Win32
-		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.ReleaseTTimo|x86.ActiveCfg = Release|Win32
-		{63F2947A-5BD9-48C2-8BEA-7AB341F6B48F}.ReleaseTTimo|x86.Build.0 = Release|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.Debug|x86.ActiveCfg = Debug|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.Debug|x86.Build.0 = Debug|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.DebugTTimo|x86.ActiveCfg = Debug|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.DebugTTimo|x86.Build.0 = Debug|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.Release|x86.ActiveCfg = Release|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.Release|x86.Build.0 = Release|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.ReleaseTTimo|x86.ActiveCfg = Release|Win32
-		{EFB1E65A-E86F-4E0D-845A-E5C7A3DF016F}.ReleaseTTimo|x86.Build.0 = Release|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.Debug|x86.ActiveCfg = Debug|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.Debug|x86.Build.0 = Debug|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.DebugTTimo|x86.ActiveCfg = Debug|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.DebugTTimo|x86.Build.0 = Debug|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.Release|x86.ActiveCfg = Release|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.Release|x86.Build.0 = Release|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.ReleaseTTimo|x86.ActiveCfg = Release|Win32
-		{A862AD26-94DD-4618-A814-F6AACA0B2FE3}.ReleaseTTimo|x86.Build.0 = Release|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.Debug|x86.ActiveCfg = Debug|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.Debug|x86.Build.0 = Debug|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.DebugTTimo|x86.ActiveCfg = Debug|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.DebugTTimo|x86.Build.0 = Debug|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.Release|x86.ActiveCfg = Release|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.Release|x86.Build.0 = Release|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.ReleaseTTimo|x86.ActiveCfg = Release|Win32
-		{F2ACC9D7-D628-4624-864F-87FE58787625}.ReleaseTTimo|x86.Build.0 = Release|Win32
+		{E3AF71CB-A1B5-4D4A-AE21-C84DDC0C46E9}.Debug|x86.ActiveCfg = Debug|Win32
+		{E3AF71CB-A1B5-4D4A-AE21-C84DDC0C46E9}.Debug|x86.Build.0 = Debug|Win32
+		{E3AF71CB-A1B5-4D4A-AE21-C84DDC0C46E9}.Release|x86.ActiveCfg = Release|Win32
+		{E3AF71CB-A1B5-4D4A-AE21-C84DDC0C46E9}.Release|x86.Build.0 = Release|Win32
+		{98468DFD-0BD4-468C-8CF7-4B792750EAF2}.Debug|x86.ActiveCfg = Debug|Win32
+		{98468DFD-0BD4-468C-8CF7-4B792750EAF2}.Debug|x86.Build.0 = Debug|Win32
+		{98468DFD-0BD4-468C-8CF7-4B792750EAF2}.Release|x86.ActiveCfg = Release|Win32
+		{98468DFD-0BD4-468C-8CF7-4B792750EAF2}.Release|x86.Build.0 = Release|Win32
+		{D536C6ED-1432-4D7E-89F9-92B406C4080B}.Debug|x86.ActiveCfg = Debug|Win32
+		{D536C6ED-1432-4D7E-89F9-92B406C4080B}.Debug|x86.Build.0 = Debug|Win32
+		{D536C6ED-1432-4D7E-89F9-92B406C4080B}.Release|x86.ActiveCfg = Release|Win32
+		{D536C6ED-1432-4D7E-89F9-92B406C4080B}.Release|x86.Build.0 = Release|Win32
 		{F1162C55-66E7-4486-B1F3-071CFAA78332}.Debug|x86.ActiveCfg = Debug|Win32
 		{F1162C55-66E7-4486-B1F3-071CFAA78332}.Debug|x86.Build.0 = Debug|Win32
-		{F1162C55-66E7-4486-B1F3-071CFAA78332}.DebugTTimo|x86.ActiveCfg = DebugTTimo|Win32
-		{F1162C55-66E7-4486-B1F3-071CFAA78332}.DebugTTimo|x86.Build.0 = DebugTTimo|Win32
 		{F1162C55-66E7-4486-B1F3-071CFAA78332}.Release|x86.ActiveCfg = Release|Win32
 		{F1162C55-66E7-4486-B1F3-071CFAA78332}.Release|x86.Build.0 = Release|Win32
-		{F1162C55-66E7-4486-B1F3-071CFAA78332}.ReleaseTTimo|x86.ActiveCfg = ReleaseTTimo|Win32
-		{F1162C55-66E7-4486-B1F3-071CFAA78332}.ReleaseTTimo|x86.Build.0 = ReleaseTTimo|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
