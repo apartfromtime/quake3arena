@@ -1,41 +1,183 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\common\aselib.c" />
-    <ClCompile Include="..\common\bspfile.c" />
-    <ClCompile Include="..\common\cmdlib.c" />
-    <ClCompile Include="..\common\imagelib.c" />
-    <ClCompile Include="..\common\mathlib.c" />
-    <ClCompile Include="..\common\mutex.c" />
-    <ClCompile Include="..\common\polylib.c" />
-    <ClCompile Include="..\common\scriplib.c" />
-    <ClCompile Include="..\common\threads.c" />
-    <ClCompile Include="brush.c" />
-    <ClCompile Include="brush_primit.c" />
-    <ClCompile Include="bsp.c" />
-    <ClCompile Include="facebsp.c" />
-    <ClCompile Include="fog.c" />
-    <ClCompile Include="gldraw.c" />
-    <ClCompile Include="glfile.c" />
-    <ClCompile Include="leakfile.c" />
-    <ClCompile Include="light.c" />
-    <ClCompile Include="lightmaps.c" />
-    <ClCompile Include="lightv.c" />
-    <ClCompile Include="light_trace.c" />
-    <ClCompile Include="map.c" />
-    <ClCompile Include="mesh.c" />
-    <ClCompile Include="misc_model.c" />
-    <ClCompile Include="patch.c" />
-    <ClCompile Include="portals.c" />
-    <ClCompile Include="prtfile.c" />
-    <ClCompile Include="shaders.c" />
-    <ClCompile Include="soundv.c" />
-    <ClCompile Include="surface.c" />
-    <ClCompile Include="terrain.c" />
-    <ClCompile Include="tjunction.c" />
-    <ClCompile Include="tree.c" />
-    <ClCompile Include="vis.c" />
-    <ClCompile Include="visflow.c" />
-    <ClCompile Include="writebsp.c" />
+    <ClCompile Include="..\common\aselib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="brush.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="brush_primit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bsp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\bspfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cmdlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="facebsp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gldraw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\imagelib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="leakfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="light.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="light_trace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lightmaps.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lightv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="map.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\mathlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="misc_model.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\mutex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\polylib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="portals.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="prtfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\scriplib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shaders.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soundv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="surface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\threads.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tjunction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="visflow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="writebsp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\aselib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\bspfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cmdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\imagelib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mathlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\polylib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\polyset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qbsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\qfiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\scriplib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\threads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\surfaceflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\pakstuff.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\jpeglib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d2b8f688-976a-4d0f-862c-3e540e8eaf94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9e72ee33-e7dc-43bb-b1d9-1868fe0c2594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\libs">
+      <UniqueIdentifier>{8169e745-a9e5-4029-a3f5-12e110665a0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
