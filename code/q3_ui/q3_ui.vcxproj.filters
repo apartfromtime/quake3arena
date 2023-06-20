@@ -164,15 +164,15 @@
     <CustomBuild Include="ui_local.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="ui_public.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\system\posh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\system\sys_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
