@@ -3,8 +3,9 @@
 // 
 
 
+#include <windows.h>
+#include <direct.h>
 #include "cmdlib.h"
-#include "windows.h"
 
 #define PATHSEPERATOR   '/'
 
@@ -171,7 +172,26 @@ void SafeWrite (FILE *f, const void *buffer, int count)
 		Error ("File read failure");
 }
 
+/*
+==============
+FileExists
+==============
+*/
+boolean	FileExists(const char* filename)
+{
+	FILE* f = 0;
+	
+	f = fopen(filename, "r");
+	
+	if (!f)
+	{
+		return false;
+	}
 
+	fclose(f);
+	
+	return true;
+}
 
 /*
 ==============
@@ -205,7 +225,6 @@ int LoadFile (const char *filename, void **bufferptr)
 	*bufferptr = buffer;
 	return length;
 }
-
 
 /*
 ==============
