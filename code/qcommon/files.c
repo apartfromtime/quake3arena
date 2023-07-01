@@ -196,11 +196,24 @@ or configs will never get loaded from disk!
 
 */
 
-#define	DEMOGAME			"demota"
+#ifdef PRE_RELEASE_TADEMO
 
+#define	DEMOGAME			"demota"
 // every time a new demo pk3 file is built, this checksum must be updated.
 // the easiest way to get it is to just run the game and see what it spits out
 #define	DEMO_PAK_CHECKSUM	437558517u
+
+#else
+
+#define	DEMOGAME			"demoq3"
+
+// every time a new demo pk3 file is built, this checksum must be updated.
+// the easiest way to get it is to just run the game and see what it spits out
+#define	DEMO_PAK_CHECKSUM	2985612116u
+
+#endif
+
+
 
 // if this is defined, the executable positively won't work with any paks other
 // than the demo pak, even if productid is present.  This is only used for our
@@ -2838,7 +2851,7 @@ if the full version is not found
 static void FS_SetRestrictions( void ) {
 	searchpath_t	*path;
 
-#ifndef PRE_RELEASE_DEMO
+#if !defined PRE_RELEASE_DEMO && !defined PRE_RELEASE_TADEMO
 	char	*productId;
 
 	// if fs_restrict is set, don't even look for the id file,
