@@ -773,6 +773,9 @@ void GraphicsOptions_MenuInit( void )
 		"1600x1200",
 		"2048x1536",
 		"856x480 wide screen",
+		"1280x720 wide screen",
+		"1920x1080 wide screen",
+		"2560x1440 wide screen",
 		0
 	};
 	static const char *filter_names[] =
