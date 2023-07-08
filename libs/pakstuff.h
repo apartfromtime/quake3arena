@@ -86,12 +86,14 @@ Float32	SwapFloat32		(Float32 x);
 #endif /* FAT_ENDIAN */
 
 #define FROMDISK	-1
+
 struct PACKDirectory
 {
    char   name[56];             /* name of file */
    UInt32 offset;               /* offset to start of data */
    UInt32 size;                 /* byte size of data */
 };
+
 typedef struct PACKDirectory *PACKDirPtr;
 
 typedef struct DirListStruct
@@ -120,19 +122,19 @@ typedef struct DirStruct
 extern int m_nPAKIndex;
 extern FILE* pakfile[16];
 extern boolean pakopen;
-extern DIRECTORY	*paktextures;
+extern DIRECTORY* paktextures;
 
-void	ClearFileList				(FILELIST **);
-void	ClearDirList				(DIRLIST **);
-boolean		GetPackFileList				(FILELIST **, char *);
-boolean		GetPackTextureDirs			(DIRLIST **);
-boolean	AddToDirListAlphabetized	(DIRLIST **, char *, int);
-boolean	AddToFileListAlphabetized	(FILELIST **t, char *, UInt32, UInt32, boolean);
-boolean	PakLoadFile					(const char *, void **);
-void	OpenPakFile					(const char *);
-void	ClosePakFile				(void);
-int PakLoadAnyFile(const char *filename, void **bufferptr);
-void WINAPI InitPakFile(const char * pBasePath, const char *pName);
+void	ClearFileList(FILELIST**);
+void	ClearDirList(DIRLIST**);
+boolean	GetPackFileList(FILELIST**, char*);
+boolean	GetPackTextureDirs(DIRLIST**);
+boolean	AddToDirListAlphabetized(DIRLIST**, char*, int);
+boolean	AddToFileListAlphabetized(FILELIST** t, char*, UInt32, UInt32, boolean);
+boolean	PakLoadFile(const char*, void**);
+void	OpenPakFile(const char*);
+void	ClosePakFile(void);
+int		PakLoadAnyFile(const char* filename, void** bufferptr);
+void WINAPI InitPakFile(const char* pBasePath, const char* pName);
 
 #ifdef __cplusplus
 }
