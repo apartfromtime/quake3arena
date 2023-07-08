@@ -424,21 +424,23 @@ void ConvertDOSToUnixName( char *dst, const char *src )
 
 
 char* StrDup(char* pStr)
-{ 
-  if (pStr)
-  {
-    return strcpy(new char[strlen(pStr)+1], pStr); 
-  }
-  return NULL;
+{
+	if (pStr)
+	{
+		return strcpy((char*)qmalloc(strlen(pStr) + 1), pStr);
+	}
+	
+	return NULL;
 }
 
 char* StrDup(const char* pStr)
-{ 
-  if (pStr)
-  {
-    return strcpy(new char[strlen(pStr)+1], pStr); 
-  }
-  return NULL;
+{
+	if (pStr)
+	{
+		return strcpy((char*)qmalloc(strlen(pStr) + 1), pStr);
+	}
+	
+	return NULL;
 }
 
 
