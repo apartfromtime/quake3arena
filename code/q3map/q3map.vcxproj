@@ -14,7 +14,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <SccProjectName>"$/source/q3map", PADAAAAA</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
-    <ProjectGuid>{F1162C55-66E7-4486-B1F3-071CFAA78332}</ProjectGuid>
+    <ProjectGuid>{AD91995E-6DB9-45C3-BB03-31E22105693C}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -55,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../libs/glut-3.7.6-bin;../common;../libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../../libs;../../libs/glut-3.7.6-bin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
@@ -78,7 +78,7 @@
       <SubSystem>Console</SubSystem>
       <StackReserveSize>4194304</StackReserveSize>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>../libs/glut-3.7.6-bin</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../libs;</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <TypeLibraryName>.\Debug/q3map.tlb</TypeLibraryName>
@@ -93,7 +93,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../libs/glut-3.7.6-bin;../common;../libs</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../common;../../libs;../../libs/glut-3.7.6-bin</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -117,7 +117,7 @@
       <SubSystem>Console</SubSystem>
       <StackReserveSize>4194304</StackReserveSize>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>../libs/glut-3.7.6-bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../libs;</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <TypeLibraryName>.\Release/q3map.tlb</TypeLibraryName>
@@ -311,20 +311,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libs\jpeg6\jpeg6.vcxproj">
-      <Project>{a862ad26-94dd-4618-a814-f6aaca0b2fe3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\libs\pak\pak.vcxproj">
-      <Project>{f2acc9d7-d628-4624-864f-87fe58787625}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\common\aselib.h" />
     <ClInclude Include="..\common\bspfile.h" />
     <ClInclude Include="..\common\cmdlib.h" />
     <ClInclude Include="..\common\imagelib.h" />
+    <ClInclude Include="..\common\l3dslib.h" />
     <ClInclude Include="..\common\mathlib.h" />
     <ClInclude Include="..\common\mutex.h" />
     <ClInclude Include="..\common\polylib.h" />
@@ -333,8 +324,7 @@
     <ClInclude Include="..\common\scriplib.h" />
     <ClInclude Include="..\common\surfaceflags.h" />
     <ClInclude Include="..\common\threads.h" />
-    <ClInclude Include="..\libs\jpeglib.h" />
-    <ClInclude Include="..\libs\pakstuff.h" />
+    <ClInclude Include="..\common\trilib.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="qbsp.h" />

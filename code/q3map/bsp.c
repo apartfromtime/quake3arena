@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifdef _TTIMOBUILD
 #include "pakstuff.h"
 #else
-#include "../libs/pakstuff.h"
+#include "../../libs/pakstuff.h"
 #endif
 extern HWND hwndOut;
 #endif
