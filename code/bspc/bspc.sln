@@ -1,28 +1,24 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bspc", "bspc.vcproj", "{4E4EBC16-F345-4667-84E1-86633BAFDAE6}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bspc", "bspc.vcxproj", "{53F00744-1937-4588-AB5E-F8121DB19F3D}"
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53F00744-1937-4588-AB5E-F8121DB19F3D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{53F00744-1937-4588-AB5E-F8121DB19F3D}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 1
 		SccProjectUniqueName0 = bspc.vcproj
 		SccProjectName0 = \u0022$/source/code/bspc\u0022,\u0020IGAAAAAA
 		SccLocalPath0 = .
 		SccProvider0 = MSSCCI:Perforce\u0020SCM
-	EndGlobalSection
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
-	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{4E4EBC16-F345-4667-84E1-86633BAFDAE6}.Debug.ActiveCfg = Debug|Win32
-		{4E4EBC16-F345-4667-84E1-86633BAFDAE6}.Debug.Build.0 = Debug|Win32
-		{4E4EBC16-F345-4667-84E1-86633BAFDAE6}.Release.ActiveCfg = Release|Win32
-		{4E4EBC16-F345-4667-84E1-86633BAFDAE6}.Release.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
 	EndGlobalSection
 EndGlobal
