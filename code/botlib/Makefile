@@ -3,7 +3,7 @@
 # Intended for gcc/Linux
 #
 
-ARCH=i386
+#ARCH=i386
 CC=gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
