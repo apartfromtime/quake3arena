@@ -1,3 +1,5 @@
+*/baseq3
+*/ipch
 */.vs
 */*.suo
 */*.sdf
@@ -6,6 +8,7 @@
 */*/*.vcxproj.filters
 */*/*.vcxproj.user
 */Debug
+*/q3_ui
 */Debug_TA
 */quake3___Win32_Debug_TA_DEMO
 */Release

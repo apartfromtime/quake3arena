@@ -1471,8 +1471,6 @@
     <None Include="win32\cursor3.cur" />
     <None Include="win32\qe3.ico" />
     <None Include="unix\ChangeLog" />
-    <None Include="unix\Conscript-pk3" />
-    <None Include="Construct" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="win32\winquake.rc">
