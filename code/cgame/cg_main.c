@@ -88,7 +88,7 @@ centity_t			cg_entities[MAX_GENTITIES];
 weaponInfo_t		cg_weapons[MAX_WEAPONS];
 itemInfo_t			cg_items[MAX_ITEMS];
 
-
+vmCvar_t	cg_developer;
 vmCvar_t	cg_railTrailTime;
 vmCvar_t	cg_centertime;
 vmCvar_t	cg_runpitch;
@@ -205,6 +205,7 @@ typedef struct {
 } cvarTable_t;
 
 static cvarTable_t cvarTable[] = { // bk001129
+	{ &cg_developer, "com_developer", "0", CVAR_ARCHIVE  },
 	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
 	{ &cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE },
 	{ &cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE },
@@ -416,7 +417,7 @@ int CG_LastAttacker( void ) {
 	return cg.snap->ps.persistant[PERS_ATTACKER];
 }
 
-void QDECL CG_Printf( const char *msg, ... ) {
+void Q_CDECL CG_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -427,7 +428,7 @@ void QDECL CG_Printf( const char *msg, ... ) {
 	trap_Print( text );
 }
 
-void QDECL CG_Error( const char *msg, ... ) {
+void Q_CDECL CG_Error( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -441,7 +442,22 @@ void QDECL CG_Error( const char *msg, ... ) {
 #ifndef CGAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
 
-void QDECL Com_Error( int level, const char *error, ... ) {
+void Q_CDECL Com_DPrintf(const char* fmt, ...) {
+	va_list		argptr;
+	char		msg[1024];
+
+	if (!cg_developer.handle || !cg_developer.integer) {
+		return;			// don't confuse non-developers with techie stuff...
+	}
+
+	va_start(argptr, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, argptr);
+	va_end(argptr);
+
+	CG_Printf("%s", msg);
+}
+
+void Q_CDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -452,7 +468,7 @@ void QDECL Com_Error( int level, const char *error, ... ) {
 	CG_Error( "%s", text);
 }
 
-void QDECL Com_Printf( const char *msg, ... ) {
+void Q_CDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -1186,8 +1202,8 @@ void CG_StartMusic( void ) {
 
 	// start the background music
 	s = (char *)CG_ConfigString( CS_MUSIC );
-	Q_strncpyz( parm1, COM_Parse( &s ), sizeof( parm1 ) );
-	Q_strncpyz( parm2, COM_Parse( &s ), sizeof( parm2 ) );
+	Q_strncpyz( parm1, Com_Parse( &s ), sizeof( parm1 ) );
+	Q_strncpyz( parm2, Com_Parse( &s ), sizeof( parm2 ) );
 
 	trap_S_StartBackgroundTrack( parm1, parm2 );
 }
@@ -1416,7 +1432,7 @@ void CG_ParseMenu(const char *menuFile) {
 qboolean CG_Load_Menu(char **p) {
 	char *token;
 
-	token = COM_ParseExt(p, qtrue);
+	token = Com_ParseExt(p, qtrue);
 
 	if (token[0] != '{') {
 		return qfalse;
@@ -1424,7 +1440,7 @@ qboolean CG_Load_Menu(char **p) {
 
 	while ( 1 ) {
 
-		token = COM_ParseExt(p, qtrue);
+		token = Com_ParseExt(p, qtrue);
     
 		if (Q_stricmp(token, "}") == 0) {
 			return qtrue;
@@ -1476,7 +1492,7 @@ void CG_LoadMenus(const char *menuFile) {
 	p = buf;
 
 	while ( 1 ) {
-		token = COM_ParseExt( &p, qtrue );
+		token = Com_ParseExt( &p, qtrue );
 		if( !token || token[0] == 0 || token[0] == '}') {
 			break;
 		}

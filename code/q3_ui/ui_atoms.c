@@ -33,7 +33,29 @@ qboolean		m_entersound;		// after a frame, so caching won't disrupt the sound
 // these are here so the functions in q_shared.c can link
 #ifndef UI_HARD_LINKED
 
-void QDECL Com_Error( int level, const char *error, ... ) {
+/*
+================
+Com_DPrintf
+
+A Com_Printf that only shows up if the "developer" cvar is set
+================
+*/
+void Q_CDECL Com_DPrintf(const char* fmt, ...) {
+	va_list		argptr;
+	char		msg[1024];
+
+	if (!ui_developer.handle || !ui_developer.integer) {
+		return;			// don't confuse non-developers with techie stuff...
+	}
+
+	va_start(argptr, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, argptr);
+	va_end(argptr);
+
+	trap_Print(va("%s", msg));
+}
+
+void Q_CDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -44,7 +66,7 @@ void QDECL Com_Error( int level, const char *error, ... ) {
 	trap_Error( va("%s", text) );
 }
 
-void QDECL Com_Printf( const char *msg, ... ) {
+void Q_CDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 

@@ -173,36 +173,6 @@ const char *VM_SymbolForCompiledPointer( vm_t *vm, void *code ) {
 	return VM_ValueToSymbol( vm, i );
 }
 
-
-
-/*
-===============
-ParseHex
-===============
-*/
-int	ParseHex( const char *text ) {
-	int		value;
-	int		c;
-
-	value = 0;
-	while ( ( c = *text++ ) != 0 ) {
-		if ( c >= '0' && c <= '9' ) {
-			value = value * 16 + c - '0';
-			continue;
-		}
-		if ( c >= 'a' && c <= 'f' ) {
-			value = value * 16 + 10 + c - 'a';
-			continue;
-		}
-		if ( c >= 'A' && c <= 'F' ) {
-			value = value * 16 + 10 + c - 'A';
-			continue;
-		}
-	}
-
-	return value;
-}
-
 /*
 ===============
 VM_LoadSymbols
@@ -241,25 +211,25 @@ void VM_LoadSymbols( vm_t *vm ) {
 	count = 0;
 
 	while ( 1 ) {
-		token = COM_Parse( &text_p );
+		token = Com_Parse( &text_p );
 		if ( !token[0] ) {
 			break;
 		}
-		segment = ParseHex( token );
+		segment = Com_ParseHex( token );
 		if ( segment ) {
-			COM_Parse( &text_p );
-			COM_Parse( &text_p );
+			Com_Parse( &text_p );
+			Com_Parse( &text_p );
 			continue;		// only load code segment values
 		}
 
-		token = COM_Parse( &text_p );
+		token = Com_Parse( &text_p );
 		if ( !token[0] ) {
 			Com_Printf( "WARNING: incomplete line at end of file\n" );
 			break;
 		}
-		value = ParseHex( token );
+		value = Com_ParseHex( token );
 
-		token = COM_Parse( &text_p );
+		token = Com_Parse( &text_p );
 		if ( !token[0] ) {
 			Com_Printf( "WARNING: incomplete line at end of file\n" );
 			break;
@@ -324,7 +294,7 @@ Dlls will call this directly
  
 ============
 */
-int QDECL VM_DllSyscall( int arg, ... ) {
+int Q_CDECL VM_DllSyscall( int arg, ... ) {
 #if ((defined __linux__) && (defined __powerpc__))
   // rcg010206 - see commentary above
   int args[16];
@@ -665,7 +635,7 @@ locals from sp
 #define	MAX_STACK	256
 #define	STACK_MASK	(MAX_STACK-1)
 
-int	QDECL VM_Call( vm_t *vm, int callnum, ... ) {
+int	Q_CDECL VM_Call( vm_t *vm, int callnum, ... ) {
 	vm_t	*oldVM;
 	int		r;
 	int i;
@@ -711,7 +681,7 @@ int	QDECL VM_Call( vm_t *vm, int callnum, ... ) {
 
 //=================================================================
 
-static int QDECL VM_ProfileSort( const void *a, const void *b ) {
+static int Q_CDECL VM_ProfileSort( const void *a, const void *b ) {
 	vmSymbol_t	*sa, *sb;
 
 	sa = *(vmSymbol_t **)a;

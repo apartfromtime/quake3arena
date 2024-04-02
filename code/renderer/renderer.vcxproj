@@ -221,6 +221,7 @@
     <None Include="ref_trin.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\game\q_parse.c" />
     <ClCompile Include="tr_animation.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1908,6 +1909,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\game\q_parse.h" />
     <ClInclude Include="..\qcommon\cm_public.h" />
     <ClInclude Include="..\win32\glw_win.h" />
     <ClInclude Include="..\game\q_shared.h" />

@@ -38,8 +38,8 @@ typedef int fileHandle_t;
 //extern void glBox(idVec3_t &color, idVec3_t &point, float size);
 //extern void glLabeledPoint(idVec3_t &color, idVec3_t &point, float size, const char *label);
 
-static vec4_t blue(0, 0, 1, 1);
-static vec4_t red(1, 0, 0, 1);
+static idVec4_t blue(0, 0, 1, 1);
+static idVec4_t red(1, 0, 0, 1);
 
 class idPointListInterface {
 public:

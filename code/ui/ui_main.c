@@ -135,7 +135,7 @@ static void UI_FeederSelection(float feederID, int index);
 static void UI_BuildServerDisplayList(qboolean force);
 static void UI_BuildServerStatus(qboolean force);
 static void UI_BuildFindPlayerList(qboolean force);
-static int QDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 );
+static int Q_CDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 );
 static int UI_MapCountByGameType(qboolean singlePlayer);
 static int UI_HeadCountByTeam( void );
 static void UI_ParseGameInfo(const char *teamFile);
@@ -2746,7 +2746,7 @@ static float UI_GetValue(int ownerDraw) {
 UI_ServersQsortCompare
 =================
 */
-static int QDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 ) {
+static int Q_CDECL UI_ServersQsortCompare( const void *arg1, const void *arg2 ) {
 	return trap_LAN_CompareServers( ui_netSource.integer, uiInfo.serverStatus.sortKey, uiInfo.serverStatus.sortDir, *(int*)arg1, *(int*)arg2);
 }
 
@@ -4505,7 +4505,7 @@ static qboolean Team_Parse(char **p) {
   const char *tempStr;
 	int i;
 
-  token = COM_ParseExt(p, qtrue);
+  token = Com_ParseExt(p, qtrue);
 
   if (token[0] != '{') {
     return qfalse;
@@ -4513,7 +4513,7 @@ static qboolean Team_Parse(char **p) {
 
   while ( 1 ) {
 
-    token = COM_ParseExt(p, qtrue);
+    token = Com_ParseExt(p, qtrue);
     
     if (Q_stricmp(token, "}") == 0) {
       return qtrue;
@@ -4550,7 +4550,7 @@ static qboolean Team_Parse(char **p) {
       } else {
         Com_Printf("Too many teams, last team replaced!\n");
       }
-      token = COM_ParseExt(p, qtrue);
+      token = Com_ParseExt(p, qtrue);
       if (token[0] != '}') {
         return qfalse;
       }
@@ -4564,7 +4564,7 @@ static qboolean Character_Parse(char **p) {
   char *token;
   const char *tempStr;
 
-  token = COM_ParseExt(p, qtrue);
+  token = Com_ParseExt(p, qtrue);
 
   if (token[0] != '{') {
     return qfalse;
@@ -4572,7 +4572,7 @@ static qboolean Character_Parse(char **p) {
 
 
   while ( 1 ) {
-    token = COM_ParseExt(p, qtrue);
+    token = Com_ParseExt(p, qtrue);
 
     if (Q_stricmp(token, "}") == 0) {
       return qtrue;
@@ -4606,7 +4606,7 @@ static qboolean Character_Parse(char **p) {
         Com_Printf("Too many characters, last character replaced!\n");
       }
      
-      token = COM_ParseExt(p, qtrue);
+      token = Com_ParseExt(p, qtrue);
       if (token[0] != '}') {
         return qfalse;
       }
@@ -4620,14 +4620,14 @@ static qboolean Character_Parse(char **p) {
 static qboolean Alias_Parse(char **p) {
   char *token;
 
-  token = COM_ParseExt(p, qtrue);
+  token = Com_ParseExt(p, qtrue);
 
   if (token[0] != '{') {
     return qfalse;
   }
 
   while ( 1 ) {
-    token = COM_ParseExt(p, qtrue);
+    token = Com_ParseExt(p, qtrue);
 
     if (Q_stricmp(token, "}") == 0) {
       return qtrue;
@@ -4650,7 +4650,7 @@ static qboolean Alias_Parse(char **p) {
         Com_Printf("Too many aliases, last alias replaced!\n");
       }
      
-      token = COM_ParseExt(p, qtrue);
+      token = Com_ParseExt(p, qtrue);
       if (token[0] != '}') {
         return qfalse;
       }
@@ -4680,7 +4680,7 @@ static void UI_ParseTeamInfo(const char *teamFile) {
   p = buff;
 
 	while ( 1 ) {
-		token = COM_ParseExt( &p, qtrue );
+		token = Com_ParseExt( &p, qtrue );
 		if( !token || token[0] == 0 || token[0] == '}') {
 			break;
 		}
@@ -4714,7 +4714,7 @@ static void UI_ParseTeamInfo(const char *teamFile) {
 static qboolean GameType_Parse(char **p, qboolean join) {
 	char *token;
 
-	token = COM_ParseExt(p, qtrue);
+	token = Com_ParseExt(p, qtrue);
 
 	if (token[0] != '{') {
 		return qfalse;
@@ -4727,7 +4727,7 @@ static qboolean GameType_Parse(char **p, qboolean join) {
 	}
 
 	while ( 1 ) {
-		token = COM_ParseExt(p, qtrue);
+		token = Com_ParseExt(p, qtrue);
 
 		if (Q_stricmp(token, "}") == 0) {
 			return qtrue;
@@ -4763,7 +4763,7 @@ static qboolean GameType_Parse(char **p, qboolean join) {
 				}		
 			}
      
-			token = COM_ParseExt(p, qtrue);
+			token = Com_ParseExt(p, qtrue);
 			if (token[0] != '}') {
 				return qfalse;
 			}
@@ -4775,7 +4775,7 @@ static qboolean GameType_Parse(char **p, qboolean join) {
 static qboolean MapList_Parse(char **p) {
 	char *token;
 
-	token = COM_ParseExt(p, qtrue);
+	token = Com_ParseExt(p, qtrue);
 
 	if (token[0] != '{') {
 		return qfalse;
@@ -4784,7 +4784,7 @@ static qboolean MapList_Parse(char **p) {
 	uiInfo.mapCount = 0;
 
 	while ( 1 ) {
-		token = COM_ParseExt(p, qtrue);
+		token = Com_ParseExt(p, qtrue);
 
 		if (Q_stricmp(token, "}") == 0) {
 			return qtrue;
@@ -4807,7 +4807,7 @@ static qboolean MapList_Parse(char **p) {
 			uiInfo.mapList[uiInfo.mapCount].typeBits = 0;
 
 			while (1) {
-				token = COM_ParseExt(p, qtrue);
+				token = Com_ParseExt(p, qtrue);
 				if (token[0] >= '0' && token[0] <= '9') {
 					uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << (token[0] - 0x030));
 					if (!Int_Parse(p, &uiInfo.mapList[uiInfo.mapCount].timeToBeat[token[0] - 0x30])) {
@@ -4850,7 +4850,7 @@ static void UI_ParseGameInfo(const char *teamFile) {
 	p = buff;
 
 	while ( 1 ) {
-		token = COM_ParseExt( &p, qtrue );
+		token = Com_ParseExt( &p, qtrue );
 		if( !token || token[0] == 0 || token[0] == '}') {
 			break;
 		}

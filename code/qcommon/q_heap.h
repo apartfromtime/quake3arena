@@ -1,0 +1,115 @@
+/*
+===========================================================================
+Copyright (C) 1999-2005 Id Software, Inc.
+
+This file is part of Quake III Arena source code.
+
+Quake III Arena source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+Quake III Arena source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+===========================================================================
+*/
+
+#ifndef Q_HEAP_H
+#define Q_HEAP_H
+
+#include "..\game\q_shared.h"
+
+typedef enum {
+	TAG_FREE,
+	TAG_GENERAL,
+	TAG_BOTLIB,
+	TAG_RENDERER,
+	TAG_SMALL,
+	TAG_STATIC
+} memtag_t;
+
+/*
+
+--- low memory ----
+server vm
+server clipmap
+---mark---
+renderer initialization (shaders, etc)
+UI vm
+cgame vm
+renderer map
+renderer models
+
+---free---
+
+temp file loading
+--- high memory ---
+
+*/
+
+#if defined(_DEBUG) && !defined(BSPC)
+#define ZONE_DEBUG
+#endif
+
+#ifdef ZONE_DEBUG
+#define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
+#define Z_Malloc(size)					Z_MallocDebug(size, #size, __FILE__, __LINE__)
+#define S_Malloc(size)					S_MallocDebug(size, #size, __FILE__, __LINE__)
+void* Z_TagMallocDebug(int size, int tag, char* label, char* file, int line);	// NOT 0 filled memory
+void* Z_MallocDebug(int size, char* label, char* file, int line);			// returns 0 filled memory
+void* S_MallocDebug(int size, char* label, char* file, int line);			// returns 0 filled memory
+#else
+void* Z_TagMalloc(int size, int tag);	// NOT 0 filled memory
+void* Z_Malloc(int size);			// returns 0 filled memory
+void* S_Malloc(int size);			// NOT 0 filled memory only for small allocations
+#endif
+void Zone_Meminfo(void);
+void Zone_TouchMemory(void);
+void Z_CheckHeap(void);
+void Z_Free(void* ptr);
+void Z_FreeTags(int tag);
+int Z_AvailableMemory(void);
+void Z_LogHeap(void);
+
+#if defined(_DEBUG) && !defined(BSPC)
+#define HUNK_DEBUG
+#endif
+
+typedef enum
+{
+	h_high,
+	h_low,
+	h_dontcare
+} ha_pref;
+
+#ifdef HUNK_DEBUG
+#define Hunk_Alloc(size, preference)			Hunk_AllocDebug(size, preference, #size, __FILE__, __LINE__)
+void* Hunk_AllocDebug(int size, ha_pref preference, char* label, char* file, int line);
+#else
+void* Hunk_Alloc(int size, ha_pref preference);
+#endif
+
+void Hunk_Meminfo(void);
+void Hunk_TouchMemory(void);
+void Hunk_Clear(void);
+void Hunk_ClearToMark(void);
+void Hunk_SetMark(void);
+qboolean Hunk_CheckMark(void);
+void Hunk_ClearTempMemory(void);
+void* Hunk_AllocateTempMemory(int size);
+void Hunk_FreeTempMemory(void* buf);
+int	Hunk_MemoryRemaining(void);
+void Hunk_Log(void);
+void Hunk_Trash(void);
+
+void Com_InitSmallZoneMemory(void);
+void Com_InitZoneMemory(void);
+void Com_InitHunkMemory(void);
+
+#endif	// Q_HEAP_H

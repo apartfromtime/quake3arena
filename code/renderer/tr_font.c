@@ -310,7 +310,7 @@ typedef union {
 
 float readFloat() {
 	poor	me;
-#if idppc
+#if Q_CPU_PPC && !defined(C_ONLY)
 	me.fred[0] = fdFile[fdOffset+3];
 	me.fred[1] = fdFile[fdOffset+2];
 	me.fred[2] = fdFile[fdOffset+1];
@@ -320,7 +320,7 @@ float readFloat() {
 	me.fred[1] = fdFile[fdOffset+1];
 	me.fred[2] = fdFile[fdOffset+2];
 	me.fred[3] = fdFile[fdOffset+3];
-#endif
+#endif	// #if Q_CPU_PPC
 	fdOffset += 4;
 	return me.ffred;
 }

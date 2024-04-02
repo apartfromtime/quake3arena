@@ -31,9 +31,6 @@ int*     snd_p;
 int      snd_linear_count;
 short*   snd_out;
 
-#if !( (defined __linux__ || defined __FreeBSD__ ) && (defined __i386__) ) // rb010123
-#if	!id386
-
 void S_WriteLinearBlastStereo16 (void)
 {
 	int		i;
@@ -58,57 +55,6 @@ void S_WriteLinearBlastStereo16 (void)
 			snd_out[i+1] = val;
 	}
 }
-#else
-
-__declspec( naked ) void S_WriteLinearBlastStereo16 (void)
-{
-	__asm {
-
- push edi
- push ebx
- mov ecx,ds:dword ptr[snd_linear_count]
- mov ebx,ds:dword ptr[snd_p]
- mov edi,ds:dword ptr[snd_out]
-LWLBLoopTop:
- mov eax,ds:dword ptr[-8+ebx+ecx*4]
- sar eax,8
- cmp eax,07FFFh
- jg LClampHigh
- cmp eax,0FFFF8000h
- jnl LClampDone
- mov eax,0FFFF8000h
- jmp LClampDone
-LClampHigh:
- mov eax,07FFFh
-LClampDone:
- mov edx,ds:dword ptr[-4+ebx+ecx*4]
- sar edx,8
- cmp edx,07FFFh
- jg LClampHigh2
- cmp edx,0FFFF8000h
- jnl LClampDone2
- mov edx,0FFFF8000h
- jmp LClampDone2
-LClampHigh2:
- mov edx,07FFFh
-LClampDone2:
- shl edx,16
- and eax,0FFFFh
- or edx,eax
- mov ds:dword ptr[-4+edi+ecx*2],edx
- sub ecx,2
- jnz LWLBLoopTop
- pop ebx
- pop edi
- ret
-	}
-}
-
-#endif
-#else
-// forward declare, implementation somewhere else
-void S_WriteLinearBlastStereo16 (void);
-#endif
 
 void S_TransferStereo16 (unsigned long *pbuf, int endtime)
 {
@@ -248,7 +194,7 @@ static void S_PaintChannelFrom16( channel_t *ch, const sfx_t *sc, int count, int
 	}
 
 	if (!ch->doppler || ch->dopplerScale==1.0f) {
-#if idppc_altivec
+#if Q_CPU_GC
 		vector signed short volume_vec;
 		vector unsigned int volume_shift;
 		int vectorCount, samplesLeft, chunkSamplesLeft;
@@ -256,7 +202,7 @@ static void S_PaintChannelFrom16( channel_t *ch, const sfx_t *sc, int count, int
 		leftvol = ch->leftvol*snd_vol;
 		rightvol = ch->rightvol*snd_vol;
 		samples = chunk->sndChunk;
-#if idppc_altivec
+#if Q_CPU_GC
 		((short *)&volume_vec)[0] = leftvol;
 		((short *)&volume_vec)[1] = leftvol;
 		((short *)&volume_vec)[4] = leftvol;

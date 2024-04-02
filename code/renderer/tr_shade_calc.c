@@ -1014,22 +1014,6 @@ void RB_CalcRotateTexCoords( float degsPerSecond, float *st )
 	RB_CalcTransformTexCoords( &tmi, st );
 }
 
-
-
-
-
-
-#if id386 && !( (defined __linux__ || defined __FreeBSD__ ) && (defined __i386__ ) ) // rb010123
-
-long myftol( float f ) {
-	static int tmp;
-	__asm fld f
-	__asm fistp tmp
-	__asm mov eax, tmp
-}
-
-#endif
-
 /*
 ** RB_CalcSpecularAlpha
 **
@@ -1105,7 +1089,7 @@ void RB_CalcDiffuseColor( unsigned char *colors )
 	vec3_t			lightDir;
 	vec3_t			directedLight;
 	int				numVertexes;
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 	vector unsigned char vSel = (vector unsigned char)(0x00, 0x00, 0x00, 0xff,
 							   0x00, 0x00, 0x00, 0xff,
 							   0x00, 0x00, 0x00, 0xff,
@@ -1122,7 +1106,7 @@ void RB_CalcDiffuseColor( unsigned char *colors )
 #endif
 	ent = backEnd.currentEntity;
 	ambientLightInt = ent->ambientLightInt;
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 	// A lot of this could be simplified if we made sure
 	// entities light info was 16-byte aligned.
 	jVecChar = vec_lvsl(0, ent->ambientLight);
@@ -1151,12 +1135,12 @@ void RB_CalcDiffuseColor( unsigned char *colors )
 	v = tess.xyz[0];
 	normal = tess.normal[0];
 
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 	normalPerm = vec_lvsl(0,normal);
 #endif
 	numVertexes = tess.numVertexes;
 	for (i = 0 ; i < numVertexes ; i++, v += 4, normal += 4) {
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 		normalVec0 = vec_ld(0,(vector float *)normal);
 		normalVec1 = vec_ld(11,(vector float *)normal);
 		normalVec0 = vec_perm(normalVec0,normalVec1,normalPerm);

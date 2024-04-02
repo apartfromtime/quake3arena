@@ -63,11 +63,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 float Q_fabs( float f );
 
-#ifndef ID_INLINE
+#ifndef Q_INLINE
 #ifdef _WIN32
-#define ID_INLINE __inline 
+#define Q_INLINE __inline 
 #else
-#define ID_INLINE inline
+#define Q_INLINE inline
 #endif
 #endif
 
@@ -182,7 +182,7 @@ public:
 
 extern idVec3_t vec_zero;
 
-ID_INLINE idVec3_t::idVec3_t( const float x, const float y, const float z ) {
+Q_INLINE idVec3_t::idVec3_t( const float x, const float y, const float z ) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
@@ -191,23 +191,23 @@ ID_INLINE idVec3_t::idVec3_t( const float x, const float y, const float z ) {
 #endif
 }
 
-ID_INLINE float idVec3_t::operator[]( const int index ) const {
+Q_INLINE float idVec3_t::operator[]( const int index ) const {
 	return ( &x )[ index ];
 }
 
-ID_INLINE float &idVec3_t::operator[]( const int index ) {
+Q_INLINE float &idVec3_t::operator[]( const int index ) {
 	return ( &x )[ index ];
 }
 
-ID_INLINE idVec3_t::operator float *( void ) {
+Q_INLINE idVec3_t::operator float *( void ) {
 	return &x;
 }
 
-ID_INLINE idVec3_t idVec3_t::operator-() const {
+Q_INLINE idVec3_t idVec3_t::operator-() const {
 	return idVec3_t( -x, -y, -z );
 }
 	
-ID_INLINE idVec3_t &idVec3_t::operator=( const idVec3_t &a ) { 
+Q_INLINE idVec3_t &idVec3_t::operator=( const idVec3_t &a ) { 
 	x = a.x;
 	y = a.y;
 	z = a.z;
@@ -215,33 +215,33 @@ ID_INLINE idVec3_t &idVec3_t::operator=( const idVec3_t &a ) {
 	return *this;
 }
 
-ID_INLINE void idVec3_t::set( const float x, const float y, const float z ) {
+Q_INLINE void idVec3_t::set( const float x, const float y, const float z ) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 }
 
-ID_INLINE idVec3_t idVec3_t::operator-( const idVec3_t &a ) const {
+Q_INLINE idVec3_t idVec3_t::operator-( const idVec3_t &a ) const {
 	return idVec3_t( x - a.x, y - a.y, z - a.z );
 }
 
-ID_INLINE float idVec3_t::operator*( const idVec3_t &a ) const {
+Q_INLINE float idVec3_t::operator*( const idVec3_t &a ) const {
 	return x * a.x + y * a.y + z * a.z;
 }
 
-ID_INLINE idVec3_t idVec3_t::operator*( const float a ) const {
+Q_INLINE idVec3_t idVec3_t::operator*( const float a ) const {
 	return idVec3_t( x * a, y * a, z * a );
 }
 
-ID_INLINE idVec3_t operator*( const float a, const idVec3_t b ) {
+Q_INLINE idVec3_t operator*( const float a, const idVec3_t b ) {
 	return idVec3_t( b.x * a, b.y * a, b.z * a );
 }
 
-ID_INLINE idVec3_t idVec3_t::operator+( const idVec3_t &a ) const {
+Q_INLINE idVec3_t idVec3_t::operator+( const idVec3_t &a ) const {
 	return idVec3_t( x + a.x, y + a.y, z + a.z );
 }
 
-ID_INLINE idVec3_t &idVec3_t::operator+=( const idVec3_t &a ) {
+Q_INLINE idVec3_t &idVec3_t::operator+=( const idVec3_t &a ) {
 	x += a.x;
 	y += a.y;
 	z += a.z;
@@ -249,7 +249,7 @@ ID_INLINE idVec3_t &idVec3_t::operator+=( const idVec3_t &a ) {
 	return *this;
 }
 
-ID_INLINE idVec3_t &idVec3_t::operator-=( const idVec3_t &a ) {
+Q_INLINE idVec3_t &idVec3_t::operator-=( const idVec3_t &a ) {
 	x -= a.x;
 	y -= a.y;
 	z -= a.z;
@@ -257,7 +257,7 @@ ID_INLINE idVec3_t &idVec3_t::operator-=( const idVec3_t &a ) {
 	return *this;
 }
 
-ID_INLINE idVec3_t &idVec3_t::operator*=( const float a ) {
+Q_INLINE idVec3_t &idVec3_t::operator*=( const float a ) {
 	x *= a;
 	y *= a;
 	z *= a;
@@ -265,7 +265,7 @@ ID_INLINE idVec3_t &idVec3_t::operator*=( const float a ) {
 	return *this;
 }
 
-ID_INLINE int idVec3_t::operator==( const idVec3_t &a ) const {
+Q_INLINE int idVec3_t::operator==( const idVec3_t &a ) const {
 	if ( Q_fabs( x - a.x ) > EQUAL_EPSILON ) {
 		return false;
 	}
@@ -281,7 +281,7 @@ ID_INLINE int idVec3_t::operator==( const idVec3_t &a ) const {
 	return true;
 }
 
-ID_INLINE int idVec3_t::operator!=( const idVec3_t &a ) const {
+Q_INLINE int idVec3_t::operator!=( const idVec3_t &a ) const {
 	if ( Q_fabs( x - a.x ) > EQUAL_EPSILON ) {
 		return true;
 	}
@@ -297,11 +297,11 @@ ID_INLINE int idVec3_t::operator!=( const idVec3_t &a ) const {
 	return false;
 }
 
-ID_INLINE idVec3_t idVec3_t::Cross( const idVec3_t &a ) const {
+Q_INLINE idVec3_t idVec3_t::Cross( const idVec3_t &a ) const {
 	return idVec3_t( y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x );
 }
 
-ID_INLINE idVec3_t &idVec3_t::Cross( const idVec3_t &a, const idVec3_t &b ) {
+Q_INLINE idVec3_t &idVec3_t::Cross( const idVec3_t &a, const idVec3_t &b ) {
 	x = a.y * b.z - a.z * b.y;
 	y = a.z * b.x - a.x * b.z;
 	z = a.x * b.y - a.y * b.x;
@@ -309,14 +309,14 @@ ID_INLINE idVec3_t &idVec3_t::Cross( const idVec3_t &a, const idVec3_t &b ) {
 	return *this;
 }
 
-ID_INLINE float idVec3_t::Length( void ) const {
+Q_INLINE float idVec3_t::Length( void ) const {
 	float length;
 	
 	length = x * x + y * y + z * z;
 	return ( float )idSqrt( length );
 }
 
-ID_INLINE float idVec3_t::Normalize( void ) {
+Q_INLINE float idVec3_t::Normalize( void ) {
 	float length;
 	float ilength;
 
@@ -331,13 +331,13 @@ ID_INLINE float idVec3_t::Normalize( void ) {
 	return length;
 }
 
-ID_INLINE void idVec3_t::Zero( void ) {
+Q_INLINE void idVec3_t::Zero( void ) {
 	x = 0.0f;
 	y = 0.0f;
 	z = 0.0f;
 }
 
-ID_INLINE void idVec3_t::Snap( void ) {
+Q_INLINE void idVec3_t::Snap( void ) {
 	x = float( int( x ) );
 	y = float( int( y ) );
 	z = float( int( z ) );
@@ -353,7 +353,7 @@ rather than blindly truncating.  This prevents it from truncating
 into a wall.
 ======================
 */
-ID_INLINE void idVec3_t::SnapTowards( const idVec3_t &to ) {
+Q_INLINE void idVec3_t::SnapTowards( const idVec3_t &to ) {
 	if ( to.x <= x ) {
 		x = float( int( x ) );
 	} else {
@@ -395,14 +395,14 @@ public:
 
 extern Bounds	boundsZero;
 
-ID_INLINE Bounds::Bounds(){
+Q_INLINE Bounds::Bounds(){
 }
 
-ID_INLINE bool Bounds::IsCleared() {
+Q_INLINE bool Bounds::IsCleared() {
 	return b[0][0] > b[1][0];
 }
 
-ID_INLINE bool Bounds::ContainsPoint( const idVec3_t &p ) {
+Q_INLINE bool Bounds::ContainsPoint( const idVec3_t &p ) {
 	if ( p[0] < b[0][0] || p[1] < b[0][1] || p[2] < b[0][2]
 		|| p[0] > b[1][0] || p[1] > b[1][1] || p[2] > b[1][2] ) {
 		return false;
@@ -410,7 +410,7 @@ ID_INLINE bool Bounds::ContainsPoint( const idVec3_t &p ) {
 	return true;
 }
 
-ID_INLINE bool Bounds::IntersectsBounds( const Bounds &b2 ) {
+Q_INLINE bool Bounds::IntersectsBounds( const Bounds &b2 ) {
 	if ( b2.b[1][0] < b[0][0] || b2.b[1][1] < b[0][1] || b2.b[1][2] < b[0][2]
 		|| b2.b[0][0] > b[1][0] || b2.b[0][1] > b[1][1] || b2.b[0][2] > b[1][2] ) {
 		return false;
@@ -418,26 +418,26 @@ ID_INLINE bool Bounds::IntersectsBounds( const Bounds &b2 ) {
 	return true;
 }
 
-ID_INLINE Bounds::Bounds( const idVec3_t &mins, const idVec3_t &maxs ) {
+Q_INLINE Bounds::Bounds( const idVec3_t &mins, const idVec3_t &maxs ) {
 	b[0] = mins;
 	b[1] = maxs;
 }
 
-ID_INLINE idVec3_t Bounds::Center() {
+Q_INLINE idVec3_t Bounds::Center() {
 	return idVec3_t( ( b[1][0] + b[0][0] ) * 0.5f, ( b[1][1] + b[0][1] ) * 0.5f, ( b[1][2] + b[0][2] ) * 0.5f );
 }
 
-ID_INLINE void Bounds::Clear() {
+Q_INLINE void Bounds::Clear() {
 	b[0][0] = b[0][1] = b[0][2] = 99999;
 	b[1][0] = b[1][1] = b[1][2] = -99999;
 }
 
-ID_INLINE void Bounds::Zero() {
+Q_INLINE void Bounds::Zero() {
 	b[0][0] = b[0][1] = b[0][2] =
 	b[1][0] = b[1][1] = b[1][2] = 0;
 }
 
-ID_INLINE void Bounds::AddPoint( const idVec3_t &v ) {
+Q_INLINE void Bounds::AddPoint( const idVec3_t &v ) {
 	if ( v[0] < b[0][0]) {
 		b[0][0] = v[0];
 	}
@@ -459,7 +459,7 @@ ID_INLINE void Bounds::AddPoint( const idVec3_t &v ) {
 }
 
 
-ID_INLINE void Bounds::AddBounds( const Bounds &bb ) {
+Q_INLINE void Bounds::AddBounds( const Bounds &bb ) {
 	if ( bb.b[0][0] < b[0][0]) {
 		b[0][0] = bb.b[0][0];
 	}
@@ -481,7 +481,7 @@ ID_INLINE void Bounds::AddBounds( const Bounds &bb ) {
 	}
 }
 
-ID_INLINE float Bounds::Radius( ) {
+Q_INLINE float Bounds::Radius( ) {
 	int		i;
 	float	total;
 	float	a, aa;
@@ -512,44 +512,44 @@ public:
 	float			&operator[]( int index );
 };
 
-ID_INLINE float idVec2_t::operator[]( int index ) const {
+Q_INLINE float idVec2_t::operator[]( int index ) const {
 	return ( &x )[ index ];
 }
 
-ID_INLINE float& idVec2_t::operator[]( int index ) {
+Q_INLINE float& idVec2_t::operator[]( int index ) {
 	return ( &x )[ index ];
 }
 
-ID_INLINE idVec2_t::operator float *( void ) {
+Q_INLINE idVec2_t::operator float *( void ) {
 	return &x;
 }
 
-class vec4_t : public idVec3_t {
+class idVec4_t : public idVec3_t {
 public:
 #ifndef	FAT_VEC3
 	float			dist;
 #endif
-	vec4_t();
-	~vec4_t() {};
+	idVec4_t();
+	~idVec4_t() {};
 	
-	vec4_t( float x, float y, float z, float dist );
+	idVec4_t( float x, float y, float z, float dist );
 	float			operator[]( int index ) const;
 	float			&operator[]( int index );
 };
 
-ID_INLINE vec4_t::vec4_t() {}
-ID_INLINE vec4_t::vec4_t( float x, float y, float z, float dist ) {
+Q_INLINE idVec4_t::idVec4_t() {}
+Q_INLINE idVec4_t::idVec4_t( float x, float y, float z, float dist ) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 	this->dist = dist;
 }
 
-ID_INLINE float vec4_t::operator[]( int index ) const {
+Q_INLINE float idVec4_t::operator[]( int index ) const {
 	return ( &x )[ index ];
 }
 
-ID_INLINE float& vec4_t::operator[]( int index ) {
+Q_INLINE float& idVec4_t::operator[]( int index ) {
 	return ( &x )[ index ];
 }
 
@@ -563,11 +563,11 @@ public:
 };
 
 
-ID_INLINE float idVec5_t::operator[]( int index ) const {
+Q_INLINE float idVec5_t::operator[]( int index ) const {
 	return ( &x )[ index ];
 }
 
-ID_INLINE float& idVec5_t::operator[]( int index ) {
+Q_INLINE float& idVec5_t::operator[]( int index ) {
 	return ( &x )[ index ];
 }
 

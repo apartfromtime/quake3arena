@@ -123,7 +123,7 @@ static int GametypeBits( char *string ) {
 	bits = 0;
 	p = string;
 	while( 1 ) {
-		token = COM_ParseExt( &p, qfalse );
+		token = Com_ParseExt( &p, qfalse );
 		if( token[0] == 0 ) {
 			break;
 		}
@@ -1555,7 +1555,7 @@ static botSelectInfo_t	botSelectInfo;
 UI_BotSelectMenu_SortCompare
 =================
 */
-static int QDECL UI_BotSelectMenu_SortCompare( const void *arg1, const void *arg2 ) {
+static int Q_CDECL UI_BotSelectMenu_SortCompare( const void *arg1, const void *arg2 ) {
 	int			num1, num2;
 	const char	*info1, *info2;
 	const char	*name1, *name2;

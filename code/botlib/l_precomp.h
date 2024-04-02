@@ -48,8 +48,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	#endif
 #endif
 
-#if defined(BSPC) && !defined(QDECL)
-#define QDECL
+#if defined(BSPC) && !defined(Q_CDECL)
+#define Q_CDECL
 #endif
 
 
@@ -152,9 +152,9 @@ source_t *LoadSourceMemory(char *ptr, int length, char *name);
 //free the given source
 void FreeSource(source_t *source);
 //print a source error
-void QDECL SourceError(source_t *source, char *str, ...);
+void Q_CDECL SourceError(source_t *source, char *str, ...);
 //print a source warning
-void QDECL SourceWarning(source_t *source, char *str, ...);
+void Q_CDECL SourceWarning(source_t *source, char *str, ...);
 
 #ifdef BSPC
 // some of BSPC source does include game/q_shared.h and some does not

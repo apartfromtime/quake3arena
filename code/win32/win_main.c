@@ -110,7 +110,7 @@ Sys_Error
 Show the early console as an error dialog
 =============
 */
-void QDECL Sys_Error( const char *error, ... ) {
+void Q_CDECL Sys_Error( const char *error, ... ) {
 	va_list		argptr;
 	char		text[4096];
     MSG        msg;
@@ -526,11 +526,11 @@ extern char		*FS_BuildOSPath( const char *base, const char *game, const char *qp
 // fqpath param added 7/20/02 by T.Ray - Sys_LoadDll is only called in vm.c at this time
 // fqpath will be empty if dll not loaded, otherwise will hold fully qualified path of dll module loaded
 // fqpath buffersize must be at least MAX_QPATH+1 bytes long
-void * QDECL Sys_LoadDll( const char *name, char *fqpath , int (QDECL **entryPoint)(int, ...),
-				  int (QDECL *systemcalls)(int, ...) ) {
+void * Q_CDECL Sys_LoadDll( const char *name, char *fqpath , int (Q_CDECL **entryPoint)(int, ...),
+				  int (Q_CDECL *systemcalls)(int, ...) ) {
 	static int	lastWarning = 0;
 	HINSTANCE	libHandle;
-	void	(QDECL *dllEntry)( int (QDECL *syscallptr)(int, ...) );
+	void	(Q_CDECL *dllEntry)( int (Q_CDECL *syscallptr)(int, ...) );
 	char	*basepath;
 	char	*cdpath;
 	char	*gamedir;
@@ -606,8 +606,8 @@ void * QDECL Sys_LoadDll( const char *name, char *fqpath , int (QDECL **entryPoi
 	}
 #endif
 
-	dllEntry = ( void (QDECL *)( int (QDECL *)( int, ... ) ) )GetProcAddress( libHandle, "dllEntry" ); 
-	*entryPoint = (int (QDECL *)(int,...))GetProcAddress( libHandle, "vmMain" );
+	dllEntry = ( void (Q_CDECL *)( int (Q_CDECL *)( int, ... ) ) )GetProcAddress( libHandle, "dllEntry" ); 
+	*entryPoint = (int (Q_CDECL *)(int,...))GetProcAddress( libHandle, "vmMain" );
 	if ( !*entryPoint || !dllEntry ) {
 		FreeLibrary( libHandle );
 		return NULL;
@@ -1041,6 +1041,7 @@ Called after the common systems (cvars, files, etc)
 are initialized
 ================
 */
+
 #define OSR2_BUILD_NUMBER 1111
 #define WIN98_BUILD_NUMBER 1998
 

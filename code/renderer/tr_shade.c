@@ -401,7 +401,7 @@ Perform dynamic lighting with another rendering pass
 */
 static void ProjectDlightTexture( void ) {
 	int		i, l;
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 	vec_t	origin0, origin1, origin2;
 	float   texCoords0, texCoords1;
 	vector float floatColorVec0, floatColorVec1;
@@ -419,7 +419,7 @@ static void ProjectDlightTexture( void ) {
 	float	*texCoords;
 	byte	*colors;
 	byte	clipBits[SHADER_MAX_VERTEXES];
-	MAC_STATIC float	texCoordsArray[SHADER_MAX_VERTEXES][2];
+	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	byte	colorArray[SHADER_MAX_VERTEXES][4];
 	unsigned	hitIndexes[SHADER_MAX_INDEXES];
 	int		numIndexes;
@@ -432,7 +432,7 @@ static void ProjectDlightTexture( void ) {
 		return;
 	}
 
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 	// There has to be a better way to do this so that floatColor 
 	// and/or modulate are already 16-byte aligned.
 	floatColorVecPerm = vec_lvsl(0,(float *)floatColor);
@@ -451,7 +451,7 @@ static void ProjectDlightTexture( void ) {
 		colors = colorArray[0];
 
 		dl = &backEnd.refdef.dlights[l];
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 		origin0 = dl->transformed[0];
 		origin1 = dl->transformed[1];
 		origin2 = dl->transformed[2];
@@ -464,13 +464,13 @@ static void ProjectDlightTexture( void ) {
 		floatColor[0] = dl->color[0] * 255.0f;
 		floatColor[1] = dl->color[1] * 255.0f;
 		floatColor[2] = dl->color[2] * 255.0f;
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 		floatColorVec0 = vec_ld(0, floatColor);
 		floatColorVec1 = vec_ld(11, floatColor);
 		floatColorVec0 = vec_perm(floatColorVec0,floatColorVec0,floatColorVecPerm);
 #endif
 		for ( i = 0 ; i < tess.numVertexes ; i++, texCoords += 2, colors += 4 ) {
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 			vec_t dist0, dist1, dist2;
 #else
 			vec3_t	dist;
@@ -479,7 +479,7 @@ static void ProjectDlightTexture( void ) {
 
 			backEnd.pc.c_dlightVertexes++;
 
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 			//VectorSubtract( origin, tess.xyz[i], dist );
 			dist0 = origin0 - tess.xyz[i][0];
 			dist1 = origin1 - tess.xyz[i][1];

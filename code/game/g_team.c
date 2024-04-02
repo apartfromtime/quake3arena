@@ -101,7 +101,7 @@ const char *TeamColorString(int team) {
 }
 
 // NULL for everyone
-void QDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
+void Q_CDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
 	char		msg[1024];
 	va_list		argptr;
 	char		*p;
@@ -1048,7 +1048,7 @@ gentity_t *SelectCTFSpawnPoint ( team_t team, int teamstate, vec3_t origin, vec3
 
 /*---------------------------------------------------------------------------*/
 
-static int QDECL SortClients( const void *a, const void *b ) {
+static int Q_CDECL SortClients( const void *a, const void *b ) {
 	return *(int *)a - *(int *)b;
 }
 

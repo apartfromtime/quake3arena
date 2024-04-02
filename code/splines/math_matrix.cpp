@@ -19,7 +19,7 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
-#include "q_shared.h"
+#include "..\game\q_shared.h"
 
 mat3_t mat3_default( idVec3_t( 1, 0, 0 ), idVec3_t( 0, 1, 0 ), idVec3_t( 0, 0, 1 ) );
 

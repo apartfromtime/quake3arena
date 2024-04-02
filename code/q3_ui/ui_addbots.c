@@ -187,7 +187,7 @@ static void UI_AddBotsMenu_DownEvent( void* ptr, int event ) {
 UI_AddBotsMenu_GetSortedBotNums
 =================
 */
-static int QDECL UI_AddBotsMenu_SortCompare( const void *arg1, const void *arg2 ) {
+static int Q_CDECL UI_AddBotsMenu_SortCompare( const void *arg1, const void *arg2 ) {
 	int			num1, num2;
 	const char	*info1, *info2;
 	const char	*name1, *name2;

@@ -1350,7 +1350,7 @@ int FS_Write( const void *buffer, int len, fileHandle_t h ) {
 	return len;
 }
 
-void QDECL FS_Printf( fileHandle_t h, const char *fmt, ... ) {
+void Q_CDECL FS_Printf( fileHandle_t h, const char *fmt, ... ) {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
@@ -2439,7 +2439,7 @@ void FS_TouchFile_f( void ) {
 //===========================================================================
 
 
-static int QDECL paksort( const void *a, const void *b ) {
+static int Q_CDECL paksort( const void *a, const void *b ) {
 	char	*aa, *bb;
 
 	aa = *(char **)a;

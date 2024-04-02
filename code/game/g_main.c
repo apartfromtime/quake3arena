@@ -38,6 +38,7 @@ typedef struct {
 gentity_t		g_entities[MAX_GENTITIES];
 gclient_t		g_clients[MAX_CLIENTS];
 
+vmCvar_t	g_developer;
 vmCvar_t	g_gametype;
 vmCvar_t	g_dmflags;
 vmCvar_t	g_fraglimit;
@@ -97,6 +98,7 @@ vmCvar_t	g_proxMineTimeout;
 
 // bk001129 - made static to avoid aliasing
 static cvarTable_t		gameCvarTable[] = {
+	{ &g_developer, "com_developer", "0", CVAR_ARCHIVE, 0, qfalse  },
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
 
@@ -238,7 +240,7 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
 }
 
 
-void QDECL G_Printf( const char *fmt, ... ) {
+void Q_CDECL G_Printf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -249,7 +251,7 @@ void QDECL G_Printf( const char *fmt, ... ) {
 	trap_Printf( text );
 }
 
-void QDECL G_Error( const char *fmt, ... ) {
+void Q_CDECL G_Error( const char *fmt, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -539,7 +541,22 @@ void G_ShutdownGame( int restart ) {
 #ifndef GAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and bg_*.c can link
 
-void QDECL Com_Error ( int level, const char *error, ... ) {
+void Q_CDECL Com_DPrintf(const char* fmt, ...) {
+	va_list		argptr;
+	char		msg[1024];
+
+	if (!g_developer.handle || !g_developer.integer) {
+		return;			// don't confuse non-developers with techie stuff...
+	}
+
+	va_start(argptr, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, argptr);
+	va_end(argptr);
+
+	G_Printf("%s", msg);
+}
+
+void Q_CDECL Com_Error ( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -550,7 +567,7 @@ void QDECL Com_Error ( int level, const char *error, ... ) {
 	G_Error( "%s", text);
 }
 
-void QDECL Com_Printf( const char *msg, ... ) {
+void Q_CDECL Com_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -698,7 +715,7 @@ SortRanks
 
 =============
 */
-int QDECL SortRanks( const void *a, const void *b ) {
+int Q_CDECL SortRanks( const void *a, const void *b ) {
 	gclient_t	*ca, *cb;
 
 	ca = &level.clients[*(int *)a];
@@ -1074,7 +1091,7 @@ G_LogPrintf
 Print to the logfile with a time stamp if it is open
 =================
 */
-void QDECL G_LogPrintf( const char *fmt, ... ) {
+void Q_CDECL G_LogPrintf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		string[1024];
 	int			min, tens, sec;

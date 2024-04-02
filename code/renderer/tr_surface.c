@@ -556,7 +556,7 @@ static void VectorArrayNormalize(vec4_t *normals, unsigned int count)
 {
 //    assert(count);
         
-#if idppc
+#if Q_CPU_PPC && !defined(C_ONLY)
     {
         register float half = 0.5;
         register float one  = 1.0;
@@ -581,7 +581,7 @@ static void VectorArrayNormalize(vec4_t *normals, unsigned int count)
             asm("frsqrte %0,%1" : "=f" (y0) : "f" (B));
 #else
 			y0 = __frsqrte(B);
-#endif
+#endif	// #if __GNUC__
             y1 = y0 + half*y0*(one - B*y0*y0);
 
             x = x * y1;
@@ -592,13 +592,14 @@ static void VectorArrayNormalize(vec4_t *normals, unsigned int count)
             components[-2] = z;
         } while(count--);
     }
-#else // No assembly version for this architecture, or C_ONLY defined
+#else
+	// No assembly version for this architecture, or C_ONLY defined
 	// given the input, it's safe to call VectorNormalizeFast
     while (count--) {
         VectorNormalizeFast(normals[0]);
         normals++;
     }
-#endif
+#endif	// #if Q_CPU_PPC
 
 }
 
@@ -630,7 +631,7 @@ static void LerpMeshVertexes (md3Surface_t *surf, float backlerp)
 	numVerts = surf->numVerts;
 
 	if ( backlerp == 0 ) {
-#if idppc_altivec
+#if Q_CPU_GC && !defined(C_ONLY)
 		vector signed short newNormalsVec0;
 		vector signed short newNormalsVec1;
 		vector signed int newNormalsIntVec;
