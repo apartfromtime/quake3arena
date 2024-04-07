@@ -255,10 +255,10 @@ int Com_HashString(const char* fname) {
 
 /*
 ============
-COM_SkipPath
+Com_SkipPath
 ============
 */
-char *COM_SkipPath (char *pathname)
+char *Com_SkipPath (char *pathname)
 {
 	char	*last;
 	
@@ -274,10 +274,10 @@ char *COM_SkipPath (char *pathname)
 
 /*
 ============
-COM_StripExtension
+Com_StripExtension
 ============
 */
-void COM_StripExtension( const char *in, char *out ) {
+void Com_StripExtension( const char *in, char *out ) {
 	while ( *in && *in != '.' ) {
 		*out++ = *in++;
 	}
@@ -287,10 +287,10 @@ void COM_StripExtension( const char *in, char *out ) {
 
 /*
 ==================
-COM_DefaultExtension
+Com_DefaultExtension
 ==================
 */
-void COM_DefaultExtension (char *path, int maxSize, const char *extension ) {
+void Com_DefaultExtension (char *path, int maxSize, const char *extension ) {
 	char	oldPath[MAX_QPATH];
 	char    *src;
 

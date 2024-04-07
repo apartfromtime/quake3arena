@@ -92,7 +92,7 @@ void R_RemapShader(const char *shaderName, const char *newShaderName, const char
 
 	// remap all the shaders with the given name
 	// even tho they might have different lightmaps
-	COM_StripExtension( shaderName, strippedName );
+	Com_StripExtension( shaderName, strippedName );
 	hash = generateHashValue(strippedName, FILE_HASH_SIZE);
 	for (sh = hashTable[hash]; sh; sh = sh->next) {
 		if (Q_stricmp(sh->name, strippedName) == 0) {
@@ -2351,7 +2351,7 @@ shader_t *R_FindShaderByName( const char *name ) {
 		return tr.defaultShader;
 	}
 
-	COM_StripExtension( name, strippedName );
+	Com_StripExtension( name, strippedName );
 
 	hash = generateHashValue(strippedName, FILE_HASH_SIZE);
 
@@ -2419,7 +2419,7 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 		lightmapIndex = LIGHTMAP_BY_VERTEX;
 	}
 
-	COM_StripExtension( name, strippedName );
+	Com_StripExtension( name, strippedName );
 
 	hash = generateHashValue(strippedName, FILE_HASH_SIZE);
 
@@ -2484,7 +2484,7 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 	// look for a single TGA, BMP, or PCX
 	//
 	Q_strncpyz( fileName, name, sizeof( fileName ) );
-	COM_DefaultExtension( fileName, sizeof( fileName ), ".tga" );
+	Com_DefaultExtension( fileName, sizeof( fileName ), ".tga" );
 	image = R_FindImageFile( fileName, mipRawImage, mipRawImage, mipRawImage ? GL_REPEAT : GL_CLAMP );
 	if ( !image ) {
 		ri.Printf( PRINT_DEVELOPER, "Couldn't find image for shader %s\n", name );
@@ -2889,7 +2889,7 @@ static void ScanAndLoadShaderFiles( void )
 		strcat( s_shaderText, buffers[i] );
 		ri.FS_FreeFile( buffers[i] );
 		buffers[i] = p;
-		COM_Compress(p);
+		Com_Compress(p);
 	}
 
 	// free up memory

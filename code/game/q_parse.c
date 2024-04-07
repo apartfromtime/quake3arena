@@ -167,7 +167,7 @@ static const char* SkipWhitespace(const char(*data), qboolean* hasNewLines)
 	return data;
 }
 
-int COM_Compress(char* data_p)
+int Com_Compress(char* data_p)
 {
 	char* in, * out;
 	int c;

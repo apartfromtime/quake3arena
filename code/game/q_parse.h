@@ -12,7 +12,7 @@ SCRIPT PARSING
 // this just controls the comment printing, it doesn't actually load a file
 void Com_BeginParseSession(const char* filename);
 void Com_EndParseSession(void);
-int		COM_GetCurrentParseLine(void);
+int		Com_GetCurrentParseLine(void);
 // Will never return NULL, just empty strings.
 // An empty string will only be returned at end of file.
 // ParseOnLine will return empty if there isn't another token on this line
@@ -22,10 +22,10 @@ const char* Com_Parse(const char* (*data_p));
 const char* Com_ParseOnLine(const char* (*data_p));
 const char* Com_ParseRestOfLine(const char* (*data_p));
 char* Com_ParseExt(const char* (*data_p), qboolean allowLineBreak);
-int		COM_Compress(char* data_p);
-void	COM_ParseError(char* format, ...);
-void	COM_ParseWarning(char* format, ...);
-//int		COM_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
+int		Com_Compress(char* data_p);
+void	Com_ParseError(char* format, ...);
+void	Com_ParseWarning(char* format, ...);
+//int		Com_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
 void Com_UngetToken(void);
 
 #define MAX_TOKENLENGTH		1024

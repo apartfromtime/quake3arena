@@ -235,7 +235,7 @@ static void UI_LoadBotsFromFile( char *filename ) {
 	buf[len] = 0;
 	trap_FS_FCloseFile( f );
 
-	COM_Compress(buf);
+	Com_Compress(buf);
 
 	ui_numBots += UI_ParseInfos( buf, MAX_BOTS - ui_numBots, &ui_botInfos[ui_numBots] );
 }

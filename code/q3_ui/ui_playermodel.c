@@ -424,7 +424,7 @@ static void PlayerModel_BuildList( void )
 		{
 			filelen = strlen(fileptr);
 
-			COM_StripExtension(fileptr,skinname);
+			Com_StripExtension(fileptr,skinname);
 
 			// look for icon_????
 			if (!Q_stricmpn(skinname,"icon_",5))

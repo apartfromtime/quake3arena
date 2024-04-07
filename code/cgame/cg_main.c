@@ -1485,7 +1485,7 @@ void CG_LoadMenus(const char *menuFile) {
 	buf[len] = 0;
 	trap_FS_FCloseFile( f );
 	
-	COM_Compress(buf);
+	Com_Compress(buf);
 
 	Menu_Reset();
 

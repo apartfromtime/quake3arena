@@ -689,7 +689,7 @@ char *GetMenuBuffer(const char *filename) {
 	trap_FS_Read( buf, len, f );
 	buf[len] = 0;
 	trap_FS_FCloseFile( f );
-	//COM_Compress(buf);
+	//Com_Compress(buf);
   return buf;
 
 }
@@ -4988,7 +4988,7 @@ static void UI_BuildQ3Model_List( void )
 		{
 			filelen = strlen(fileptr);
 
-			COM_StripExtension(fileptr,skinname);
+			Com_StripExtension(fileptr,skinname);
 
 			// look for icon_????
 			if (Q_stricmpn(skinname, "icon_", 5) == 0 && !(Q_stricmp(skinname,"icon_blue") == 0 || Q_stricmp(skinname,"icon_red") == 0))

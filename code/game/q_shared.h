@@ -269,11 +269,11 @@ char* Q_CleanStr(char* string);
 
 float Com_Clamp(float min, float max, float value);
 int Com_HashString(const char* fname);
-char* COM_SkipPath(char* pathname);
+char* Com_SkipPath(char* pathname);
 // it is ok for out == in
-void COM_StripExtension(const char* in, char* out);
+void Com_StripExtension(const char* in, char* out);
 // "extension" should include the dot: ".map"
-void COM_DefaultExtension(char* path, int maxSize, const char* extension);
+void Com_DefaultExtension(char* path, int maxSize, const char* extension);
 int Com_Filter(const char* filter, const char* name, int casesensitive);
 const char* Com_StringContains(const char* str1, const char* str2, int casesensitive);
 
