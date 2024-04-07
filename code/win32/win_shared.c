@@ -112,7 +112,6 @@ static void CPUID( int func, unsigned regs[4] )
 {
 	unsigned regEAX, regEBX, regECX, regEDX;
 
-#ifndef __VECTORC
 	__asm mov eax, func
 	__asm __emit 00fh
 	__asm __emit 0a2h
@@ -125,12 +124,6 @@ static void CPUID( int func, unsigned regs[4] )
 	regs[1] = regEBX;
 	regs[2] = regECX;
 	regs[3] = regEDX;
-#else
-	regs[0] = 0;
-	regs[1] = 0;
-	regs[2] = 0;
-	regs[3] = 0;
-#endif
 }
 
 static int IsPentium( void )
@@ -234,9 +227,7 @@ static int IsMMX( void )
 
 int Sys_GetProcessorId( void )
 {
-#if defined _M_ALPHA
-	return CPUID_AXP;
-#elif !defined _M_IX86
+#if !defined _M_IX86
 	return CPUID_GENERIC;
 #else
 

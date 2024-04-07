@@ -70,14 +70,10 @@
 #ifdef NDEBUG
 #ifdef _M_IX86
 #define	Q_CPUSTRING	"win-x86"
-#elif defined _M_ALPHA
-#define	Q_CPUSTRING	"win-AXP"
 #endif
 #else
 #ifdef _M_IX86
 #define	Q_CPUSTRING	"win-x86-debug"
-#elif defined _M_ALPHA
-#define	Q_CPUSTRING	"win-AXP-debug"
 #endif // #ifdef _M_IX86
 #endif // #ifdef NDEBUG
 
