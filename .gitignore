@@ -2,12 +2,14 @@
 */missionpack
 */ipch
 */.vs
+*/*.opensdf
 */*.suo
 */*.sdf
 */*.vcxproj.filters
 */*.vcxproj.user
 */*/*.vcxproj.filters
 */*/*.vcxproj.user
+code/win32/winquake.res
 */Debug
 */q3_ui
 */Debug_TA
