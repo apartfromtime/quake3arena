@@ -348,7 +348,7 @@ void BotRememberLastOrderedTask(bot_state_t *bs) {
 	}
 	bs->lastgoal_decisionmaker = bs->decisionmaker;
 	bs->lastgoal_ltgtype = bs->ltgtype;
-	memcpy(&bs->lastgoal_teamgoal, &bs->teamgoal, sizeof(bot_goal_t));
+	Com_Memcpy(&bs->lastgoal_teamgoal, &bs->teamgoal, sizeof(bot_goal_t));
 	bs->lastgoal_teammate = bs->teammate;
 }
 
@@ -443,7 +443,7 @@ int BotSetLastOrderedTask(bot_state_t *bs) {
 		bs->decisionmaker = bs->lastgoal_decisionmaker;
 		bs->ordered = qtrue;
 		bs->ltgtype = bs->lastgoal_ltgtype;
-		memcpy(&bs->teamgoal, &bs->lastgoal_teamgoal, sizeof(bot_goal_t));
+		Com_Memcpy(&bs->teamgoal, &bs->lastgoal_teamgoal, sizeof(bot_goal_t));
 		bs->teammate = bs->lastgoal_teammate;
 		bs->teamgoal_time = FloatTime() + 300;
 		BotSetTeamStatus(bs);
@@ -747,8 +747,8 @@ void BotCTFSeekGoals(bot_state_t *bs) {
 		bs->decisionmaker = bs->client;
 		bs->ordered = qfalse;
 		//
-		if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
-		else memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
+		if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
+		else Com_Memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
 		//set the ltg type
 		bs->ltgtype = LTG_DEFENDKEYAREA;
 		//set the time the bot stops defending the base
@@ -877,8 +877,8 @@ void Bot1FCTFSeekGoals(bot_state_t *bs) {
 				bs->decisionmaker = bs->client;
 				bs->ordered = qfalse;
 				//
-				if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
-				else memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
+				if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
+				else Com_Memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
 				//set the ltg type
 				bs->ltgtype = LTG_ATTACKENEMYBASE;
 				//set the time the bot will stop getting the flag
@@ -910,8 +910,8 @@ void Bot1FCTFSeekGoals(bot_state_t *bs) {
 				bs->decisionmaker = bs->client;
 				bs->ordered = qfalse;
 				//
-				if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
-				else memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
+				if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
+				else Com_Memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
 				//set the ltg type
 				bs->ltgtype = LTG_DEFENDKEYAREA;
 				//set the time the bot stops defending the base
@@ -992,8 +992,8 @@ void Bot1FCTFSeekGoals(bot_state_t *bs) {
 		bs->decisionmaker = bs->client;
 		bs->ordered = qfalse;
 		//
-		if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
-		else memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
+		if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &ctf_redflag, sizeof(bot_goal_t));
+		else Com_Memcpy(&bs->teamgoal, &ctf_blueflag, sizeof(bot_goal_t));
 		//set the ltg type
 		bs->ltgtype = LTG_DEFENDKEYAREA;
 		//set the time the bot stops defending the base
@@ -1098,8 +1098,8 @@ void BotObeliskSeekGoals(bot_state_t *bs) {
 		bs->decisionmaker = bs->client;
 		bs->ordered = qfalse;
 		//
-		if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
-		else memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
+		if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
+		else Com_Memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
 		//set the ltg type
 		bs->ltgtype = LTG_ATTACKENEMYBASE;
 		//set the time the bot will stop attacking the enemy base
@@ -1112,8 +1112,8 @@ void BotObeliskSeekGoals(bot_state_t *bs) {
 		bs->decisionmaker = bs->client;
 		bs->ordered = qfalse;
 		//
-		if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
-		else memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
+		if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
+		else Com_Memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
 		//set the ltg type
 		bs->ltgtype = LTG_DEFENDKEYAREA;
 		//set the time the bot stops defending the base
@@ -1136,8 +1136,8 @@ BotGoHarvest
 */
 void BotGoHarvest(bot_state_t *bs) {
 	//
-	if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
-	else memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
+	if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
+	else Com_Memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
 	//set the ltg type
 	bs->ltgtype = LTG_HARVEST;
 	//set the time the bot will stop harvesting
@@ -1278,8 +1278,8 @@ void BotHarvesterSeekGoals(bot_state_t *bs) {
 		bs->decisionmaker = bs->client;
 		bs->ordered = qfalse;
 		//
-		if (BotTeam(bs) == TEAM_RED) memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
-		else memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
+		if (BotTeam(bs) == TEAM_RED) Com_Memcpy(&bs->teamgoal, &redobelisk, sizeof(bot_goal_t));
+		else Com_Memcpy(&bs->teamgoal, &blueobelisk, sizeof(bot_goal_t));
 		//set the ltg type
 		bs->ltgtype = LTG_DEFENDKEYAREA;
 		//set the time the bot stops defending the base
@@ -1587,7 +1587,7 @@ BotSetupForMovement
 void BotSetupForMovement(bot_state_t *bs) {
 	bot_initmove_t initmove;
 
-	memset(&initmove, 0, sizeof(bot_initmove_t));
+	Com_Memset(&initmove, 0, sizeof(bot_initmove_t));
 	VectorCopy(bs->cur_ps.origin, initmove.origin);
 	VectorCopy(bs->cur_ps.velocity, initmove.velocity);
 	VectorClear(initmove.viewoffset);
@@ -1718,7 +1718,7 @@ BotUpdateInventory
 void BotUpdateInventory(bot_state_t *bs) {
 	int oldinventory[MAX_ITEMS];
 
-	memcpy(oldinventory, bs->inventory, sizeof(oldinventory));
+	Com_Memcpy(oldinventory, bs->inventory, sizeof(oldinventory));
 	//armor
 	bs->inventory[INVENTORY_ARMOR] = bs->cur_ps.stats[STAT_ARMOR];
 	//weapons
@@ -2464,7 +2464,7 @@ void BotGoCamp(bot_state_t *bs, bot_goal_t *goal) {
 	//set the ltg type
 	bs->ltgtype = LTG_CAMP;
 	//set the team goal
-	memcpy(&bs->teamgoal, goal, sizeof(bot_goal_t));
+	Com_Memcpy(&bs->teamgoal, goal, sizeof(bot_goal_t));
 	//get the team goal time
 	camper = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_CAMPER, 0, 1);
 	if (camper > 0.99) bs->teamgoal_time = FloatTime() + 99999;
@@ -2521,7 +2521,7 @@ int BotWantsToCamp(bot_state_t *bs) {
 		traveltime = trap_AAS_AreaTravelTimeToGoalArea(bs->areanum, bs->origin, goal.areanum, TFL_DEFAULT);
 		if (traveltime && traveltime < besttraveltime) {
 			besttraveltime = traveltime;
-			memcpy(&bestgoal, &goal, sizeof(bot_goal_t));
+			Com_Memcpy(&bestgoal, &goal, sizeof(bot_goal_t));
 		}
 	}
 	if (besttraveltime > 150) return qfalse;
@@ -2653,7 +2653,7 @@ bot_moveresult_t BotAttackMove(bot_state_t *bs, int tfl) {
 		return moveresult;
 	}
 	//
-	memset(&moveresult, 0, sizeof(bot_moveresult_t));
+	Com_Memset(&moveresult, 0, sizeof(bot_moveresult_t));
 	//
 	attack_skill = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_ATTACK_SKILL, 0, 1);
 	jumper = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_JUMPER, 0, 1);
@@ -4082,7 +4082,7 @@ int BotPushOntoActivateGoalStack(bot_state_t *bs, bot_activategoal_t *activatego
 		}
 	}
 	if (best != -1) {
-		memcpy(&bs->activategoalheap[best], activategoal, sizeof(bot_activategoal_t));
+		Com_Memcpy(&bs->activategoalheap[best], activategoal, sizeof(bot_activategoal_t));
 		bs->activategoalheap[best].inuse = qtrue;
 		bs->activategoalheap[best].next = bs->activatestack;
 		bs->activatestack = &bs->activategoalheap[best];
@@ -4164,7 +4164,7 @@ int BotGetActivateGoal(bot_state_t *bs, int entitynum, bot_activategoal_t *activ
 	aas_areainfo_t areainfo;
 	vec3_t origin, angles, absmins, absmaxs;
 
-	memset(activategoal, 0, sizeof(bot_activategoal_t));
+	Com_Memset(activategoal, 0, sizeof(bot_activategoal_t));
 	BotEntityInfo(entitynum, &entinfo);
 	Com_sprintf(model, sizeof( model ), "*%d", entinfo.modelindex);
 	for (ent = trap_AAS_NextBSPEntity(0); ent; ent = trap_AAS_NextBSPEntity(ent)) {
@@ -5077,7 +5077,7 @@ bot_goal_t *BotAlternateRoute(bot_state_t *bs, bot_goal_t *goal) {
 			//BotAI_Print(PRT_MESSAGE, "reached alternate route goal\n");
 			bs->reachedaltroutegoal_time = FloatTime();
 		}
-		memcpy(goal, &bs->altroutegoal, sizeof(bot_goal_t));
+		Com_Memcpy(goal, &bs->altroutegoal, sizeof(bot_goal_t));
 		return &bs->altroutegoal;
 	}
 	return goal;
@@ -5359,7 +5359,7 @@ int BotGoalForBSPEntity( char *classname, bot_goal_t *goal ) {
 	vec3_t origin, start, end;
 	int ent, numareas, areas[10];
 
-	memset(goal, 0, sizeof(bot_goal_t));
+	Com_Memset(goal, 0, sizeof(bot_goal_t));
 	for (ent = trap_AAS_NextBSPEntity(0); ent; ent = trap_AAS_NextBSPEntity(ent)) {
 		if (!trap_AAS_ValueForBSPEpairKey(ent, "classname", value, sizeof(value)))
 			continue;

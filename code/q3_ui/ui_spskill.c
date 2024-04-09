@@ -200,7 +200,7 @@ UI_SPSkillMenu_Init
 static void UI_SPSkillMenu_Init( void ) {
 	int		skill;
 
-	memset( &skillMenuInfo, 0, sizeof(skillMenuInfo) );
+	Com_Memset( &skillMenuInfo, 0, sizeof(skillMenuInfo) );
 	skillMenuInfo.menu.fullscreen = qtrue;
 	skillMenuInfo.menu.key = UI_SPSkillMenu_Key;
 

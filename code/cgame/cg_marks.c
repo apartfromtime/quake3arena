@@ -48,7 +48,7 @@ This is called at startup and for tournement restarts
 void	CG_InitMarkPolys( void ) {
 	int		i;
 
-	memset( cg_markPolys, 0, sizeof(cg_markPolys) );
+	Com_Memset( cg_markPolys, 0, sizeof(cg_markPolys) );
 
 	cg_activeMarkPolys.nextMark = &cg_activeMarkPolys;
 	cg_activeMarkPolys.prevMark = &cg_activeMarkPolys;
@@ -101,7 +101,7 @@ markPoly_t	*CG_AllocMark( void ) {
 	le = cg_freeMarkPolys;
 	cg_freeMarkPolys = cg_freeMarkPolys->nextMark;
 
-	memset( le, 0, sizeof( *le ) );
+	Com_Memset( le, 0, sizeof( *le ) );
 
 	// link into the active list
 	le->nextMark = cg_activeMarkPolys.nextMark;
@@ -216,7 +216,7 @@ void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 		mark->color[1] = green;
 		mark->color[2] = blue;
 		mark->color[3] = alpha;
-		memcpy( mark->verts, verts, mf->numPoints * sizeof( verts[0] ) );
+		Com_Memcpy( mark->verts, verts, mf->numPoints * sizeof( verts[0] ) );
 		markTotal++;
 	}
 }
@@ -397,7 +397,7 @@ void CG_ClearParticles (void)
 {
 	int		i;
 
-	memset( particles, 0, sizeof(particles) );
+	Com_Memset( particles, 0, sizeof(particles) );
 
 	free_particles = &particles[0];
 	active_particles = NULL;

@@ -387,7 +387,7 @@ static void StartServer_MenuInit( void ) {
 	static char mapnamebuffer[64];
 
 	// zero set all our globals
-	memset( &s_startserver, 0 ,sizeof(startserver_t) );
+	Com_Memset( &s_startserver, 0 ,sizeof(startserver_t) );
 
 	StartServer_Cache();
 
@@ -1229,7 +1229,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	int		y;
 	int		n;
 
-	memset( &s_serveroptions, 0 ,sizeof(serveroptions_t) );
+	Com_Memset( &s_serveroptions, 0 ,sizeof(serveroptions_t) );
 	s_serveroptions.multiplayer = multiplayer;
 	s_serveroptions.gametype = (int)Com_Clamp( 0, 5, trap_Cvar_VariableValue( "g_gameType" ) );
 	s_serveroptions.punkbuster.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "sv_punkbuster" ) );
@@ -1837,7 +1837,7 @@ static void UI_BotSelectMenu_Init( char *bot ) {
 	int		i, j, k;
 	int		x, y;
 
-	memset( &botSelectInfo, 0 ,sizeof(botSelectInfo) );
+	Com_Memset( &botSelectInfo, 0 ,sizeof(botSelectInfo) );
 	botSelectInfo.menu.wrapAround = qtrue;
 	botSelectInfo.menu.fullscreen = qtrue;
 

@@ -564,7 +564,7 @@ void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	BG_EvaluateTrajectory( &es->pos, cg.time, origin );
 	ent->trailTime = cg.time;
 
-	memset( &beam, 0, sizeof( beam ) );
+	Com_Memset( &beam, 0, sizeof( beam ) );
 	//FIXME adjust for muzzle position
 	VectorCopy ( cg_entities[ ent->currentState.otherEntityNum ].lerpOrigin, beam.origin );
 	beam.origin[2] += 26;
@@ -620,7 +620,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		return;
 	}
 
-	memset( weaponInfo, 0, sizeof( *weaponInfo ) );
+	Com_Memset( weaponInfo, 0, sizeof( *weaponInfo ) );
 	weaponInfo->registered = qtrue;
 
 	for ( item = bg_itemlist + 1 ; item->classname ; item++ ) {
@@ -846,7 +846,7 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 	item = &bg_itemlist[ itemNum ];
 
-	memset( itemInfo, 0, sizeof( &itemInfo ) );
+	Com_Memset( itemInfo, 0, sizeof( &itemInfo ) );
 	itemInfo->registered = qtrue;
 
 	itemInfo->models[0] = trap_R_RegisterModel( item->world_model[0] );
@@ -981,7 +981,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 		return;
 	}
 
-	memset( &beam, 0, sizeof( beam ) );
+	Com_Memset( &beam, 0, sizeof( beam ) );
 
 	// CPMA  "true" lightning
 	if ((cent->currentState.number == cg.predictedPlayerState.clientNum) && (cg_trueLightning.value != 0)) {
@@ -1046,7 +1046,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 		VectorSubtract( beam.oldorigin, beam.origin, dir );
 		VectorNormalize( dir );
 
-		memset( &beam, 0, sizeof( beam ) );
+		Com_Memset( &beam, 0, sizeof( beam ) );
 		beam.hModel = cgs.media.lightningExplosionModel;
 
 		VectorMA( trace.endpos, -16, dir, beam.origin );
@@ -1071,7 +1071,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 		return;
 	}
 
-	memset( &beam, 0, sizeof( beam ) );
+	Com_Memset( &beam, 0, sizeof( beam ) );
 
 	// find muzzle point for this frame
 	VectorCopy( cent->lerpOrigin, muzzlePoint );
@@ -1108,7 +1108,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 		VectorSubtract( beam.oldorigin, beam.origin, dir );
 		VectorNormalize( dir );
 
-		memset( &beam, 0, sizeof( beam ) );
+		Com_Memset( &beam, 0, sizeof( beam ) );
 		beam.hModel = cgs.media.lightningExplosionModel;
 
 		VectorMA( trace.endpos, -16, dir, beam.origin );
@@ -1235,7 +1235,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	weapon = &cg_weapons[weaponNum];
 
 	// add the weapon
-	memset( &gun, 0, sizeof( gun ) );
+	Com_Memset( &gun, 0, sizeof( gun ) );
 	VectorCopy( parent->lightingOrigin, gun.lightingOrigin );
 	gun.shadowPlane = parent->shadowPlane;
 	gun.renderfx = parent->renderfx;
@@ -1281,7 +1281,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 	// add the spinning barrel
 	if ( weapon->barrelModel ) {
-		memset( &barrel, 0, sizeof( barrel ) );
+		Com_Memset( &barrel, 0, sizeof( barrel ) );
 		VectorCopy( parent->lightingOrigin, barrel.lightingOrigin );
 		barrel.shadowPlane = parent->shadowPlane;
 		barrel.renderfx = parent->renderfx;
@@ -1319,7 +1319,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		}
 	}
 
-	memset( &flash, 0, sizeof( flash ) );
+	Com_Memset( &flash, 0, sizeof( flash ) );
 	VectorCopy( parent->lightingOrigin, flash.lightingOrigin );
 	flash.shadowPlane = parent->shadowPlane;
 	flash.renderfx = parent->renderfx;
@@ -1420,7 +1420,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	CG_RegisterWeapon( ps->weapon );
 	weapon = &cg_weapons[ ps->weapon ];
 
-	memset (&hand, 0, sizeof(hand));
+	Com_Memset (&hand, 0, sizeof(hand));
 
 	// set up gun position
 	CG_CalculateWeaponPosition( hand.origin, angles );

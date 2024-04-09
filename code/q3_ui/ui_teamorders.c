@@ -347,7 +347,7 @@ UI_TeamOrdersMenu_Init
 static void UI_TeamOrdersMenu_Init( void ) {
 	UI_TeamOrdersMenu_Cache();
 
-	memset( &teamOrdersMenuInfo, 0, sizeof(teamOrdersMenuInfo) );
+	Com_Memset( &teamOrdersMenuInfo, 0, sizeof(teamOrdersMenuInfo) );
 	teamOrdersMenuInfo.menu.fullscreen = qfalse;
 	teamOrdersMenuInfo.menu.key = UI_TeamOrdersMenu_Key;
 

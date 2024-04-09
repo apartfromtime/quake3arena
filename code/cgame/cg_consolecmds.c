@@ -122,7 +122,7 @@ void Menu_Reset();			// FIXME: add to right include file
 static void CG_LoadHud_f( void) {
   char buff[1024];
 	const char *hudSet;
-  memset(buff, 0, sizeof(buff));
+  Com_Memset(buff, 0, sizeof(buff));
 
 	String_Init();
 	Menu_Reset();

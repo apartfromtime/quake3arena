@@ -71,7 +71,7 @@ can then be moved around
 void CG_TestModel_f (void) {
 	vec3_t		angles;
 
-	memset( &cg.testModelEntity, 0, sizeof(cg.testModelEntity) );
+	Com_Memset( &cg.testModelEntity, 0, sizeof(cg.testModelEntity) );
 	if ( trap_Argc() < 2 ) {
 		return;
 	}
@@ -585,7 +585,7 @@ static void CG_DamageBlendBlob( void ) {
 	}
 
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	ent.reType = RT_SPRITE;
 	ent.renderfx = RF_FIRST_PERSON;
 
@@ -613,7 +613,7 @@ Sets cg.refdef view values
 static int CG_CalcViewValues( void ) {
 	playerState_t	*ps;
 
-	memset( &cg.refdef, 0, sizeof( cg.refdef ) );
+	Com_Memset( &cg.refdef, 0, sizeof( cg.refdef ) );
 
 	// strings for in game rendering
 	// Q_strncpyz( cg.refdef.text[0], "Park Ranger", sizeof(cg.refdef.text[0]) );
@@ -831,7 +831,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		CG_AddTestModel();
 	}
 	cg.refdef.time = cg.time;
-	memcpy( cg.refdef.areamask, cg.snap->areamask, sizeof( cg.refdef.areamask ) );
+	Com_Memcpy( cg.refdef.areamask, cg.snap->areamask, sizeof( cg.refdef.areamask ) );
 
 	// warning sounds when powerup is wearing off
 	CG_PowerupTimerSounds();

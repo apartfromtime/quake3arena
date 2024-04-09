@@ -577,7 +577,7 @@ static void ArenaServers_Remove( void )
 		if (i < g_arenaservers.numfavoriteaddresses-1)
 		{
 			// shift items up
-			memcpy( &g_arenaservers.favoriteaddresses[i], &g_arenaservers.favoriteaddresses[i+1], (g_arenaservers.numfavoriteaddresses - i - 1)*sizeof(MAX_ADDRESSLENGTH));
+			Com_Memcpy( &g_arenaservers.favoriteaddresses[i], &g_arenaservers.favoriteaddresses[i+1], (g_arenaservers.numfavoriteaddresses - i - 1)*sizeof(MAX_ADDRESSLENGTH));
 		}
 		g_arenaservers.numfavoriteaddresses--;
 	}	
@@ -593,7 +593,7 @@ static void ArenaServers_Remove( void )
 		if (i < g_numfavoriteservers-1)
 		{
 			// shift items up
-			memcpy( &g_favoriteserverlist[i], &g_favoriteserverlist[i+1], (g_numfavoriteservers - i - 1)*sizeof(servernode_t));
+			Com_Memcpy( &g_favoriteserverlist[i], &g_favoriteserverlist[i+1], (g_numfavoriteservers - i - 1)*sizeof(servernode_t));
 		}
 		g_numfavoriteservers--;
 	}	
@@ -737,11 +737,11 @@ void ArenaServers_LoadFavorites( void )
 	emptyinfo[0] = '\0';
 
 	// copy the old
-	memcpy( templist, g_favoriteserverlist, sizeof(servernode_t)*MAX_FAVORITESERVERS );
+	Com_Memcpy( templist, g_favoriteserverlist, sizeof(servernode_t)*MAX_FAVORITESERVERS );
 	numtempitems = g_numfavoriteservers;
 
 	// clear the current for sync
-	memset( g_favoriteserverlist, 0, sizeof(servernode_t)*MAX_FAVORITESERVERS );
+	Com_Memset( g_favoriteserverlist, 0, sizeof(servernode_t)*MAX_FAVORITESERVERS );
 	g_numfavoriteservers = 0;
 
 	// resync existing results with new or deleted cvars
@@ -769,7 +769,7 @@ void ArenaServers_LoadFavorites( void )
 		if (j < numtempitems)
 		{
 			// found server - add exisiting results
-			memcpy( &g_favoriteserverlist[g_numfavoriteservers], &templist[j], sizeof(servernode_t) );
+			Com_Memcpy( &g_favoriteserverlist[g_numfavoriteservers], &templist[j], sizeof(servernode_t) );
 			found = qtrue;
 		}
 		else
@@ -984,7 +984,7 @@ static void ArenaServers_StartRefresh( void )
 	int		i;
 	char	myargs[32], protocol[32];
 
-	memset( g_arenaservers.serverlist, 0, g_arenaservers.maxservers*sizeof(table_t) );
+	Com_Memset( g_arenaservers.serverlist, 0, g_arenaservers.maxservers*sizeof(table_t) );
 
 	for (i=0; i<MAX_PINGREQUESTS; i++)
 	{
@@ -1331,7 +1331,7 @@ static void ArenaServers_MenuInit( void ) {
 	static char	statusbuffer[MAX_STATUSLENGTH];
 
 	// zero set all our globals
-	memset( &g_arenaservers, 0 ,sizeof(arenaservers_t) );
+	Com_Memset( &g_arenaservers, 0 ,sizeof(arenaservers_t) );
 
 	ArenaServers_Cache();
 

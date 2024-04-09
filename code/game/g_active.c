@@ -209,7 +209,7 @@ void ClientImpacts( gentity_t *ent, pmove_t *pm ) {
 	trace_t	trace;
 	gentity_t	*other;
 
-	memset( &trace, 0, sizeof( trace ) );
+	Com_Memset( &trace, 0, sizeof( trace ) );
 	for (i=0 ; i<pm->numtouch ; i++) {
 		for (j=0 ; j<i ; j++) {
 			if (pm->touchents[j] == pm->touchents[i] ) {
@@ -300,7 +300,7 @@ void	G_TouchTriggers( gentity_t *ent ) {
 			}
 		}
 
-		memset( &trace, 0, sizeof(trace) );
+		Com_Memset( &trace, 0, sizeof(trace) );
 
 		if ( hit->touch ) {
 			hit->touch (hit, ent, &trace);
@@ -334,7 +334,7 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 		client->ps.speed = 400;	// faster than normal
 
 		// set up for pmove
-		memset (&pm, 0, sizeof(pm));
+		Com_Memset (&pm, 0, sizeof(pm));
 		pm.ps = &client->ps;
 		pm.cmd = *ucmd;
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;	// spectators can fly through bodies
@@ -861,7 +861,7 @@ void ClientThink_real( gentity_t *ent ) {
 	// set up for pmove
 	oldEventSequence = client->ps.eventSequence;
 
-	memset (&pm, 0, sizeof(pm));
+	Com_Memset (&pm, 0, sizeof(pm));
 
 	// check for the hit-scan gauntlet, don't let the action
 	// go through as an attack unless it actually hits something

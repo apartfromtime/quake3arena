@@ -191,7 +191,7 @@ static void UI_CDKeyMenu_Init( void ) {
 
 	UI_CDKeyMenu_Cache();
 
-	memset( &cdkeyMenuInfo, 0, sizeof(cdkeyMenuInfo) );
+	Com_Memset( &cdkeyMenuInfo, 0, sizeof(cdkeyMenuInfo) );
 	cdkeyMenuInfo.menu.wrapAround = qtrue;
 	cdkeyMenuInfo.menu.fullscreen = qtrue;
 

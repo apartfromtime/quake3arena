@@ -189,7 +189,7 @@ void UI_ServerInfoMenu( void )
 	char			value[MAX_INFO_VALUE];
 
 	// zero set all our globals
-	memset( &s_serverinfo, 0 ,sizeof(serverinfo_t) );
+	Com_Memset( &s_serverinfo, 0 ,sizeof(serverinfo_t) );
 
 	ServerInfo_Cache();
 

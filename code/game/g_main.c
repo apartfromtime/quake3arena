@@ -423,7 +423,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_InitMemory();
 
 	// set some level globals
-	memset( &level, 0, sizeof( level ) );
+	Com_Memset( &level, 0, sizeof( level ) );
 	level.time = levelTime;
 	level.startTime = levelTime;
 
@@ -452,12 +452,12 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_InitWorldSession();
 
 	// initialize all entities for this game
-	memset( g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]) );
+	Com_Memset( g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]) );
 	level.gentities = g_entities;
 
 	// initialize all clients for this game
 	level.maxclients = g_maxclients.integer;
-	memset( g_clients, 0, MAX_CLIENTS * sizeof(g_clients[0]) );
+	Com_Memset( g_clients, 0, MAX_CLIENTS * sizeof(g_clients[0]) );
 	level.clients = g_clients;
 
 	// set client fields on player ents
@@ -933,7 +933,7 @@ void MoveClientToIntermission( gentity_t *ent ) {
 	ent->client->ps.pm_type = PM_INTERMISSION;
 
 	// clean up powerup info
-	memset( ent->client->ps.powerups, 0, sizeof(ent->client->ps.powerups) );
+	Com_Memset( ent->client->ps.powerups, 0, sizeof(ent->client->ps.powerups) );
 
 	ent->client->ps.eFlags = 0;
 	ent->s.eFlags = 0;

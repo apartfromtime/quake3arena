@@ -938,7 +938,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 //	areabits = client->areabits;
 
-	memset( client, 0, sizeof(*client) );
+	Com_Memset(client, 0, sizeof(*client));
 
 	client->pers.connected = CON_CONNECTING;
 
@@ -1018,7 +1018,7 @@ void ClientBegin( int clientNum ) {
 	// so the viewpoint doesn't interpolate through the
 	// world to the new position
 	flags = client->ps.eFlags;
-	memset( &client->ps, 0, sizeof( client->ps ) );
+	Com_Memset(&client->ps, 0, sizeof(client->ps));
 	client->ps.eFlags = flags;
 
 	// locate ent at a spawn point
@@ -1129,7 +1129,7 @@ void ClientSpawn(gentity_t *ent) {
 	}
 	eventSequence = client->ps.eventSequence;
 
-	memset (client, 0, sizeof(*client)); // bk FIXME: Com_Memset?
+	Com_Memset(client, 0, sizeof(*client));
 
 	client->pers = saved;
 	client->sess = savedSess;

@@ -1342,9 +1342,9 @@ static void LoadTGA ( const char *name, byte **pic, int *width, int *height)
       src = targa_rgba + row * 4 * columns;
       dst = targa_rgba + (rows - row - 1) * 4 * columns;
 
-      memcpy (flip, src, columns*4);
-      memcpy (src, dst, columns*4);
-      memcpy (dst, flip, columns*4);
+      Com_Memcpy (flip, src, columns*4);
+      Com_Memcpy (src, dst, columns*4);
+      Com_Memcpy (dst, flip, columns*4);
     }
     free (flip);
   }

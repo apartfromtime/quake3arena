@@ -221,7 +221,7 @@ static void Crosshair_Draw( void *self ) {
 static void Preferences_MenuInit( void ) {
 	int				y;
 
-	memset( &s_preferences, 0 ,sizeof(preferences_t) );
+	Com_Memset( &s_preferences, 0 ,sizeof(preferences_t) );
 
 	Preferences_Cache();
 

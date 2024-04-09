@@ -170,7 +170,7 @@ int BotAI_GetClientState( int clientNum, playerState_t *state ) {
 		return qfalse;
 	}
 
-	memcpy( state, &ent->client->ps, sizeof(playerState_t) );
+	Com_Memcpy( state, &ent->client->ps, sizeof(playerState_t) );
 	return qtrue;
 }
 
@@ -183,11 +183,11 @@ int BotAI_GetEntityState( int entityNum, entityState_t *state ) {
 	gentity_t	*ent;
 
 	ent = &g_entities[entityNum];
-	memset( state, 0, sizeof(entityState_t) );
+	Com_Memset( state, 0, sizeof(entityState_t) );
 	if (!ent->inuse) return qfalse;
 	if (!ent->r.linked) return qfalse;
 	if (ent->r.svFlags & SVF_NOCLIENT) return qfalse;
-	memcpy( state, &ent->s, sizeof(entityState_t) );
+	Com_Memcpy( state, &ent->s, sizeof(entityState_t) );
 	return qtrue;
 }
 
@@ -201,7 +201,7 @@ int BotAI_GetSnapshotEntity( int clientNum, int sequence, entityState_t *state )
 
 	entNum = trap_BotGetSnapshotEntity( clientNum, sequence );
 	if ( entNum == -1 ) {
-		memset(state, 0, sizeof(entityState_t));
+		Com_Memset(state, 0, sizeof(entityState_t));
 		return -1;
 	}
 
@@ -221,7 +221,7 @@ void Q_CDECL BotAI_BotInitialChat( bot_state_t *bs, char *type, ... ) {
 	char	*p;
 	char	*vars[MAX_MATCHVARIABLES];
 
-	memset(vars, 0, sizeof(vars));
+	Com_Memset(vars, 0, sizeof(vars));
 	va_start(ap, type);
 	p = va_arg(ap, char *);
 	for (i = 0; i < MAX_MATCHVARIABLES; i++) {
@@ -821,7 +821,7 @@ void BotInputToUserCommand(bot_input_t *bi, usercmd_t *ucmd, int delta_angles[3]
 	int j;
 
 	//clear the whole structure
-	memset(ucmd, 0, sizeof(usercmd_t));
+	Com_Memset(ucmd, 0, sizeof(usercmd_t));
 	//
 	//Com_Printf("dir = %f %f %f speed = %f\n", bi->dir[0], bi->dir[1], bi->dir[2], bi->speed);
 	//the duration for the user command in milli seconds
@@ -1174,7 +1174,7 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean resta
 		return qfalse;
 	}
 	//copy the settings
-	memcpy(&bs->settings, settings, sizeof(bot_settings_t));
+	Com_Memcpy(&bs->settings, settings, sizeof(bot_settings_t));
 	//allocate a goal state
 	bs->gs = trap_BotAllocGoalState(client);
 	//load the item weights
@@ -1277,7 +1277,7 @@ int BotAIShutdownClient(int client, qboolean restart) {
 	//clear activate goal stack
 	BotClearActivateGoalStack(bs);
 	//clear the bot state
-	memset(bs, 0, sizeof(bot_state_t));
+	Com_Memset(bs, 0, sizeof(bot_state_t));
 	//set the inuse flag to qfalse
 	bs->inuse = qfalse;
 	//there's one bot less
@@ -1303,8 +1303,8 @@ void BotResetState(bot_state_t *bs) {
 	float entergame_time;
 
 	//save some things that should not be reset here
-	memcpy(&settings, &bs->settings, sizeof(bot_settings_t));
-	memcpy(&ps, &bs->cur_ps, sizeof(playerState_t));
+	Com_Memcpy(&settings, &bs->settings, sizeof(bot_settings_t));
+	Com_Memcpy(&ps, &bs->cur_ps, sizeof(playerState_t));
 	inuse = bs->inuse;
 	client = bs->client;
 	entitynum = bs->entitynum;
@@ -1318,14 +1318,14 @@ void BotResetState(bot_state_t *bs) {
 	BotFreeWaypoints(bs->checkpoints);
 	BotFreeWaypoints(bs->patrolpoints);
 	//reset the whole state
-	memset(bs, 0, sizeof(bot_state_t));
+	Com_Memset(bs, 0, sizeof(bot_state_t));
 	//copy back some state stuff that should not be reset
 	bs->ms = movestate;
 	bs->gs = goalstate;
 	bs->cs = chatstate;
 	bs->ws = weaponstate;
-	memcpy(&bs->cur_ps, &ps, sizeof(playerState_t));
-	memcpy(&bs->settings, &settings, sizeof(bot_settings_t));
+	Com_Memcpy(&bs->cur_ps, &ps, sizeof(playerState_t));
+	Com_Memcpy(&bs->settings, &settings, sizeof(bot_settings_t));
 	bs->inuse = inuse;
 	bs->client = client;
 	bs->entitynum = entitynum;
@@ -1492,7 +1492,7 @@ int BotAIStartFrame(int time) {
 			}
 #endif
 			//
-			memset(&state, 0, sizeof(bot_entitystate_t));
+			Com_Memset(&state, 0, sizeof(bot_entitystate_t));
 			//
 			VectorCopy(ent->r.currentOrigin, state.origin);
 			if (i < MAX_CLIENTS) {
@@ -1661,7 +1661,7 @@ int BotAISetup( int restart ) {
 	}
 
 	//initialize the bot states
-	memset( botstates, 0, sizeof(botstates) );
+	Com_Memset( botstates, 0, sizeof(botstates) );
 
 	errnum = BotInitLibrary();
 	if (errnum != BLERR_NOERROR) return qfalse;

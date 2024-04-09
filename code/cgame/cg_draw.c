@@ -145,7 +145,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 //		const unsigned char *s = text;
 		const char *s = text;
 		trap_R_SetColor( color );
-		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
+		Com_Memcpy(&newColor[0], &color[0], sizeof(vec4_t));
     len = strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
@@ -156,7 +156,7 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
       //int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
       //float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+				Com_Memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
 				s += 2;
@@ -280,9 +280,9 @@ void CG_Draw3DModel( float x, float y, float w, float h, qhandle_t model, qhandl
 
 	CG_AdjustFrom640( &x, &y, &w, &h );
 
-	memset( &refdef, 0, sizeof( refdef ) );
+	Com_Memset( &refdef, 0, sizeof( refdef ) );
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	AnglesToAxis( angles, ent.axis );
 	VectorCopy( origin, ent.origin );
 	ent.hModel = model;

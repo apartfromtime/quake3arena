@@ -101,7 +101,7 @@ void TeamMain_MenuInit( void ) {
 	int		gametype;
 	char	info[MAX_INFO_STRING];
 
-	memset( &s_teammain, 0, sizeof(s_teammain) );
+	Com_Memset( &s_teammain, 0, sizeof(s_teammain) );
 
 	TeamMain_Cache();
 

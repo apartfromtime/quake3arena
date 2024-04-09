@@ -59,7 +59,7 @@ const char *BuildShaderStateConfig() {
 	char out[(MAX_QPATH * 2) + 5];
 	int i;
   
-	memset(buff, 0, MAX_STRING_CHARS);
+	Com_Memset(buff, 0, MAX_STRING_CHARS);
 	for (i = 0; i < remapCount; i++) {
 		Com_sprintf(out, (MAX_QPATH * 2) + 5, "%s=%s:%5.2f@", remappedShaders[i].oldShader, remappedShaders[i].newShader, remappedShaders[i].timeOffset);
 		Q_strcat( buff, sizeof( buff ), out);
@@ -468,7 +468,7 @@ void G_FreeEntity( gentity_t *ed ) {
 		return;
 	}
 
-	memset (ed, 0, sizeof(*ed));
+	Com_Memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
 	ed->freetime = level.time;
 	ed->inuse = qfalse;

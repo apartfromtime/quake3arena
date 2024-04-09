@@ -118,7 +118,7 @@ UI_DisplayOptionsMenu_Init
 static void UI_DisplayOptionsMenu_Init( void ) {
 	int		y;
 
-	memset( &displayOptionsInfo, 0, sizeof(displayOptionsInfo) );
+	Com_Memset( &displayOptionsInfo, 0, sizeof(displayOptionsInfo) );
 
 	UI_DisplayOptionsMenu_Cache();
 	displayOptionsInfo.menu.wrapAround = qtrue;

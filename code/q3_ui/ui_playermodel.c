@@ -174,7 +174,7 @@ static void PlayerModel_UpdateModel( void )
 	vec3_t	viewangles;
 	vec3_t	moveangles;
 
-	memset( &s_playermodel.playerinfo, 0, sizeof(playerInfo_t) );
+	Com_Memset( &s_playermodel.playerinfo, 0, sizeof(playerInfo_t) );
 	
 	viewangles[YAW]   = 180 - 30;
 	viewangles[PITCH] = 0;
@@ -524,7 +524,7 @@ static void PlayerModel_MenuInit( void )
 	static char	skinname[32];
 
 	// zero set all our globals
-	memset( &s_playermodel, 0 ,sizeof(playermodel_t) );
+	Com_Memset( &s_playermodel, 0 ,sizeof(playermodel_t) );
 
 	PlayerModel_Cache();
 

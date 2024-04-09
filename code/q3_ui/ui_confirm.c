@@ -176,7 +176,7 @@ void UI_ConfirmMenu_Style( const char *question, int style, void (*draw)( void )
 	int	l1, l2, l3;
 
 	// zero set all our globals
-	memset( &s_confirm, 0, sizeof(s_confirm) );
+	Com_Memset( &s_confirm, 0, sizeof(s_confirm) );
 
 	ConfirmMenu_Cache();
 
@@ -253,7 +253,7 @@ void UI_Message( const char **lines ) {
 	int n1, l1;
 	
 	// zero set all our globals
-	memset( &s_confirm, 0, sizeof(s_confirm) );
+	Com_Memset( &s_confirm, 0, sizeof(s_confirm) );
 
 	ConfirmMenu_Cache();
 

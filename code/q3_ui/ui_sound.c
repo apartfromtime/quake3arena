@@ -149,7 +149,7 @@ UI_SoundOptionsMenu_Init
 static void UI_SoundOptionsMenu_Init( void ) {
 	int				y;
 
-	memset( &soundOptionsInfo, 0, sizeof(soundOptionsInfo) );
+	Com_Memset( &soundOptionsInfo, 0, sizeof(soundOptionsInfo) );
 
 	UI_SoundOptionsMenu_Cache();
 	soundOptionsInfo.menu.wrapAround = qtrue;

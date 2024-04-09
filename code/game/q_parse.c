@@ -486,7 +486,7 @@ char* Com_ParseExt(const char* (*data_p), qboolean allowLineBreaks)
 		if (j == l) {
 
 			// a valid multi-character punctuation
-			memcpy(pi->token, *punc, l);
+			Com_Memcpy(pi->token, *punc, l);
 			pi->token[l] = 0;
 			data += l;
 			*data_p = (char*)data;

@@ -136,7 +136,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	int		y;
 	int		rate;
 
-	memset( &networkOptionsInfo, 0, sizeof(networkOptionsInfo) );
+	Com_Memset( &networkOptionsInfo, 0, sizeof(networkOptionsInfo) );
 
 	UI_NetworkOptionsMenu_Cache();
 	networkOptionsInfo.menu.wrapAround = qtrue;

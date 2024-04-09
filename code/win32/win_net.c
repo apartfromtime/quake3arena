@@ -110,7 +110,7 @@ char *NET_ErrorString( void ) {
 }
 
 void NetadrToSockadr( netadr_t *a, struct sockaddr *s ) {
-	memset( s, 0, sizeof(*s) );
+	Com_Memset( s, 0, sizeof(*s) );
 
 	if( a->type == NA_BROADCAST ) {
 		((struct sockaddr_in *)s)->sin_family = AF_INET;
@@ -124,14 +124,14 @@ void NetadrToSockadr( netadr_t *a, struct sockaddr *s ) {
 	}
 	else if( a->type == NA_IPX ) {
 		((struct sockaddr_ipx *)s)->sa_family = AF_IPX;
-		memcpy( ((struct sockaddr_ipx *)s)->sa_netnum, &a->ipx[0], 4 );
-		memcpy( ((struct sockaddr_ipx *)s)->sa_nodenum, &a->ipx[4], 6 );
+		Com_Memcpy( ((struct sockaddr_ipx *)s)->sa_netnum, &a->ipx[0], 4 );
+		Com_Memcpy( ((struct sockaddr_ipx *)s)->sa_nodenum, &a->ipx[4], 6 );
 		((struct sockaddr_ipx *)s)->sa_socket = a->port;
 	}
 	else if( a->type == NA_BROADCAST_IPX ) {
 		((struct sockaddr_ipx *)s)->sa_family = AF_IPX;
-		memset( ((struct sockaddr_ipx *)s)->sa_netnum, 0, 4 );
-		memset( ((struct sockaddr_ipx *)s)->sa_nodenum, 0xff, 6 );
+		Com_Memset( ((struct sockaddr_ipx *)s)->sa_netnum, 0, 4 );
+		Com_Memset( ((struct sockaddr_ipx *)s)->sa_nodenum, 0xff, 6 );
 		((struct sockaddr_ipx *)s)->sa_socket = a->port;
 	}
 }
@@ -145,8 +145,8 @@ void SockadrToNetadr( struct sockaddr *s, netadr_t *a ) {
 	}
 	else if( s->sa_family == AF_IPX ) {
 		a->type = NA_IPX;
-		memcpy( &a->ipx[0], ((struct sockaddr_ipx *)s)->sa_netnum, 4 );
-		memcpy( &a->ipx[4], ((struct sockaddr_ipx *)s)->sa_nodenum, 6 );
+		Com_Memcpy( &a->ipx[0], ((struct sockaddr_ipx *)s)->sa_netnum, 4 );
+		Com_Memcpy( &a->ipx[4], ((struct sockaddr_ipx *)s)->sa_nodenum, 6 );
 		a->port = ((struct sockaddr_ipx *)s)->sa_socket;
 	}
 }
@@ -172,7 +172,7 @@ qboolean Sys_StringToSockaddr( const char *s, struct sockaddr *sadr ) {
 	int		val;
 	char	copy[MAX_STRING_CHARS];
 	
-	memset( sadr, 0, sizeof( *sadr ) );
+	Com_Memset( sadr, 0, sizeof( *sadr ) );
 
 	// check for an IPX address
 	if( ( strlen( s ) == 21 ) && ( s[8] == '.' ) ) {
@@ -274,7 +274,7 @@ qboolean Sys_GetPacket( netadr_t *net_from, msg_t *net_message ) {
 		}
 
 		if ( net_socket == ip_socket ) {
-			memset( ((struct sockaddr_in *)&from)->sin_zero, 0, 8 );
+			Com_Memset( ((struct sockaddr_in *)&from)->sin_zero, 0, 8 );
 		}
 
 		if ( usingSocks && net_socket == ip_socket && memcmp( &from, &socksRelayAddr, fromlen ) == 0 ) {
@@ -350,7 +350,7 @@ void Sys_SendPacket( int length, const void *data, netadr_t to ) {
 		socksBuf[3] = 1;	// address type: IPV4
 		*(int *)&socksBuf[4] = ((struct sockaddr_in *)&addr)->sin_addr.s_addr;
 		*(short *)&socksBuf[8] = ((struct sockaddr_in *)&addr)->sin_port;
-		memcpy( &socksBuf[10], data, length );
+		Com_Memcpy( &socksBuf[10], data, length );
 		ret = sendto( net_socket, socksBuf, length+10, 0, &socksRelayAddr, sizeof(socksRelayAddr) );
 	}
 	else {
@@ -629,11 +629,11 @@ void NET_OpenSocks( int port ) {
 		buf[0] = 1;		// username/password authentication version
 		buf[1] = ulen;
 		if ( ulen ) {
-			memcpy( &buf[2], net_socksUsername->string, ulen );
+			Com_Memcpy( &buf[2], net_socksUsername->string, ulen );
 		}
 		buf[2 + ulen] = plen;
 		if ( plen ) {
-			memcpy( &buf[3 + ulen], net_socksPassword->string, plen );
+			Com_Memcpy( &buf[3 + ulen], net_socksPassword->string, plen );
 		}
 
 		// send it
@@ -696,7 +696,7 @@ void NET_OpenSocks( int port ) {
 	((struct sockaddr_in *)&socksRelayAddr)->sin_family = AF_INET;
 	((struct sockaddr_in *)&socksRelayAddr)->sin_addr.s_addr = *(int *)&buf[4];
 	((struct sockaddr_in *)&socksRelayAddr)->sin_port = *(short *)&buf[8];
-	memset( ((struct sockaddr_in *)&socksRelayAddr)->sin_zero, 0, 8 );
+	Com_Memset( ((struct sockaddr_in *)&socksRelayAddr)->sin_zero, 0, 8 );
 
 	usingSocks = qtrue;
 }
@@ -811,8 +811,8 @@ int NET_IPXSocket( int port ) {
 	}
 
 	address.sa_family = AF_IPX;
-	memset( address.sa_netnum, 0, 4 );
-	memset( address.sa_nodenum, 0, 6 );
+	Com_Memset( address.sa_netnum, 0, 4 );
+	Com_Memset( address.sa_nodenum, 0, 6 );
 	if( port == PORT_ANY ) {
 		address.sa_socket = 0;
 	}

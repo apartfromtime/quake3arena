@@ -508,7 +508,7 @@ qboolean PC_Script_Parse(int handle, const char **out) {
 	char script[1024];
 	pc_token_t token;
 
-	memset(script, 0, sizeof(script));
+	Com_Memset(script, 0, sizeof(script));
 	// scripts start with { and have ; separated command lists.. commands are command, arg.. 
 	// basically we want everything between the { } as it will be interpreted at run time
   
@@ -572,7 +572,7 @@ Initializes a window structure ( windowDef_t ) with defaults
 ==================
 */
 void Window_Init(Window *w) {
-	memset(w, 0, sizeof(windowDef_t));
+	Com_Memset(w, 0, sizeof(windowDef_t));
 	w->borderSize = 1;
 	w->foreColor[0] = w->foreColor[1] = w->foreColor[2] = w->foreColor[3] = 1.0;
 	w->cinematic = -1;
@@ -1110,8 +1110,8 @@ void Menu_TransitionItemByName(menuDef_t *menu, const char *p, rectDef_t rectFro
     if (item != NULL) {
       item->window.flags |= (WINDOW_INTRANSITION | WINDOW_VISIBLE);
       item->window.offsetTime = time;
-			memcpy(&item->window.rectClient, &rectFrom, sizeof(rectDef_t));
-			memcpy(&item->window.rectEffects, &rectTo, sizeof(rectDef_t));
+			Com_Memcpy(&item->window.rectClient, &rectFrom, sizeof(rectDef_t));
+			Com_Memcpy(&item->window.rectEffects, &rectTo, sizeof(rectDef_t));
 			item->window.rectEffects2.x = abs(rectTo.x - rectFrom.x) / amt;
 			item->window.rectEffects2.y = abs(rectTo.y - rectFrom.y) / amt;
 			item->window.rectEffects2.w = abs(rectTo.w - rectFrom.w) / amt;
@@ -1265,7 +1265,7 @@ void Item_RunScript(itemDef_t *item, const char *s) {
   char script[1024], *p;
   int i;
   qboolean bRan;
-  memset(script, 0, sizeof(script));
+  Com_Memset(script, 0, sizeof(script));
   if (item && s && s[0]) {
     Q_strcat(script, 1024, s);
     p = script;
@@ -1299,7 +1299,7 @@ void Item_RunScript(itemDef_t *item, const char *s) {
 
 qboolean Item_EnableShowViaCvar(itemDef_t *item, int flag) {
   char script[1024], *p;
-  memset(script, 0, sizeof(script));
+  Com_Memset(script, 0, sizeof(script));
   if (item && item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest) {
 		char buff[1024];
 	  DC->getCVarString(item->cvarTest, buff, sizeof(buff));
@@ -2034,7 +2034,7 @@ qboolean Item_TextField_HandleKey(itemDef_t *item, int key) {
 
 	if (item->cvar) {
 
-		memset(buff, 0, sizeof(buff));
+		Com_Memset(buff, 0, sizeof(buff));
 		DC->getCVarString(item->cvar, buff, sizeof(buff));
 		len = strlen(buff);
 		if (editPtr->maxChars && len > editPtr->maxChars) {
@@ -2580,7 +2580,7 @@ void Menus_HandleOOBClick(menuDef_t *menu, int key, qboolean down) {
 
 static rectDef_t *Item_CorrectedTextRect(itemDef_t *item) {
 	static rectDef_t rect;
-	memset(&rect, 0, sizeof(rectDef_t));
+	Com_Memset(&rect, 0, sizeof(rectDef_t));
 	if (item) {
 		rect = item->textRect;
 		if (rect.w) {
@@ -2821,13 +2821,13 @@ void Item_TextColor(itemDef_t *item, vec4_t *newColor) {
 		lowLight[3] = 0.8 * item->window.foreColor[3]; 
 		LerpColor(item->window.foreColor,lowLight,*newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(newColor, &item->window.foreColor, sizeof(vec4_t));
 		// items can be enabled and disabled based on cvars
 	}
 
 	if (item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest) {
 		if (item->cvarFlags & (CVAR_ENABLE | CVAR_DISABLE) && !Item_EnableShowViaCvar(item, CVAR_ENABLE)) {
-			memcpy(newColor, &parent->disableColor, sizeof(vec4_t));
+			Com_Memcpy(newColor, &parent->disableColor, sizeof(vec4_t));
 		}
 	}
 }
@@ -3049,7 +3049,7 @@ void Item_TextField_Paint(itemDef_t *item) {
 		lowLight[3] = 0.8 * parent->focusColor[3]; 
 		LerpColor(parent->focusColor,lowLight,newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
 	offset = (item->text && *item->text) ? 8 : 0;
@@ -3076,7 +3076,7 @@ void Item_YesNo_Paint(itemDef_t *item) {
 		lowLight[3] = 0.8 * parent->focusColor[3]; 
 		LerpColor(parent->focusColor,lowLight,newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
 	if (item->text) {
@@ -3099,7 +3099,7 @@ void Item_Multi_Paint(itemDef_t *item) {
 		lowLight[3] = 0.8 * parent->focusColor[3]; 
 		LerpColor(parent->focusColor,lowLight,newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
 	text = Item_Multi_Setting(item);
@@ -3393,7 +3393,7 @@ void Item_Slider_Paint(itemDef_t *item) {
 		lowLight[3] = 0.8 * parent->focusColor[3]; 
 		LerpColor(parent->focusColor,lowLight,newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
 	y = item->window.rect.y;
@@ -3437,7 +3437,7 @@ void Item_Bind_Paint(itemDef_t *item) {
 		}
 		LerpColor(parent->focusColor,lowLight,newColor,0.5+0.5*sin(DC->realTime / PULSE_DIVISOR));
 	} else {
-		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
+		Com_Memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
 	if (item->text) {
@@ -3572,7 +3572,7 @@ void Item_Model_Paint(itemDef_t *item) {
 	}
 
 	// setup the refdef
-	memset( &refdef, 0, sizeof( refdef ) );
+	Com_Memset( &refdef, 0, sizeof( refdef ) );
 	refdef.rdflags = RDF_NOWORLDMODEL;
 	AxisClear( refdef.viewaxis );
 	x = item->window.rect.x+1;
@@ -3614,7 +3614,7 @@ void Item_Model_Paint(itemDef_t *item) {
 
 	// add the model
 
-	memset( &ent, 0, sizeof(ent) );
+	Com_Memset( &ent, 0, sizeof(ent) );
 
 	//adjust = 5.0 * sin( (float)uis.realtime / 500 );
 	//adjust = 360 % (int)((float)uis.realtime / 1000);
@@ -3814,14 +3814,14 @@ void Item_OwnerDraw_Paint(itemDef_t *item) {
 		vec4_t color, lowLight;
 		menuDef_t *parent = (menuDef_t*)item->parent;
 		Fade(&item->window.flags, &item->window.foreColor[3], parent->fadeClamp, &item->window.nextTime, parent->fadeCycle, qtrue, parent->fadeAmount);
-		memcpy(&color, &item->window.foreColor, sizeof(color));
+		Com_Memcpy(&color, &item->window.foreColor, sizeof(color));
 		if (item->numColors > 0 && DC->getValue) {
 			// if the value is within one of the ranges then set color to that, otherwise leave at default
 			int i;
 			float f = DC->getValue(item->window.ownerDraw);
 			for (i = 0; i < item->numColors; i++) {
 				if (f >= item->colorRanges[i].low && f <= item->colorRanges[i].high) {
-					memcpy(&color, &item->colorRanges[i].color, sizeof(color));
+					Com_Memcpy(&color, &item->colorRanges[i].color, sizeof(color));
 					break;
 				}
 			}
@@ -3842,7 +3842,7 @@ void Item_OwnerDraw_Paint(itemDef_t *item) {
 		}
 
 		if (item->cvarFlags & (CVAR_ENABLE | CVAR_DISABLE) && !Item_EnableShowViaCvar(item, CVAR_ENABLE)) {
-		  memcpy(color, parent->disableColor, sizeof(vec4_t)); // bk001207 - FIXME: Com_Memcpy
+			Com_Memcpy(color, parent->disableColor, sizeof(vec4_t));
 		}
 	
 		if (item->text) {
@@ -4055,7 +4055,7 @@ void Item_Paint(itemDef_t *item) {
 }
 
 void Menu_Init(menuDef_t *menu) {
-	memset(menu, 0, sizeof(menuDef_t));
+	Com_Memset(menu, 0, sizeof(menuDef_t));
 	menu->cursorItem = -1;
 	menu->fadeAmount = DC->Assets.fadeAmount;
 	menu->fadeClamp = DC->Assets.fadeClamp;
@@ -4156,7 +4156,7 @@ menuDef_t *Menus_ActivateByName(const char *p) {
 
 
 void Item_Init(itemDef_t *item) {
-	memset(item, 0, sizeof(itemDef_t));
+	Com_Memset(item, 0, sizeof(itemDef_t));
 	item->textscale = 0.55f;
 	Window_Init(&item->window);
 }
@@ -4290,10 +4290,10 @@ void Item_ValidateTypeData(itemDef_t *item) {
 
 	if (item->type == ITEM_TYPE_LISTBOX) {
 		item->typeData = UI_Alloc(sizeof(listBoxDef_t));
-		memset(item->typeData, 0, sizeof(listBoxDef_t));
+		Com_Memset(item->typeData, 0, sizeof(listBoxDef_t));
 	} else if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD || item->type == ITEM_TYPE_YESNO || item->type == ITEM_TYPE_BIND || item->type == ITEM_TYPE_SLIDER || item->type == ITEM_TYPE_TEXT) {
 		item->typeData = UI_Alloc(sizeof(editFieldDef_t));
-		memset(item->typeData, 0, sizeof(editFieldDef_t));
+		Com_Memset(item->typeData, 0, sizeof(editFieldDef_t));
 		if (item->type == ITEM_TYPE_EDITFIELD) {
 			if (!((editFieldDef_t *) item->typeData)->maxPaintChars) {
 				((editFieldDef_t *) item->typeData)->maxPaintChars = MAX_EDITFIELD;
@@ -5021,7 +5021,7 @@ qboolean ItemParse_addColorRange( itemDef_t *item, int handle ) {
 		PC_Float_Parse(handle, &color.high) &&
 		PC_Color_Parse(handle, &color.color) ) {
 		if (item->numColors < MAX_COLOR_RANGES) {
-			memcpy(&item->colorRanges[item->numColors], &color, sizeof(color));
+			Com_Memcpy(&item->colorRanges[item->numColors], &color, sizeof(color));
 			item->numColors++;
 		}
 		return qtrue;
@@ -5147,7 +5147,7 @@ Item_SetupKeywordHash
 void Item_SetupKeywordHash(void) {
 	int i;
 
-	memset(itemParseKeywordHash, 0, sizeof(itemParseKeywordHash));
+	Com_Memset(itemParseKeywordHash, 0, sizeof(itemParseKeywordHash));
 	for (i = 0; itemParseKeywords[i].keyword; i++) {
 		KeywordHash_Add(itemParseKeywordHash, &itemParseKeywords[i]);
 	}
@@ -5548,7 +5548,7 @@ Menu_SetupKeywordHash
 void Menu_SetupKeywordHash(void) {
 	int i;
 
-	memset(menuParseKeywordHash, 0, sizeof(menuParseKeywordHash));
+	Com_Memset(menuParseKeywordHash, 0, sizeof(menuParseKeywordHash));
 	for (i = 0; menuParseKeywords[i].keyword; i++) {
 		KeywordHash_Add(menuParseKeywordHash, &menuParseKeywords[i]);
 	}
@@ -5571,7 +5571,7 @@ qboolean Menu_Parse(int handle, menuDef_t *menu) {
     
 	while ( 1 ) {
 
-		memset(&token, 0, sizeof(pc_token_t));
+		Com_Memset(&token, 0, sizeof(pc_token_t));
 		if (!trap_PC_ReadToken(handle, &token)) {
 			PC_SourceError(handle, "end of file inside menu\n");
 			return qfalse;

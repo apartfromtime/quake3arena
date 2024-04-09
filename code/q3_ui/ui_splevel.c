@@ -723,7 +723,7 @@ static void UI_SPLevelMenu_Init( void ) {
 		skill = 2;
 	}
 
-	memset( &levelMenuInfo, 0, sizeof(levelMenuInfo) );
+	Com_Memset( &levelMenuInfo, 0, sizeof(levelMenuInfo) );
 	levelMenuInfo.menu.fullscreen = qtrue;
 	levelMenuInfo.menu.wrapAround = qtrue;
 	levelMenuInfo.menu.draw = UI_SPLevelMenu_MenuDraw;

@@ -510,7 +510,7 @@ void UI_SPPostgameMenu_f( void ) {
 	char		map[MAX_QPATH];
 	char		info[MAX_INFO_STRING];
 
-	memset( &postgameMenuInfo, 0, sizeof(postgameMenuInfo) );
+	Com_Memset( &postgameMenuInfo, 0, sizeof(postgameMenuInfo) );
 
 	trap_GetConfigString( CS_SYSTEMINFO, info, sizeof(info) );
 	postgameMenuInfo.serverId = atoi( Info_ValueForKey( info, "sv_serverid" ) );

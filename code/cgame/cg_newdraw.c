@@ -41,9 +41,9 @@ int drawTeamOverlayModificationCount = -1;
 //static char teamChat2[256];
 
 void CG_InitTeamChat() {
-  memset(teamChat1, 0, sizeof(teamChat1));
-  memset(teamChat2, 0, sizeof(teamChat2));
-  memset(systemChat, 0, sizeof(systemChat));
+  Com_Memset(teamChat1, 0, sizeof(teamChat1));
+  Com_Memset(teamChat2, 0, sizeof(teamChat2));
+  Com_Memset(systemChat, 0, sizeof(systemChat));
 }
 
 void CG_SetPrintString(int type, const char *p) {
@@ -1235,7 +1235,7 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 		while (s && *s && count < len) {
 			glyph = &font->glyphs[(int)*s]; // TTimo: FIXME: getting nasty warnings without the cast, hopefully this doesn't break the VM build
 			if ( Q_IsColorString( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+				Com_Memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
 				s += 2;

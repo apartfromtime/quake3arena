@@ -103,7 +103,7 @@ SpecifyServer_MenuInit
 void SpecifyServer_MenuInit( void )
 {
 	// zero set all our globals
-	memset( &s_specifyserver, 0 ,sizeof(specifyserver_t) );
+	Com_Memset( &s_specifyserver, 0 ,sizeof(specifyserver_t) );
 
 	SpecifyServer_Cache();
 

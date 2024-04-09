@@ -124,7 +124,7 @@ UI_SaveConfigMenu_Init
 =================
 */
 static void UI_SaveConfigMenu_Init( void ) {
-	memset( &saveConfig, 0, sizeof(saveConfig) );
+	Com_Memset( &saveConfig, 0, sizeof(saveConfig) );
 
 	UI_SaveConfigMenu_Cache();
 	saveConfig.menu.wrapAround = qtrue;

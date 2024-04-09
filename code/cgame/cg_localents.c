@@ -41,7 +41,7 @@ This is called at startup and for tournement restarts
 void	CG_InitLocalEntities( void ) {
 	int		i;
 
-	memset( cg_localEntities, 0, sizeof( cg_localEntities ) );
+	Com_Memset( cg_localEntities, 0, sizeof( cg_localEntities ) );
 	cg_activeLocalEntities.next = &cg_activeLocalEntities;
 	cg_activeLocalEntities.prev = &cg_activeLocalEntities;
 	cg_freeLocalEntities = cg_localEntities;
@@ -89,7 +89,7 @@ localEntity_t	*CG_AllocLocalEntity( void ) {
 	le = cg_freeLocalEntities;
 	cg_freeLocalEntities = cg_freeLocalEntities->next;
 
-	memset( le, 0, sizeof( *le ) );
+	Com_Memset( le, 0, sizeof( *le ) );
 
 	// link into the active list
 	le->next = cg_activeLocalEntities.next;
@@ -563,7 +563,7 @@ void CG_AddKamikaze( localEntity_t *le ) {
 			le->leFlags |= LEF_SOUND1;
 		}
 		// 1st kamikaze shockwave
-		memset(&shockwave, 0, sizeof(shockwave));
+		Com_Memset(&shockwave, 0, sizeof(shockwave));
 		shockwave.hModel = cgs.media.kamikazeShockWave;
 		shockwave.reType = RT_MODEL;
 		shockwave.shaderTime = re->shaderTime;
@@ -632,7 +632,7 @@ void CG_AddKamikaze( localEntity_t *le ) {
 		else {
 			c = 0;
 		}
-		memset(&shockwave, 0, sizeof(shockwave));
+		Com_Memset(&shockwave, 0, sizeof(shockwave));
 		shockwave.hModel = cgs.media.kamikazeShockWave;
 		shockwave.reType = RT_MODEL;
 		shockwave.shaderTime = re->shaderTime;

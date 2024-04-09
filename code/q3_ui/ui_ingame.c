@@ -161,7 +161,7 @@ void InGame_MenuInit( void ) {
 	char	info[MAX_INFO_STRING];
 	int		team;
 
-	memset( &s_ingame, 0 ,sizeof(ingamemenu_t) );
+	Com_Memset( &s_ingame, 0 ,sizeof(ingamemenu_t) );
 
 	InGame_Cache();
 

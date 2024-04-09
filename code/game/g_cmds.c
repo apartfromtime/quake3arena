@@ -138,7 +138,7 @@ char	*ConcatArgs( int start ) {
 		if ( len + tlen >= MAX_STRING_CHARS - 1 ) {
 			break;
 		}
-		memcpy( line + len, arg, tlen );
+		Com_Memcpy( line + len, arg, tlen );
 		len += tlen;
 		if ( i != c - 1 ) {
 			line[len] = ' ';
@@ -312,7 +312,7 @@ void Cmd_Give_f (gentity_t *ent)
 		it_ent->classname = it->classname;
 		G_SpawnItem (it_ent, it);
 		FinishSpawningItem(it_ent );
-		memset( &trace, 0, sizeof( trace ) );
+		Com_Memset( &trace, 0, sizeof( trace ) );
 		Touch_Item (it_ent, ent, &trace);
 		if (it_ent->inuse) {
 			G_FreeEntity( it_ent );

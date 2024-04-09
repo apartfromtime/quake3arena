@@ -302,7 +302,7 @@ static void PlayerSettings_SetMenuItems( void ) {
 	s_playersettings.effects.curvalue = gamecodetoui[c];
 
 	// model/skin
-	memset( &s_playersettings.playerinfo, 0, sizeof(playerInfo_t) );
+	Com_Memset( &s_playersettings.playerinfo, 0, sizeof(playerInfo_t) );
 	
 	viewangles[YAW]   = 180 - 30;
 	viewangles[PITCH] = 0;
@@ -353,7 +353,7 @@ PlayerSettings_MenuInit
 static void PlayerSettings_MenuInit( void ) {
 	int		y;
 
-	memset(&s_playersettings,0,sizeof(playersettings_t));
+	Com_Memset(&s_playersettings,0,sizeof(playersettings_t));
 
 	PlayerSettings_Cache();
 

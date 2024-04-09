@@ -227,7 +227,7 @@ static void UI_RemoveBotsMenu_Init( void ) {
 	int		count;
 	int		y;
 
-	memset( &removeBotsMenuInfo, 0 ,sizeof(removeBotsMenuInfo) );
+	Com_Memset( &removeBotsMenuInfo, 0 ,sizeof(removeBotsMenuInfo) );
 	removeBotsMenuInfo.menu.fullscreen = qfalse;
 	removeBotsMenuInfo.menu.wrapAround = qtrue;
 

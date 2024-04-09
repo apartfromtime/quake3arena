@@ -166,7 +166,7 @@ static void Main_MenuDraw( void ) {
 
 	// setup the refdef
 
-	memset( &refdef, 0, sizeof( refdef ) );
+	Com_Memset( &refdef, 0, sizeof( refdef ) );
 
 	refdef.rdflags = RDF_NOWORLDMODEL;
 
@@ -196,7 +196,7 @@ static void Main_MenuDraw( void ) {
 
 	// add the model
 
-	memset( &ent, 0, sizeof(ent) );
+	Com_Memset( &ent, 0, sizeof(ent) );
 
 	adjust = 5.0 * sin( (float)uis.realtime / 5000 );
 	VectorSet( angles, 0, 180 + adjust, 0 );
@@ -283,8 +283,8 @@ void UI_MainMenu( void ) {
 		}
 	}
 	
-	memset( &s_main, 0 ,sizeof(mainmenu_t) );
-	memset( &s_errorMessage, 0 ,sizeof(errorMessage_t) );
+	Com_Memset( &s_main, 0 ,sizeof(mainmenu_t) );
+	Com_Memset( &s_errorMessage, 0 ,sizeof(errorMessage_t) );
 
 	// com_errorMessage would need that too
 	MainMenu_Cache();

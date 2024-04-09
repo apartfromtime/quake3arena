@@ -144,7 +144,7 @@ static void UI_DriverInfo_Menu( void )
 	int		len;
 
 	// zero set all our globals
-	memset( &s_driverinfo, 0 ,sizeof(driverinfo_t) );
+	Com_Memset( &s_driverinfo, 0 ,sizeof(driverinfo_t) );
 
 	DriverInfo_Cache();
 
@@ -798,7 +798,7 @@ void GraphicsOptions_MenuInit( void )
 	int y;
 
 	// zero set all our globals
-	memset( &s_graphicsoptions, 0 ,sizeof(graphicsoptions_t) );
+	Com_Memset( &s_graphicsoptions, 0 ,sizeof(graphicsoptions_t) );
 
 	GraphicsOptions_Cache();
 

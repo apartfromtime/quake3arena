@@ -188,7 +188,7 @@ UI_Mods_MenuInit
 static void UI_Mods_MenuInit( void ) {
 	UI_ModsMenu_Cache();
 
-	memset( &s_mods, 0 ,sizeof(mods_t) );
+	Com_Memset( &s_mods, 0 ,sizeof(mods_t) );
 	s_mods.menu.wrapAround = qtrue;
 	s_mods.menu.fullscreen = qtrue;
 

@@ -119,7 +119,7 @@ static void LoadConfig_MenuInit( void ) {
 
 	UI_LoadConfig_Cache();
 
-	memset( &s_configs, 0 ,sizeof(configs_t) );
+	Com_Memset( &s_configs, 0 ,sizeof(configs_t) );
 	s_configs.menu.wrapAround = qtrue;
 	s_configs.menu.fullscreen = qtrue;
 

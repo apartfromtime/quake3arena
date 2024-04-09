@@ -1157,7 +1157,7 @@ Controls_InitModel
 */
 static void Controls_InitModel( void )
 {
-	memset( &s_controls.playerinfo, 0, sizeof(playerInfo_t) );
+	Com_Memset( &s_controls.playerinfo, 0, sizeof(playerInfo_t) );
 
 	UI_PlayerInfo_SetModel( &s_controls.playerinfo, UI_Cvar_VariableString( "model" ) );
 
@@ -1190,7 +1190,7 @@ static void Controls_MenuInit( void )
 	static char playername[32];
 
 	// zero set all our globals
-	memset( &s_controls, 0 ,sizeof(controls_t) );
+	Com_Memset( &s_controls, 0 ,sizeof(controls_t) );
 
 	Controls_Cache();
 

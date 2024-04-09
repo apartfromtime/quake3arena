@@ -75,7 +75,7 @@ static void CG_ParseScores( void ) {
 	cg.teamScores[0] = atoi( CG_Argv( 2 ) );
 	cg.teamScores[1] = atoi( CG_Argv( 3 ) );
 
-	memset( cg.scores, 0, sizeof( cg.scores ) );
+	Com_Memset( cg.scores, 0, sizeof( cg.scores ) );
 	for ( i = 0 ; i < cg.numScores ; i++ ) {
 		//
 		cg.scores[i].client = atoi( CG_Argv( i * 14 + 4 ) );
@@ -864,7 +864,7 @@ void CG_AddBufferedVoiceChat( bufferedVoiceChat_t *vchat ) {
 		return;
 	}
 
-	memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
+	Com_Memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
 	cg.voiceChatBufferIn = (cg.voiceChatBufferIn + 1) % MAX_VOICECHATBUFFER;
 	if (cg.voiceChatBufferIn == cg.voiceChatBufferOut) {
 		CG_PlayVoiceChat( &voiceChatBuffer[cg.voiceChatBufferOut] );

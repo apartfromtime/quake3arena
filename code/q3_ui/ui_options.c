@@ -115,7 +115,7 @@ void Options_MenuInit( void ) {
 	int				y;
 	uiClientState_t	cstate;
 
-	memset( &s_options, 0, sizeof(optionsmenu_t) );
+	Com_Memset( &s_options, 0, sizeof(optionsmenu_t) );
 
 	SystemConfig_Cache();
 	s_options.menu.wrapAround = qtrue;

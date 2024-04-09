@@ -155,7 +155,7 @@ void UI_LoadBestScores(const char *map, int game) {
 	char		fileName[MAX_QPATH];
 	fileHandle_t f;
 	postGameInfo_t newInfo;
-	memset(&newInfo, 0, sizeof(postGameInfo_t));
+	Com_Memset(&newInfo, 0, sizeof(postGameInfo_t));
 	Com_sprintf(fileName, MAX_QPATH, "games/%s_%i.game", map, game);
 	if (trap_FS_FOpenFile(fileName, &f, FS_READ) >= 0) {
 		int size = 0;
@@ -190,7 +190,7 @@ void UI_ClearScores() {
 	count = trap_FS_GetFileList( "games", "game", gameList, sizeof(gameList) );
 
 	size = sizeof(postGameInfo_t);
-	memset(&newInfo, 0, size);
+	Com_Memset(&newInfo, 0, size);
 
 	if (count > 0) {
 		gameFile = gameList;
@@ -237,7 +237,7 @@ static void UI_CalcPostGameStats() {
 	// compose file name
 	Com_sprintf(fileName, MAX_QPATH, "games/%s_%i.game", map, game);
 	// see if we have one already
-	memset(&oldInfo, 0, sizeof(postGameInfo_t));
+	Com_Memset(&oldInfo, 0, sizeof(postGameInfo_t));
 	if (trap_FS_FOpenFile(fileName, &f, FS_READ) >= 0) {
 	// if so load it
 		size = 0;

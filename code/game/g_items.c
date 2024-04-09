@@ -173,7 +173,7 @@ int Pickup_PersistantPowerup( gentity_t *ent, gentity_t *other ) {
 			handicap = 100.0f;
 		}
 		other->client->pers.maxHealth = handicap;
-		memset(other->client->ammoTimes, 0, sizeof(other->client->ammoTimes));
+		Com_Memset(other->client->ammoTimes, 0, sizeof(other->client->ammoTimes));
 		break;
 	default:
 		clientNum = other->client->ps.clientNum;
@@ -798,7 +798,7 @@ ClearRegisteredItems
 ==============
 */
 void ClearRegisteredItems( void ) {
-	memset( itemRegistered, 0, sizeof( itemRegistered ) );
+	Com_Memset( itemRegistered, 0, sizeof( itemRegistered ) );
 
 	// players always start with the base weapon
 	RegisterItem( BG_FindItemForWeapon( WP_MACHINEGUN ) );

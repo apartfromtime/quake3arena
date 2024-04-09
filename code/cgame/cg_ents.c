@@ -170,7 +170,7 @@ static void CG_General( centity_t *cent ) {
 		return;
 	}
 
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 
 	// set frame
 
@@ -244,7 +244,7 @@ static void CG_Item( centity_t *cent ) {
 
 	item = &bg_itemlist[ es->modelindex ];
 	if ( cg_simpleItems.integer && item->giType != IT_TEAM ) {
-		memset( &ent, 0, sizeof( ent ) );
+		Com_Memset( &ent, 0, sizeof( ent ) );
 		ent.reType = RT_SPRITE;
 		VectorCopy( cent->lerpOrigin, ent.origin );
 		ent.radius = 14;
@@ -261,7 +261,7 @@ static void CG_Item( centity_t *cent ) {
 	scale = 0.005 + cent->currentState.number * 0.00001;
 	cent->lerpOrigin[2] += 4 + cos( ( cg.time + 1000 ) *  scale ) * 4;
 
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 
 	// autorotate at one of two speeds
 	if ( item->giType == IT_HEALTH ) {
@@ -347,7 +347,7 @@ static void CG_Item( centity_t *cent ) {
 	if ( item->giType == IT_WEAPON && wi->barrelModel ) {
 		refEntity_t	barrel;
 
-		memset( &barrel, 0, sizeof( barrel ) );
+		Com_Memset( &barrel, 0, sizeof( barrel ) );
 
 		barrel.hModel = wi->barrelModel;
 
@@ -455,7 +455,7 @@ static void CG_Missile( centity_t *cent ) {
 	}
 
 	// create the render entity
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
@@ -537,7 +537,7 @@ static void CG_Grapple( centity_t *cent ) {
 	CG_GrappleTrail ( cent, weapon );
 
 	// create the render entity
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 
@@ -566,7 +566,7 @@ static void CG_Mover( centity_t *cent ) {
 	s1 = &cent->currentState;
 
 	// create the render entity
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 	VectorCopy( cent->lerpOrigin, ent.origin);
 	VectorCopy( cent->lerpOrigin, ent.oldorigin);
 	AnglesToAxis( cent->lerpAngles, ent.axis );
@@ -609,7 +609,7 @@ void CG_Beam( centity_t *cent ) {
 	s1 = &cent->currentState;
 
 	// create the render entity
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 	VectorCopy( s1->pos.trBase, ent.origin );
 	VectorCopy( s1->origin2, ent.oldorigin );
 	AxisClear( ent.axis );
@@ -634,7 +634,7 @@ static void CG_Portal( centity_t *cent ) {
 	s1 = &cent->currentState;
 
 	// create the render entity
-	memset (&ent, 0, sizeof(ent));
+	Com_Memset (&ent, 0, sizeof(ent));
 	VectorCopy( cent->lerpOrigin, ent.origin );
 	VectorCopy( s1->origin2, ent.oldorigin );
 	ByteToDir( s1->eventParm, ent.axis[0] );
@@ -787,7 +787,7 @@ static void CG_TeamBase( centity_t *cent ) {
 	if ( cgs.gametype == GT_CTF) {
 #endif
 		// show the flag base
-		memset(&model, 0, sizeof(model));
+		Com_Memset(&model, 0, sizeof(model));
 		model.reType = RT_MODEL;
 		VectorCopy( cent->lerpOrigin, model.lightingOrigin );
 		VectorCopy( cent->lerpOrigin, model.origin );
@@ -806,7 +806,7 @@ static void CG_TeamBase( centity_t *cent ) {
 #ifdef MISSIONPACK
 	else if ( cgs.gametype == GT_OBELISK ) {
 		// show the obelisk
-		memset(&model, 0, sizeof(model));
+		Com_Memset(&model, 0, sizeof(model));
 		model.reType = RT_MODEL;
 		VectorCopy( cent->lerpOrigin, model.lightingOrigin );
 		VectorCopy( cent->lerpOrigin, model.origin );
@@ -900,7 +900,7 @@ static void CG_TeamBase( centity_t *cent ) {
 	}
 	else if ( cgs.gametype == GT_HARVESTER ) {
 		// show harvester model
-		memset(&model, 0, sizeof(model));
+		Com_Memset(&model, 0, sizeof(model));
 		model.reType = RT_MODEL;
 		VectorCopy( cent->lerpOrigin, model.lightingOrigin );
 		VectorCopy( cent->lerpOrigin, model.origin );

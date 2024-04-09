@@ -634,7 +634,7 @@ UI_PlayerFloatSprite
 static void UI_PlayerFloatSprite( playerInfo_t *pi, vec3_t origin, qhandle_t shader ) {
 	refEntity_t		ent;
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	VectorCopy( origin, ent.origin );
 	ent.origin[2] += 48;
 	ent.reType = RT_SPRITE;
@@ -722,10 +722,10 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 
 	y -= jumpHeight;
 
-	memset( &refdef, 0, sizeof( refdef ) );
-	memset( &legs, 0, sizeof(legs) );
-	memset( &torso, 0, sizeof(torso) );
-	memset( &head, 0, sizeof(head) );
+	Com_Memset( &refdef, 0, sizeof( refdef ) );
+	Com_Memset( &legs, 0, sizeof(legs) );
+	Com_Memset( &torso, 0, sizeof(torso) );
+	Com_Memset( &head, 0, sizeof(head) );
 
 	refdef.rdflags = RDF_NOWORLDMODEL;
 
@@ -817,7 +817,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 	// add the gun
 	//
 	if ( pi->currentWeapon != WP_NONE ) {
-		memset( &gun, 0, sizeof(gun) );
+		Com_Memset( &gun, 0, sizeof(gun) );
 		gun.hModel = pi->weaponModel;
 		VectorCopy( origin, gun.lightingOrigin );
 		UI_PositionEntityOnTag( &gun, &torso, pi->torsoModel, "tag_weapon");
@@ -831,7 +831,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 	if ( pi->realWeapon == WP_MACHINEGUN || pi->realWeapon == WP_GAUNTLET || pi->realWeapon == WP_BFG ) {
 		vec3_t	angles;
 
-		memset( &barrel, 0, sizeof(barrel) );
+		Com_Memset( &barrel, 0, sizeof(barrel) );
 		VectorCopy( origin, barrel.lightingOrigin );
 		barrel.renderfx = renderfx;
 
@@ -855,7 +855,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t *pi, int ti
 	//
 	if ( dp_realtime <= pi->muzzleFlashTime ) {
 		if ( pi->flashModel ) {
-			memset( &flash, 0, sizeof(flash) );
+			Com_Memset( &flash, 0, sizeof(flash) );
 			flash.hModel = pi->flashModel;
 			VectorCopy( origin, flash.lightingOrigin );
 			UI_PositionEntityOnTag( &flash, &gun, pi->weaponModel, "tag_flash");
@@ -934,7 +934,7 @@ static qboolean UI_ParseAnimationFile( const char *filename, animation_t *animat
 	char		text[20000];
 	fileHandle_t	f;
 
-	memset( animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
+	Com_Memset( animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
 
 	// load the file
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
@@ -1118,7 +1118,7 @@ UI_PlayerInfo_SetModel
 ===============
 */
 void UI_PlayerInfo_SetModel( playerInfo_t *pi, const char *model ) {
-	memset( pi, 0, sizeof(*pi) );
+	Com_Memset( pi, 0, sizeof(*pi) );
 	UI_RegisterClientModelname( pi, model );
 	pi->weapon = WP_MACHINEGUN;
 	pi->currentWeapon = pi->weapon;

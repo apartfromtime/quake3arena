@@ -368,7 +368,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
   if (text) {
     const char *s = text; // bk001206 - unsigned
 		trap_R_SetColor( color );
-		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
+		Com_Memcpy(&newColor[0], &color[0], sizeof(vec4_t));
     len = strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
@@ -379,7 +379,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
       //int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
       //float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+				Com_Memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
 				s += 2;
@@ -437,7 +437,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
   if (text) {
     const char *s = text; // bk001206 - unsigned
 		trap_R_SetColor( color );
-		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
+		Com_Memcpy(&newColor[0], &color[0], sizeof(vec4_t));
     len = strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
@@ -449,7 +449,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
       //int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
       //float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+				Com_Memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
 				s += 2;
@@ -544,7 +544,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 		while (s && *s && count < len) {
 			glyph = &font->glyphs[(int)*s]; // TTimo: FIXME: getting nasty warnings without the cast, hopefully this doesn't break the VM build
 			if ( Q_IsColorString( s ) ) {
-				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
+				Com_Memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
 				trap_R_SetColor( newColor );
 				s += 2;
@@ -706,7 +706,7 @@ qboolean Asset_Parse(int handle) {
     
 	while ( 1 ) {
 
-		memset(&token, 0, sizeof(pc_token_t));
+		Com_Memset(&token, 0, sizeof(pc_token_t));
 
 		if (!trap_PC_ReadToken(handle, &token))
 			return qfalse;
@@ -872,7 +872,7 @@ void UI_ParseMenu(const char *menuFile) {
 	}
 
 	while ( 1 ) {
-		memset(&token, 0, sizeof(pc_token_t));
+		Com_Memset(&token, 0, sizeof(pc_token_t));
 		if (!trap_PC_ReadToken( handle, &token )) {
 			break;
 		}
@@ -1295,7 +1295,7 @@ static void UI_DrawPlayerModel(rectDef_t *rect) {
 		}
 	}
   if (updateModel) {
-  	memset( &info, 0, sizeof(playerInfo_t) );
+  	Com_Memset( &info, 0, sizeof(playerInfo_t) );
   	viewangles[YAW]   = 180 - 10;
   	viewangles[PITCH] = 0;
   	viewangles[ROLL]  = 0;
@@ -1491,7 +1491,7 @@ static void UI_DrawOpponent(rectDef_t *rect) {
 	  strcpy(headmodel, UI_Cvar_VariableString("ui_opponentModel"));
 		team[0] = '\0';
 
-  	memset( &info2, 0, sizeof(playerInfo_t) );
+  	Com_Memset( &info2, 0, sizeof(playerInfo_t) );
   	viewangles[YAW]   = 180 - 10;
   	viewangles[PITCH] = 0;
   	viewangles[ROLL]  = 0;
@@ -3910,7 +3910,7 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 		trap_LAN_ServerStatus( serverAddress, NULL, 0);
 		return qfalse;
 	}
-	memset(info, 0, sizeof(*info));
+	Com_Memset(info, 0, sizeof(*info));
 	if ( trap_LAN_ServerStatus( serverAddress, info->text, sizeof(info->text)) ) {
 		Q_strncpyz(info->address, serverAddress, sizeof(info->address));
 		p = info->text;
@@ -4031,7 +4031,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 		}
 	}
 	else {
-		memset(&uiInfo.pendingServerStatus, 0, sizeof(uiInfo.pendingServerStatus));
+		Com_Memset(&uiInfo.pendingServerStatus, 0, sizeof(uiInfo.pendingServerStatus));
 		uiInfo.numFoundPlayerServers = 0;
 		uiInfo.currentFoundPlayerServer = 0;
 		trap_Cvar_VariableStringBuffer( "ui_findPlayer", uiInfo.findPlayerName, sizeof(uiInfo.findPlayerName));

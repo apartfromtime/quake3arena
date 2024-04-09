@@ -43,7 +43,7 @@ gentity_t	*neutralObelisk;
 void Team_SetFlagStatus( int team, flagStatus_t status );
 
 void Team_InitGame( void ) {
-	memset(&teamgame, 0, sizeof teamgame);
+	Com_Memset(&teamgame, 0, sizeof teamgame);
 
 	switch( g_gametype.integer ) {
 	case GT_CTF:

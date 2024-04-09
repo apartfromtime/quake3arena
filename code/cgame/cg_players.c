@@ -251,10 +251,10 @@ static qboolean	CG_ParseAnimationFile( const char *filename, clientInfo_t *ci ) 
 	}
 
 	// crouch backward animation
-	memcpy(&animations[LEGS_BACKCR], &animations[LEGS_WALKCR], sizeof(animation_t));
+	Com_Memcpy(&animations[LEGS_BACKCR], &animations[LEGS_WALKCR], sizeof(animation_t));
 	animations[LEGS_BACKCR].reversed = qtrue;
 	// walk backward animation
-	memcpy(&animations[LEGS_BACKWALK], &animations[LEGS_WALK], sizeof(animation_t));
+	Com_Memcpy(&animations[LEGS_BACKWALK], &animations[LEGS_WALK], sizeof(animation_t));
 	animations[LEGS_BACKWALK].reversed = qtrue;
 	// flag moving fast
 	animations[FLAG_RUN].firstFrame = 0;
@@ -754,8 +754,8 @@ static void CG_CopyClientInfoModel( clientInfo_t *from, clientInfo_t *to ) {
 
 	to->newAnims = from->newAnims;
 
-	memcpy( to->animations, from->animations, sizeof( to->animations ) );
-	memcpy( to->sounds, from->sounds, sizeof( to->sounds ) );
+	Com_Memcpy( to->animations, from->animations, sizeof( to->animations ) );
+	Com_Memcpy( to->sounds, from->sounds, sizeof( to->sounds ) );
 }
 
 /*
@@ -885,13 +885,13 @@ void CG_NewClientInfo( int clientNum ) {
 
 	configstring = CG_ConfigString( clientNum + CS_PLAYERS );
 	if ( !configstring[0] ) {
-		memset( ci, 0, sizeof( *ci ) );
+		Com_Memset( ci, 0, sizeof( *ci ) );
 		return;		// player just left
 	}
 
 	// build into a temp buffer so the defer checks can use
 	// the old value
-	memset( &newInfo, 0, sizeof( newInfo ) );
+	Com_Memset( &newInfo, 0, sizeof( newInfo ) );
 
 	// isolate the player's name
 	v = Info_ValueForKey(configstring, "n");
@@ -1625,7 +1625,7 @@ static void CG_TrailItem( centity_t *cent, qhandle_t hModel ) {
 	angles[ROLL] = 0;
 	AnglesToAxis( angles, axis );
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	VectorMA( cent->lerpOrigin, -16, axis[0], ent.origin );
 	ent.origin[2] += 16;
 	angles[YAW] += 90;
@@ -1650,7 +1650,7 @@ static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso 
 	float		angle, d;
 
 	// show the flag pole model
-	memset( &pole, 0, sizeof(pole) );
+	Com_Memset( &pole, 0, sizeof(pole) );
 	pole.hModel = cgs.media.flagPoleModel;
 	VectorCopy( torso->lightingOrigin, pole.lightingOrigin );
 	pole.shadowPlane = torso->shadowPlane;
@@ -1659,7 +1659,7 @@ static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso 
 	trap_R_AddRefEntityToScene( &pole );
 
 	// show the flag model
-	memset( &flag, 0, sizeof(flag) );
+	Com_Memset( &flag, 0, sizeof(flag) );
 	flag.hModel = cgs.media.flagFlapModel;
 	flag.customSkin = hSkin;
 	VectorCopy( torso->lightingOrigin, flag.lightingOrigin );
@@ -1795,7 +1795,7 @@ static void CG_PlayerTokens( centity_t *cent, int renderfx ) {
 		VectorCopy(trail->positions[i], origin);
 	}
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	if( cgs.clientinfo[ cent->currentState.clientNum ].team == TEAM_BLUE ) {
 		ent.hModel = cgs.media.redCubeModel;
 	} else {
@@ -1903,7 +1903,7 @@ static void CG_PlayerFloatSprite( centity_t *cent, qhandle_t shader ) {
 		rf = 0;
 	}
 
-	memset( &ent, 0, sizeof( ent ) );
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	VectorCopy( cent->lerpOrigin, ent.origin );
 	ent.origin[2] += 48;
 	ent.reType = RT_SPRITE;
@@ -2272,9 +2272,9 @@ void CG_Player( centity_t *cent ) {
 	}
 
 
-	memset( &legs, 0, sizeof(legs) );
-	memset( &torso, 0, sizeof(torso) );
-	memset( &head, 0, sizeof(head) );
+	Com_Memset( &legs, 0, sizeof(legs) );
+	Com_Memset( &torso, 0, sizeof(torso) );
+	Com_Memset( &head, 0, sizeof(head) );
 
 	// get the rotation information
 	CG_PlayerAngles( cent, legs.axis, torso.axis, head.axis );
@@ -2343,7 +2343,7 @@ void CG_Player( centity_t *cent ) {
 #ifdef MISSIONPACK
 	if ( cent->currentState.eFlags & EF_KAMIKAZE ) {
 
-		memset( &skull, 0, sizeof(skull) );
+		Com_Memset( &skull, 0, sizeof(skull) );
 
 		VectorCopy( cent->lerpOrigin, skull.lightingOrigin );
 		skull.shadowPlane = shadowPlane;
@@ -2451,7 +2451,7 @@ void CG_Player( centity_t *cent ) {
 	}
 
 	if ( cent->currentState.powerups & ( 1 << PW_GUARD ) ) {
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.guardPowerupModel;
 		powerup.frame = 0;
 		powerup.oldframe = 0;
@@ -2459,7 +2459,7 @@ void CG_Player( centity_t *cent ) {
 		trap_R_AddRefEntityToScene( &powerup );
 	}
 	if ( cent->currentState.powerups & ( 1 << PW_SCOUT ) ) {
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.scoutPowerupModel;
 		powerup.frame = 0;
 		powerup.oldframe = 0;
@@ -2467,7 +2467,7 @@ void CG_Player( centity_t *cent ) {
 		trap_R_AddRefEntityToScene( &powerup );
 	}
 	if ( cent->currentState.powerups & ( 1 << PW_DOUBLER ) ) {
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.doublerPowerupModel;
 		powerup.frame = 0;
 		powerup.oldframe = 0;
@@ -2475,7 +2475,7 @@ void CG_Player( centity_t *cent ) {
 		trap_R_AddRefEntityToScene( &powerup );
 	}
 	if ( cent->currentState.powerups & ( 1 << PW_AMMOREGEN ) ) {
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.ammoRegenPowerupModel;
 		powerup.frame = 0;
 		powerup.oldframe = 0;
@@ -2494,7 +2494,7 @@ void CG_Player( centity_t *cent ) {
 	if ( (cent->currentState.powerups & ( 1 << PW_INVULNERABILITY ) ) ||
 		cg.time - ci->invulnerabilityStopTime < 250 ) {
 
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.invulnerabilityPowerupModel;
 		powerup.customSkin = 0;
 		// always draw
@@ -2518,7 +2518,7 @@ void CG_Player( centity_t *cent ) {
 
 	t = cg.time - ci->medkitUsageTime;
 	if ( ci->medkitUsageTime && t < 500 ) {
-		memcpy(&powerup, &torso, sizeof(torso));
+		Com_Memcpy(&powerup, &torso, sizeof(torso));
 		powerup.hModel = cgs.media.medkitUsageModel;
 		powerup.customSkin = 0;
 		// always draw
@@ -2600,13 +2600,13 @@ void CG_ResetPlayerEntity( centity_t *cent ) {
 	VectorCopy( cent->lerpOrigin, cent->rawOrigin );
 	VectorCopy( cent->lerpAngles, cent->rawAngles );
 
-	memset( &cent->pe.legs, 0, sizeof( cent->pe.legs ) );
+	Com_Memset( &cent->pe.legs, 0, sizeof( cent->pe.legs ) );
 	cent->pe.legs.yawAngle = cent->rawAngles[YAW];
 	cent->pe.legs.yawing = qfalse;
 	cent->pe.legs.pitchAngle = 0;
 	cent->pe.legs.pitching = qfalse;
 
-	memset( &cent->pe.torso, 0, sizeof( cent->pe.legs ) );
+	Com_Memset( &cent->pe.torso, 0, sizeof( cent->pe.legs ) );
 	cent->pe.torso.yawAngle = cent->rawAngles[YAW];
 	cent->pe.torso.yawing = qfalse;
 	cent->pe.torso.pitchAngle = cent->rawAngles[PITCH];

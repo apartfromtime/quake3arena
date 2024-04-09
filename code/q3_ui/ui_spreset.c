@@ -138,7 +138,7 @@ void UI_ResetMenu(void) {
 	int	l1, l2, l3;
 
 	// zero set all our globals
-	memset( &s_reset, 0, sizeof(s_reset) );
+	Com_Memset( &s_reset, 0, sizeof(s_reset) );
 
 	Reset_Cache();
 

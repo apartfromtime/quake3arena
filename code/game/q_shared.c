@@ -24,6 +24,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "q_shared.h"
 
 /*
+=================
+Com_Memcpy
+=================
+*/
+void Com_Memcpy (void* dest, const void* src, const size_t count)
+{
+	memcpy(dest, src, count);
+}
+
+/*
+=================
+Com_Memset
+=================
+*/
+void Com_Memset (void* dest, const int val, const size_t count)
+{
+	memset(dest, val, count);
+}
+
+/*
 ============================================================================
 
 GROWLISTS
@@ -79,7 +99,7 @@ int Com_AddToGrowList(growList_t* list, void* data) {
 		Com_Error(ERR_DROP, "Growlist alloc failed");
 	}
 
-	memcpy(list->elements, old, list->currentElements * sizeof(void*));
+	Com_Memcpy(list->elements, old, list->currentElements * sizeof(void*));
 
 	Com_Dealloc(old);
 
