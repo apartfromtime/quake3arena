@@ -9,6 +9,7 @@
 */*.vcxproj.user
 */*/*.vcxproj.filters
 */*/*.vcxproj.user
+code/botlib.log
 code/win32/winquake.res
 */Debug
 */q3_ui
