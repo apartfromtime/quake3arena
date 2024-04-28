@@ -502,20 +502,29 @@ void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal )
 	float inv_denom;
 
 	inv_denom =  DotProduct( normal, normal );
+
+	if (inv_denom)
+	{
+		inv_denom = 1.0f / inv_denom;
+
+		d = DotProduct( normal, p ) * inv_denom;
+
+		n[0] = normal[0] * inv_denom;
+		n[1] = normal[1] * inv_denom;
+		n[2] = normal[2] * inv_denom;
+
+		dst[0] = p[0] - d * n[0];
+		dst[1] = p[1] - d * n[1];
+		dst[2] = p[2] - d * n[2];
+
+	}
+	else
+	{
 #ifndef Q3_VM
-	assert( Q_fabs(inv_denom) != 0.0f ); // bk010122 - zero vectors get here
+		//assert( Q_fabs(inv_denom) != 0.0f ); // bk010122 - zero vectors get here
 #endif
-	inv_denom = 1.0f / inv_denom;
-
-	d = DotProduct( normal, p ) * inv_denom;
-
-	n[0] = normal[0] * inv_denom;
-	n[1] = normal[1] * inv_denom;
-	n[2] = normal[2] * inv_denom;
-
-	dst[0] = p[0] - d * n[0];
-	dst[1] = p[1] - d * n[1];
-	dst[2] = p[2] - d * n[2];
+		VectorClear(dst);
+	}
 }
 
 /*
