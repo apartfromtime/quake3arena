@@ -1209,6 +1209,103 @@ static void Com_WriteCDKey( const char *filename, const char *ikey ) {
 }
 #endif
 
+/*
+=================
+Com_InitSmallZoneMemory
+=================
+*/
+void Com_InitSmallZoneMemory(void)
+{
+	int memAlloc = 512;
+
+	if (Zone_InitSmallZoneMemory(memAlloc) == qfalse) {
+		Com_Error(ERR_FATAL, "Small zone data failed to allocate %1.1f megs",
+			(float)memAlloc / 1024);
+	}
+}
+
+/*
+=================
+Com_InitZoneMemory
+=================
+*/
+void Com_InitZoneMemory(void)
+{
+	cvar_t* cv = NULL;
+	char* pMsg = NULL;
+	int minAlloc = 0;
+	int memAlloc = 0;
+
+	// allocate the random block zone
+	cv = Cvar_Get("com_zoneMegs", DEF_COMZONEMEGS, CVAR_LATCH | CVAR_ARCHIVE);
+
+	minAlloc = MIN_COMZONEMEGS;
+	pMsg = "Minimum com_zoneMegs is %i, allocating %i megs.\n";
+
+	if (cv->integer < minAlloc) {
+		memAlloc = minAlloc;
+		Com_Printf(pMsg, minAlloc, memAlloc);
+	} else {
+		memAlloc = cv->integer;
+	}
+
+	if (Zone_InitMemory(memAlloc) == qfalse) {
+		Com_Error(ERR_FATAL, "Zone data failed to allocate %i megs", memAlloc);
+	}
+
+#ifdef ZONE_DEBUG
+	Cmd_AddCommand("zonelog", Z_LogHeap);
+#endif
+}
+
+/*
+=================
+Com_InitHunkMemory
+=================
+*/
+void Com_InitHunkMemory(void)
+{
+	cvar_t* cv = NULL;
+	char* pMsg = NULL;
+	int minAlloc = 0;
+	int memAlloc = 0;
+
+	// make sure the file system has allocated and "not" freed any temp blocks
+	// this allows the config and product id files ( journal files too ) to be loaded
+	// by the file system without redunant routines in the file system utilizing different 
+	// memory systems
+	if (FS_LoadStack() != 0) {
+		Com_Error(ERR_FATAL, "Hunk initialization failed. File system load stack not zero");
+	}
+
+	// allocate the stack based hunk allocator
+	cv = Cvar_Get("com_hunkMegs", DEF_COMHUNKMEGS, CVAR_LATCH | CVAR_ARCHIVE);
+
+	// if we are not dedicated min allocation is 56, otherwise min is 1
+	if (com_dedicated && com_dedicated->integer) {
+		minAlloc = MIN_DEDICATED_COMHUNKMEGS;
+		pMsg = "Minimum com_hunkMegs for a dedicated server is %i, allocating %i megs.\n";
+	} else {
+		minAlloc = MIN_COMHUNKMEGS;
+		pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
+	}
+
+	if (cv->integer < minAlloc) {
+		memAlloc = minAlloc;
+		Com_Printf(pMsg, minAlloc, memAlloc);
+	} else {
+		memAlloc = cv->integer;
+	}
+
+	if (Hunk_InitMemory(memAlloc) == qfalse) {
+		Com_Error(ERR_FATAL, "Hunk data failed to allocate %i megs", memAlloc);
+	}
+
+#ifdef HUNK_DEBUG
+	Cmd_AddCommand("hunklog", Hunk_Log);
+	Cmd_AddCommand("hunksmalllog", Hunk_SmallLog);
+#endif
+}
 
 /*
 =================

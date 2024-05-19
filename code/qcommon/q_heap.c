@@ -33,18 +33,6 @@ MEMORY
 
 extern fileHandle_t logfile;
 
-#define MIN_DEDICATED_COMHUNKMEGS 1
-#define MIN_COMHUNKMEGS 56
-#define MIN_COMZONEMEGS 20
-
-#ifdef __APPLE__
-#define DEF_COMHUNKMEGS "64"
-#define DEF_COMZONEMEGS "24"
-#else
-#define DEF_COMHUNKMEGS "56"
-#define DEF_COMZONEMEGS "16"
-#endif
-
 /*
 ==============================================================================
 
@@ -98,6 +86,51 @@ memzone_t* smallzone;
 
 static int s_zoneTotal;
 static int s_smallZoneTotal;
+
+void Z_ClearZone(memzone_t* zone, int size);
+
+/*
+=================
+Zone_InitSmallZoneMemory
+=================
+*/
+qboolean Zone_InitSmallZoneMemory(int smallSize)
+{
+	s_smallZoneTotal = 1024 * smallSize;
+
+	// bk001205 - was malloc
+	smallzone = calloc(s_smallZoneTotal, 1);
+
+	if (!smallzone) {
+		return qfalse;
+	}
+
+	Z_ClearZone(smallzone, s_smallZoneTotal);
+
+	return qtrue;
+}
+
+/*
+========================
+Zone_InitMemory
+========================
+*/
+qboolean Zone_InitMemory(int zoneSize)
+{
+	s_zoneTotal = 1024 * 1024 * zoneSize;
+
+	// bk001205 - was malloc
+	mainzone = calloc(s_zoneTotal, 1);
+
+	if (!mainzone) {
+
+		return qfalse;
+	}
+
+	Z_ClearZone(mainzone, s_zoneTotal);
+
+	return qtrue;
+}
 
 /*
 ========================
@@ -703,6 +736,30 @@ static	hunkUsed_t* hunk_permanent, * hunk_temp;
 static	byte* s_hunkData = NULL;
 static	int		s_hunkTotal;
 
+/*
+=================
+Com_InitHunkMemory
+=================
+*/
+qboolean Hunk_InitMemory(int hunkSize)
+{
+	s_hunkTotal = 1024 * 1024 * hunkSize;
+
+	// bk001205 - was malloc
+	s_hunkData = calloc(s_hunkTotal + 31, 1);
+
+	if (!s_hunkData) {
+		return qfalse;
+	}
+
+	// cacheline align
+	s_hunkData = (byte*)(((int)s_hunkData + 31) & ~31);
+
+	Hunk_Clear();
+
+	return qtrue;
+}
+
 void Hunk_Meminfo(void)
 {
 	int unused = 0;
@@ -1203,122 +1260,4 @@ void Hunk_Trash(void)
 			buf[rnd + i] ^= value;
 		}
 	}
-}
-
-/*
-=================
-Com_InitSmallZoneMemory
-=================
-*/
-void Com_InitSmallZoneMemory(void)
-{
-	s_smallZoneTotal = 512 * 1024;
-
-	// bk001205 - was malloc
-	smallzone = calloc(s_smallZoneTotal, 1);
-
-	if (!smallzone) {
-		Com_Error(ERR_FATAL, "Small zone data failed to allocate %1.1f megs",
-			(float)s_smallZoneTotal / (1024 * 1024));
-	}
-
-	Z_ClearZone(smallzone, s_smallZoneTotal);
-}
-
-/*
-=================
-Com_InitZoneMemory
-=================
-*/
-void Com_InitZoneMemory(void)
-{
-	cvar_t* cv = 0;
-	int minAlloc = 0;
-	char* pMsg = NULL;
-
-	// allocate the random block zone
-	cv = Cvar_Get("com_zoneMegs", DEF_COMZONEMEGS, CVAR_LATCH | CVAR_ARCHIVE);
-
-	minAlloc = MIN_COMZONEMEGS;
-	pMsg = "Minimum com_zoneMegs is %i, allocating %i megs.\n";
-
-	if (cv->integer < minAlloc) {
-		s_zoneTotal = 1024 * 1024 * minAlloc;
-		Com_Printf(pMsg, minAlloc, s_zoneTotal / (1024 * 1024));
-	}
-	else {
-		s_zoneTotal = cv->integer * 1024 * 1024;
-	}
-
-	// bk001205 - was malloc
-	mainzone = calloc(s_zoneTotal, 1);
-
-	if (!mainzone) {
-		Com_Error(ERR_FATAL, "Zone data failed to allocate %i megs",
-			s_zoneTotal / (1024 * 1024));
-	}
-
-	Z_ClearZone(mainzone, s_zoneTotal);
-
-#ifdef ZONE_DEBUG
-	Cmd_AddCommand("zonelog", Z_LogHeap);
-#endif
-}
-
-/*
-=================
-Com_InitHunkMemory
-=================
-*/
-void Com_InitHunkMemory(void)
-{
-	cvar_t* cv;
-	int nMinAlloc;
-	char* pMsg = NULL;
-
-	// make sure the file system has allocated and "not" freed any temp blocks
-	// this allows the config and product id files ( journal files too ) to be loaded
-	// by the file system without redunant routines in the file system utilizing different 
-	// memory systems
-	if (FS_LoadStack() != 0) {
-		Com_Error(ERR_FATAL, "Hunk initialization failed. File system load stack not zero");
-	}
-
-	// allocate the stack based hunk allocator
-	cv = Cvar_Get("com_hunkMegs", DEF_COMHUNKMEGS, CVAR_LATCH | CVAR_ARCHIVE);
-
-	// if we are not dedicated min allocation is 56, otherwise min is 1
-	if (com_dedicated && com_dedicated->integer) {
-		nMinAlloc = MIN_DEDICATED_COMHUNKMEGS;
-		pMsg = "Minimum com_hunkMegs for a dedicated server is %i, allocating %i megs.\n";
-	}
-	else {
-		nMinAlloc = MIN_COMHUNKMEGS;
-		pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
-	}
-
-	if (cv->integer < nMinAlloc) {
-		s_hunkTotal = 1024 * 1024 * nMinAlloc;
-		Com_Printf(pMsg, nMinAlloc, s_hunkTotal / (1024 * 1024));
-	}
-	else {
-		s_hunkTotal = cv->integer * 1024 * 1024;
-	}
-
-	// bk001205 - was malloc
-	s_hunkData = calloc(s_hunkTotal + 31, 1);
-
-	if (!s_hunkData) {
-		Com_Error(ERR_FATAL, "Hunk data failed to allocate %i megs", s_hunkTotal / (1024 * 1024));
-	}
-
-	// cacheline align
-	s_hunkData = (byte*)(((int)s_hunkData + 31) & ~31);
-
-	Hunk_Clear();
-
-#ifdef HUNK_DEBUG
-	Cmd_AddCommand("hunklog", Hunk_Log);
-	Cmd_AddCommand("hunksmalllog", Hunk_SmallLog);
-#endif
 }

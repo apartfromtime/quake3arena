@@ -25,6 +25,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "..\game\q_shared.h"
 
+#define MIN_DEDICATED_COMHUNKMEGS 1
+#define MIN_COMHUNKMEGS 56
+#define MIN_COMZONEMEGS 20
+
+#ifdef __APPLE__
+#define DEF_COMHUNKMEGS "64"
+#define DEF_COMZONEMEGS "24"
+#else
+#define DEF_COMHUNKMEGS "56"
+#define DEF_COMZONEMEGS "16"
+#endif
+
 typedef enum {
 	TAG_FREE,
 	TAG_GENERAL,
@@ -69,6 +81,8 @@ void* Z_TagMalloc(int size, int tag);	// NOT 0 filled memory
 void* Z_Malloc(int size);			// returns 0 filled memory
 void* S_Malloc(int size);			// NOT 0 filled memory only for small allocations
 #endif
+qboolean Zone_InitSmallZoneMemory(int zoneSize);
+qboolean Zone_InitMemory(int zoneSize);
 void Zone_Meminfo(void);
 void Zone_TouchMemory(void);
 void Z_CheckHeap(void);
@@ -95,6 +109,7 @@ void* Hunk_AllocDebug(int size, ha_pref preference, char* label, char* file, int
 void* Hunk_Alloc(int size, ha_pref preference);
 #endif
 
+qboolean Hunk_InitMemory(int hunkSize);
 void Hunk_Meminfo(void);
 void Hunk_TouchMemory(void);
 void Hunk_Clear(void);
@@ -105,11 +120,10 @@ void Hunk_ClearTempMemory(void);
 void* Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void* buf);
 int	Hunk_MemoryRemaining(void);
+void Hunk_SmallLog(void);
 void Hunk_Log(void);
 void Hunk_Trash(void);
 
-void Com_InitSmallZoneMemory(void);
-void Com_InitZoneMemory(void);
 void Com_InitHunkMemory(void);
 
 #endif	// Q_HEAP_H
