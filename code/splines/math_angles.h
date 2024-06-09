@@ -82,57 +82,57 @@ public:
 
 extern angles_t ang_zero;
 
-inline angles_t::angles_t() {}
+Q_INLINE angles_t::angles_t() {}
 
-inline angles_t::angles_t( float pitch, float yaw, float roll ) {
+Q_INLINE angles_t::angles_t( float pitch, float yaw, float roll ) {
 	this->pitch = pitch;
 	this->yaw	= yaw;
 	this->roll	= roll;
 }
 
-inline angles_t::angles_t( const idVec3_t &vec ) {
+Q_INLINE angles_t::angles_t( const idVec3_t &vec ) {
 	this->pitch = vec.x;
 	this->yaw	= vec.y;
 	this->roll	= vec.z;
 }
 
-inline float angles_t::operator[]( int index ) const {
+Q_INLINE float angles_t::operator[]( int index ) const {
 	assert( ( index >= 0 ) && ( index < 3 ) );
 	return ( &pitch )[ index ];
 }
 
-inline float& angles_t::operator[]( int index ) {
+Q_INLINE float& angles_t::operator[]( int index ) {
 	assert( ( index >= 0 ) && ( index < 3 ) );
 	return ( &pitch )[ index ];
 }
 
-inline angles_t::operator vec3_p( void ) {
+Q_INLINE angles_t::operator vec3_p( void ) {
 	return *( idVec3_t * )&pitch;
 }
 
-inline void angles_t::set( float pitch, float yaw, float roll ) {
+Q_INLINE void angles_t::set( float pitch, float yaw, float roll ) {
 	this->pitch = pitch;
 	this->yaw	= yaw;
 	this->roll	= roll;
 }
 
-inline void angles_t::operator=( angles_t const &a ) {
+Q_INLINE void angles_t::operator=( angles_t const &a ) {
 	pitch	= a.pitch;
 	yaw		= a.yaw;
 	roll	= a.roll;
 }
 
-inline void angles_t::operator=( idVec3_t const &a ) {
+Q_INLINE void angles_t::operator=( idVec3_t const &a ) {
 	pitch	= a[ 0 ];
 	yaw		= a[ 1 ];
 	roll	= a[ 2 ];
 }
 
-inline angles_t operator+( const angles_t &a, const angles_t &b ) {
+Q_INLINE angles_t operator+( const angles_t &a, const angles_t &b ) {
 	return angles_t( a.pitch + b.pitch, a.yaw + b.yaw, a.roll + b.roll );
 }
 
-inline angles_t& angles_t::operator+=( angles_t const &a ) {
+Q_INLINE angles_t& angles_t::operator+=( angles_t const &a ) {
 	pitch	+= a.pitch;
 	yaw		+= a.yaw;
 	roll	+= a.roll;
@@ -140,7 +140,7 @@ inline angles_t& angles_t::operator+=( angles_t const &a ) {
 	return *this;
 }
 
-inline angles_t& angles_t::operator+=( idVec3_t const &a ) {
+Q_INLINE angles_t& angles_t::operator+=( idVec3_t const &a ) {
 	pitch	+= a.x;
 	yaw	+= a.y;
 	roll	+= a.z;
@@ -148,11 +148,11 @@ inline angles_t& angles_t::operator+=( idVec3_t const &a ) {
 	return *this;
 }
 
-inline angles_t operator-( angles_t &a, angles_t &b ) {
+Q_INLINE angles_t operator-( angles_t &a, angles_t &b ) {
 	return angles_t( a.pitch - b.pitch, a.yaw - b.yaw, a.roll - b.roll );
 }
 
-inline angles_t& angles_t::operator-=( angles_t &a ) {
+Q_INLINE angles_t& angles_t::operator-=( angles_t &a ) {
 	pitch	-= a.pitch;
 	yaw		-= a.yaw;
 	roll	-= a.roll;
@@ -160,15 +160,15 @@ inline angles_t& angles_t::operator-=( angles_t &a ) {
 	return *this;
 }
 
-inline angles_t operator*( const angles_t &a, float b ) {
+Q_INLINE angles_t operator*( const angles_t &a, float b ) {
 	return angles_t( a.pitch * b, a.yaw * b, a.roll * b );
 }
 
-inline angles_t operator*( float a, const angles_t &b ) {
+Q_INLINE angles_t operator*( float a, const angles_t &b ) {
 	return angles_t( a * b.pitch, a * b.yaw, a * b.roll );
 }
 
-inline angles_t& angles_t::operator*=( float a ) {
+Q_INLINE angles_t& angles_t::operator*=( float a ) {
 	pitch	*= a;
 	yaw		*= a;
 	roll	*= a;
@@ -176,15 +176,15 @@ inline angles_t& angles_t::operator*=( float a ) {
 	return *this;
 }
 
-inline int operator==( angles_t &a, angles_t &b ) {
+Q_INLINE int operator==( angles_t &a, angles_t &b ) {
 	return ( ( a.pitch == b.pitch ) && ( a.yaw == b.yaw ) && ( a.roll == b.roll ) );
 }
 
-inline int operator!=( angles_t &a, angles_t &b ) {
+Q_INLINE int operator!=( angles_t &a, angles_t &b ) {
 	return ( ( a.pitch != b.pitch ) || ( a.yaw != b.yaw ) || ( a.roll != b.roll ) );
 }
 
-inline angles_t& angles_t::Zero( void ) {
+Q_INLINE angles_t& angles_t::Zero( void ) {
 	pitch	= 0.0f;
 	yaw		= 0.0f;
 	roll	= 0.0f;

@@ -60,7 +60,7 @@ idList<type>::idList( int )
 ================
 */
 template< class type >
-inline idList<type>::idList( int granularity ) {
+Q_INLINE idList<type>::idList( int granularity ) {
 	assert( granularity > 0 );
 
 	m_list			= NULL;
@@ -74,7 +74,7 @@ idList<type>::~idList<type>
 ================
 */
 template< class type >
-inline idList<type>::~idList() {
+Q_INLINE idList<type>::~idList() {
 	Clear();
 }
 
@@ -84,7 +84,7 @@ idList<type>::Clear
 ================
 */
 template< class type >
-inline void idList<type>::Clear( void ) {
+Q_INLINE void idList<type>::Clear( void ) {
 	if ( m_list ) {
 		delete[] m_list;
 	}
@@ -100,7 +100,7 @@ idList<type>::Num
 ================
 */
 template< class type >
-inline int idList<type>::Num( void ) {
+Q_INLINE int idList<type>::Num( void ) {
 	return m_num;
 }
 
@@ -110,7 +110,7 @@ idList<type>::SetNum
 ================
 */
 template< class type >
-inline void idList<type>::SetNum( int num ) {
+Q_INLINE void idList<type>::SetNum( int num ) {
 	assert( num >= 0 );
 	if ( num > m_size ) {
 		// resize it up to the closest level of granularity
@@ -125,7 +125,7 @@ idList<type>::SetGranularity
 ================
 */
 template< class type >
-inline void idList<type>::SetGranularity( int granularity ) {
+Q_INLINE void idList<type>::SetGranularity( int granularity ) {
 	int newsize;
 
 	assert( granularity > 0 );
@@ -148,7 +148,7 @@ Resizes the array to exactly the number of elements it contains
 ================
 */
 template< class type >
-inline void idList<type>::Condense( void ) {
+Q_INLINE void idList<type>::Condense( void ) {
 	if ( m_list ) {
 		if ( m_num ) {
 			Resize( m_num );
@@ -164,7 +164,7 @@ idList<type>::Size
 ================
 */
 template< class type >
-inline int idList<type>::Size( void ) {
+Q_INLINE int idList<type>::Size( void ) {
 	return m_size;
 }
 
@@ -174,7 +174,7 @@ idList<type>::Resize
 ================
 */
 template< class type >
-inline void idList<type>::Resize( int size ) {
+Q_INLINE void idList<type>::Resize( int size ) {
 	type	*temp;
 	int		i;
 
@@ -207,7 +207,7 @@ idList<type>::operator[] const
 ================
 */
 template< class type >
-inline type idList<type>::operator[]( int index ) const {
+Q_INLINE type idList<type>::operator[]( int index ) const {
 	assert( index >= 0 );
 	assert( index < m_num );
 
@@ -220,7 +220,7 @@ idList<type>::operator[]
 ================
 */
 template< class type >
-inline type &idList<type>::operator[]( int index ) {
+Q_INLINE type &idList<type>::operator[]( int index ) {
 	assert( index >= 0 );
 	assert( index < m_num );
 
@@ -233,7 +233,7 @@ idList<type>::Append
 ================
 */
 template< class type >
-inline int idList<type>::Append( type const & obj ) {
+Q_INLINE int idList<type>::Append( type const & obj ) {
 	if ( !m_list ) {
 		Resize( m_granularity );
 	}
@@ -254,7 +254,7 @@ idList<type>::AddUnique
 ================
 */
 template< class type >
-inline int idList<type>::AddUnique( type const & obj ) {
+Q_INLINE int idList<type>::AddUnique( type const & obj ) {
 	int index;
 
 	if ( !Find( obj, &index ) ) {
@@ -270,7 +270,7 @@ idList<type>::Find
 ================
 */
 template< class type >
-inline type *idList<type>::Find( type const & obj, int *index ) {
+Q_INLINE type *idList<type>::Find( type const & obj, int *index ) {
 	int i;
 
 	for( i = 0; i < m_num; i++ ) {
@@ -291,7 +291,7 @@ idList<type>::RemoveIndex
 ================
 */
 template< class type >
-inline bool idList<type>::RemoveIndex( int index ) {
+Q_INLINE bool idList<type>::RemoveIndex( int index ) {
 	int i;
 
 	if ( !m_list || !m_num ) {
@@ -319,7 +319,7 @@ idList<type>::Remove
 ================
 */
 template< class type >
-inline bool idList<type>::Remove( type const & obj ) {
+Q_INLINE bool idList<type>::Remove( type const & obj ) {
 	int index;
 
 	if ( Find( obj, &index ) ) {
@@ -335,7 +335,7 @@ idList<type>::Sort
 ================
 */
 template< class type >
-inline void idList<type>::Sort( cmp_t *compare ) {
+Q_INLINE void idList<type>::Sort( cmp_t *compare ) {
 	if ( !m_list ) {
 		return;
 	}

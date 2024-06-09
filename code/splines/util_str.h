@@ -28,9 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string.h>
 #include <stdio.h>
 
-#ifdef _WIN32
-#pragma warning(disable : 4710)     // function 'blah' not inlined
-#endif
+#include "..\system\sys_public.h"
 
 void TestStringClass ();
 
@@ -151,7 +149,7 @@ public:
 
 };
 
-inline idStr::~idStr()
+Q_INLINE idStr::~idStr()
 	{
    if ( m_data )
       {
@@ -160,13 +158,13 @@ inline idStr::~idStr()
       }
 	}
 
-inline idStr::idStr() : m_data ( NULL )
+Q_INLINE idStr::idStr() : m_data ( NULL )
 	{
    EnsureAlloced ( 1 );
 	m_data->data[ 0 ] = 0;
 	}
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
 	(
 	const char *text
    ) : m_data ( NULL )
@@ -191,7 +189,7 @@ inline idStr::idStr
 		}
 	}
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
 	(
 	const idStr& text
    ) : m_data ( NULL )
@@ -201,7 +199,7 @@ inline idStr::idStr
    m_data->AddRef ();
    }
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
 	(
 	const idStr text, 
 	int start,
@@ -239,7 +237,7 @@ inline idStr::idStr
    m_data->len = len;
 	}
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
    (
    const char ch
    ) : m_data ( NULL )
@@ -252,7 +250,7 @@ inline idStr::idStr
    m_data->len = 1;
    }
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
    (
    const float num
    ) : m_data ( NULL )
@@ -268,7 +266,7 @@ inline idStr::idStr
    m_data->len = len;
    }
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
    (
    const int num
    ) : m_data ( NULL )
@@ -284,7 +282,7 @@ inline idStr::idStr
    m_data->len = len;
    }
 
-inline idStr::idStr
+Q_INLINE idStr::idStr
    (
    const unsigned num
    ) : m_data ( NULL )
@@ -300,24 +298,24 @@ inline idStr::idStr
    m_data->len = len;
    }
 
-inline int idStr::length( void ) const
+Q_INLINE int idStr::length( void ) const
 	{
    return ( m_data != NULL ) ? m_data->len : 0;
 	}
 
-inline int idStr::allocated( void ) const
+Q_INLINE int idStr::allocated( void ) const
 	{
    return ( m_data != NULL ) ? m_data->alloced + sizeof( *m_data ) : 0;
 	}
 
-inline const char *idStr::c_str( void ) const
+Q_INLINE const char *idStr::c_str( void ) const
 	{
 	assert( m_data );
 
 	return m_data->data;
 	}
 
-inline void idStr::append
+Q_INLINE void idStr::append
 	(
 	const char *text
 	)
@@ -337,7 +335,7 @@ inline void idStr::append
 		}
 	}
 
-inline void idStr::append
+Q_INLINE void idStr::append
 	(
 	const idStr& text
 	)
@@ -352,7 +350,7 @@ inline void idStr::append
    m_data->len = len;
 	}
 
-inline char idStr::operator[]( int index ) const
+Q_INLINE char idStr::operator[]( int index ) const
 	{
    assert ( m_data );
    
@@ -372,7 +370,7 @@ inline char idStr::operator[]( int index ) const
 	return m_data->data[ index ];
 	}
 
-inline char& idStr::operator[]
+Q_INLINE char& idStr::operator[]
 	(
 	int index
 	)
@@ -402,7 +400,7 @@ inline char& idStr::operator[]
 	return m_data->data[ index ];
 	}
 
-inline void idStr::operator=
+Q_INLINE void idStr::operator=
 	(
 	const idStr& text
 	)
@@ -415,7 +413,7 @@ inline void idStr::operator=
    m_data = text.m_data;
    }
 
-inline void idStr::operator=
+Q_INLINE void idStr::operator=
 	(
 	const char *text
 	)
@@ -479,7 +477,7 @@ inline void idStr::operator=
    m_data->len = len;
 	}
 
-inline idStr operator+
+Q_INLINE idStr operator+
 	(
 	const idStr& a,
 	const idStr& b
@@ -493,7 +491,7 @@ inline idStr operator+
 	return result;
 	}
 
-inline idStr operator+
+Q_INLINE idStr operator+
 	(
 	const idStr& a,
 	const char *b
@@ -507,7 +505,7 @@ inline idStr operator+
 	return result;
 	}
 
-inline idStr operator+
+Q_INLINE idStr operator+
 	(
 	const char *a,
 	const idStr& b
@@ -521,7 +519,7 @@ inline idStr operator+
 	return result;
 	}
 
-inline idStr operator+
+Q_INLINE idStr operator+
    (
    const idStr& a,
    const bool b
@@ -535,7 +533,7 @@ inline idStr operator+
 	return result;
    }
 
-inline idStr operator+
+Q_INLINE idStr operator+
 	(
    const idStr& a,
 	const char b
@@ -550,7 +548,7 @@ inline idStr operator+
 	return a + text;
 	}
 
-inline idStr& idStr::operator+=
+Q_INLINE idStr& idStr::operator+=
 	(
 	const idStr& a
 	)
@@ -560,7 +558,7 @@ inline idStr& idStr::operator+=
 	return *this;
 	}
 
-inline idStr& idStr::operator+=
+Q_INLINE idStr& idStr::operator+=
 	(
 	const char *a
 	)
@@ -570,7 +568,7 @@ inline idStr& idStr::operator+=
 	return *this;
 	}
 
-inline idStr& idStr::operator+=
+Q_INLINE idStr& idStr::operator+=
 	(
 	const char a
 	)
@@ -585,7 +583,7 @@ inline idStr& idStr::operator+=
    return *this;
 	}
 
-inline idStr& idStr::operator+=
+Q_INLINE idStr& idStr::operator+=
 	(
 	const bool a
 	)
@@ -595,7 +593,7 @@ inline idStr& idStr::operator+=
 	return *this;
 	}
 
-inline bool operator==
+Q_INLINE bool operator==
 	(
 	const idStr& a,
 	const idStr& b
@@ -605,7 +603,7 @@ inline bool operator==
 	return ( !strcmp( a.c_str(), b.c_str() ) );
 	}
 
-inline bool operator==
+Q_INLINE bool operator==
 	(
 	const idStr& a,
 	const char *b
@@ -620,7 +618,7 @@ inline bool operator==
 	return ( !strcmp( a.c_str(), b ) );
 	}
 
-inline bool operator==
+Q_INLINE bool operator==
 	(
 	const char *a,
 	const idStr& b
@@ -635,7 +633,7 @@ inline bool operator==
 	return ( !strcmp( a, b.c_str() ) );
 	}
 
-inline bool operator!=
+Q_INLINE bool operator!=
 	(
 	const idStr& a,
 	const idStr& b
@@ -645,7 +643,7 @@ inline bool operator!=
 	return !( a == b );
 	}
 
-inline bool operator!=
+Q_INLINE bool operator!=
 	(
 	const idStr& a,
 	const char *b
@@ -655,7 +653,7 @@ inline bool operator!=
 	return !( a == b );
 	}
 
-inline bool operator!=
+Q_INLINE bool operator!=
 	(
 	const char *a,
 	const idStr& b
@@ -665,7 +663,7 @@ inline bool operator!=
 	return !( a == b );
 	}
 
-inline int idStr::icmpn
+Q_INLINE int idStr::icmpn
    (
    const char *text, 
    int n
@@ -678,7 +676,7 @@ inline int idStr::icmpn
    return idStr::icmpn( m_data->data, text, n );
    }
 
-inline int idStr::icmpn
+Q_INLINE int idStr::icmpn
    (
    const idStr& text, 
    int n
@@ -691,7 +689,7 @@ inline int idStr::icmpn
    return idStr::icmpn( m_data->data, text.m_data->data, n );
    }
 
-inline int idStr::icmp
+Q_INLINE int idStr::icmp
    (
    const char *text
    ) const
@@ -703,7 +701,7 @@ inline int idStr::icmp
    return idStr::icmp( m_data->data, text );
    }
 
-inline int idStr::icmp
+Q_INLINE int idStr::icmp
    (
    const idStr& text
    ) const
@@ -715,7 +713,7 @@ inline int idStr::icmp
    return idStr::icmp( c_str () , text.c_str () );
    }
 
-inline int idStr::cmp
+Q_INLINE int idStr::cmp
    (
    const char *text
    ) const
@@ -727,7 +725,7 @@ inline int idStr::cmp
    return idStr::cmp( m_data->data, text );
    }
 
-inline int idStr::cmp
+Q_INLINE int idStr::cmp
    (
    const idStr& text
    ) const
@@ -739,7 +737,7 @@ inline int idStr::cmp
    return idStr::cmp( c_str () , text.c_str () );
    }
 
-inline int idStr::cmpn
+Q_INLINE int idStr::cmpn
    (
    const char *text, 
    int n
@@ -752,7 +750,7 @@ inline int idStr::cmpn
    return idStr::cmpn( c_str () , text, n );
    }
 
-inline int idStr::cmpn
+Q_INLINE int idStr::cmpn
    (
    const idStr& text, 
    int n
@@ -765,7 +763,7 @@ inline int idStr::cmpn
    return idStr::cmpn( c_str () , text.c_str () , n );
    }
 
-inline void idStr::tolower
+Q_INLINE void idStr::tolower
    (
    void
    )
@@ -778,7 +776,7 @@ inline void idStr::tolower
    idStr::toLower( m_data->data );
    }
 
-inline void idStr::toupper
+Q_INLINE void idStr::toupper
    (
    void
    )
@@ -791,7 +789,7 @@ inline void idStr::toupper
    idStr::toUpper( m_data->data );
    }
 
-inline bool idStr::isNumeric
+Q_INLINE bool idStr::isNumeric
    (
    void
    ) const
@@ -801,11 +799,11 @@ inline bool idStr::isNumeric
    return idStr::isNumeric( m_data->data );
    }
 
-inline idStr::operator const char *() {
+Q_INLINE idStr::operator const char *() {
 	return c_str();
 }
 
-inline idStr::operator const char *
+Q_INLINE idStr::operator const char *
    (
    void
    ) const

@@ -26,18 +26,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __QGL_H__
 #define __QGL_H__
 
+#include "..\system\sys_public.h"
+
 #if defined( __LINT__ )
 
 #include <GL/gl.h>
 
 #elif defined( _WIN32 )
-
-#pragma warning (disable: 4201)
-#pragma warning (disable: 4214)
-#pragma warning (disable: 4514)
-#pragma warning (disable: 4032)
-#pragma warning (disable: 4201)
-#pragma warning (disable: 4214)
 #include <windows.h>
 #include <gl/gl.h>
 

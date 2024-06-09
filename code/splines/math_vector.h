@@ -22,12 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __MATH_VECTOR_H__
 #define __MATH_VECTOR_H__
 
-#if defined(_WIN32)
-#pragma warning(disable : 4244)
-#endif
-
 #include <math.h>
 #include <assert.h>
+
+#include "..\system\sys_public.h"
 
 //#define DotProduct(a,b)			((a)[0]*(b)[0]+(a)[1]*(b)[1]+(a)[2]*(b)[2])
 //#define VectorSubtract(a,b,c)	((c)[0]=(a)[0]-(b)[0],(c)[1]=(a)[1]-(b)[1],(c)[2]=(a)[2]-(b)[2])
@@ -63,14 +61,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 float Q_fabs( float f );
 
-#ifndef Q_INLINE
-#ifdef _WIN32
-#define Q_INLINE __inline 
-#else
-#define Q_INLINE inline
-#endif
-#endif
-
 // if this is defined, vec3 will take four elements, which may allow
 // easier SIMD optimizations
 //#define	FAT_VEC3
@@ -87,7 +77,7 @@ class angles_t;
 // This is about 12.4 times faster than sqrt() and according to my testing (not exhaustive) 
 // it returns fairly accurate results (error below 1.0e-5 up to 100000.0 in 0.1 increments). 
 
-static inline float idSqrt(float x) {
+static Q_INLINE float idSqrt(float x) {
     const float half = 0.5;
     const float one = 1.0;
     float B, y0, y1;
@@ -115,7 +105,7 @@ static inline float idSqrt(float x) {
     return x * y1;
 }
 #else
-static inline double idSqrt(double x) {
+static Q_INLINE double idSqrt(double x) {
     return sqrt(x);
 }
 #endif

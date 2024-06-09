@@ -23,15 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define __MATH_MATRIX_H__
 
 #include <string.h>
-#include "math_vector.h"
 
-#ifndef Q_INLINE
-#ifdef _WIN32
-#define Q_INLINE __inline 
-#else
-#define Q_INLINE inline
-#endif
-#endif
+#include "math_vector.h"
 
 class quat_t;
 class angles_t;
