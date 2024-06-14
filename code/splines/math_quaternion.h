@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <assert.h>
 #include <math.h>
 
+#include "math_vector.h"
+
 class idVec3_t;
 class angles_t;
 class mat3_t;
