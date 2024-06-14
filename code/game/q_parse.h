@@ -23,8 +23,8 @@ const char* Com_ParseOnLine(const char* (*data_p));
 const char* Com_ParseRestOfLine(const char* (*data_p));
 char* Com_ParseExt(const char* (*data_p), qboolean allowLineBreak);
 int		Com_Compress(char* data_p);
-void	Com_ParseError(char* format, ...);
-void	Com_ParseWarning(char* format, ...);
+void Com_ParseError(const char* format, ...);
+void Com_ParseWarning(const char* format, ...);
 //int		Com_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
 void Com_UngetToken(void);
 

@@ -928,7 +928,7 @@ static qboolean UI_ParseAnimationFile( const char *filename, animation_t *animat
 	char		*text_p, *prev;
 	int			len;
 	int			i;
-	char		*token;
+	const char* token;
 	float		fps;
 	int			skip;
 	char		text[20000];

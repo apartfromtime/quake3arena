@@ -91,7 +91,7 @@ static qboolean	CG_ParseAnimationFile( const char *filename, clientInfo_t *ci ) 
 	char		*text_p, *prev;
 	int			len;
 	int			i;
-	char		*token;
+	const char* token;
 	float		fps;
 	int			skip;
 	char		text[20000];
