@@ -44,18 +44,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <GL/gl.h>
 #include <GL/glx.h>
-// bk001129 - from cvs1.17 (mkv)
-#if defined(__FX__)
-#include <GL/fxmesa.h>
-#endif
 
 #elif defined( __FreeBSD__ ) // rb010123
 
 #include <GL/gl.h>
 #include <GL/glx.h>
-#if defined(__FX__)
-#include <GL/fxmesa.h>
-#endif
 
 #else
 
@@ -540,17 +533,6 @@ extern BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval );
 #endif	// _WIN32
 
 #if ( (defined __linux__ )  || (defined __FreeBSD__ ) ) // rb010123
-
-//FX Mesa Functions
-// bk001129 - from cvs1.17 (mkv)
-#if defined (__FX__)
-extern fxMesaContext (*qfxMesaCreateContext)(GLuint win, GrScreenResolution_t, GrScreenRefresh_t, const GLint attribList[]);
-extern fxMesaContext (*qfxMesaCreateBestContext)(GLuint win, GLint width, GLint height, const GLint attribList[]);
-extern void (*qfxMesaDestroyContext)(fxMesaContext ctx);
-extern void (*qfxMesaMakeCurrent)(fxMesaContext ctx);
-extern fxMesaContext (*qfxMesaGetCurrentContext)(void);
-extern void (*qfxMesaSwapBuffers)(void);
-#endif
 
 //GLX Functions
 extern XVisualInfo * (*qglXChooseVisual)( Display *dpy, int screen, int *attribList );
