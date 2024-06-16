@@ -49,7 +49,7 @@ UI_ParseInfos
 ===============
 */
 int UI_ParseInfos( char *buf, int max, char *infos[] ) {
-	char	*token;
+	const char* token;
 	int		count;
 	char	key[MAX_TOKEN_CHARS];
 	char	info[MAX_INFO_STRING];
@@ -85,9 +85,12 @@ int UI_ParseInfos( char *buf, int max, char *infos[] ) {
 
 			token = Com_ParseExt( &buf, qfalse );
 			if ( !token[0] ) {
-				strcpy( token, "<NULL>" );
+				Info_SetValueForKey(info, key, "<NULL>");
 			}
-			Info_SetValueForKey( info, key, token );
+			else
+			{
+				Info_SetValueForKey(info, key, token);
+			}
 		}
 		//NOTE: extra space for arena number
 		infos[count] = UI_Alloc(strlen(info) + strlen("\\num\\") + strlen(va("%d", MAX_ARENAS)) + 1);

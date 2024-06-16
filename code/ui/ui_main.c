@@ -5580,6 +5580,7 @@ typedef struct {
 	int			cvarFlags;
 } cvarTable_t;
 
+vmCvar_t	ui_developer;
 vmCvar_t	ui_ffa_fraglimit;
 vmCvar_t	ui_ffa_timelimit;
 
@@ -5701,6 +5702,7 @@ vmCvar_t	ui_serverStatusTimeOut;
 
 // bk001129 - made static to avoid aliasing
 static cvarTable_t		cvarTable[] = {
+	{ &ui_developer, "com_developer", "0", CVAR_ARCHIVE  },
 	{ &ui_ffa_fraglimit, "ui_ffa_fraglimit", "20", CVAR_ARCHIVE },
 	{ &ui_ffa_timelimit, "ui_ffa_timelimit", "0", CVAR_ARCHIVE },
 
