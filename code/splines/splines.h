@@ -195,11 +195,11 @@ public:
 		selected = NULL;
 		dirty = true;
 		activeSegment = 0;
-		granularity = 0.025;
-		pathColor.set(1.0, 0.5, 0.0);
-		controlColor.set(0.7, 0.0, 1.0);
-		segmentColor.set(0.0, 0.0, 1.0);
-		activeColor.set(1.0, 0.0, 0.0);
+		granularity = 0.025f;
+		pathColor.set(1.0f, 0.5f, 0.0f);
+		controlColor.set(0.7f, 0.0f, 1.0f);
+		segmentColor.set(0.0f, 0.0f, 1.0f);
+		activeColor.set(1.0f, 0.0f, 0.0f);
 	}
 
 	void initPosition(long startTime, long totalTime);

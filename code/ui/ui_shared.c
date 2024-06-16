@@ -3880,7 +3880,7 @@ void Item_Paint(itemDef_t *item) {
       h = item->window.rectClient.h / 2;
       rx = item->window.rectClient.x + w - item->window.rectEffects.x;
       ry = item->window.rectClient.y + h - item->window.rectEffects.y;
-      a = 3 * M_PI / 180;
+      a = (float)(3 * M_PI / 180);
   	  c = cos(a);
       s = sin(a);
       item->window.rectClient.x = (rx * c - ry * s) + item->window.rectEffects.x - w;
