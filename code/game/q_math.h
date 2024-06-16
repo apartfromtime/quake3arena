@@ -31,6 +31,11 @@ MATHLIB
 ==============================================================
 */
 
+// angle indexes
+#define	PITCH           0           // up / down
+#define	YAW             1           // left / right
+#define	ROLL            2           // fall over
+
 #define	SIDE_FRONT		0
 #define	SIDE_BACK		1
 #define	SIDE_ON			2
@@ -49,6 +54,9 @@ typedef	int	fixed16_t;
 #ifndef M_PI
 #define M_PI		3.14159265358979323846			// matches value in gcc v2 math.h
 #endif
+
+#define	ANGLE2SHORT(x)	((int)((x)*65536/360) & 65535)
+#define	SHORT2ANGLE(x)	((x)*(360.0/65536))
 
 #define DEG2RAD( a ) ( ( (a) * M_PI ) / 180.0F )
 #define RAD2DEG( a ) ( ( (a) * 180.0f ) / M_PI )
@@ -104,9 +112,14 @@ struct cplane_s;
 #define	nanmask (255<<23)
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
+#define Q_max( x, y )   ( ( ( x ) > ( y ) ) ? ( x ) : ( y ) )
+#define Q_min( x, y )   ( ( ( x ) < ( y ) ) ? ( x ) : ( y ) )
+#define Q_sign( f )     ( ( f > 0 ) ? 1 : ( ( f < 0 ) ? -1 : 0 ) )
+
 float Q_rsqrt(float f);		// reciprocal square root
 float Q_fabs(float f);
 
+#define Square(x) ((x)*(x))
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
 signed char ClampChar(int i);

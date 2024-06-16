@@ -82,15 +82,6 @@ typedef int		clipHandle_t;
 #define NULL ((void *)0)
 #endif
 
-#define Q_max( x, y ) ( ( ( x ) > ( y ) ) ? ( x ) : ( y ) )
-#define Q_min( x, y ) ( ( ( x ) < ( y ) ) ? ( x ) : ( y ) )
-#define Q_sign( f )	( ( f > 0 ) ? 1 : ( ( f < 0 ) ? -1 : 0 ) )
-
-// angle indexes
-#define	PITCH				0		// up / down
-#define	YAW					1		// left / right
-#define	ROLL				2		// fall over
-
 // the game guarantees that no string from the network will ever
 // exceed MAX_STRING_CHARS
 #define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
@@ -606,9 +597,6 @@ typedef enum {
 ========================================================================
 */
 
-#define	ANGLE2SHORT(x)	((int)((x)*65536/360) & 65535)
-#define	SHORT2ANGLE(x)	((x)*(360.0/65536))
-
 #define	SNAPFLAG_RATE_DELAYED	1
 #define	SNAPFLAG_NOT_ACTIVE		2	// snapshot used during connection and for zombies
 #define SNAPFLAG_SERVERCOUNT	4	// toggled every map_restart so transitions can be detected
@@ -894,8 +882,6 @@ typedef struct {
   float glyphScale;
   char name[MAX_QPATH];
 } fontInfo_t;
-
-#define Square(x) ((x)*(x))
 
 // real time
 //=============================================

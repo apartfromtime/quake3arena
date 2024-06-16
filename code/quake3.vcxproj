@@ -1249,6 +1249,7 @@
     <ClInclude Include="game\bg_public.h" />
     <ClInclude Include="cgame\cg_public.h" />
     <ClInclude Include="client\client.h" />
+    <ClInclude Include="game\q_math.h" />
     <ClInclude Include="game\q_parse.h" />
     <ClInclude Include="qcommon\cm_local.h" />
     <ClInclude Include="qcommon\cm_patch.h" />
@@ -1262,7 +1263,6 @@
     <ClInclude Include="game\q_shared.h" />
     <ClInclude Include="qcommon\qcommon.h" />
     <ClInclude Include="qcommon\qfiles.h" />
-    <ClInclude Include="renderer\qgl.h" />
     <ClInclude Include="win32\resource.h" />
     <ClInclude Include="server\server.h" />
     <ClInclude Include="client\snd_local.h" />

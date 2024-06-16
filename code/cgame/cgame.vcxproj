@@ -567,6 +567,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\game\bg_public.h" />
+    <ClInclude Include="..\game\q_math.h" />
     <ClInclude Include="..\game\q_parse.h" />
     <ClInclude Include="cg_local.h" />
     <ClInclude Include="cg_public.h" />

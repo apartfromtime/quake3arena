@@ -678,6 +678,7 @@
     <ClInclude Include="g_team.h" />
     <ClInclude Include="inv.h" />
     <ClInclude Include="match.h" />
+    <ClInclude Include="q_math.h" />
     <ClInclude Include="q_parse.h" />
     <ClInclude Include="q_shared.h" />
     <ClInclude Include="surfaceflags.h" />
