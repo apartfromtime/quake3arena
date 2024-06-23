@@ -122,6 +122,7 @@ float Q_fabs(float f);
 #define Square(x) ((x)*(x))
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
+float ClampFloat(float min, float max, float value);
 signed char ClampChar(int i);
 signed short ClampShort(int i);
 

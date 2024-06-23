@@ -218,6 +218,19 @@ void VectorInverse(vec3_t v)
 
 //=======================================================
 
+float ClampFloat(float min, float max, float value)
+{
+    if (value < min) {
+        return min;
+    }
+
+    if (value > max) {
+        return max;
+    }
+
+    return value;
+}
+
 signed char ClampChar( int i ) {
 	if ( i < -128 ) {
 		return -128;

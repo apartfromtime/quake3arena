@@ -258,7 +258,6 @@ int Q_PrintStrlen(const char* string);
 // removes color sequences from string
 char* Q_CleanStr(char* string);
 
-float Com_Clamp(float min, float max, float value);
 int Com_HashString(const char* fname);
 char* Com_SkipPath(char* pathname);
 // it is ok for out == in

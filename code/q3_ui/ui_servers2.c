@@ -1159,7 +1159,7 @@ static void Punkbuster_ConfirmEnable( qboolean result ) {
 	{		
 		trap_SetPbClStatus(1);
 	}
-	g_arenaservers.punkbuster.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
+	g_arenaservers.punkbuster.curvalue = ClampFloat( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
 }
 
 static void Punkbuster_ConfirmDisable( qboolean result ) {
@@ -1168,7 +1168,7 @@ static void Punkbuster_ConfirmDisable( qboolean result ) {
 		trap_SetPbClStatus(0);
 		UI_Message( punkbuster_msg );
 	}
-	g_arenaservers.punkbuster.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
+	g_arenaservers.punkbuster.curvalue = ClampFloat( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
 }
 
 /*
@@ -1575,26 +1575,26 @@ static void ArenaServers_MenuInit( void ) {
 	
 	ArenaServers_LoadFavorites();
 
-	g_servertype = Com_Clamp( 0, 3, ui_browserMaster.integer );
+	g_servertype = ClampFloat( 0, 3, ui_browserMaster.integer );
 	// hack to get rid of MPlayer stuff
 	value = g_servertype;
 	if (value >= 1)
 		value--;
 	g_arenaservers.master.curvalue = value;
 
-	g_gametype = Com_Clamp( 0, 4, ui_browserGameType.integer );
+	g_gametype = ClampFloat( 0, 4, ui_browserGameType.integer );
 	g_arenaservers.gametype.curvalue = g_gametype;
 
-	g_sortkey = Com_Clamp( 0, 4, ui_browserSortKey.integer );
+	g_sortkey = ClampFloat( 0, 4, ui_browserSortKey.integer );
 	g_arenaservers.sortkey.curvalue = g_sortkey;
 
-	g_fullservers = Com_Clamp( 0, 1, ui_browserShowFull.integer );
+	g_fullservers = ClampFloat( 0, 1, ui_browserShowFull.integer );
 	g_arenaservers.showfull.curvalue = g_fullservers;
 
-	g_emptyservers = Com_Clamp( 0, 1, ui_browserShowEmpty.integer );
+	g_emptyservers = ClampFloat( 0, 1, ui_browserShowEmpty.integer );
 	g_arenaservers.showempty.curvalue = g_emptyservers;
 	
-	g_arenaservers.punkbuster.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
+	g_arenaservers.punkbuster.curvalue = ClampFloat( 0, 1, trap_Cvar_VariableValue( "cl_punkbuster" ) );
 
 	// force to initial state and refresh
 	type = g_servertype;
