@@ -217,9 +217,6 @@ SCRIPT PARSING
 extern "C" {
 #endif
 
-void Q_CDECL Com_sprintf(char* dest, int size, const char* fmt, ...);
-
-
 // mode parm for FS_FOpenFile
 typedef enum {
 	FS_READ,
@@ -236,36 +233,7 @@ typedef enum {
 
 //=============================================
 
-int Q_isprint( int c );
-int Q_islower( int c );
-int Q_isupper( int c );
-int Q_isalpha( int c );
-
-// portable case insensitive compare
-int		Q_stricmp (const char *s1, const char *s2);
-int		Q_strncmp (const char *s1, const char *s2, int n);
-int		Q_stricmpn (const char *s1, const char *s2, int n);
-char	*Q_strlwr( char *s1 );
-char	*Q_strupr( char *s1 );
-char	*Q_strrchr( const char* string, int c );
-
-// buffer size safe library replacements
-void	Q_strncpyz( char *dest, const char *src, int destsize );
-void	Q_strcat( char *dest, int size, const char *src );
-
-// strlen that discounts Quake color sequences
-int Q_PrintStrlen(const char* string);
-// removes color sequences from string
-char* Q_CleanStr(char* string);
-
-int Com_HashString(const char* fname);
-char* Com_SkipPath(char* pathname);
-// it is ok for out == in
-void Com_StripExtension(const char* in, char* out);
-// "extension" should include the dot: ".map"
-void Com_DefaultExtension(char* path, int maxSize, const char* extension);
-int Com_Filter(const char* filter, const char* name, int casesensitive);
-const char* Com_StringContains(const char* str1, const char* str2, int casesensitive);
+#include "../qcommon/q_string.h"
 
 //=============================================
 
@@ -295,7 +263,6 @@ float	BigFloat(float l);
 float	LittleFloat(float l);
 
 void	Swap_Init(void);
-char*	Q_CDECL va(char *format, ...);
 
 #ifdef __cplusplus
 	}

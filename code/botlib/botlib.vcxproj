@@ -177,6 +177,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="be_aas_bspq3.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>

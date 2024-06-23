@@ -920,6 +920,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="qcommon\q_heap.c" />
+    <ClCompile Include="qcommon\q_string.c" />
     <ClCompile Include="server\sv_bot.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1257,6 +1258,7 @@
     <ClInclude Include="qcommon\cm_public.h" />
     <ClInclude Include="game\g_public.h" />
     <ClInclude Include="qcommon\q_heap.h" />
+    <ClInclude Include="qcommon\q_string.h" />
     <ClInclude Include="system\sys_public.h" />
     <ClInclude Include="ui\keycodes.h" />
     <ClInclude Include="client\keys.h" />

@@ -100,6 +100,7 @@
   <ItemGroup>
     <ClCompile Include="..\game\q_parse.c" />
     <ClCompile Include="..\game\q_shared.c" />
+    <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="math_angles.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
