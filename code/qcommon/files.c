@@ -538,9 +538,7 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	len = ftell (f);
 	fseek (f, 0, SEEK_SET);
 
-	// we are using direct malloc instead of Z_Malloc here, so it
-	// probably won't work on a mac... Its only for developers anyway...
-	buf = malloc( len );
+	buf = (byte*)Z_Malloc(len);
 	if (fread( buf, 1, len, f ) != len)
 		Com_Error( ERR_FATAL, "Short read in FS_Copyfiles()\n" );
 	fclose( f );
@@ -556,7 +554,7 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	if (fwrite( buf, 1, len, f ) != len)
 		Com_Error( ERR_FATAL, "Short write in FS_Copyfiles()\n" );
 	fclose( f );
-	free( buf );
+	Z_Free(buf);
 }
 
 /*

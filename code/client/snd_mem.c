@@ -73,30 +73,32 @@ redo:
 	return v;
 }
 
-void SND_setup() {
-	sndBuffer *p, *q;
-	cvar_t	*cv;
-	int scs;
+void SND_setup(void)
+{
+    sndBuffer *p, *q;
+    cvar_t *cv;
+    int scs;
 
-	cv = Cvar_Get( "com_soundMegs", DEF_COMSOUNDMEGS, CVAR_LATCH | CVAR_ARCHIVE );
+    cv = Cvar_Get("com_soundMegs", DEF_COMSOUNDMEGS, CVAR_LATCH | CVAR_ARCHIVE);
 
-	scs = (cv->integer*1536);
+    scs = (cv->integer * 1536);
 
-	buffer = malloc(scs*sizeof(sndBuffer) );
-	// allocate the stack based hunk allocator
-	sfxScratchBuffer = malloc(SND_CHUNK_SIZE * sizeof(short) * 4);	//Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4);
-	sfxScratchPointer = NULL;
+    buffer = (sndBuffer*)Hunk_Alloc(scs * sizeof(sndBuffer), h_low);
+    // allocate the stack based hunk allocator
+    sfxScratchBuffer = (short*)Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4, h_low);
+    sfxScratchPointer = NULL;
 
-	inUse = scs*sizeof(sndBuffer);
-	p = buffer;;
-	q = p + scs;
-	while (--q > p)
-		*(sndBuffer **)q = q-1;
-	
-	*(sndBuffer **)q = NULL;
-	freelist = p + scs - 1;
+    inUse = scs * sizeof(sndBuffer);
+    p = buffer;
+    q = p + scs;
 
-	Com_Printf("Sound memory manager started\n");
+    while (--q > p)
+        *(sndBuffer**)q = q-1;
+
+    *(sndBuffer**)q = NULL;
+    freelist = p + scs - 1;
+
+    Com_Printf("Sound memory manager started\n");
 }
 
 /*
