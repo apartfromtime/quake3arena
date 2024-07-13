@@ -181,6 +181,8 @@ typedef enum
 #define	GIANTCHAR_WIDTH		32
 #define	GIANTCHAR_HEIGHT	48
 
+void* Com_Allocate(int bytes);
+void Com_Dealloc(void* ptr);
 void Com_Memset(void* dest, const int val, const size_t count);
 void Com_Memcpy(void* dest, const void* src, const size_t count);
 
@@ -373,24 +375,17 @@ extern "C" {
 }
 #endif
 
-//=========================================
+/*
+============================================================================
 
-typedef struct
-{
-	qboolean	frameMemory;
-	int			currentElements;
-	int			maxElements;			// will reallocate and move when exceeded
-	void**		elements;
-} growList_t;
+GROWLISTS
 
-// you don't need to init the growlist if you don't mind it growing and moving
-// the list as it expands
-void		Com_InitGrowList(growList_t* list, int maxElements);
-int			Com_AddToGrowList(growList_t* list, void* data);
-void* Com_GrowListElement(const growList_t* list, int index);
-int			Com_IndexForGrowListElement(const growList_t* list, const void* element);
+============================================================================
+*/
 
-//=========================================
+#include "..\qcommon\q_list.h"
+
+//==========================================================================
 
 //
 // key / value info strings
