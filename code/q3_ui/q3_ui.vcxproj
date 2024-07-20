@@ -296,6 +296,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;_WINDOWS;_MBCS;_USRDLL;Q3_UI_EXPORTS</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\qcommon\q_dict.c" />
     <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="ui_addbots.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">true</ExcludedFromBuild>

@@ -286,6 +286,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;_WINDOWS</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\game\q_parse.c" />
+    <ClCompile Include="..\qcommon\q_dict.c" />
     <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="cg_consolecmds.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>

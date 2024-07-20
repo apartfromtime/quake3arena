@@ -213,6 +213,36 @@ SCRIPT PARSING
 
 #include "..\game\q_parse.h"
 
+/*
+===============================================================================
+
+LIBRARY REPLACEMENT FUNCTIONS
+
+===============================================================================
+*/
+
+#include "..\qcommon\q_string.h"
+
+/*
+===============================================================================
+
+GROWLISTS
+
+===============================================================================
+*/
+
+#include "..\qcommon\q_list.h"
+
+/*
+===============================================================================
+
+  INFO STRINGS
+
+===============================================================================
+*/
+
+#include "..\qcommon\q_dict.h"
+
 //=============================================================================
 
 #ifdef __cplusplus
@@ -232,10 +262,6 @@ typedef enum {
 	FS_SEEK_END,
 	FS_SEEK_SET
 } fsOrigin_t;
-
-//=============================================
-
-#include "../qcommon/q_string.h"
 
 //=============================================
 
@@ -374,29 +400,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-/*
-============================================================================
-
-GROWLISTS
-
-============================================================================
-*/
-
-#include "..\qcommon\q_list.h"
-
-//==========================================================================
-
-//
-// key / value info strings
-//
-char *Info_ValueForKey( const char *s, const char *key );
-void Info_RemoveKey( char *s, const char *key );
-void Info_RemoveKey_big( char *s, const char *key );
-void Info_SetValueForKey( char *s, const char *key, const char *value );
-void Info_SetValueForKey_Big( char *s, const char *key, const char *value );
-qboolean Info_Validate( const char *s );
-void Info_NextPair( const char **s, char *key, char *value );
 
 #ifndef Q3RADIANT
 /*

@@ -249,6 +249,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\qcommon\q_dict.c" />
     <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="ai_chat.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">Disabled</Optimization>
