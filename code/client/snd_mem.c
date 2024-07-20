@@ -50,6 +50,16 @@ short *sfxScratchBuffer = NULL;
 sfx_t *sfxScratchPointer = NULL;
 int	   sfxScratchIndex = 0;
 
+
+void SND_Shutdown(void)
+{
+    if (buffer != NULL)
+    {
+        free(buffer);
+        buffer = NULL;
+    }
+}
+
 void	SND_free(sndBuffer *v) {
 	*(sndBuffer **)v = freelist;
 	freelist = (sndBuffer*)v;
@@ -83,7 +93,7 @@ void SND_setup(void)
 
     scs = (cv->integer * 1536);
 
-    buffer = (sndBuffer*)Hunk_Alloc(scs * sizeof(sndBuffer), h_low);
+    buffer = (sndBuffer*)malloc(scs * sizeof(sndBuffer));
     // allocate the stack based hunk allocator
     sfxScratchBuffer = (short*)Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4, h_low);
     sfxScratchPointer = NULL;

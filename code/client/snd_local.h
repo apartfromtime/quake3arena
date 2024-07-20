@@ -166,6 +166,7 @@ extern cvar_t	*s_separation;
 
 qboolean S_LoadSound( sfx_t *sfx );
 
+void SND_Shutdown(void);
 void		SND_free(sndBuffer *v);
 sndBuffer*	SND_malloc();
 void		SND_setup();
