@@ -231,7 +231,6 @@ void S_Shutdown( void ) {
 	}
 
 	SNDDMA_Shutdown();
-    SND_Shutdown();
 
 	s_soundStarted = 0;
 

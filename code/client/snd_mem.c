@@ -51,15 +51,6 @@ sfx_t *sfxScratchPointer = NULL;
 int	   sfxScratchIndex = 0;
 
 
-void SND_Shutdown(void)
-{
-    if (buffer != NULL)
-    {
-        free(buffer);
-        buffer = NULL;
-    }
-}
-
 void	SND_free(sndBuffer *v) {
 	*(sndBuffer **)v = freelist;
 	freelist = (sndBuffer*)v;
@@ -93,7 +84,8 @@ void SND_setup(void)
 
     scs = (cv->integer * 1536);
 
-    buffer = (sndBuffer*)malloc(scs * sizeof(sndBuffer));
+    // FIXME: bug in hunk swap banks prevents allocating on the heap
+    buffer = (sndBuffer*)Hunk_AllocateTempMemory(scs * sizeof(sndBuffer));
     // allocate the stack based hunk allocator
     sfxScratchBuffer = (short*)Hunk_Alloc(SND_CHUNK_SIZE * sizeof(short) * 4, h_low);
     sfxScratchPointer = NULL;
