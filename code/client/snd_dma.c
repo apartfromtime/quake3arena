@@ -230,6 +230,7 @@ void S_Shutdown( void ) {
 		return;
 	}
 
+    SND_Shutdown();
 	SNDDMA_Shutdown();
 
 	s_soundStarted = 0;
