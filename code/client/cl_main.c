@@ -227,7 +227,7 @@ void CL_DemoFilename( int number, char *fileName ) {
 	int		a,b,c,d;
 
 	if ( number < 0 || number > 9999 ) {
-		Com_sprintf( fileName, MAX_OSPATH, "demo9999.tga" );
+		Com_sprintf( fileName, MAX_QPATH, "demo9999.tga" );
 		return;
 	}
 
@@ -239,7 +239,7 @@ void CL_DemoFilename( int number, char *fileName ) {
 	number -= c*10;
 	d = number;
 
-	Com_sprintf( fileName, MAX_OSPATH, "demo%i%i%i%i"
+	Com_sprintf( fileName, MAX_QPATH, "demo%i%i%i%i"
 		, a, b, c, d );
 }
 
@@ -254,7 +254,7 @@ Begins recording a demo from the current position
 */
 static char		demoName[MAX_QPATH];	// compiler bug workaround
 void CL_Record_f( void ) {
-	char		name[MAX_OSPATH];
+	char		name[MAX_QPATH];
 	byte		bufData[MAX_MSGLEN];
 	msg_t	buf;
 	int			i;
@@ -472,7 +472,7 @@ static void CL_WalkDemoExt(char *arg, char *name, int *demofile)
 	*demofile = 0;
 	while(demo_protocols[i])
 	{
-		Com_sprintf (name, MAX_OSPATH, "demos/%s.dm_%d", arg, demo_protocols[i]);
+		Com_sprintf (name, MAX_QPATH, "demos/%s.dm_%d", arg, demo_protocols[i]);
 		FS_FOpenFileRead( name, demofile, qtrue );
 		if (*demofile)
 		{
@@ -494,10 +494,10 @@ demo <demoname>
 ====================
 */
 void CL_PlayDemo_f( void ) {
-	char		name[MAX_OSPATH];
+	char		name[MAX_QPATH];
 	char		*arg, *ext_test;
 	int			protocol, i;
-	char		retry[MAX_OSPATH];
+	char		retry[MAX_QPATH];
 
 	if (Cmd_Argc() != 2) {
 		Com_Printf ("playdemo <demoname>\n");

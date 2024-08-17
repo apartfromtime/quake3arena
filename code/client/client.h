@@ -181,8 +181,8 @@ typedef struct {
 
 	// file transfer from server
 	fileHandle_t download;
-	char		downloadTempName[MAX_OSPATH];
-	char		downloadName[MAX_OSPATH];
+	char		downloadTempName[MAX_QPATH];
+	char		downloadName[MAX_QPATH];
 	int			downloadNumber;
 	int			downloadBlock;	// block we are waiting for
 	int			downloadCount;	// how many bytes we got

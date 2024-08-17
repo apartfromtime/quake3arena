@@ -451,7 +451,7 @@ R_TakeScreenshot
 ==================
 */
 void R_TakeScreenshot( int x, int y, int width, int height, char *name, qboolean jpeg ) {
-	static char	fileName[MAX_OSPATH]; // bad things if two screenshots per frame?
+	static char	fileName[MAX_QPATH]; // bad things if two screenshots per frame?
 	screenshotCommand_t	*cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -478,7 +478,7 @@ void R_ScreenshotFilename( int lastNumber, char *fileName ) {
 	int		a,b,c,d;
 
 	if ( lastNumber < 0 || lastNumber > 9999 ) {
-		Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot9999.tga" );
+		Com_sprintf( fileName, MAX_QPATH, "screenshots/shot9999.tga" );
 		return;
 	}
 
@@ -490,7 +490,7 @@ void R_ScreenshotFilename( int lastNumber, char *fileName ) {
 	lastNumber -= c*10;
 	d = lastNumber;
 
-	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.tga"
+	Com_sprintf( fileName, MAX_QPATH, "screenshots/shot%i%i%i%i.tga"
 		, a, b, c, d );
 }
 
@@ -503,7 +503,7 @@ void R_ScreenshotFilenameJPEG( int lastNumber, char *fileName ) {
 	int		a,b,c,d;
 
 	if ( lastNumber < 0 || lastNumber > 9999 ) {
-		Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot9999.jpg" );
+		Com_sprintf( fileName, MAX_QPATH, "screenshots/shot9999.jpg" );
 		return;
 	}
 
@@ -515,7 +515,7 @@ void R_ScreenshotFilenameJPEG( int lastNumber, char *fileName ) {
 	lastNumber -= c*10;
 	d = lastNumber;
 
-	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.jpg"
+	Com_sprintf( fileName, MAX_QPATH, "screenshots/shot%i%i%i%i.jpg"
 		, a, b, c, d );
 }
 
@@ -528,7 +528,7 @@ the menu system, sampled down from full screen distorted images
 ====================
 */
 void R_LevelShot( void ) {
-	char		checkname[MAX_OSPATH];
+	char		checkname[MAX_QPATH];
 	byte		*buffer;
 	byte		*source;
 	byte		*src, *dst;
@@ -597,7 +597,7 @@ Doesn't print the pacifier message if there is a second arg
 ================== 
 */  
 void R_ScreenShot_f (void) {
-	char	checkname[MAX_OSPATH];
+	char	checkname[MAX_QPATH];
 	static	int	lastNumber = -1;
 	qboolean	silent;
 
@@ -614,7 +614,7 @@ void R_ScreenShot_f (void) {
 
 	if ( ri.Cmd_Argc() == 2 && !silent ) {
 		// explicit filename
-		Com_sprintf( checkname, MAX_OSPATH, "screenshots/%s.tga", ri.Cmd_Argv( 1 ) );
+		Com_sprintf( checkname, MAX_QPATH, "screenshots/%s.tga", ri.Cmd_Argv( 1 ) );
 	} else {
 		// scan for a free filename
 
@@ -650,7 +650,7 @@ void R_ScreenShot_f (void) {
 } 
 
 void R_ScreenShotJPEG_f (void) {
-	char		checkname[MAX_OSPATH];
+	char		checkname[MAX_QPATH];
 	static	int	lastNumber = -1;
 	qboolean	silent;
 
@@ -667,7 +667,7 @@ void R_ScreenShotJPEG_f (void) {
 
 	if ( ri.Cmd_Argc() == 2 && !silent ) {
 		// explicit filename
-		Com_sprintf( checkname, MAX_OSPATH, "screenshots/%s.jpg", ri.Cmd_Argv( 1 ) );
+		Com_sprintf( checkname, MAX_QPATH, "screenshots/%s.jpg", ri.Cmd_Argv( 1 ) );
 	} else {
 		// scan for a free filename
 

@@ -92,7 +92,7 @@ typedef struct {
 } cinematics_t;
 
 typedef struct {
-	char				fileName[MAX_OSPATH];
+	char				fileName[MAX_QPATH];
 	int					CIN_WIDTH, CIN_HEIGHT;
 	int					xpos, ypos, width, height;
 	qboolean			looping, holdAtEnd, dirty, alterGameState, silent, shader;
@@ -1480,7 +1480,7 @@ CL_PlayCinematic
 */
 int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBits ) {
 	unsigned short RoQID;
-	char	name[MAX_OSPATH];
+	char	name[MAX_QPATH];
 	int		i;
 
 	if (strstr(arg, "/") == NULL && strstr(arg, "\\") == NULL) {

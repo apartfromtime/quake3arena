@@ -1120,7 +1120,7 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum );
 void Com_ReadCDKey( const char *filename ) {
 	fileHandle_t	f;
 	char			buffer[33];
-	char			fbuffer[MAX_OSPATH];
+	char			fbuffer[MAX_QPATH];
 
 	sprintf(fbuffer, "%s/q3key", filename);
 
@@ -1150,7 +1150,7 @@ Com_AppendCDKey
 void Com_AppendCDKey( const char *filename ) {
 	fileHandle_t	f;
 	char			buffer[33];
-	char			fbuffer[MAX_OSPATH];
+	char			fbuffer[MAX_QPATH];
 
 	sprintf(fbuffer, "%s/q3key", filename);
 
@@ -1180,7 +1180,7 @@ Com_WriteCDKey
 */
 static void Com_WriteCDKey( const char *filename, const char *ikey ) {
 	fileHandle_t	f;
-	char			fbuffer[MAX_OSPATH];
+	char			fbuffer[MAX_QPATH];
 	char			key[17];
 
 

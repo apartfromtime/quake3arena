@@ -31,6 +31,8 @@ QUAKE3 FILESYSTEM
 =============================================================================
 */
 
+#define	MAX_QPATH			64		// max length of a quake game pathname
+
 // mode parm for FS_FOpenFile
 typedef enum
 {
