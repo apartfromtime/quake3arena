@@ -42,6 +42,11 @@ int PASSFLOAT( float x ) {
 	return *(int *)&floatTemp;
 }
 
+void trap_UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color)
+{
+    syscall(CG_UI_DRAW_PROPORTIONALSTRING, x, y, str, style, color);
+}
+
 void	trap_Print( const char *fmt ) {
 	syscall( CG_PRINT, fmt );
 }

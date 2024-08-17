@@ -80,6 +80,9 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
 		return 0;
 	case UI_HASUNIQUECDKEY:				// mod authors need to observe this
 		return qtrue;  // bk010117 - change this to qfalse for mods!
+    case UI_DRAW_PROPORTIONALSTRING:
+        UI_DrawProportionalString(arg0, arg1, arg2, arg3, arg4);
+        return 0;
 	}
 
 	return -1;
