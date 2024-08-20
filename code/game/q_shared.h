@@ -111,15 +111,7 @@ typedef enum
 //
 #define	MAX_MAP_AREA_BYTES		32		// bit vector of area visibility
 
-
-// print levels from renderer (FIXME: set up for game / cgame?)
-typedef enum
-{
-	PRINT_ALL,
-	PRINT_DEVELOPER,		// only print when "developer 1"
-	PRINT_WARNING,
-	PRINT_ERROR
-} printParm_t;
+#include "../client/cl_public.h"
 
 #ifdef ERR_FATAL
 #undef ERR_FATAL			// this is be defined in malloc.h
