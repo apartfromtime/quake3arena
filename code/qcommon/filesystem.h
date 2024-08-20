@@ -31,6 +31,7 @@ QUAKE3 FILESYSTEM
 =============================================================================
 */
 
+#define	MAX_OSPATH			256		// max length of a filesystem pathname
 #define	MAX_QPATH			64		// max length of a quake game pathname
 
 // mode parm for FS_FOpenFile

@@ -93,8 +93,6 @@ typedef int		qhandle_t;
 #define	BIG_INFO_KEY		8192
 #define	BIG_INFO_VALUE		8192
 
-#define	MAX_OSPATH			256		// max length of a filesystem pathname
-
 #define	MAX_NAME_LENGTH		32		// max length of a client name
 
 #define	MAX_SAY_TEXT		150
