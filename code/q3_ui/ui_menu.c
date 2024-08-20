@@ -141,7 +141,7 @@ void MainMenu_Cache( void ) {
 	s_main.bannerModel = trap_R_RegisterModel( MAIN_BANNER_MODEL );
 }
 
-sfxHandle_t ErrorMessage_Key(int key)
+qhandle_t ErrorMessage_Key(int key)
 {
 	trap_Cvar_Set( "com_errorMessage", "" );
 	UI_MainMenu();

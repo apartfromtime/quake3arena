@@ -71,7 +71,7 @@ typedef struct {
 	int				awardsLevels[6];
 	qboolean		playedSound[6];
 	int				lastTier;
-	sfxHandle_t		winnerSound;
+	qhandle_t		winnerSound;
 } postgameMenuInfo_t;
 
 static postgameMenuInfo_t	postgameMenuInfo;
@@ -176,7 +176,7 @@ static void UI_SPPostgameMenu_MenuEvent( void* ptr, int event )
 UI_SPPostgameMenu_MenuKey
 =================
 */
-static sfxHandle_t UI_SPPostgameMenu_MenuKey( int key ) {
+static qhandle_t UI_SPPostgameMenu_MenuKey( int key ) {
 	if ( uis.realtime < postgameMenuInfo.ignoreKeysTime ) {
 		return 0;
 	}

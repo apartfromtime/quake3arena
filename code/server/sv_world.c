@@ -32,7 +32,7 @@ given entity.  If the entity is a bsp model, the headnode will
 be returned, otherwise a custom box tree will be constructed.
 ================
 */
-clipHandle_t SV_ClipHandleForEntity( const sharedEntity_t *ent ) {
+qhandle_t SV_ClipHandleForEntity( const sharedEntity_t *ent ) {
 	if ( ent->r.bmodel ) {
 		// explicit hulls in the BSP model
 		return CM_InlineModel( ent->s.modelindex );
@@ -145,7 +145,7 @@ SV_ClearWorld
 ===============
 */
 void SV_ClearWorld( void ) {
-	clipHandle_t	h;
+	qhandle_t	h;
 	vec3_t			mins, maxs;
 
 	Com_Memset( sv_worldSectors, 0, sizeof(sv_worldSectors) );
@@ -467,7 +467,7 @@ SV_ClipToEntity
 */
 void SV_ClipToEntity( trace_t *trace, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int entityNum, int contentmask, int capsule ) {
 	sharedEntity_t	*touch;
-	clipHandle_t	clipHandle;
+	qhandle_t	clipHandle;
 	float			*origin, *angles;
 
 	touch = SV_GentityNum( entityNum );
@@ -513,7 +513,7 @@ void SV_ClipMoveToEntities( moveclip_t *clip ) {
 	sharedEntity_t *touch;
 	int			passOwnerNum;
 	trace_t		trace;
-	clipHandle_t	clipHandle;
+	qhandle_t	clipHandle;
 	float		*origin, *angles;
 
 	num = SV_AreaEntities( clip->boxmins, clip->boxmaxs, touchlist, MAX_GENTITIES);
@@ -659,7 +659,7 @@ int SV_PointContents( const vec3_t p, int passEntityNum ) {
 	sharedEntity_t *hit;
 	int			i, num;
 	int			contents, c2;
-	clipHandle_t	clipHandle;
+	qhandle_t	clipHandle;
 	float		*angles;
 
 	// get base contents from world

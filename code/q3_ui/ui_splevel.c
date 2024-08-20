@@ -101,7 +101,7 @@ typedef struct {
 	char			playerModel[MAX_QPATH];
 	char			playerPicName[MAX_QPATH];
 	int				awardLevels[6];
-	sfxHandle_t		awardSounds[6];
+	qhandle_t		awardSounds[6];
 
 	int				numBots;
 	qhandle_t		botPics[7];

@@ -288,7 +288,7 @@ CG_ObeliskPain
 */
 void CG_ObeliskPain( vec3_t org ) {
 	float r;
-	sfxHandle_t sfx;
+	qhandle_t sfx;
 
 	// hit sound
 	r = rand() & 3;
@@ -312,7 +312,7 @@ void CG_InvulnerabilityImpact( vec3_t org, vec3_t angles ) {
 	localEntity_t	*le;
 	refEntity_t		*re;
 	int				r;
-	sfxHandle_t		sfx;
+	qhandle_t		sfx;
 
 	le = CG_AllocLocalEntity();
 	le->leFlags = 0;

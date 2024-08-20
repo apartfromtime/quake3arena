@@ -374,7 +374,7 @@ typedef struct {
 
 	animation_t		animations[MAX_TOTALANIMATIONS];
 
-	sfxHandle_t		sounds[MAX_CUSTOM_SOUNDS];
+	qhandle_t		sounds[MAX_CUSTOM_SOUNDS];
 } clientInfo_t;
 
 
@@ -394,7 +394,7 @@ typedef struct weaponInfo_s {
 
 	float			flashDlight;
 	vec3_t			flashDlightColor;
-	sfxHandle_t		flashSound[4];		// fast firing weapons randomly choose
+	qhandle_t		flashSound[4];		// fast firing weapons randomly choose
 
 	qhandle_t		weaponIcon;
 	qhandle_t		ammoIcon;
@@ -402,7 +402,7 @@ typedef struct weaponInfo_s {
 	qhandle_t		ammoModel;
 
 	qhandle_t		missileModel;
-	sfxHandle_t		missileSound;
+	qhandle_t		missileSound;
 	void			(*missileTrailFunc)( centity_t *, const struct weaponInfo_s *wi );
 	float			missileDlight;
 	vec3_t			missileDlightColor;
@@ -413,8 +413,8 @@ typedef struct weaponInfo_s {
 	float			trailRadius;
 	float			wiTrailTime;
 
-	sfxHandle_t		readySound;
-	sfxHandle_t		firingSound;
+	qhandle_t		readySound;
+	qhandle_t		firingSound;
 	qboolean		loopFireSound;
 } weaponInfo_t;
 
@@ -823,129 +823,129 @@ typedef struct {
 	qhandle_t	medalCapture;
 
 	// sounds
-	sfxHandle_t	quadSound;
-	sfxHandle_t	tracerSound;
-	sfxHandle_t	selectSound;
-	sfxHandle_t	useNothingSound;
-	sfxHandle_t	wearOffSound;
-	sfxHandle_t	footsteps[FOOTSTEP_TOTAL][4];
-	sfxHandle_t	sfx_lghit1;
-	sfxHandle_t	sfx_lghit2;
-	sfxHandle_t	sfx_lghit3;
-	sfxHandle_t	sfx_ric1;
-	sfxHandle_t	sfx_ric2;
-	sfxHandle_t	sfx_ric3;
-	sfxHandle_t	sfx_railg;
-	sfxHandle_t	sfx_rockexp;
-	sfxHandle_t	sfx_plasmaexp;
+	qhandle_t	quadSound;
+	qhandle_t	tracerSound;
+	qhandle_t	selectSound;
+	qhandle_t	useNothingSound;
+	qhandle_t	wearOffSound;
+	qhandle_t	footsteps[FOOTSTEP_TOTAL][4];
+	qhandle_t	sfx_lghit1;
+	qhandle_t	sfx_lghit2;
+	qhandle_t	sfx_lghit3;
+	qhandle_t	sfx_ric1;
+	qhandle_t	sfx_ric2;
+	qhandle_t	sfx_ric3;
+	qhandle_t	sfx_railg;
+	qhandle_t	sfx_rockexp;
+	qhandle_t	sfx_plasmaexp;
 #ifdef MISSIONPACK
-	sfxHandle_t	sfx_proxexp;
-	sfxHandle_t	sfx_nghit;
-	sfxHandle_t	sfx_nghitflesh;
-	sfxHandle_t	sfx_nghitmetal;
-	sfxHandle_t	sfx_chghit;
-	sfxHandle_t	sfx_chghitflesh;
-	sfxHandle_t	sfx_chghitmetal;
-	sfxHandle_t kamikazeExplodeSound;
-	sfxHandle_t kamikazeImplodeSound;
-	sfxHandle_t kamikazeFarSound;
-	sfxHandle_t useInvulnerabilitySound;
-	sfxHandle_t invulnerabilityImpactSound1;
-	sfxHandle_t invulnerabilityImpactSound2;
-	sfxHandle_t invulnerabilityImpactSound3;
-	sfxHandle_t invulnerabilityJuicedSound;
-	sfxHandle_t obeliskHitSound1;
-	sfxHandle_t obeliskHitSound2;
-	sfxHandle_t obeliskHitSound3;
-	sfxHandle_t	obeliskRespawnSound;
-	sfxHandle_t	winnerSound;
-	sfxHandle_t	loserSound;
-	sfxHandle_t	youSuckSound;
+	qhandle_t	sfx_proxexp;
+	qhandle_t	sfx_nghit;
+	qhandle_t	sfx_nghitflesh;
+	qhandle_t	sfx_nghitmetal;
+	qhandle_t	sfx_chghit;
+	qhandle_t	sfx_chghitflesh;
+	qhandle_t	sfx_chghitmetal;
+	qhandle_t kamikazeExplodeSound;
+	qhandle_t kamikazeImplodeSound;
+	qhandle_t kamikazeFarSound;
+	qhandle_t useInvulnerabilitySound;
+	qhandle_t invulnerabilityImpactSound1;
+	qhandle_t invulnerabilityImpactSound2;
+	qhandle_t invulnerabilityImpactSound3;
+	qhandle_t invulnerabilityJuicedSound;
+	qhandle_t obeliskHitSound1;
+	qhandle_t obeliskHitSound2;
+	qhandle_t obeliskHitSound3;
+	qhandle_t	obeliskRespawnSound;
+	qhandle_t	winnerSound;
+	qhandle_t	loserSound;
+	qhandle_t	youSuckSound;
 #endif
-	sfxHandle_t	gibSound;
-	sfxHandle_t	gibBounce1Sound;
-	sfxHandle_t	gibBounce2Sound;
-	sfxHandle_t	gibBounce3Sound;
-	sfxHandle_t	teleInSound;
-	sfxHandle_t	teleOutSound;
-	sfxHandle_t	noAmmoSound;
-	sfxHandle_t	respawnSound;
-	sfxHandle_t talkSound;
-	sfxHandle_t landSound;
-	sfxHandle_t fallSound;
-	sfxHandle_t jumpPadSound;
+	qhandle_t	gibSound;
+	qhandle_t	gibBounce1Sound;
+	qhandle_t	gibBounce2Sound;
+	qhandle_t	gibBounce3Sound;
+	qhandle_t	teleInSound;
+	qhandle_t	teleOutSound;
+	qhandle_t	noAmmoSound;
+	qhandle_t	respawnSound;
+	qhandle_t talkSound;
+	qhandle_t landSound;
+	qhandle_t fallSound;
+	qhandle_t jumpPadSound;
 
-	sfxHandle_t oneMinuteSound;
-	sfxHandle_t fiveMinuteSound;
-	sfxHandle_t suddenDeathSound;
+	qhandle_t oneMinuteSound;
+	qhandle_t fiveMinuteSound;
+	qhandle_t suddenDeathSound;
 
-	sfxHandle_t threeFragSound;
-	sfxHandle_t twoFragSound;
-	sfxHandle_t oneFragSound;
+	qhandle_t threeFragSound;
+	qhandle_t twoFragSound;
+	qhandle_t oneFragSound;
 
-	sfxHandle_t hitSound;
-	sfxHandle_t hitSoundHighArmor;
-	sfxHandle_t hitSoundLowArmor;
-	sfxHandle_t hitTeamSound;
-	sfxHandle_t impressiveSound;
-	sfxHandle_t excellentSound;
-	sfxHandle_t deniedSound;
-	sfxHandle_t humiliationSound;
-	sfxHandle_t assistSound;
-	sfxHandle_t defendSound;
-	sfxHandle_t firstImpressiveSound;
-	sfxHandle_t firstExcellentSound;
-	sfxHandle_t firstHumiliationSound;
+	qhandle_t hitSound;
+	qhandle_t hitSoundHighArmor;
+	qhandle_t hitSoundLowArmor;
+	qhandle_t hitTeamSound;
+	qhandle_t impressiveSound;
+	qhandle_t excellentSound;
+	qhandle_t deniedSound;
+	qhandle_t humiliationSound;
+	qhandle_t assistSound;
+	qhandle_t defendSound;
+	qhandle_t firstImpressiveSound;
+	qhandle_t firstExcellentSound;
+	qhandle_t firstHumiliationSound;
 
-	sfxHandle_t takenLeadSound;
-	sfxHandle_t tiedLeadSound;
-	sfxHandle_t lostLeadSound;
+	qhandle_t takenLeadSound;
+	qhandle_t tiedLeadSound;
+	qhandle_t lostLeadSound;
 
-	sfxHandle_t voteNow;
-	sfxHandle_t votePassed;
-	sfxHandle_t voteFailed;
+	qhandle_t voteNow;
+	qhandle_t votePassed;
+	qhandle_t voteFailed;
 
-	sfxHandle_t watrInSound;
-	sfxHandle_t watrOutSound;
-	sfxHandle_t watrUnSound;
+	qhandle_t watrInSound;
+	qhandle_t watrOutSound;
+	qhandle_t watrUnSound;
 
-	sfxHandle_t flightSound;
-	sfxHandle_t medkitSound;
+	qhandle_t flightSound;
+	qhandle_t medkitSound;
 
-	sfxHandle_t weaponHoverSound;
+	qhandle_t weaponHoverSound;
 
 	// teamplay sounds
-	sfxHandle_t captureAwardSound;
-	sfxHandle_t redScoredSound;
-	sfxHandle_t blueScoredSound;
-	sfxHandle_t redLeadsSound;
-	sfxHandle_t blueLeadsSound;
-	sfxHandle_t teamsTiedSound;
+	qhandle_t captureAwardSound;
+	qhandle_t redScoredSound;
+	qhandle_t blueScoredSound;
+	qhandle_t redLeadsSound;
+	qhandle_t blueLeadsSound;
+	qhandle_t teamsTiedSound;
 
-	sfxHandle_t	captureYourTeamSound;
-	sfxHandle_t	captureOpponentSound;
-	sfxHandle_t	returnYourTeamSound;
-	sfxHandle_t	returnOpponentSound;
-	sfxHandle_t	takenYourTeamSound;
-	sfxHandle_t	takenOpponentSound;
+	qhandle_t	captureYourTeamSound;
+	qhandle_t	captureOpponentSound;
+	qhandle_t	returnYourTeamSound;
+	qhandle_t	returnOpponentSound;
+	qhandle_t	takenYourTeamSound;
+	qhandle_t	takenOpponentSound;
 
-	sfxHandle_t redFlagReturnedSound;
-	sfxHandle_t blueFlagReturnedSound;
-	sfxHandle_t neutralFlagReturnedSound;
-	sfxHandle_t	enemyTookYourFlagSound;
-	sfxHandle_t	enemyTookTheFlagSound;
-	sfxHandle_t yourTeamTookEnemyFlagSound;
-	sfxHandle_t yourTeamTookTheFlagSound;
-	sfxHandle_t	youHaveFlagSound;
-	sfxHandle_t yourBaseIsUnderAttackSound;
-	sfxHandle_t holyShitSound;
+	qhandle_t redFlagReturnedSound;
+	qhandle_t blueFlagReturnedSound;
+	qhandle_t neutralFlagReturnedSound;
+	qhandle_t	enemyTookYourFlagSound;
+	qhandle_t	enemyTookTheFlagSound;
+	qhandle_t yourTeamTookEnemyFlagSound;
+	qhandle_t yourTeamTookTheFlagSound;
+	qhandle_t	youHaveFlagSound;
+	qhandle_t yourBaseIsUnderAttackSound;
+	qhandle_t holyShitSound;
 
 	// tournament sounds
-	sfxHandle_t	count3Sound;
-	sfxHandle_t	count2Sound;
-	sfxHandle_t	count1Sound;
-	sfxHandle_t	countFightSound;
-	sfxHandle_t	countPrepareSound;
+	qhandle_t	count3Sound;
+	qhandle_t	count2Sound;
+	qhandle_t	count1Sound;
+	qhandle_t	countFightSound;
+	qhandle_t	countPrepareSound;
 
 #ifdef MISSIONPACK
 	// new stuff
@@ -958,26 +958,26 @@ typedef struct {
 	qhandle_t retrieveShader;
 	qhandle_t escortShader;
 	qhandle_t flagShaders[3];
-	sfxHandle_t	countPrepareTeamSound;
+	qhandle_t	countPrepareTeamSound;
 
-	sfxHandle_t ammoregenSound;
-	sfxHandle_t doublerSound;
-	sfxHandle_t guardSound;
-	sfxHandle_t scoutSound;
+	qhandle_t ammoregenSound;
+	qhandle_t doublerSound;
+	qhandle_t guardSound;
+	qhandle_t scoutSound;
 #endif
 	qhandle_t cursor;
 	qhandle_t selectCursor;
 	qhandle_t sizeCursor;
 
-	sfxHandle_t	regenSound;
-	sfxHandle_t	protectSound;
-	sfxHandle_t	n_healthSound;
-	sfxHandle_t	hgrenb1aSound;
-	sfxHandle_t	hgrenb2aSound;
-	sfxHandle_t	wstbimplSound;
-	sfxHandle_t	wstbimpmSound;
-	sfxHandle_t	wstbimpdSound;
-	sfxHandle_t	wstbactvSound;
+	qhandle_t	regenSound;
+	qhandle_t	protectSound;
+	qhandle_t	n_healthSound;
+	qhandle_t	hgrenb1aSound;
+	qhandle_t	hgrenb2aSound;
+	qhandle_t	wstbimplSound;
+	qhandle_t	wstbimpmSound;
+	qhandle_t	wstbimpdSound;
+	qhandle_t	wstbactvSound;
 
 } cgMedia_t;
 
@@ -1034,7 +1034,7 @@ typedef struct {
 	// locally derived information from gamestate
 	//
 	qhandle_t		gameModels[MAX_MODELS];
-	sfxHandle_t		gameSounds[MAX_SOUNDS];
+	qhandle_t		gameSounds[MAX_SOUNDS];
 
 	int				numInlineModels;
 	qhandle_t		inlineDrawModel[MAX_MODELS];
@@ -1221,7 +1221,7 @@ void CG_TestModelNextSkin_f (void);
 void CG_TestModelPrevSkin_f (void);
 void CG_ZoomDown_f( void );
 void CG_ZoomUp_f( void );
-void CG_AddBufferedSound( sfxHandle_t sfx);
+void CG_AddBufferedSound( qhandle_t sfx);
 
 void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback );
 
@@ -1306,7 +1306,7 @@ void CG_Player( centity_t *cent );
 void CG_ResetPlayerEntity( centity_t *cent );
 void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int team );
 void CG_NewClientInfo( int clientNum );
-sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName );
+qhandle_t	CG_CustomSound( int clientNum, const char *soundName );
 
 //
 // cg_predict.c
@@ -1495,11 +1495,11 @@ void		trap_Args( char *buffer, int bufferLength );
 
 // filesystem access
 // returns length of file
-int			trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode );
-void		trap_FS_Read( void *buffer, int len, fileHandle_t f );
-void		trap_FS_Write( const void *buffer, int len, fileHandle_t f );
-void		trap_FS_FCloseFile( fileHandle_t f );
-int			trap_FS_Seek( fileHandle_t f, long offset, int origin ); // fsOrigin_t
+int			trap_FS_FOpenFile( const char *qpath, qhandle_t *f, fsMode_t mode );
+void		trap_FS_Read( void *buffer, int len, qhandle_t f );
+void		trap_FS_Write( const void *buffer, int len, qhandle_t f );
+void		trap_FS_FCloseFile( qhandle_t f );
+int			trap_FS_Seek( qhandle_t f, long offset, int origin ); // fsOrigin_t
 
 // add commands to the local console as if they were typed in
 // for map changing, etc.  The command is not executed immediately,
@@ -1520,16 +1520,16 @@ void		trap_UpdateScreen( void );
 // model collision
 void		trap_CM_LoadMap( const char *mapname );
 int			trap_CM_NumInlineModels( void );
-clipHandle_t trap_CM_InlineModel( int index );		// 0 = world, 1+ = bmodels
-clipHandle_t trap_CM_TempBoxModel( const vec3_t mins, const vec3_t maxs );
-int			trap_CM_PointContents( const vec3_t p, clipHandle_t model );
-int			trap_CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
+qhandle_t trap_CM_InlineModel( int index );		// 0 = world, 1+ = bmodels
+qhandle_t trap_CM_TempBoxModel( const vec3_t mins, const vec3_t maxs );
+int			trap_CM_PointContents( const vec3_t p, qhandle_t model );
+int			trap_CM_TransformedPointContents( const vec3_t p, qhandle_t model, const vec3_t origin, const vec3_t angles );
 void		trap_CM_BoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 					  const vec3_t mins, const vec3_t maxs,
-					  clipHandle_t model, int brushmask );
+					  qhandle_t model, int brushmask );
 void		trap_CM_TransformedBoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 					  const vec3_t mins, const vec3_t maxs,
-					  clipHandle_t model, int brushmask,
+					  qhandle_t model, int brushmask,
 					  const vec3_t origin, const vec3_t angles );
 
 // Returns the projection of a polygon onto the solid brushes in the world
@@ -1540,20 +1540,20 @@ int			trap_CM_MarkFragments( int numPoints, const vec3_t *points,
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves
-void		trap_S_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx );
+void		trap_S_StartSound( vec3_t origin, int entityNum, int entchannel, qhandle_t sfx );
 void		trap_S_StopLoopingSound(int entnum);
 
 // a local sound is always played full volume
-void		trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum );
+void		trap_S_StartLocalSound( qhandle_t sfx, int channelNum );
 void		trap_S_ClearLoopingSounds( qboolean killall );
-void		trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
-void		trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
+void		trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx );
+void		trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx );
 void		trap_S_UpdateEntityPosition( int entityNum, const vec3_t origin );
 
 // respatialize recalculates the volumes of sound as they should be heard by the
 // given entityNum and position
 void		trap_S_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater );
-sfxHandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed );		// returns buzz if not found
+qhandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed );		// returns buzz if not found
 void		trap_S_StartBackgroundTrack( const char *intro, const char *loop );	// empty name stops music
 void	trap_S_StopBackgroundTrack( void );
 
@@ -1582,8 +1582,8 @@ void		trap_R_RenderScene( const refdef_t *fd );
 void		trap_R_SetColor( const float *rgba );	// NULL = 1,1,1,1
 void		trap_R_DrawStretchPic( float x, float y, float w, float h, 
 			float s1, float t1, float s2, float t2, qhandle_t hShader );
-void		trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
-int			trap_R_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int endFrame, 
+void		trap_R_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs );
+int			trap_R_LerpTag( orientation_t *tag, qhandle_t mod, int startFrame, int endFrame, 
 					   float frac, const char *tagName );
 void		trap_R_RemapShader( const char *oldShader, const char *newShader, const char *timeOffset );
 

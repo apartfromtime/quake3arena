@@ -184,7 +184,7 @@ void CM_StoreBrushes( leafList_t *ll, int nodenum );
 
 void CM_BoxLeafnums_r( leafList_t *ll, int nodenum );
 
-cmodel_t	*CM_ClipHandleToModel( clipHandle_t handle );
+cmodel_t	*CM_ClipHandleToModel( qhandle_t handle );
 
 // cm_patch.c
 

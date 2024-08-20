@@ -936,7 +936,7 @@ void AAS_WriteRouteCache(void)
 	int i, j, numportalcache, numareacache, totalsize;
 	aas_routingcache_t *cache;
 	aas_cluster_t *cluster;
-	fileHandle_t fp;
+	qhandle_t fp;
 	char filename[MAX_QPATH];
 	routecacheheader_t routecacheheader;
 
@@ -1028,7 +1028,7 @@ void AAS_WriteRouteCache(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-aas_routingcache_t *AAS_ReadCache(fileHandle_t fp)
+aas_routingcache_t *AAS_ReadCache(qhandle_t fp)
 {
 	int size;
 	aas_routingcache_t *cache;
@@ -1050,7 +1050,7 @@ aas_routingcache_t *AAS_ReadCache(fileHandle_t fp)
 int AAS_ReadRouteCache(void)
 {
 	int i, clusterareanum;//, size;
-	fileHandle_t fp;
+	qhandle_t fp;
 	char filename[MAX_QPATH];
 	routecacheheader_t routecacheheader;
 	aas_routingcache_t *cache;

@@ -127,7 +127,7 @@ G_LoadArenasFromFile
 */
 static void G_LoadArenasFromFile( char *filename ) {
 	int				len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buf[MAX_ARENAS_TEXT];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
@@ -861,7 +861,7 @@ G_LoadBotsFromFile
 */
 static void G_LoadBotsFromFile( char *filename ) {
 	int				len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buf[MAX_BOTS_TEXT];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );

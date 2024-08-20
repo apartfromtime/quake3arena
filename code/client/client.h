@@ -180,7 +180,7 @@ typedef struct {
 	char		serverCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
 
 	// file transfer from server
-	fileHandle_t download;
+	qhandle_t download;
 	char		downloadTempName[MAX_QPATH];
 	char		downloadName[MAX_QPATH];
 	int			downloadNumber;
@@ -197,7 +197,7 @@ typedef struct {
 	qboolean	demoplaying;
 	qboolean	demowaiting;	// don't record until a non-delta message is received
 	qboolean	firstDemoFrameSkipped;
-	fileHandle_t	demofile;
+	qhandle_t	demofile;
 
 	int			timeDemoFrames;		// counter of rendered frames
 	int			timeDemoStart;		// cls.realtime before first frame

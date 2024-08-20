@@ -87,23 +87,23 @@ void	trap_Args( char *buffer, int bufferLength ) {
 	syscall( CG_ARGS, buffer, bufferLength );
 }
 
-int		trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
+int		trap_FS_FOpenFile( const char *qpath, qhandle_t *f, fsMode_t mode ) {
 	return syscall( CG_FS_FOPENFILE, qpath, f, mode );
 }
 
-void	trap_FS_Read( void *buffer, int len, fileHandle_t f ) {
+void	trap_FS_Read( void *buffer, int len, qhandle_t f ) {
 	syscall( CG_FS_READ, buffer, len, f );
 }
 
-void	trap_FS_Write( const void *buffer, int len, fileHandle_t f ) {
+void	trap_FS_Write( const void *buffer, int len, qhandle_t f ) {
 	syscall( CG_FS_WRITE, buffer, len, f );
 }
 
-void	trap_FS_FCloseFile( fileHandle_t f ) {
+void	trap_FS_FCloseFile( qhandle_t f ) {
 	syscall( CG_FS_FCLOSEFILE, f );
 }
 
-int trap_FS_Seek( fileHandle_t f, long offset, int origin ) {
+int trap_FS_Seek( qhandle_t f, long offset, int origin ) {
 	return syscall( CG_FS_SEEK, f, offset, origin );
 }
 
@@ -135,48 +135,48 @@ int		trap_CM_NumInlineModels( void ) {
 	return syscall( CG_CM_NUMINLINEMODELS );
 }
 
-clipHandle_t trap_CM_InlineModel( int index ) {
+qhandle_t trap_CM_InlineModel( int index ) {
 	return syscall( CG_CM_INLINEMODEL, index );
 }
 
-clipHandle_t trap_CM_TempBoxModel( const vec3_t mins, const vec3_t maxs ) {
+qhandle_t trap_CM_TempBoxModel( const vec3_t mins, const vec3_t maxs ) {
 	return syscall( CG_CM_TEMPBOXMODEL, mins, maxs );
 }
 
-clipHandle_t trap_CM_TempCapsuleModel( const vec3_t mins, const vec3_t maxs ) {
+qhandle_t trap_CM_TempCapsuleModel( const vec3_t mins, const vec3_t maxs ) {
 	return syscall( CG_CM_TEMPCAPSULEMODEL, mins, maxs );
 }
 
-int		trap_CM_PointContents( const vec3_t p, clipHandle_t model ) {
+int		trap_CM_PointContents( const vec3_t p, qhandle_t model ) {
 	return syscall( CG_CM_POINTCONTENTS, p, model );
 }
 
-int		trap_CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles ) {
+int		trap_CM_TransformedPointContents( const vec3_t p, qhandle_t model, const vec3_t origin, const vec3_t angles ) {
 	return syscall( CG_CM_TRANSFORMEDPOINTCONTENTS, p, model, origin, angles );
 }
 
 void	trap_CM_BoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 						  const vec3_t mins, const vec3_t maxs,
-						  clipHandle_t model, int brushmask ) {
+						  qhandle_t model, int brushmask ) {
 	syscall( CG_CM_BOXTRACE, results, start, end, mins, maxs, model, brushmask );
 }
 
 void	trap_CM_CapsuleTrace( trace_t *results, const vec3_t start, const vec3_t end,
 						  const vec3_t mins, const vec3_t maxs,
-						  clipHandle_t model, int brushmask ) {
+						  qhandle_t model, int brushmask ) {
 	syscall( CG_CM_CAPSULETRACE, results, start, end, mins, maxs, model, brushmask );
 }
 
 void	trap_CM_TransformedBoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 						  const vec3_t mins, const vec3_t maxs,
-						  clipHandle_t model, int brushmask,
+						  qhandle_t model, int brushmask,
 						  const vec3_t origin, const vec3_t angles ) {
 	syscall( CG_CM_TRANSFORMEDBOXTRACE, results, start, end, mins, maxs, model, brushmask, origin, angles );
 }
 
 void	trap_CM_TransformedCapsuleTrace( trace_t *results, const vec3_t start, const vec3_t end,
 						  const vec3_t mins, const vec3_t maxs,
-						  clipHandle_t model, int brushmask,
+						  qhandle_t model, int brushmask,
 						  const vec3_t origin, const vec3_t angles ) {
 	syscall( CG_CM_TRANSFORMEDCAPSULETRACE, results, start, end, mins, maxs, model, brushmask, origin, angles );
 }
@@ -188,11 +188,11 @@ int		trap_CM_MarkFragments( int numPoints, const vec3_t *points,
 	return syscall( CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments, fragmentBuffer );
 }
 
-void	trap_S_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx ) {
+void	trap_S_StartSound( vec3_t origin, int entityNum, int entchannel, qhandle_t sfx ) {
 	syscall( CG_S_STARTSOUND, origin, entityNum, entchannel, sfx );
 }
 
-void	trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
+void	trap_S_StartLocalSound( qhandle_t sfx, int channelNum ) {
 	syscall( CG_S_STARTLOCALSOUND, sfx, channelNum );
 }
 
@@ -200,11 +200,11 @@ void	trap_S_ClearLoopingSounds( qboolean killall ) {
 	syscall( CG_S_CLEARLOOPINGSOUNDS, killall );
 }
 
-void	trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
+void	trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx ) {
 	syscall( CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, sfx );
 }
 
-void	trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
+void	trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx ) {
 	syscall( CG_S_ADDREALLOOPINGSOUND, entityNum, origin, velocity, sfx );
 }
 
@@ -220,7 +220,7 @@ void	trap_S_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], in
 	syscall( CG_S_RESPATIALIZE, entityNum, origin, axis, inwater );
 }
 
-sfxHandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed ) {
+qhandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed ) {
 	return syscall( CG_S_REGISTERSOUND, sample, compressed );
 }
 
@@ -293,11 +293,11 @@ void	trap_R_DrawStretchPic( float x, float y, float w, float h,
 	syscall( CG_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), hShader );
 }
 
-void	trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
+void	trap_R_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs ) {
 	syscall( CG_R_MODELBOUNDS, model, mins, maxs );
 }
 
-int		trap_R_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int endFrame, 
+int		trap_R_LerpTag( orientation_t *tag, qhandle_t mod, int startFrame, int endFrame, 
 					   float frac, const char *tagName ) {
 	return syscall( CG_R_LERPTAG, tag, mod, startFrame, endFrame, PASSFLOAT(frac), tagName );
 }

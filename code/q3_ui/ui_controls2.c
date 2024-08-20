@@ -897,7 +897,7 @@ static void Controls_SetDefaults( void )
 Controls_MenuKey
 =================
 */
-static sfxHandle_t Controls_MenuKey( int key )
+static qhandle_t Controls_MenuKey( int key )
 {
 	int			id;
 	int			i;

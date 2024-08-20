@@ -238,7 +238,7 @@ static void PlayerModel_MenuEvent( void* ptr, int event )
 PlayerModel_MenuKey
 =================
 */
-static sfxHandle_t PlayerModel_MenuKey( int key )
+static qhandle_t PlayerModel_MenuKey( int key )
 {
 	menucommon_s*	m;
 	int				picnum;

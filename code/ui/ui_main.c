@@ -672,7 +672,7 @@ char *defaultMenu = NULL;
 
 char *GetMenuBuffer(const char *filename) {
 	int	len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	static char buf[MAX_MENUFILE];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );

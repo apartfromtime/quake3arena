@@ -114,7 +114,7 @@ UI_Mods_LoadModsFromFile
 */
 static void UI_Mods_LoadModsFromFile( char *filename ) {
 	int				len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buf[1024];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );

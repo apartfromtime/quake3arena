@@ -130,10 +130,10 @@ typedef enum {
 
 	G_ARGV,			// ( int n, char *buffer, int bufferLength );
 
-	G_FS_FOPEN_FILE,	// ( const char *qpath, fileHandle_t *file, fsMode_t mode );
-	G_FS_READ,		// ( void *buffer, int len, fileHandle_t f );
-	G_FS_WRITE,		// ( const void *buffer, int len, fileHandle_t f );
-	G_FS_FCLOSE_FILE,		// ( fileHandle_t f );
+	G_FS_FOPEN_FILE,	// ( const char *qpath, qhandle_t *file, fsMode_t mode );
+	G_FS_READ,		// ( void *buffer, int len, qhandle_t f );
+	G_FS_WRITE,		// ( const void *buffer, int len, qhandle_t f );
+	G_FS_FCLOSE_FILE,		// ( qhandle_t f );
 
 	G_SEND_CONSOLE_COMMAND,	// ( const char *text );
 	// add commands to the console as if they were typed in

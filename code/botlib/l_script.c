@@ -1308,7 +1308,7 @@ int FileLength(FILE *fp)
 script_t *LoadScriptFile(const char *filename)
 {
 #ifdef BOTLIB
-	fileHandle_t fp;
+	qhandle_t fp;
 	char pathname[MAX_QPATH];
 #else
 	FILE *fp;

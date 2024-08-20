@@ -290,7 +290,7 @@ UI_PositionEntityOnTag
 ======================
 */
 static void UI_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent, 
-							clipHandle_t parentModel, char *tagName ) {
+							qhandle_t parentModel, char *tagName ) {
 	int				i;
 	orientation_t	lerped;
 	
@@ -316,7 +316,7 @@ UI_PositionRotatedEntityOnTag
 ======================
 */
 static void UI_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *parent, 
-							clipHandle_t parentModel, char *tagName ) {
+							qhandle_t parentModel, char *tagName ) {
 	int				i;
 	orientation_t	lerped;
 	vec3_t			tempAxis[3];
@@ -932,7 +932,7 @@ static qboolean UI_ParseAnimationFile( const char *filename, animation_t *animat
 	float		fps;
 	int			skip;
 	char		text[20000];
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	Com_Memset( animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
 

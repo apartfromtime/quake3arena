@@ -25,25 +25,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 void		CM_LoadMap( const char *name, qboolean clientload, int *checksum);
 void		CM_ClearMap( void );
-clipHandle_t CM_InlineModel( int index );		// 0 = world, 1 + are bmodels
-clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
+qhandle_t CM_InlineModel( int index );		// 0 = world, 1 + are bmodels
+qhandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
 
-void		CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
+void		CM_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs );
 
 int			CM_NumClusters (void);
 int			CM_NumInlineModels( void );
 char		*CM_EntityString (void);
 
 // returns an ORed contents mask
-int			CM_PointContents( const vec3_t p, clipHandle_t model );
-int			CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
+int			CM_PointContents( const vec3_t p, qhandle_t model );
+int			CM_TransformedPointContents( const vec3_t p, qhandle_t model, const vec3_t origin, const vec3_t angles );
 
 void		CM_BoxTrace ( trace_t *results, const vec3_t start, const vec3_t end,
 						  vec3_t mins, vec3_t maxs,
-						  clipHandle_t model, int brushmask, int capsule );
+						  qhandle_t model, int brushmask, int capsule );
 void		CM_TransformedBoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 						  vec3_t mins, vec3_t maxs,
-						  clipHandle_t model, int brushmask,
+						  qhandle_t model, int brushmask,
 						  const vec3_t origin, const vec3_t angles, int capsule );
 
 byte		*CM_ClusterPVS (int cluster);
@@ -64,7 +64,7 @@ qboolean	CM_AreasConnected( int area1, int area2 );
 int			CM_WriteAreaBits( byte *buffer, int area );
 
 // cm_tag.c
-int			CM_LerpTag( orientation_t *tag,  clipHandle_t model, int startFrame, int endFrame, 
+int			CM_LerpTag( orientation_t *tag,  qhandle_t model, int startFrame, int endFrame, 
 					 float frac, const char *tagName );
 
 

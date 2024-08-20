@@ -723,7 +723,7 @@ static void CG_PowerupTimerSounds( void ) {
 CG_AddBufferedSound
 =====================
 */
-void CG_AddBufferedSound( sfxHandle_t sfx ) {
+void CG_AddBufferedSound( qhandle_t sfx ) {
 	if ( !sfx )
 		return;
 	cg.soundBuffer[cg.soundBufferIn] = sfx;

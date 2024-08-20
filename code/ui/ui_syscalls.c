@@ -102,19 +102,19 @@ void trap_Cmd_ExecuteText( int exec_when, const char *text ) {
 	syscall( UI_CMD_EXECUTETEXT, exec_when, text );
 }
 
-int trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
+int trap_FS_FOpenFile( const char *qpath, qhandle_t *f, fsMode_t mode ) {
 	return syscall( UI_FS_FOPENFILE, qpath, f, mode );
 }
 
-void trap_FS_Read( void *buffer, int len, fileHandle_t f ) {
+void trap_FS_Read( void *buffer, int len, qhandle_t f ) {
 	syscall( UI_FS_READ, buffer, len, f );
 }
 
-void trap_FS_Write( const void *buffer, int len, fileHandle_t f ) {
+void trap_FS_Write( const void *buffer, int len, qhandle_t f ) {
 	syscall( UI_FS_WRITE, buffer, len, f );
 }
 
-void trap_FS_FCloseFile( fileHandle_t f ) {
+void trap_FS_FCloseFile( qhandle_t f ) {
 	syscall( UI_FS_FCLOSEFILE, f );
 }
 
@@ -122,7 +122,7 @@ int trap_FS_GetFileList(  const char *path, const char *extension, char *listbuf
 	return syscall( UI_FS_GETFILELIST, path, extension, listbuf, bufsize );
 }
 
-int trap_FS_Seek( fileHandle_t f, long offset, int origin ) {
+int trap_FS_Seek( qhandle_t f, long offset, int origin ) {
 	return syscall( UI_FS_SEEK, f, offset, origin );
 }
 
@@ -170,7 +170,7 @@ void trap_R_DrawStretchPic( float x, float y, float w, float h, float s1, float 
 	syscall( UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), hShader );
 }
 
-void	trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
+void	trap_R_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs ) {
 	syscall( UI_R_MODELBOUNDS, model, mins, maxs );
 }
 
@@ -178,15 +178,15 @@ void trap_UpdateScreen( void ) {
 	syscall( UI_UPDATESCREEN );
 }
 
-int trap_CM_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int endFrame, float frac, const char *tagName ) {
+int trap_CM_LerpTag( orientation_t *tag, qhandle_t mod, int startFrame, int endFrame, float frac, const char *tagName ) {
 	return syscall( UI_CM_LERPTAG, tag, mod, startFrame, endFrame, PASSFLOAT(frac), tagName );
 }
 
-void trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
+void trap_S_StartLocalSound( qhandle_t sfx, int channelNum ) {
 	syscall( UI_S_STARTLOCALSOUND, sfx, channelNum );
 }
 
-sfxHandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed ) {
+qhandle_t	trap_S_RegisterSound( const char *sample, qboolean compressed ) {
 	return syscall( UI_S_REGISTERSOUND, sample, compressed );
 }
 

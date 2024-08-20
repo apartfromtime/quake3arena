@@ -33,7 +33,7 @@ extern "C" {
 #include "util_str.h"
 #include "math_vector.h"
 
-typedef int fileHandle_t;
+typedef int qhandle_t;
 
 //extern void glBox(idVec3_t &color, idVec3_t &point, float size);
 //extern void glLabeledPoint(idVec3_t &color, idVec3_t &point, float size, const char *label);
@@ -186,7 +186,7 @@ public:
 	}
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 	void clear() {
 		clearControl();
@@ -429,7 +429,7 @@ public:
 //	virtual void draw(bool editMode) {};
 
 	virtual void parse(const char *(*text)) {};
-	virtual void write(fileHandle_t file, const char *name);
+	virtual void write(qhandle_t file, const char *name);
 	virtual bool parseToken(const char *key, const char *(*text));
 
 	const char *getName() {
@@ -504,7 +504,7 @@ public:
 	}
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 	virtual int numPoints() {
 		return 1;
@@ -551,7 +551,7 @@ public:
 	virtual const idVec3_t *getPosition(long t);
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 	virtual int numPoints() {
 		return 2;
@@ -646,7 +646,7 @@ public:
 	}
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 	virtual int numPoints() {
 		return target.numPoints();
@@ -719,7 +719,7 @@ public:
 	}
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 protected:
 	float fov;
@@ -785,7 +785,7 @@ public:
 	}
 
 	void parse(const char *(*text));
-	void write(fileHandle_t file, const char *name);
+	void write(qhandle_t file, const char *name);
 
 	void setTriggered(bool b) {
 		triggered = b;

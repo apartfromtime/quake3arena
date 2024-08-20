@@ -535,7 +535,7 @@ static void CG_DrawSelectedPlayerPowerup( rectDef_t *rect, qboolean draw2D ) {
 
 
 static void CG_DrawSelectedPlayerHead( rectDef_t *rect, qboolean draw2D, qboolean voice ) {
-	clipHandle_t	cm;
+	qhandle_t	cm;
 	clientInfo_t	*ci;
 	float			len;
 	vec3_t			origin;

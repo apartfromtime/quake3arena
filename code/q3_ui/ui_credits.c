@@ -44,7 +44,7 @@ static creditsmenu_t	s_credits;
 UI_CreditMenu_Key
 =================
 */
-static sfxHandle_t UI_CreditMenu_Key( int key ) {
+static qhandle_t UI_CreditMenu_Key( int key ) {
 	if( key & K_CHAR_FLAG ) {
 		return 0;
 	}

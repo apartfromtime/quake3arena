@@ -115,7 +115,7 @@ static void Demos_MenuEvent( void *ptr, int event ) {
 UI_DemosMenu_Key
 =================
 */
-static sfxHandle_t UI_DemosMenu_Key( int key ) {
+static qhandle_t UI_DemosMenu_Key( int key ) {
 	menucommon_s	*item;
 
 	item = Menu_ItemAtCursor( &s_demos.menu );

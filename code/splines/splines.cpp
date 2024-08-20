@@ -27,11 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "splines.h"
 
 extern "C" {
-int FS_Write( const void *buffer, int len, fileHandle_t h );
+int FS_Write( const void *buffer, int len, qhandle_t h );
 int FS_ReadFile( const char *qpath, void **buffer );
 void FS_FreeFile( void *buffer );
-fileHandle_t FS_FOpenFileWrite( const char *filename );
-void FS_FCloseFile( fileHandle_t f );
+qhandle_t FS_FOpenFileWrite( const char *filename );
+void FS_FCloseFile( qhandle_t f );
 }
 
 float Q_fabs( float f ) {
@@ -428,7 +428,7 @@ void idSplineList::parse(const char *(*text)  ) {
 	dirty = true;
 }
 
-void idSplineList::write(fileHandle_t file, const char *p) {
+void idSplineList::write(qhandle_t file, const char *p) {
 	idStr s = va("\t\t%s {\n", p);
 	FS_Write(s.c_str(), s.length(), file);
 	//s = va("\t\tname %s\n", name.c_str());
@@ -742,7 +742,7 @@ qboolean idCameraDef::load(const char *filename) {
 }
 
 void idCameraDef::save(const char *filename) {
-	fileHandle_t file = FS_FOpenFileWrite(filename);
+	qhandle_t file = FS_FOpenFileWrite(filename);
 	if (file) {
 		int i;
 		idStr s = "cameraPathDef { \n"; 
@@ -849,7 +849,7 @@ void idCameraEvent::parse(const char *(*text)  ) {
 	Com_MatchToken( text, "}" );
 }
 
-void idCameraEvent::write(fileHandle_t file, const char *name) {
+void idCameraEvent::write(qhandle_t file, const char *name) {
 	idStr s = va("\t%s {\n", name);
 	FS_Write(s.c_str(), s.length(), file);
 	s = va("\t\ttype %d\n", static_cast<int>(type));
@@ -1127,7 +1127,7 @@ void idSplinePosition::parse(const char *(*text)  ) {
 
 
 
-void idCameraFOV::write(fileHandle_t file, const char *p) {
+void idCameraFOV::write(qhandle_t file, const char *p) {
 	idStr s = va("\t%s {\n", p);
 	FS_Write(s.c_str(), s.length(), file);
 	
@@ -1148,7 +1148,7 @@ void idCameraFOV::write(fileHandle_t file, const char *p) {
 }
 
 
-void idCameraPosition::write(fileHandle_t file, const char *p) {
+void idCameraPosition::write(qhandle_t file, const char *p) {
 	
 	idStr s = va("\t\ttime %i\n", time);
 	FS_Write(s.c_str(), s.length(), file);
@@ -1169,7 +1169,7 @@ void idCameraPosition::write(fileHandle_t file, const char *p) {
 
 }
 
-void idFixedPosition::write(fileHandle_t file, const char *p) {
+void idFixedPosition::write(qhandle_t file, const char *p) {
 	idStr s = va("\t%s {\n", p);
 	FS_Write(s.c_str(), s.length(), file);
 	idCameraPosition::write(file, p);
@@ -1179,7 +1179,7 @@ void idFixedPosition::write(fileHandle_t file, const char *p) {
 	FS_Write(s.c_str(), s.length(), file);
 }
 
-void idInterpolatedPosition::write(fileHandle_t file, const char *p) {
+void idInterpolatedPosition::write(qhandle_t file, const char *p) {
 	idStr s = va("\t%s {\n", p);
 	FS_Write(s.c_str(), s.length(), file);
 	idCameraPosition::write(file, p);
@@ -1191,7 +1191,7 @@ void idInterpolatedPosition::write(fileHandle_t file, const char *p) {
 	FS_Write(s.c_str(), s.length(), file);
 }
 
-void idSplinePosition::write(fileHandle_t file, const char *p) {
+void idSplinePosition::write(qhandle_t file, const char *p) {
 	idStr s = va("\t%s {\n", p);
 	FS_Write(s.c_str(), s.length(), file);
 	idCameraPosition::write(file, p);

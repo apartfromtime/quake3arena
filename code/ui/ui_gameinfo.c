@@ -109,7 +109,7 @@ UI_LoadArenasFromFile
 */
 static void UI_LoadArenasFromFile( char *filename ) {
 	int				len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buf[MAX_ARENAS_TEXT];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
@@ -220,7 +220,7 @@ UI_LoadBotsFromFile
 */
 static void UI_LoadBotsFromFile( char *filename ) {
 	int				len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buf[MAX_BOTS_TEXT];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );

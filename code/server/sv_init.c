@@ -325,7 +325,7 @@ SV_TouchCGame
 ================
 */
 void SV_TouchCGame(void) {
-	fileHandle_t	f;
+	qhandle_t	f;
 	char filename[MAX_QPATH];
 
 	Com_sprintf( filename, sizeof(filename), "vm/%s.qvm", "cgame" );

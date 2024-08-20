@@ -242,7 +242,7 @@ typedef struct itemDef_s {
   const char *cvarTest;          // associated cvar for enable actions
 	const char *enableCvar;			   // enable, disable, show, or hide based on value, this can contain a list
 	int cvarFlags;								 //	what type of action to take on cvarenables
-  sfxHandle_t focusSound;
+  qhandle_t focusSound;
 	int numColors;								 // number of color ranges
 	colorRangeDef_t colorRanges[MAX_COLOR_RANGES];
 	float special;								 // used for feeder id's etc.. diff per type
@@ -290,10 +290,10 @@ typedef struct {
   qhandle_t solidBox;
   qhandle_t sliderBar;
   qhandle_t sliderThumb;
-  sfxHandle_t menuEnterSound;
-  sfxHandle_t menuExitSound;
-  sfxHandle_t menuBuzzSound;
-  sfxHandle_t itemFocusSound;
+  qhandle_t menuEnterSound;
+  qhandle_t menuExitSound;
+  qhandle_t menuBuzzSound;
+  qhandle_t itemFocusSound;
   float fadeClamp;
   int fadeCycle;
   float fadeAmount;
@@ -344,7 +344,7 @@ typedef struct {
   void (*drawTextWithCursor)(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style);
   void (*setOverstrikeMode)(qboolean b);
   qboolean (*getOverstrikeMode)();
-  void (*startLocalSound)( sfxHandle_t sfx, int channelNum );
+  void (*startLocalSound)( qhandle_t sfx, int channelNum );
   qboolean (*ownerDrawHandleKey)(int ownerDraw, int flags, float *special, int key);
   int (*feederCount)(float feederID);
   const char *(*feederItemText)(float feederID, int index, int column, qhandle_t *handle);
@@ -358,7 +358,7 @@ typedef struct {
 	void (*Print)(const char *msg, ...);
 	void (*Pause)(qboolean b);
 	int (*ownerDrawWidth)(int ownerDraw, float scale);
-	sfxHandle_t (*registerSound)(const char *name, qboolean compressed);
+	qhandle_t (*registerSound)(const char *name, qboolean compressed);
 	void (*startBackgroundTrack)( const char *intro, const char *loop);
 	void (*stopBackgroundTrack)();
 	int (*playCinematic)(const char *name, float x, float y, float w, float h);

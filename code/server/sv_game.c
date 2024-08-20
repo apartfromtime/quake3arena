@@ -117,7 +117,7 @@ sets mins and maxs for inline bmodels
 =================
 */
 void SV_SetBrushModel( sharedEntity_t *ent, const char *name ) {
-	clipHandle_t	h;
+	qhandle_t	h;
 	vec3_t			mins, maxs;
 
 	if (!name) {
@@ -227,7 +227,7 @@ SV_GameAreaEntities
 */
 qboolean	SV_EntityContact( vec3_t mins, vec3_t maxs, const sharedEntity_t *gEnt, int capsule ) {
 	const float	*origin, *angles;
-	clipHandle_t	ch;
+	qhandle_t	ch;
 	trace_t			trace;
 
 	// check for exact collision

@@ -1340,7 +1340,7 @@ qboolean Item_EnableShowViaCvar(itemDef_t *item, int flag) {
 qboolean Item_SetFocus(itemDef_t *item, float x, float y) {
 	int i;
 	itemDef_t *oldFocus;
-	sfxHandle_t *sfx = &DC->Assets.itemFocusSound;
+	qhandle_t *sfx = &DC->Assets.itemFocusSound;
 	qboolean playSound = qfalse;
 	menuDef_t *parent; // bk001206: = (menuDef_t*)item->parent;
 	// sanity check, non-null, not a decoration and does not already have the focus

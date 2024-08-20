@@ -46,9 +46,9 @@ jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
 
 
 FILE *debuglogfile;
-fileHandle_t logfile;
-fileHandle_t	com_journalFile;			// events are written here
-fileHandle_t	com_journalDataFile;		// config files are written here
+qhandle_t logfile;
+qhandle_t	com_journalFile;			// events are written here
+qhandle_t	com_journalDataFile;		// config files are written here
 
 cvar_t	*com_viewlog;
 cvar_t	*com_speeds;
@@ -1118,7 +1118,7 @@ Com_ReadCDKey
 */
 qboolean CL_CDKeyValidate( const char *key, const char *checksum );
 void Com_ReadCDKey( const char *filename ) {
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buffer[33];
 	char			fbuffer[MAX_QPATH];
 
@@ -1148,7 +1148,7 @@ Com_AppendCDKey
 =================
 */
 void Com_AppendCDKey( const char *filename ) {
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			buffer[33];
 	char			fbuffer[MAX_QPATH];
 
@@ -1179,7 +1179,7 @@ Com_WriteCDKey
 =================
 */
 static void Com_WriteCDKey( const char *filename, const char *ikey ) {
-	fileHandle_t	f;
+	qhandle_t	f;
 	char			fbuffer[MAX_QPATH];
 	char			key[17];
 
@@ -1471,7 +1471,7 @@ void Com_Init( char *commandLine ) {
 //==================================================================
 
 void Com_WriteConfigToFile( const char *filename ) {
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	f = FS_FOpenFileWrite( filename );
 	if ( !f ) {

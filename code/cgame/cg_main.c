@@ -1210,7 +1210,7 @@ void CG_StartMusic( void ) {
 #ifdef MISSIONPACK
 char *CG_GetMenuBuffer(const char *filename) {
 	int	len;
-	fileHandle_t	f;
+	qhandle_t	f;
 	static char buf[MAX_MENUFILE];
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
@@ -1461,7 +1461,7 @@ void CG_LoadMenus(const char *menuFile) {
 	char	*token;
 	char *p;
 	int	len, start;
-	fileHandle_t	f;
+	qhandle_t	f;
 	static char buf[MAX_MENUDEFFILE];
 
 	start = trap_Milliseconds();

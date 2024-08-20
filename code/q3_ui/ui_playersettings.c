@@ -273,7 +273,7 @@ static void PlayerSettings_SaveChanges( void ) {
 PlayerSettings_MenuKey
 =================
 */
-static sfxHandle_t PlayerSettings_MenuKey( int key ) {
+static qhandle_t PlayerSettings_MenuKey( int key ) {
 	if( key == K_MOUSE2 || key == K_ESCAPE ) {
 		PlayerSettings_SaveChanges();
 	}

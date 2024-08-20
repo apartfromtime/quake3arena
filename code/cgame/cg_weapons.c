@@ -1753,7 +1753,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 	qhandle_t		mod;
 	qhandle_t		mark;
 	qhandle_t		shader;
-	sfxHandle_t		sfx;
+	qhandle_t		sfx;
 	float			radius;
 	float			light;
 	vec3_t			lightColor;

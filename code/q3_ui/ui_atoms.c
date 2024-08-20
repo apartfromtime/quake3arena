@@ -874,7 +874,7 @@ UI_KeyEvent
 =================
 */
 void UI_KeyEvent( int key, int down ) {
-	sfxHandle_t		s;
+	qhandle_t		s;
 
 	if (!uis.activemenu) {
 		return;

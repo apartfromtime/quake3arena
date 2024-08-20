@@ -925,7 +925,7 @@ Key_WriteBindings
 Writes lines containing "bind key value"
 ============
 */
-void Key_WriteBindings( fileHandle_t f ) {
+void Key_WriteBindings( qhandle_t f ) {
 	int		i;
 
 	FS_Printf (f, "unbindall\n" );

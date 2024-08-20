@@ -134,7 +134,7 @@ typedef struct client_s {
 
 	// downloading
 	char			downloadName[MAX_QPATH]; // if not empty string, we are downloading
-	fileHandle_t	download;			// file being downloaded
+	qhandle_t	download;			// file being downloaded
  	int				downloadSize;		// total bytes (can't use EOF because of paks)
  	int				downloadCount;		// bytes sent
 	int				downloadClientBlock;	// last block we sent to the client, awaiting ack
@@ -361,7 +361,7 @@ void SV_LinkEntity( sharedEntity_t *ent );
 // is not solid
 
 
-clipHandle_t SV_ClipHandleForEntity( const sharedEntity_t *ent );
+qhandle_t SV_ClipHandleForEntity( const sharedEntity_t *ent );
 
 
 void SV_SectorList_f( void );

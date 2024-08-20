@@ -25,8 +25,8 @@ void S_Init( void );
 void S_Shutdown( void );
 
 // if origin is NULL, the sound will be dynamically sourced from the entity
-void S_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx );
-void S_StartLocalSound( sfxHandle_t sfx, int channelNum );
+void S_StartSound( vec3_t origin, int entnum, int entchannel, qhandle_t sfx );
+void S_StartLocalSound( qhandle_t sfx, int channelNum );
 
 void S_StartBackgroundTrack( const char *intro, const char *loop );
 void S_StopBackgroundTrack( void );
@@ -41,8 +41,8 @@ void S_StopAllSounds( void );
 
 // all continuous looping sounds must be added before calling S_Update
 void S_ClearLoopingSounds( qboolean killall );
-void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
-void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
+void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx );
+void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfx );
 void S_StopLoopingSound(int entityNum );
 
 // recompute the reletive volumes for all running sounds
@@ -61,7 +61,7 @@ void S_BeginRegistration( void );
 // RegisterSound will allways return a valid sample, even if it
 // has to create a placeholder.  This prevents continuous filesystem
 // checks for missing files
-sfxHandle_t	S_RegisterSound( const char *sample, qboolean compressed );
+qhandle_t	S_RegisterSound( const char *sample, qboolean compressed );
 
 void S_DisplayFreeMemory(void);
 

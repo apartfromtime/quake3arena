@@ -461,7 +461,7 @@ qboolean Cvar_Command( void );
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)
 
-void 	Cvar_WriteVariables( fileHandle_t f );
+void 	Cvar_WriteVariables( qhandle_t f );
 // writes lines containing "set variable value" for all variables
 // with the archive flag set to true.
 
@@ -548,14 +548,14 @@ int		FS_LoadStack();
 int		FS_GetFileList(  const char *path, const char *extension, char *listbuf, int bufsize );
 int		FS_GetModList(  char *listbuf, int bufsize );
 
-fileHandle_t	FS_FOpenFileWrite( const char *qpath );
+qhandle_t	FS_FOpenFileWrite( const char *qpath );
 // will properly create any needed paths and deal with seperater character issues
 
-int		FS_filelength( fileHandle_t f );
-fileHandle_t FS_SV_FOpenFileWrite( const char *filename );
-int		FS_SV_FOpenFileRead( const char *filename, fileHandle_t *fp );
+int		FS_filelength( qhandle_t f );
+qhandle_t FS_SV_FOpenFileWrite( const char *filename );
+int		FS_SV_FOpenFileRead( const char *filename, qhandle_t *fp );
 void	FS_SV_Rename( const char *from, const char *to );
-int		FS_FOpenFileRead( const char *qpath, fileHandle_t *file, qboolean uniqueFILE );
+int		FS_FOpenFileRead( const char *qpath, qhandle_t *file, qboolean uniqueFILE );
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
@@ -565,13 +565,13 @@ int		FS_FOpenFileRead( const char *qpath, fileHandle_t *file, qboolean uniqueFIL
 int		FS_FileIsInPAK(const char *filename, int *pChecksum );
 // returns 1 if a file is in the PAK file, otherwise -1
 
-int		FS_Write( const void *buffer, int len, fileHandle_t f );
+int		FS_Write( const void *buffer, int len, qhandle_t f );
 
-int		FS_Read2( void *buffer, int len, fileHandle_t f );
-int		FS_Read( void *buffer, int len, fileHandle_t f );
+int		FS_Read2( void *buffer, int len, qhandle_t f );
+int		FS_Read( void *buffer, int len, qhandle_t f );
 // properly handles partial reads and reads from other dlls
 
-void	FS_FCloseFile( fileHandle_t f );
+void	FS_FCloseFile( qhandle_t f );
 // note: you can't just fclose from another DLL, due to MS libc issues
 
 int		FS_ReadFile( const char *qpath, void **buffer );
@@ -582,7 +582,7 @@ int		FS_ReadFile( const char *qpath, void **buffer );
 // the buffer should be considered read-only, because it may be cached
 // for other uses.
 
-void	FS_ForceFlush( fileHandle_t f );
+void	FS_ForceFlush( qhandle_t f );
 // forces flush on files we're writing to.
 
 void	FS_FreeFile( void *buffer );
@@ -591,21 +591,21 @@ void	FS_FreeFile( void *buffer );
 void	FS_WriteFile( const char *qpath, const void *buffer, int size );
 // writes a complete file, creating any subdirectories needed
 
-int		FS_filelength( fileHandle_t f );
+int		FS_filelength( qhandle_t f );
 // doesn't work for files that are opened from a pack file
 
-int		FS_FTell( fileHandle_t f );
+int		FS_FTell( qhandle_t f );
 // where are we?
 
-void	FS_Flush( fileHandle_t f );
+void	FS_Flush( qhandle_t f );
 
-void 	Q_CDECL FS_Printf( fileHandle_t f, const char *fmt, ... );
+void 	Q_CDECL FS_Printf( qhandle_t f, const char *fmt, ... );
 // like fprintf
 
-int		FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode );
+int		FS_FOpenFileByMode( const char *qpath, qhandle_t *f, fsMode_t mode );
 // opens a file for reading, writing, or appending depending on the value of mode
 
-int		FS_Seek( fileHandle_t f, long offset, int origin );
+int		FS_Seek( qhandle_t f, long offset, int origin );
 // seek on a file (doesn't work for zip files!!!!!!!!)
 
 qboolean FS_FilenameCompare( const char *s1, const char *s2 );
@@ -750,8 +750,8 @@ extern	int		com_frameMsec;
 
 extern	qboolean	com_errorEntered;
 
-extern	fileHandle_t	com_journalFile;
-extern	fileHandle_t	com_journalDataFile;
+extern	qhandle_t	com_journalFile;
+extern	qhandle_t	com_journalDataFile;
 
 
 /*
@@ -828,7 +828,7 @@ void CL_FlushMemory( void );
 void CL_StartHunkUsers( void );
 // start all the client stuff using the hunk
 
-void Key_WriteBindings( fileHandle_t f );
+void Key_WriteBindings( qhandle_t f );
 // for writing the config files
 
 void S_ClearSoundBuffer( void );
@@ -932,10 +932,10 @@ void	Sys_DisplaySystemConsole( qboolean show );
 
 int		Sys_GetProcessorId( void );
 
-void	Sys_BeginStreamedFile( fileHandle_t f, int readahead );
-void	Sys_EndStreamedFile( fileHandle_t f );
-int		Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f );
-void	Sys_StreamSeek( fileHandle_t f, int offset, int origin );
+void	Sys_BeginStreamedFile( qhandle_t f, int readahead );
+void	Sys_EndStreamedFile( qhandle_t f );
+int		Sys_StreamedRead( void *buffer, int size, int count, qhandle_t f );
+void	Sys_StreamSeek( qhandle_t f, int offset, int origin );
 
 void	Sys_ShowConsole( int level, qboolean quitOnClose );
 void	Sys_SetErrorText( const char *text );

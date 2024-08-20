@@ -87,7 +87,7 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 	int			i, x, zd, zu;
 	trace_t		trace;
 	entityState_t	*ent;
-	clipHandle_t 	cmodel;
+	qhandle_t 	cmodel;
 	vec3_t		bmins, bmaxs;
 	vec3_t		origin, angles;
 	centity_t	*cent;
@@ -163,7 +163,7 @@ int		CG_PointContents( const vec3_t point, int passEntityNum ) {
 	int			i;
 	entityState_t	*ent;
 	centity_t	*cent;
-	clipHandle_t cmodel;
+	qhandle_t cmodel;
 	int			contents;
 
 	contents = trap_CM_PointContents (point, 0);
@@ -329,7 +329,7 @@ static void CG_TouchTriggerPrediction( void ) {
 	int			i;
 	trace_t		trace;
 	entityState_t	*ent;
-	clipHandle_t cmodel;
+	qhandle_t cmodel;
 	centity_t	*cent;
 	qboolean	spectator;
 

@@ -46,7 +46,7 @@ CG_CustomSound
 
 ================
 */
-sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
+qhandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
 	clientInfo_t *ci;
 	int			i;
 
@@ -95,7 +95,7 @@ static qboolean	CG_ParseAnimationFile( const char *filename, clientInfo_t *ci ) 
 	float		fps;
 	int			skip;
 	char		text[20000];
-	fileHandle_t	f;
+	qhandle_t	f;
 	animation_t *animations;
 
 	animations = ci->animations;

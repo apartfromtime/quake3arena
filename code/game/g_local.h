@@ -341,7 +341,7 @@ typedef struct {
 
 	int			warmupTime;			// restart match at this time
 
-	fileHandle_t	logFile;
+	qhandle_t	logFile;
 
 	// store latched cvars here that we want to get at often
 	int			maxclients;
@@ -771,12 +771,12 @@ int		trap_Milliseconds( void );
 int		trap_Argc( void );
 void	trap_Argv( int n, char *buffer, int bufferLength );
 void	trap_Args( char *buffer, int bufferLength );
-int		trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode );
-void	trap_FS_Read( void *buffer, int len, fileHandle_t f );
-void	trap_FS_Write( const void *buffer, int len, fileHandle_t f );
-void	trap_FS_FCloseFile( fileHandle_t f );
+int		trap_FS_FOpenFile( const char *qpath, qhandle_t *f, fsMode_t mode );
+void	trap_FS_Read( void *buffer, int len, qhandle_t f );
+void	trap_FS_Write( const void *buffer, int len, qhandle_t f );
+void	trap_FS_FCloseFile( qhandle_t f );
 int		trap_FS_GetFileList( const char *path, const char *extension, char *listbuf, int bufsize );
-int		trap_FS_Seek( fileHandle_t f, long offset, int origin ); // fsOrigin_t
+int		trap_FS_Seek( qhandle_t f, long offset, int origin ); // fsOrigin_t
 void	trap_SendConsoleCommand( int exec_when, const char *text );
 void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
 void	trap_Cvar_Update( vmCvar_t *cvar );

@@ -316,7 +316,7 @@ Used for both the status bar and the scoreboard
 ================
 */
 void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t headAngles ) {
-	clipHandle_t	cm;
+	qhandle_t	cm;
 	clientInfo_t	*ci;
 	float			len;
 	vec3_t			origin;

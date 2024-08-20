@@ -254,7 +254,7 @@ BotImport_BSPModelMinsMaxsOrigin
 ==================
 */
 void BotImport_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t outmins, vec3_t outmaxs, vec3_t origin) {
-	clipHandle_t h;
+	qhandle_t h;
 	vec3_t mins, maxs;
 	float max;
 	int	i;

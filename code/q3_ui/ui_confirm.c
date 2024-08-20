@@ -89,7 +89,7 @@ static void ConfirmMenu_Event( void* ptr, int event ) {
 ConfirmMenu_Key
 =================
 */
-static sfxHandle_t ConfirmMenu_Key( int key ) {
+static qhandle_t ConfirmMenu_Key( int key ) {
 	switch ( key ) {
 	case K_KP_LEFTARROW:
 	case K_LEFTARROW:

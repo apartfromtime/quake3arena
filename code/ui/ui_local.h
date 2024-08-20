@@ -195,7 +195,7 @@ typedef struct _tag_menuframework
 	void *items[MAX_MENUITEMS];
 
 	void (*draw) (void);
-	sfxHandle_t (*key) (int key);
+	qhandle_t (*key) (int key);
 
 	qboolean	wrapAround;
 	qboolean	fullscreen;
@@ -300,20 +300,20 @@ extern void			Menu_AddItem( menuframework_s *menu, void *item );
 extern void			Menu_AdjustCursor( menuframework_s *menu, int dir );
 extern void			Menu_Draw( menuframework_s *menu );
 extern void			*Menu_ItemAtCursor( menuframework_s *m );
-extern sfxHandle_t	Menu_ActivateItem( menuframework_s *s, menucommon_s* item );
+extern qhandle_t	Menu_ActivateItem( menuframework_s *s, menucommon_s* item );
 extern void			Menu_SetCursor( menuframework_s *s, int cursor );
 extern void			Menu_SetCursorToItem( menuframework_s *m, void* ptr );
-extern sfxHandle_t	Menu_DefaultKey( menuframework_s *s, int key );
+extern qhandle_t	Menu_DefaultKey( menuframework_s *s, int key );
 extern void			Bitmap_Init( menubitmap_s *b );
 extern void			Bitmap_Draw( menubitmap_s *b );
 extern void			ScrollList_Draw( menulist_s *l );
-extern sfxHandle_t	ScrollList_Key( menulist_s *l, int key );
-extern sfxHandle_t	menu_in_sound;
-extern sfxHandle_t	menu_move_sound;
-extern sfxHandle_t	menu_out_sound;
-extern sfxHandle_t	menu_buzz_sound;
-extern sfxHandle_t	menu_null_sound;
-extern sfxHandle_t	weaponChangeSound;
+extern qhandle_t	ScrollList_Key( menulist_s *l, int key );
+extern qhandle_t	menu_in_sound;
+extern qhandle_t	menu_move_sound;
+extern qhandle_t	menu_out_sound;
+extern qhandle_t	menu_buzz_sound;
+extern qhandle_t	menu_null_sound;
+extern qhandle_t	weaponChangeSound;
 extern vec4_t		menu_text_color;
 extern vec4_t		menu_grayed_color;
 extern vec4_t		menu_dark_color;
@@ -348,7 +348,7 @@ extern void			MField_CharEvent( mfield_t *edit, int ch );
 extern void			MField_Draw( mfield_t *edit, int x, int y, int style, vec4_t color );
 extern void			MenuField_Init( menufield_s* m );
 extern void			MenuField_Draw( menufield_s *f );
-extern sfxHandle_t	MenuField_Key( menufield_s* m, int* key );
+extern qhandle_t	MenuField_Key( menufield_s* m, int* key );
 
 //
 // ui_main.c
@@ -833,7 +833,7 @@ typedef struct {
 
 	int currentCrosshair;
 	int startPostGameTime;
-	sfxHandle_t newHighScoreSound;
+	qhandle_t newHighScoreSound;
 
 	int				q3HeadCount;
 	char			q3HeadNames[MAX_PLAYERMODELS][64];
@@ -931,12 +931,12 @@ void			trap_Cvar_InfoStringBuffer( int bit, char *buffer, int bufsize );
 int				trap_Argc( void );
 void			trap_Argv( int n, char *buffer, int bufferLength );
 void			trap_Cmd_ExecuteText( int exec_when, const char *text );	// don't use EXEC_NOW!
-int				trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode );
-void			trap_FS_Read( void *buffer, int len, fileHandle_t f );
-void			trap_FS_Write( const void *buffer, int len, fileHandle_t f );
-void			trap_FS_FCloseFile( fileHandle_t f );
+int				trap_FS_FOpenFile( const char *qpath, qhandle_t *f, fsMode_t mode );
+void			trap_FS_Read( void *buffer, int len, qhandle_t f );
+void			trap_FS_Write( const void *buffer, int len, qhandle_t f );
+void			trap_FS_FCloseFile( qhandle_t f );
 int				trap_FS_GetFileList(  const char *path, const char *extension, char *listbuf, int bufsize );
-int				trap_FS_Seek( fileHandle_t f, long offset, int origin ); // fsOrigin_t
+int				trap_FS_Seek( qhandle_t f, long offset, int origin ); // fsOrigin_t
 qhandle_t		trap_R_RegisterModel( const char *name );
 qhandle_t		trap_R_RegisterSkin( const char *name );
 qhandle_t		trap_R_RegisterShaderNoMip( const char *name );
@@ -947,11 +947,11 @@ void			trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float
 void			trap_R_RenderScene( const refdef_t *fd );
 void			trap_R_SetColor( const float *rgba );
 void			trap_R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader );
-void			trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
+void			trap_R_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs );
 void			trap_UpdateScreen( void );
-int				trap_CM_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int endFrame, float frac, const char *tagName );
-void			trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum );
-sfxHandle_t		trap_S_RegisterSound( const char *sample, qboolean compressed );
+int				trap_CM_LerpTag( orientation_t *tag, qhandle_t mod, int startFrame, int endFrame, float frac, const char *tagName );
+void			trap_S_StartLocalSound( qhandle_t sfx, int channelNum );
+qhandle_t		trap_S_RegisterSound( const char *sample, qboolean compressed );
 void			trap_Key_KeynumToStringBuf( int keynum, char *buf, int buflen );
 void			trap_Key_GetBindingBuf( int keynum, char *buf, int buflen );
 void			trap_Key_SetBinding( int keynum, const char *binding );

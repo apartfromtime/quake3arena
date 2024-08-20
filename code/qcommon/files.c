@@ -384,7 +384,7 @@ static long FS_HashFileName( const char *fname, int hashSize ) {
 	return hash;
 }
 
-static fileHandle_t	FS_HandleForFile(void) {
+static qhandle_t	FS_HandleForFile(void) {
 	int		i;
 
 	for ( i = 1 ; i < MAX_FILE_HANDLES ; i++ ) {
@@ -396,7 +396,7 @@ static fileHandle_t	FS_HandleForFile(void) {
 	return 0;
 }
 
-static FILE	*FS_FileForHandle( fileHandle_t f ) {
+static FILE	*FS_FileForHandle( qhandle_t f ) {
 	if ( f < 0 || f > MAX_FILE_HANDLES ) {
 		Com_Error( ERR_DROP, "FS_FileForHandle: out of reange" );
 	}
@@ -410,7 +410,7 @@ static FILE	*FS_FileForHandle( fileHandle_t f ) {
 	return fsh[f].handleFiles.file.o;
 }
 
-void	FS_ForceFlush( fileHandle_t f ) {
+void	FS_ForceFlush( qhandle_t f ) {
 	FILE *file;
 
 	file = FS_FileForHandle(f);
@@ -426,7 +426,7 @@ it will return the size of the pak file, not the expected
 size of the file.
 ================
 */
-int FS_filelength( fileHandle_t f ) {
+int FS_filelength( qhandle_t f ) {
 	int		pos;
 	int		end;
 	FILE*	h;
@@ -622,9 +622,9 @@ FS_SV_FOpenFileWrite
 
 ===========
 */
-fileHandle_t FS_SV_FOpenFileWrite( const char *filename ) {
+qhandle_t FS_SV_FOpenFileWrite( const char *filename ) {
 	char *ospath;
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
@@ -663,9 +663,9 @@ search for a file somewhere below the home path, base path or cd path
 we search in that order, matching FS_SV_FOpenFileRead order
 ===========
 */
-int FS_SV_FOpenFileRead( const char *filename, fileHandle_t *fp ) {
+int FS_SV_FOpenFileRead( const char *filename, qhandle_t *fp ) {
 	char *ospath;
-	fileHandle_t	f = 0;
+	qhandle_t	f = 0;
 
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
@@ -814,7 +814,7 @@ For some reason, other dll's can't just cal fclose()
 on files returned by FS_FOpenFile...
 ==============
 */
-void FS_FCloseFile( fileHandle_t f ) {
+void FS_FCloseFile( qhandle_t f ) {
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
 	}
@@ -844,9 +844,9 @@ FS_FOpenFileWrite
 
 ===========
 */
-fileHandle_t FS_FOpenFileWrite( const char *filename ) {
+qhandle_t FS_FOpenFileWrite( const char *filename ) {
 	char			*ospath;
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
@@ -885,9 +885,9 @@ FS_FOpenFileAppend
 
 ===========
 */
-fileHandle_t FS_FOpenFileAppend( const char *filename ) {
+qhandle_t FS_FOpenFileAppend( const char *filename ) {
 	char			*ospath;
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
@@ -983,7 +983,7 @@ separate file or a ZIP file.
 */
 extern qboolean		com_fullyInitialized;
 
-int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueFILE ) {
+int FS_FOpenFileRead( const char *filename, qhandle_t *file, qboolean uniqueFILE ) {
 	searchpath_t	*search;
 	char			*netpath;
 	pack_t			*pak;
@@ -1230,7 +1230,7 @@ FS_Read
 Properly handles partial reads
 =================
 */
-int FS_Read2( void *buffer, int len, fileHandle_t f ) {
+int FS_Read2( void *buffer, int len, qhandle_t f ) {
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
 	}
@@ -1249,7 +1249,7 @@ int FS_Read2( void *buffer, int len, fileHandle_t f ) {
 	}
 }
 
-int FS_Read( void *buffer, int len, fileHandle_t f ) {
+int FS_Read( void *buffer, int len, qhandle_t f ) {
 	int		block, remaining;
 	int		read;
 	byte	*buf;
@@ -1302,7 +1302,7 @@ FS_Write
 Properly handles partial writes
 =================
 */
-int FS_Write( const void *buffer, int len, fileHandle_t h ) {
+int FS_Write( const void *buffer, int len, qhandle_t h ) {
 	int		block, remaining;
 	int		written;
 	byte	*buf;
@@ -1348,7 +1348,7 @@ int FS_Write( const void *buffer, int len, fileHandle_t h ) {
 	return len;
 }
 
-void Q_CDECL FS_Printf( fileHandle_t h, const char *fmt, ... ) {
+void Q_CDECL FS_Printf( qhandle_t h, const char *fmt, ... ) {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
@@ -1365,7 +1365,7 @@ FS_Seek
 
 =================
 */
-int FS_Seek( fileHandle_t f, long offset, int origin ) {
+int FS_Seek( qhandle_t f, long offset, int origin ) {
 	int		_origin;
 	char	foo[65536];
 
@@ -1495,7 +1495,7 @@ a null buffer will just return the file length without loading
 ============
 */
 int FS_ReadFile( const char *qpath, void **buffer ) {
-	fileHandle_t	h;
+	qhandle_t	h;
 	byte*			buf;
 	qboolean		isConfig;
 	int				len;
@@ -1633,7 +1633,7 @@ Filename are reletive to the quake search path
 ============
 */
 void FS_WriteFile( const char *qpath, const void *buffer, int size ) {
-	fileHandle_t f;
+	qhandle_t f;
 
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
@@ -2115,7 +2115,7 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
   char **pPaks = NULL;
   char *name, *path;
   char descPath[MAX_OSPATH];
-  fileHandle_t descHandle;
+  qhandle_t descHandle;
 
   int dummy;
   char **pFiles0 = NULL;
@@ -2421,7 +2421,7 @@ arbitrary files furing an "fs_copyfiles 1" run.
 ============
 */
 void FS_TouchFile_f( void ) {
-	fileHandle_t	f;
+	qhandle_t	f;
 
 	if ( Cmd_Argc() != 2 ) {
 		Com_Printf( "Usage: touchFile <file>\n" );
@@ -3347,7 +3347,7 @@ Handle based file calls for virtual machines
 ========================================================================================
 */
 
-int		FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
+int		FS_FOpenFileByMode( const char *qpath, qhandle_t *f, fsMode_t mode ) {
 	int		r;
 	qboolean	sync;
 
@@ -3401,7 +3401,7 @@ int		FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
 	return r;
 }
 
-int		FS_FTell( fileHandle_t f ) {
+int		FS_FTell( qhandle_t f ) {
 	int pos;
 	if (fsh[f].zipFile == qtrue) {
 		pos = unztell(fsh[f].handleFiles.file.z);
@@ -3411,7 +3411,7 @@ int		FS_FTell( fileHandle_t f ) {
 	return pos;
 }
 
-void	FS_Flush( fileHandle_t f ) {
+void	FS_Flush( qhandle_t f ) {
 	fflush(fsh[f].handleFiles.file.o);
 }
 

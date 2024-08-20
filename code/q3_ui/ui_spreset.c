@@ -75,7 +75,7 @@ void Reset_MenuEvent(void* ptr, int event) {
 Reset_MenuKey
 =================
 */
-static sfxHandle_t Reset_MenuKey( int key ) {
+static qhandle_t Reset_MenuKey( int key ) {
 	switch ( key ) {
 	case K_KP_LEFTARROW:
 	case K_LEFTARROW:

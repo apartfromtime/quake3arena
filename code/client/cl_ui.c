@@ -49,7 +49,7 @@ LAN_LoadCachedServers
 */
 void LAN_LoadCachedServers( ) {
 	int size;
-	fileHandle_t fileIn;
+	qhandle_t fileIn;
 	cls.numglobalservers = cls.nummplayerservers = cls.numfavoriteservers = 0;
 	cls.numGlobalServerAddresses = 0;
 	if (FS_SV_FOpenFileRead("servercache.dat", &fileIn)) {
@@ -76,7 +76,7 @@ LAN_SaveServersToCache
 */
 void LAN_SaveServersToCache( ) {
 	int size;
-	fileHandle_t fileOut = FS_SV_FOpenFileWrite("servercache.dat");
+	qhandle_t fileOut = FS_SV_FOpenFileWrite("servercache.dat");
 	FS_Write(&cls.numglobalservers, sizeof(int), fileOut);
 	FS_Write(&cls.nummplayerservers, sizeof(int), fileOut);
 	FS_Write(&cls.numfavoriteservers, sizeof(int), fileOut);

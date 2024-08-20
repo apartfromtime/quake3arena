@@ -154,7 +154,7 @@ static void ServerInfo_MenuDraw( void )
 ServerInfo_MenuKey
 =================
 */
-static sfxHandle_t ServerInfo_MenuKey( int key )
+static qhandle_t ServerInfo_MenuKey( int key )
 {
 	return ( Menu_DefaultKey( &s_serverinfo.menu, key ) );
 }

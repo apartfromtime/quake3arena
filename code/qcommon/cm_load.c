@@ -672,7 +672,7 @@ void CM_ClearMap( void ) {
 CM_ClipHandleToModel
 ==================
 */
-cmodel_t	*CM_ClipHandleToModel( clipHandle_t handle ) {
+cmodel_t	*CM_ClipHandleToModel( qhandle_t handle ) {
 	if ( handle < 0 ) {
 		Com_Error( ERR_DROP, "CM_ClipHandleToModel: bad handle %i", handle );
 	}
@@ -697,7 +697,7 @@ cmodel_t	*CM_ClipHandleToModel( clipHandle_t handle ) {
 CM_InlineModel
 ==================
 */
-clipHandle_t	CM_InlineModel( int index ) {
+qhandle_t	CM_InlineModel( int index ) {
 	if ( index < 0 || index >= cm.numSubModels ) {
 		Com_Error (ERR_DROP, "CM_InlineModel: bad number");
 	}
@@ -795,7 +795,7 @@ BSP trees instead of being compared directly.
 Capsules are handled differently though.
 ===================
 */
-clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule ) {
+qhandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule ) {
 
 	VectorCopy( mins, box_model.mins );
 	VectorCopy( maxs, box_model.maxs );
@@ -828,7 +828,7 @@ clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule 
 CM_ModelBounds
 ===================
 */
-void CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
+void CM_ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs ) {
 	cmodel_t	*cmod;
 
 	cmod = CM_ClipHandleToModel( model );

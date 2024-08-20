@@ -40,7 +40,7 @@ void S_Update_();
 void S_StopAllSounds(void);
 void S_UpdateBackgroundTrack( void );
 
-static fileHandle_t s_backgroundFile;
+static qhandle_t s_backgroundFile;
 static wavinfo_t	s_backgroundInfo;
 //int			s_nextWavChunk;
 static int			s_backgroundSamples;
@@ -390,7 +390,7 @@ S_RegisterSound
 Creates a default buzz sound if the file can't be loaded
 ==================
 */
-sfxHandle_t	S_RegisterSound( const char *name, qboolean compressed ) {
+qhandle_t	S_RegisterSound( const char *name, qboolean compressed ) {
 	sfx_t	*sfx;
 
 	compressed = qfalse;
@@ -510,7 +510,7 @@ if pos is NULL, the sound will be dynamically sourced from the entity
 Entchannel 0 will never override a playing sound
 ====================
 */
-void S_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle ) {
+void S_StartSound(vec3_t origin, int entityNum, int entchannel, qhandle_t sfxHandle ) {
 	channel_t	*ch;
 	sfx_t		*sfx;
   int i, oldest, chosen, time;
@@ -631,7 +631,7 @@ void S_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxH
 S_StartLocalSound
 ==================
 */
-void S_StartLocalSound( sfxHandle_t sfxHandle, int channelNum ) {
+void S_StartLocalSound( qhandle_t sfxHandle, int channelNum ) {
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
 	}
@@ -737,7 +737,7 @@ Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
 ==================
 */
-void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
+void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfxHandle ) {
 	sfx_t *sfx;
 
 	if ( !s_soundStarted || s_soundMuted ) {
@@ -798,7 +798,7 @@ Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
 ==================
 */
-void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
+void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, qhandle_t sfxHandle ) {
 	sfx_t *sfx;
 
 	if ( !s_soundStarted || s_soundMuted ) {
@@ -1301,7 +1301,7 @@ console functions
 
 void S_Play_f( void ) {
 	int 		i;
-	sfxHandle_t	h;
+	qhandle_t	h;
 	char		name[256];
 	
 	i = 1;
@@ -1368,7 +1368,7 @@ background music functions
 ===============================================================================
 */
 
-int	FGetLittleLong( fileHandle_t f ) {
+int	FGetLittleLong( qhandle_t f ) {
 	int		v;
 
 	FS_Read( &v, sizeof(v), f );
@@ -1376,7 +1376,7 @@ int	FGetLittleLong( fileHandle_t f ) {
 	return LittleLong( v);
 }
 
-int	FGetLittleShort( fileHandle_t f ) {
+int	FGetLittleShort( qhandle_t f ) {
 	short	v;
 
 	FS_Read( &v, sizeof(v), f );
@@ -1385,7 +1385,7 @@ int	FGetLittleShort( fileHandle_t f ) {
 }
 
 // returns the length of the data in the chunk, or 0 if not found
-int S_FindWavChunk( fileHandle_t f, char *chunk ) {
+int S_FindWavChunk( qhandle_t f, char *chunk ) {
 	char	name[5];
 	int		len;
 	int		r;

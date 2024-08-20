@@ -1295,7 +1295,7 @@ static void ArenaServers_MenuDraw( void )
 ArenaServers_MenuKey
 =================
 */
-static sfxHandle_t ArenaServers_MenuKey( int key ) {
+static qhandle_t ArenaServers_MenuKey( int key ) {
 	if( key == K_SPACE  && g_arenaservers.refreshservers ) {
 		ArenaServers_StopRefresh();	
 		return menu_move_sound;

@@ -635,17 +635,17 @@ void Sys_InitStreamThread( void ) {
 void Sys_ShutdownStreamThread( void ) {
 }
 
-void Sys_BeginStreamedFile( fileHandle_t f, int readAhead ) {
+void Sys_BeginStreamedFile( qhandle_t f, int readAhead ) {
 }
 
-void Sys_EndStreamedFile( fileHandle_t f ) {
+void Sys_EndStreamedFile( qhandle_t f ) {
 }
 
-int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
+int Sys_StreamedRead( void *buffer, int size, int count, qhandle_t f ) {
    return FS_Read( buffer, size * count, f );
 }
 
-void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
+void Sys_StreamSeek( qhandle_t f, int offset, int origin ) {
    FS_Seek( f, offset, origin );
 }
 
@@ -653,7 +653,7 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
 #else
 
 typedef struct {
-	fileHandle_t	file;
+	qhandle_t	file;
 	byte	*buffer;
 	qboolean	eof;
 	qboolean	active;
@@ -757,7 +757,7 @@ Sys_BeginStreamedFile
 
 ================
 */
-void Sys_BeginStreamedFile( fileHandle_t f, int readAhead ) {
+void Sys_BeginStreamedFile( qhandle_t f, int readAhead ) {
 	if ( stream.sIO[f].file ) {
 		Sys_EndStreamedFile( stream.sIO[f].file );
 	}
@@ -780,7 +780,7 @@ Sys_EndStreamedFile
 
 ================
 */
-void Sys_EndStreamedFile( fileHandle_t f ) {
+void Sys_EndStreamedFile( qhandle_t f ) {
 	if ( f != stream.sIO[f].file ) {
 		Com_Error( ERR_FATAL, "Sys_EndStreamedFile: wrong file");
 	}
@@ -802,7 +802,7 @@ Sys_StreamedRead
 
 ================
 */
-int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
+int Sys_StreamedRead( void *buffer, int size, int count, qhandle_t f ) {
 	int		available;
 	int		remaining;
 	int		sleepCount;
@@ -865,7 +865,7 @@ Sys_StreamSeek
 
 ================
 */
-void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
+void Sys_StreamSeek( qhandle_t f, int offset, int origin ) {
 
 	// halt the thread
 	EnterCriticalSection( &stream.crit );
