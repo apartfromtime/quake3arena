@@ -2300,10 +2300,13 @@ static char *FindShaderInShaderText( const char *shadername ) {
 
 	hash = generateHashValue(shadername, MAX_SHADERTEXT_HASH);
 
+    Com_BeginParseSession(shadername);
+
 	for (i = 0; shaderTextHashTable[hash][i]; i++) {
 		p = shaderTextHashTable[hash][i];
 		token = Com_ParseExt(&p, qtrue);
 		if ( !Q_stricmp( token, shadername ) ) {
+            Com_EndParseSession();
 			return p;
 		}
 	}
@@ -2322,6 +2325,7 @@ static char *FindShaderInShaderText( const char *shadername ) {
 		}
 
 		if ( !Q_stricmp( token, shadername ) ) {
+            Com_EndParseSession();
 			return p;
 		}
 		else {
@@ -2329,6 +2333,8 @@ static char *FindShaderInShaderText( const char *shadername ) {
 			Com_SkipBracedSection( &p );
 		}
 	}
+
+    Com_EndParseSession();
 
 	return NULL;
 }
