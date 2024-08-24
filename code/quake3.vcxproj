@@ -165,7 +165,7 @@
       <BrowseInformationFile>.\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -344,7 +344,7 @@
       <BrowseInformationFile>.\Debug_TA/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -1255,7 +1255,7 @@
     <ClInclude Include="client\client.h" />
     <ClInclude Include="game\q_math.h" />
     <ClInclude Include="game\q_parse.h" />
-    <ClInclude Include="qcommon\cmd_public.h" />
+    <ClInclude Include="qcommon\cmd.h" />
     <ClInclude Include="qcommon\cm_local.h" />
     <ClInclude Include="qcommon\cm_patch.h" />
     <ClInclude Include="qcommon\cm_polylib.h" />
