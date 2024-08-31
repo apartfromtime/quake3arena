@@ -1646,6 +1646,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\client\cin_public.h" />
     <ClInclude Include="..\game\q_parse.h" />
     <ClInclude Include="..\qcommon\cm_public.h" />
     <ClInclude Include="..\win32\glw_win.h" />

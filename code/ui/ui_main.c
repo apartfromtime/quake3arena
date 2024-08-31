@@ -31,6 +31,7 @@ USER INTERFACE MAIN
 // use this to get a demo build without an explicit demo build, i.e. to get the demo ui files to build
 //#define PRE_RELEASE_TADEMO
 
+#include "..\client\cin_public.h"
 #include "ui_local.h"
 
 uiInfo_t uiInfo;
