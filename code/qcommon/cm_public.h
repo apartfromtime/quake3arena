@@ -20,7 +20,76 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
+#ifndef Q_COLLISION_PUBLIC_H
+#define Q_COLLISION_PUBLIC_H
+
 #include "qfiles.h"
+
+/*
+===============================================================================
+
+COLLISION DETECTION
+
+===============================================================================
+*/
+
+#include "..\game\surfaceflags.h"			// shared with the q3map utility
+
+// plane types are used to speed some tests
+// 0-2 are axial planes
+#define	PLANE_X			0
+#define	PLANE_Y			1
+#define	PLANE_Z			2
+#define	PLANE_NON_AXIAL	3
+
+
+/*
+=================
+PlaneTypeForNormal
+=================
+*/
+
+#define PlaneTypeForNormal(x) (x[0] == 1.0 ? PLANE_X : (x[1] == 1.0 ? PLANE_Y : (x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL) ) )
+
+// plane_t structure
+// !!! if this is changed, it must be changed in asm code too !!!
+typedef struct cplane_s {
+	vec3_t	normal;
+	float	dist;
+	byte	type;			// for fast side tests: 0,1,2 = axial, 3 = nonaxial
+	byte	signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
+	byte	pad[2];
+} cplane_t;
+
+
+// a trace is returned when a box is swept through the world
+typedef struct {
+	qboolean	allsolid;	// if true, plane is not valid
+	qboolean	startsolid;	// if true, the initial point was in a solid area
+	float		fraction;	// time completed, 1.0 = didn't hit anything
+	vec3_t		endpos;		// final position
+	cplane_t	plane;		// surface normal at impact, transformed to world space
+	int			surfaceFlags;	// surface hit
+	int			contents;	// contents on other side of surface hit
+	int			entityNum;	// entity the contacted sirface is a part of
+} trace_t;
+
+// trace->entityNum can also be 0 to (MAX_GENTITIES-1)
+// or ENTITYNUM_NONE, ENTITYNUM_WORLD
+
+
+// markfragments are returned by CM_MarkFragments()
+typedef struct {
+	int		firstPoint;
+	int		numPoints;
+} markFragment_t;
+
+
+
+typedef struct {
+	vec3_t		origin;
+	vec3_t		axis[3];
+} orientation_t;
 
 
 void		CM_LoadMap( const char *name, qboolean clientload, int *checksum);
@@ -74,3 +143,5 @@ int	CM_MarkFragments( int numPoints, const vec3_t *points, const vec3_t projecti
 
 // cm_patch.c
 void CM_DrawDebugSurface( void (*drawPoly)(int color, int numPoints, float *points) );
+
+#endif // Q_COLLISION_PUBLIC_H
