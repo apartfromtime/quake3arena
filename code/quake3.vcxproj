@@ -1251,6 +1251,7 @@
   <ItemGroup>
     <ClInclude Include="client\cin_public.h" />
     <ClInclude Include="client\cl_public.h" />
+    <ClInclude Include="client\keys_public.h" />
     <ClInclude Include="game\bg_public.h" />
     <ClInclude Include="cgame\cg_public.h" />
     <ClInclude Include="client\client.h" />
