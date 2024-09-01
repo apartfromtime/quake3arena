@@ -678,6 +678,7 @@
     <ClInclude Include="g_local.h" />
     <ClInclude Include="g_public.h" />
     <ClInclude Include="g_team.h" />
+    <ClInclude Include="g_types.h" />
     <ClInclude Include="inv.h" />
     <ClInclude Include="match.h" />
     <ClInclude Include="q_math.h" />

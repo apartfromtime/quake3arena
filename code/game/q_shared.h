@@ -697,22 +697,20 @@ typedef struct qtime_s {
 #define AS_GLOBAL			2
 #define AS_FAVORITES	3
 
-typedef enum _flag_status {
-	FLAG_ATBASE = 0,
-	FLAG_TAKEN,			// CTF
-	FLAG_TAKEN_RED,		// One Flag CTF
-	FLAG_TAKEN_BLUE,	// One Flag CTF
-	FLAG_DROPPED
-} flagStatus_t;
+/*
+=============================================================================
+
+GAME
+
+=============================================================================
+*/
+
+#include "..\game\g_types.h"
 
 #define	MAX_GLOBAL_SERVERS				4096
 #define	MAX_OTHER_SERVERS					128
 #define MAX_PINGREQUESTS					32
 #define MAX_SERVERSTATUSREQUESTS	16
-
-#define SAY_ALL		0
-#define SAY_TEAM	1
-#define SAY_TELL	2
 
 #define CDKEY_LEN 16
 #define CDCHKSUM_LEN 2

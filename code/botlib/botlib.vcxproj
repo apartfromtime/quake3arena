@@ -572,6 +572,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\game\g_types.h" />
     <ClInclude Include="aasfile.h" />
     <ClInclude Include="be_aas_bsp.h" />
     <ClInclude Include="be_aas_cluster.h" />
