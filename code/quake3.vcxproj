@@ -1277,6 +1277,7 @@
     <ClInclude Include="game\q_shared.h" />
     <ClInclude Include="qcommon\qcommon.h" />
     <ClInclude Include="qcommon\qfiles.h" />
+    <ClInclude Include="ui\ui_types.h" />
     <ClInclude Include="win32\resource.h" />
     <ClInclude Include="server\server.h" />
     <ClInclude Include="client\snd_local.h" />

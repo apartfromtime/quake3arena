@@ -419,6 +419,26 @@ CINEMATIC
 
 #include "..\client\cin_types.h"
 
+/*
+=============================================================================
+
+GAME
+
+=============================================================================
+*/
+
+#include "..\game\g_types.h"
+
+/*
+=============================================================================
+
+USER INTERFACE
+
+=============================================================================
+*/
+
+#include "..\ui\ui_types.h"
+
 
 
 /*
@@ -696,21 +716,6 @@ typedef struct qtime_s {
 #define AS_MPLAYER		1
 #define AS_GLOBAL			2
 #define AS_FAVORITES	3
-
-/*
-=============================================================================
-
-GAME
-
-=============================================================================
-*/
-
-#include "..\game\g_types.h"
-
-#define	MAX_GLOBAL_SERVERS				4096
-#define	MAX_OTHER_SERVERS					128
-#define MAX_PINGREQUESTS					32
-#define MAX_SERVERSTATUSREQUESTS	16
 
 #define CDKEY_LEN 16
 #define CDCHKSUM_LEN 2
