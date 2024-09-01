@@ -717,9 +717,6 @@ typedef struct qtime_s {
 #define AS_GLOBAL			2
 #define AS_FAVORITES	3
 
-#define CDKEY_LEN 16
-#define CDCHKSUM_LEN 2
-
 #endif	// #ifndef Q3RADIANT
 
 #endif	// __Q_SHARED_H
