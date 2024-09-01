@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef Q_COLLISION_PUBLIC_H
 #define Q_COLLISION_PUBLIC_H
 
-#include "qfiles.h"
+#include "..\qcommon\qfiles.h"
 
 /*
 ===============================================================================
