@@ -20,21 +20,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef Q_CIN_PUBLIC_H
-#define Q_CIN_PUBLIC_H
+#ifndef Q_CLIENT_TYPES_H
+#define Q_CLIENT_TYPES_H
 
 /*
 =============================================================================
 
-VIDEO AND CINEMATIC
+CLIENT
 
 =============================================================================
 */
 
-#define CIN_system	1
-#define CIN_loop	2
-#define	CIN_hold	4
-#define CIN_silent	8
-#define CIN_shader	16
+// print levels from renderer (FIXME: set up for game / cgame?)
+typedef enum
+{
+	PRINT_ALL,
+	PRINT_DEVELOPER,		// only print when "developer 1"
+	PRINT_WARNING,
+	PRINT_ERROR
+} printParm_t;
 
-#endif // #ifndef Q_CIN_PUBLIC_H
+#endif // #ifndef Q_CLIENT_TYPES_H

@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef Q_KEYS_H
-#define Q_KEYS_H
+#ifndef Q_KEY_TYPES_H
+#define Q_KEY_TYPES_H
 
 /*
 =============================================================================
@@ -38,4 +38,4 @@ KEYS
 #define	KEYCATCH_MESSAGE        0x0004
 #define	KEYCATCH_CGAME          0x0008
 
-#endif // #ifndef Q_KEYS_H
+#endif // #ifndef Q_KEY_TYPES_H
