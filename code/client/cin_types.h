@@ -37,4 +37,16 @@ VIDEO AND CINEMATIC
 #define CIN_silent	8
 #define CIN_shader	16
 
+// cinematic states
+typedef enum
+{
+    FMV_IDLE,
+    FMV_PLAY,           // play
+    FMV_EOF,            // all other conditions, i.e. stop/EOF/abort
+    FMV_ID_BLT,
+    FMV_ID_IDLE,
+    FMV_LOOPED,
+    FMV_ID_WAIT
+} e_status;
+
 #endif // #ifndef Q_CIN_TYPES_H

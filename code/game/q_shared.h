@@ -697,18 +697,6 @@ typedef struct qtime_s {
 #define AS_GLOBAL			2
 #define AS_FAVORITES	3
 
-
-// cinematic states
-typedef enum {
-	FMV_IDLE,
-	FMV_PLAY,		// play
-	FMV_EOF,		// all other conditions, i.e. stop/EOF/abort
-	FMV_ID_BLT,
-	FMV_ID_IDLE,
-	FMV_LOOPED,
-	FMV_ID_WAIT
-} e_status;
-
 typedef enum _flag_status {
 	FLAG_ATBASE = 0,
 	FLAG_TAKEN,			// CTF
@@ -716,8 +704,6 @@ typedef enum _flag_status {
 	FLAG_TAKEN_BLUE,	// One Flag CTF
 	FLAG_DROPPED
 } flagStatus_t;
-
-
 
 #define	MAX_GLOBAL_SERVERS				4096
 #define	MAX_OTHER_SERVERS					128
