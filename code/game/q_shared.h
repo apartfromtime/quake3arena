@@ -173,23 +173,40 @@ GROWLISTS
 
 #include "..\qcommon\q_dict.h"
 
-//=============================================================================
+
+/*
+===============================================================================
+
+REAL TIME
+
+===============================================================================
+*/
+
+typedef struct qtime_s
+{
+	int tm_sec;     /* seconds after the minute - [0,59] */
+	int tm_min;     /* minutes after the hour - [0,59] */
+	int tm_hour;    /* hours since midnight - [0,23] */
+	int tm_mday;    /* day of the month - [1,31] */
+	int tm_mon;     /* months since January - [0,11] */
+	int tm_year;    /* years since 1900 */
+	int tm_wday;    /* days since Sunday - [0,6] */
+	int tm_yday;    /* days since January 1 - [0,365] */
+	int tm_isdst;   /* daylight savings time flag */
+} qtime_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
 /*
 ===============================================================================
 
-QUAKE3 FILESYSTEM
+ENDIAN
 
 ===============================================================================
 */
-
-#include "..\qcommon\filesystem.h"
-
-//=============================================================================
 
 // 64-bit integers for global rankings interface
 // implemented as a struct for qvm compatibility
@@ -205,8 +222,6 @@ typedef struct
 	byte	b7;
 } qint64;
 
-//=============================================
-
 short	BigShort(short l);
 short	LittleShort(short l);
 int		BigLong(int l);
@@ -221,6 +236,18 @@ void	Swap_Init(void);
 #ifdef __cplusplus
 	}
 #endif
+
+
+/*
+===============================================================================
+
+QUAKE3 FILESYSTEM
+
+===============================================================================
+*/
+
+#include "..\qcommon\filesystem.h"
+
 
 //=============================================
 #ifdef __cplusplus
@@ -692,23 +719,6 @@ typedef struct entityState_s {
 
 	int		generic1;
 } entityState_t;
-
-// real time
-//=============================================
-
-
-typedef struct qtime_s {
-	int tm_sec;     /* seconds after the minute - [0,59] */
-	int tm_min;     /* minutes after the hour - [0,59] */
-	int tm_hour;    /* hours since midnight - [0,23] */
-	int tm_mday;    /* day of the month - [1,31] */
-	int tm_mon;     /* months since January - [0,11] */
-	int tm_year;    /* years since 1900 */
-	int tm_wday;    /* days since Sunday - [0,6] */
-	int tm_yday;    /* days since January 1 - [0,365] */
-	int tm_isdst;   /* daylight savings time flag */
-} qtime_t;
-
 
 // server browser sources
 // TTimo: AS_MPLAYER is no longer used
