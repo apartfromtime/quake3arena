@@ -2497,12 +2497,8 @@ static qboolean UI_NetSource_HandleKey(int flags, float *special, int key) {
 		
 		if (key == K_MOUSE2) {
 			ui_netSource.integer--;
-			if (ui_netSource.integer == AS_MPLAYER)
-				ui_netSource.integer--;
 		} else {
 			ui_netSource.integer++;
-			if (ui_netSource.integer == AS_MPLAYER)
-				ui_netSource.integer++;
 		}
     
 		if (ui_netSource.integer >= numNetSources) {
@@ -5979,7 +5975,7 @@ static void UI_StartServerRefresh(qboolean full)
 	}
 
 	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 5000;
-	if( ui_netSource.integer == AS_GLOBAL || ui_netSource.integer == AS_MPLAYER ) {
+	if( ui_netSource.integer == AS_GLOBAL ) {
 		if( ui_netSource.integer == AS_GLOBAL ) {
 			i = 0;
 		}

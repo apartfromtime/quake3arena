@@ -36,4 +36,9 @@ USER INTERFACE
 #define MAX_PINGREQUESTS            32
 #define MAX_SERVERSTATUSREQUESTS    16
 
+// server browser sources
+#define AS_LOCAL            0
+#define AS_GLOBAL           1
+#define AS_FAVORITES        2
+
 #endif // #ifndef Q_UI_TYPES_H

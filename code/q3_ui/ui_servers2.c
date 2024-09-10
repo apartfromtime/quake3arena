@@ -80,11 +80,6 @@ MULTIPLAYER MENU (SERVER BROWSER)
 #define GR_LOGO				30
 #define GR_LETTERS			31
 
-#define AS_LOCAL			0
-#define AS_MPLAYER			1
-#define AS_GLOBAL			2
-#define AS_FAVORITES		3
-
 #define SORT_HOST			0
 #define SORT_MAP			1
 #define SORT_CLIENTS		2
@@ -241,8 +236,6 @@ static servernode_t		g_localserverlist[MAX_LOCALSERVERS];
 static int				g_numlocalservers;
 static servernode_t		g_favoriteserverlist[MAX_FAVORITESERVERS];
 static int				g_numfavoriteservers;
-static servernode_t		g_mplayerserverlist[MAX_GLOBALSERVERS];
-static int				g_nummplayerservers;
 static int				g_servertype;
 static int				g_gametype;
 static int				g_sortkey;
@@ -403,7 +396,7 @@ static void ArenaServers_UpdateMenu( void ) {
 			g_arenaservers.punkbuster.generic.flags &= ~QMF_GRAYED;
 
 			// update status bar
-			if( g_servertype == AS_GLOBAL || g_servertype == AS_MPLAYER ) {
+			if( g_servertype == AS_GLOBAL ) {
 				g_arenaservers.statusbar.string = quake3worldMessage;
 			}
 			else {
@@ -438,7 +431,7 @@ static void ArenaServers_UpdateMenu( void ) {
 			}
 
 			// update status bar
-			if( g_servertype == AS_GLOBAL || g_servertype == AS_MPLAYER ) {
+			if( g_servertype == AS_GLOBAL ) {
 				g_arenaservers.statusbar.string = quake3worldMessage;
 			}
 			else {
@@ -1009,7 +1002,7 @@ static void ArenaServers_StartRefresh( void )
 		return;
 	}
 
-	if( g_servertype == AS_GLOBAL || g_servertype == AS_MPLAYER ) {
+	if( g_servertype == AS_GLOBAL ) {
 		if( g_servertype == AS_GLOBAL ) {
 			i = 0;
 		}
@@ -1126,15 +1119,7 @@ void ArenaServers_SetType( int type )
 		g_arenaservers.serverlist = g_favoriteserverlist;
 		g_arenaservers.numservers = &g_numfavoriteservers;
 		g_arenaservers.maxservers = MAX_FAVORITESERVERS;
-		break;
-
-	case AS_MPLAYER:
-		g_arenaservers.remove.generic.flags |= (QMF_INACTIVE|QMF_HIDDEN);
-		g_arenaservers.serverlist = g_mplayerserverlist;
-		g_arenaservers.numservers = &g_nummplayerservers;
-		g_arenaservers.maxservers = MAX_GLOBALSERVERS;
-		break;
-		
+		break;		
 	}
 
 	if( !*g_arenaservers.numservers ) {

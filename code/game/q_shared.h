@@ -720,13 +720,6 @@ typedef struct entityState_s {
 	int		generic1;
 } entityState_t;
 
-// server browser sources
-// TTimo: AS_MPLAYER is no longer used
-#define AS_LOCAL			0
-#define AS_MPLAYER		1
-#define AS_GLOBAL			2
-#define AS_FAVORITES	3
-
 #endif	// #ifndef Q3RADIANT
 
 #endif	// __Q_SHARED_H
