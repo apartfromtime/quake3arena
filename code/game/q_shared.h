@@ -47,12 +47,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  **********************************************************************/
 
-#ifdef Q3_VM
-
-#include "bg_lib.h"
-
-#else
-
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -68,7 +62,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <malloc.h>			// for _alloca()
 
 #endif	// #ifdef WIN32
-#endif	// #ifdef Q3_VM
 
 typedef enum { qfalse, qtrue }	qboolean;
 typedef unsigned char 		byte;
