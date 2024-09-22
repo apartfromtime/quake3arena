@@ -88,24 +88,6 @@ typedef struct campspot_s
 	struct campspot_s *next;
 } campspot_t;
 
-//FIXME: these are game specific
-typedef enum {
-	GT_FFA,				// free for all
-	GT_TOURNAMENT,		// one on one tournament
-	GT_SINGLE_PLAYER,	// single player tournament
-
-	//-- team games go after this --
-
-	GT_TEAM,			// team deathmatch
-	GT_CTF,				// capture the flag
-#ifdef MISSIONPACK
-	GT_1FCTF,
-	GT_OBELISK,
-	GT_HARVESTER,
-#endif
-	GT_MAX_GAME_TYPE
-} gametype_t;
-
 typedef struct levelitem_s
 {
 	int number;							//number of the level item
