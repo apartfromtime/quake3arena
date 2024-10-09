@@ -86,7 +86,7 @@ typedef struct {
 
 typedef struct {
 	int				areabytes;
-	byte			areabits[MAX_MAP_AREA_BYTES];		// portalarea visibility bits
+	byte			areabits[MAX_MAP_AREAS];		// portalarea visibility bits
 	playerState_t	ps;
 	int				num_entities;
 	int				first_entity;		// into the circular sv_packet_entities[]

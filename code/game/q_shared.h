@@ -90,11 +90,6 @@ typedef int		qhandle_t;
 
 #define	MAX_SAY_TEXT		150
 
-//
-// these aren't needed by any of the VMs.  put in another header?
-//
-#define	MAX_MAP_AREA_BYTES		32		// bit vector of area visibility
-
 #ifdef ERR_FATAL
 #undef ERR_FATAL			// this is be defined in malloc.h
 #endif
