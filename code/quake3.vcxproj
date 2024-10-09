@@ -1314,15 +1314,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="botlib\botlib.vcxproj">
-      <Project>{2a251e04-bcd1-fd9d-6bec-65f06cb99ace}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="renderer\renderer.vcxproj">
-      <Project>{aa25eb69-7517-56d3-13c9-fdc1661f71e4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="splines\splines.vcxproj">
-      <Project>{d60fbfe5-0884-962d-1ad8-e85fae88dc94}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
