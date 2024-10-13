@@ -72,6 +72,9 @@ typedef int		qhandle_t;
 #define NULL ((void *)0)
 #endif
 
+#define CDKEY_LEN 16
+#define CDCHKSUM_LEN 2
+
 // the game guarantees that no string from the network will ever
 // exceed MAX_STRING_CHARS
 #define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
