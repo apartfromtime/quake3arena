@@ -613,8 +613,7 @@ int CL_CgameSystemCalls( int *args ) {
     return 0;
   case CG_KEY_GETKEY:
 		return Key_GetKey( VMA(1) );
-    case CG_UI_DRAW_PROPORTIONALSTRING:
-        return VM_Call(uivm, UI_DRAW_PROPORTIONALSTRING, args[1], args[2], VMA(3), args[4], args[5]);
+
 
 
 	case CG_MEMSET:

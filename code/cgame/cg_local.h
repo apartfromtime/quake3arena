@@ -1469,8 +1469,6 @@ void CG_CheckChangedPredictableEvents( playerState_t *ps );
 // These functions are how the cgame communicates with the main game system
 //
 
-void trap_UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color);
-
 // print message on the local console
 void		trap_Print( const char *fmt );
 

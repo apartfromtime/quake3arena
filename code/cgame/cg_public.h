@@ -164,7 +164,6 @@ typedef enum {
 	CG_R_INPVS,
 	// 1.32
 	CG_FS_SEEK,
-    CG_UI_DRAW_PROPORTIONALSTRING,
 
 /*
 	CG_LOADCAMERA,
