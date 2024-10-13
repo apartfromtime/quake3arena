@@ -24,9 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "client.h"
 #include <limits.h>
 
-#define CDKEY_LEN 16
-#define CDCHKSUM_LEN 2
-
 cvar_t	*cl_nodelta;
 cvar_t	*cl_debugMove;
 
