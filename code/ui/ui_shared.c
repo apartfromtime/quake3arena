@@ -3563,62 +3563,63 @@ void Item_Model_Paint(itemDef_t *item) {
 	float x, y, w, h;
 	refdef_t refdef;
 	refEntity_t		ent;
-	vec3_t			mins, maxs, origin;
+	vec3_t			origin;
 	vec3_t			angles;
 	modelDef_t *modelPtr = (modelDef_t*)item->typeData;
+
+#if 0
+	vect3_t mins;
+	vect3_t maxs;
+	float aspect = (480.0f / 640.0f);			// virtual screen aspect ratio
+	float yscale = 0.0f;
+	float xscale = 0.0f;
+#endif
 
 	if (modelPtr == NULL) {
 		return;
 	}
 
 	// setup the refdef
-	Com_Memset( &refdef, 0, sizeof( refdef ) );
+	Com_Memset(&refdef, 0, sizeof(refdef));
 	refdef.rdflags = RDF_NOWORLDMODEL;
-	AxisClear( refdef.viewaxis );
-	x = item->window.rect.x+1;
-	y = item->window.rect.y+1;
-	w = item->window.rect.w-2;
-	h = item->window.rect.h-2;
+	AxisClear(refdef.viewaxis);
+	x = item->window.rect.x;
+	y = item->window.rect.y;
+	w = item->window.rect.w;
+	h = item->window.rect.h;
 
-	AdjustFrom640( &x, &y, &w, &h );
+	AdjustFrom640(&x, &y, &w, &h);
 
 	refdef.x = x;
 	refdef.y = y;
 	refdef.width = w;
 	refdef.height = h;
 
-	DC->modelBounds( item->asset, mins, maxs );
+#if 0
+	DC->modelBounds(item->asset, mins, maxs);
 
-	origin[2] = -0.5 * ( mins[2] + maxs[2] );
-	origin[1] = 0.5 * ( mins[1] + maxs[1] );
+	yscale = tanf((M_PI / 2.0f) - DEG2RAD((modelPtr->fov_y / 2.0f)));
+	xscale = yscale / aspect;
 
-	// calculate distance so the model nearly fills the box
-	if (qtrue) {
-		float len = 0.5 * ( maxs[2] - mins[2] );		
-		origin[0] = len / 0.268;	// len / tan( fov/2 )
-		//origin[0] = len / tan(w/2);
-	} else {
-		origin[0] = item->textscale;
-	}
+	// calculate origin from model bounds
+	origin[0] = (0.5 * (maxs[0] - mins[0])) * xscale;
+	origin[1] = (0.5 * (mins[1] + maxs[1])) * yscale;
+	origin[2] = -0.5 * (mins[2] + maxs[2]);
+#else
+	origin[0] = modelPtr->origin[0];
+	origin[1] = modelPtr->origin[1];
+	origin[2] = modelPtr->origin[2];
+#endif
+
 	refdef.fov_x = (modelPtr->fov_x) ? modelPtr->fov_x : w;
 	refdef.fov_y = (modelPtr->fov_y) ? modelPtr->fov_y : h;
-
-	//refdef.fov_x = (int)((float)refdef.width / 640.0f * 90.0f);
-	//xx = refdef.width / tan( refdef.fov_x / 360 * M_PI );
-	//refdef.fov_y = atan2( refdef.height, xx );
-	//refdef.fov_y *= ( 360 / M_PI );
 
 	DC->clearScene();
 
 	refdef.time = DC->realTime;
 
 	// add the model
-
-	Com_Memset( &ent, 0, sizeof(ent) );
-
-	//adjust = 5.0 * sin( (float)uis.realtime / 500 );
-	//adjust = 360 % (int)((float)uis.realtime / 1000);
-	//VectorSet( angles, 0, 0, 1 );
+	Com_Memset(&ent, 0, sizeof(ent));
 
 	// use item storage to track
 	if (modelPtr->rotationSpeed) {
@@ -3627,18 +3628,18 @@ void Item_Model_Paint(itemDef_t *item) {
 			modelPtr->angle = (int)(modelPtr->angle + 1) % 360;
 		}
 	}
-	VectorSet( angles, 0, modelPtr->angle, 0 );
-	AnglesToAxis( angles, ent.axis );
+
+	VectorSet(angles, 0, modelPtr->angle, 0);
+	AnglesToAxis(angles, ent.axis);
 
 	ent.hModel = item->asset;
-	VectorCopy( origin, ent.origin );
-	VectorCopy( origin, ent.lightingOrigin );
+	VectorCopy(origin, ent.origin);
+	VectorCopy(origin, ent.lightingOrigin);
 	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
-	VectorCopy( ent.origin, ent.oldorigin );
+	VectorCopy(ent.origin, ent.oldorigin);
 
-	DC->addRefEntityToScene( &ent );
-	DC->renderScene( &refdef );
-
+	DC->addRefEntityToScene(&ent);
+	DC->renderScene(&refdef);
 }
 
 
