@@ -180,12 +180,9 @@ typedef enum {
 	UI_CONSOLE_COMMAND,
 //	qboolean UI_ConsoleCommand( int realTime );
 
-    // void UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color);
-    UI_DRAW_PROPORTIONALSTRING,
-
 	UI_DRAW_CONNECT_SCREEN,
 //	void	UI_DrawConnectScreen( qboolean overlay );
-	UI_HASUNIQUECDKEY,
+	UI_HASUNIQUECDKEY
 // if !overlay, the background will be drawn, otherwise it will be
 // overlayed over whatever the cgame has drawn.
 // a GetClientState syscall will be made to get the current strings
