@@ -88,10 +88,13 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(FREETYPE)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>.\Debug_TA\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(FREETYPE)\lib\x86\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib</AdditionalDependencies>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -166,10 +169,13 @@
       <ProgramDataBaseFileName>.\Release_TA/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>$(FREETYPE)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>.\Release_TA\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(FREETYPE)\lib\x86\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib</AdditionalDependencies>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
