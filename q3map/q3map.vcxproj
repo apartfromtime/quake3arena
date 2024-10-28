@@ -15,17 +15,21 @@
     </SccProjectName>
     <SccLocalPath>
     </SccLocalPath>
+    <ProjectGuid>{429C9B6A-ACA6-3CB5-913C-A1F29DBC2A13}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -65,7 +69,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glut32.lib;glu32.lib;wsock32.lib;opengl32.lib;odbc32.lib;odbccp32.lib;..\libs\pakd.lib;..\libs\jpeg6d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glut32.lib;glu32.lib;wsock32.lib;opengl32.lib;odbc32.lib;odbccp32.lib;..\libs\pakd.lib;..\libs\jpeg9d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug/q3map.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,6 +78,7 @@
       <StackReserveSize>4194304</StackReserveSize>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\libs\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Midl>
       <TypeLibraryName>.\Debug/q3map.tlb</TypeLibraryName>
@@ -106,7 +111,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glut32.lib;glu32.lib;wsock32.lib;opengl32.lib;odbc32.lib;odbccp32.lib;..\libs\pak.lib;..\libs\jpeg6.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glut32.lib;glu32.lib;wsock32.lib;opengl32.lib;odbc32.lib;odbccp32.lib;..\libs\pak.lib;..\libs\jpeg9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release/q3map.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -115,6 +120,7 @@
       <StackReserveSize>4194304</StackReserveSize>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\libs\win32</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Midl>
       <TypeLibraryName>.\Release/q3map.tlb</TypeLibraryName>
