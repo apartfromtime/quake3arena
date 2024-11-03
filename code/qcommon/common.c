@@ -1326,7 +1326,7 @@ void Com_Init( char *commandLine ) {
 	// cvar and command buffer management
 	Com_ParseCommandLine(commandLine);
 
-	Swap_Init();
+	// Swap_Init();
 	Cbuf_Init();
 
 	Cmd_Init ();
