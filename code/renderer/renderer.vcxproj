@@ -99,8 +99,8 @@
     <Lib>
       <OutputFile>.\Debug_TA\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(FREETYPE)\lib\x86\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\jpeg9;$(FREETYPE)\lib\x86\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jpeg9d.lib;freetype.lib</AdditionalDependencies>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -127,6 +127,8 @@
     <Lib>
       <OutputFile>.\Release\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalDependencies>jpeg9.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\jpeg9</AdditionalLibraryDirectories>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -153,6 +155,8 @@
     <Lib>
       <OutputFile>.\Debug\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalDependencies>..\..\libs\jpeg9d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\jpeg9</AdditionalLibraryDirectories>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -180,8 +184,8 @@
     <Lib>
       <OutputFile>.\Release_TA\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(FREETYPE)\lib\x86\release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\libs\jpeg9;$(FREETYPE)\lib\x86\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jpeg9.lib;freetype.lib</AdditionalDependencies>
     </Lib>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -192,52 +196,6 @@
     <None Include="ref_trin.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\libs\jpeg-9\jaricom.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcapimin.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcapistd.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcarith.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jccoefct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jccolor.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcdctmgr.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jchuff.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcinit.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcmainct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcmarker.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcmaster.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcomapi.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcparam.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcprepct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jcsample.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jctrans.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdapimin.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdapistd.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdarith.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdatadst.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdatasrc.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdcoefct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdcolor.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jddctmgr.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdhuff.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdinput.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdmainct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdmarker.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdmaster.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdmerge.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdpostct.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdsample.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jdtrans.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jerror.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jfdctflt.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jfdctfst.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jfdctint.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jidctflt.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jidctfst.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jidctint.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jmemmgr.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jmemnobs.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jquant1.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jquant2.c" />
-    <ClCompile Include="..\..\libs\jpeg-9\jutils.c" />
     <ClCompile Include="..\game\q_parse.c" />
     <ClCompile Include="..\qcommon\q_string.c" />
     <ClCompile Include="tr_animation.c">
@@ -1200,15 +1158,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\libs\jpeg-9\jconfig.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jdct.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jerror.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jinclude.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jmemsys.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jmorecfg.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jpegint.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jpeglib.h" />
-    <ClInclude Include="..\..\libs\jpeg-9\jversion.h" />
     <ClInclude Include="..\client\cin_public.h" />
     <ClInclude Include="..\game\q_parse.h" />
     <ClInclude Include="..\qcommon\cm_public.h" />
