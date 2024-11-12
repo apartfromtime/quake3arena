@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #define JPEG_INTERNALS
-#include "../../libs/jpeg-9/jpeglib.h"
+#include "../../libs/jpeg9/jpeglib.h"
 
 
 static void LoadBMP( const char *name, byte **pic, int *width, int *height );
@@ -1505,14 +1505,15 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
 
 /* Expanded data destination object for stdio output */
 
-typedef struct {
+typedef struct
+{
   struct jpeg_destination_mgr pub; /* public fields */
 
   byte* outfile;		/* target stream */
   int	size;
 } my_destination_mgr;
 
-typedef my_destination_mgr * my_dest_ptr;
+typedef my_destination_mgr* my_dest_ptr;
 
 
 /*
@@ -1520,7 +1521,7 @@ typedef my_destination_mgr * my_dest_ptr;
  * before any data is actually written.
  */
 
-void init_destination (j_compress_ptr cinfo)
+void init_destination(j_compress_ptr cinfo)
 {
   my_dest_ptr dest = (my_dest_ptr) cinfo->dest;
 
@@ -1552,9 +1553,9 @@ void init_destination (j_compress_ptr cinfo)
  * write it out when emptying the buffer externally.
  */
 
-boolean empty_output_buffer (j_compress_ptr cinfo)
+boolean empty_output_buffer(j_compress_ptr cinfo)
 {
-  return TRUE;
+	return TRUE;
 }
 
 /*
@@ -1566,13 +1567,8 @@ boolean empty_output_buffer (j_compress_ptr cinfo)
  * for error exit.
  */
 
-static int hackSize;
-
-void term_destination (j_compress_ptr cinfo)
+void term_destination(j_compress_ptr cinfo)
 {
-  my_dest_ptr dest = (my_dest_ptr) cinfo->dest;
-  size_t datacount = dest->size - dest->pub.free_in_buffer;
-  hackSize = datacount;
 }
 
 
@@ -1606,7 +1602,8 @@ void jpegDest (j_compress_ptr cinfo, byte* outfile, int size)
   dest->size = size;
 }
 
-void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer) {
+void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer)
+{
   /* This struct contains the JPEG compression parameters and pointers to
    * working space (which is allocated as needed by the JPEG library).
    * It is possible to have several such structures, representing multiple
@@ -1703,10 +1700,9 @@ void SaveJPG(char * filename, int quality, int image_width, int image_height, un
 
   dest = (my_dest_ptr)cinfo.dest;
   datacount = dest->size - dest->pub.free_in_buffer;
-  hackSize = datacount;
 
   /* After finish_compress, we can close the output file. */
-  ri.FS_WriteFile( filename, out, hackSize );
+  ri.FS_WriteFile( filename, out, datacount );
 
   ri.Hunk_FreeTempMemory(out);
 
