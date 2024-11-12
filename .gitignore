@@ -19,4 +19,6 @@ code/win32/winquake.res
 */*/Debug_TA
 */*/Release
 */*/Release_TA
+/libs/*.dll
 /libs/*.lib
+/libs/*.pdb
