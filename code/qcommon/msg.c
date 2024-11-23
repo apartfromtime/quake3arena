@@ -855,8 +855,9 @@ If force is not set, then nothing at all will be generated if the entity is
 identical, under the assumption that the in-order delta code will catch it.
 ==================
 */
-void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entityState_s *to, 
-						   qboolean force ) {
+void MSG_WriteDeltaEntity(msg_t *msg, entityState_t *from, entityState_t *to,
+	qboolean force)
+{
 	int			i, lc;
 	int			numFields;
 	netField_t	*field;
@@ -1156,7 +1157,7 @@ MSG_WriteDeltaPlayerstate
 
 =============
 */
-void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct playerState_s *to ) {
+void MSG_WriteDeltaPlayerstate( msg_t *msg, playerState_t *from, playerState_t *to ) {
 	int				i;
 	playerState_t	dummy;
 	int				statsbits;
