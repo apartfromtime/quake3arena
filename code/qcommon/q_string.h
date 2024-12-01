@@ -23,6 +23,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef Q_STRING_H
 #define Q_STRING_H
 
+// TTimo
+// vsnprintf is ISO/IEC 9899:1999
+// abstracting this to make it portable
+#ifdef WIN32
+#define Q_vsnprintf _vsnprintf
+#else
+// TODO: do we need Mac define?
+#define Q_vsnprintf vsnprintf
+#endif
+
 int Q_isprint(int c);
 int Q_islower(int c);
 int Q_isupper(int c);
