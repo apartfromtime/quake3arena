@@ -405,19 +405,6 @@ void	* Q_CDECL Sys_LoadDll( const char *name, char *fqpath , int (Q_CDECL **entr
 				  int (Q_CDECL *systemcalls)(int, ...) );
 void	Sys_UnloadDll( void *dllHandle );
 
-void	Sys_UnloadGame( void );
-void	*Sys_GetGameAPI( void *parms );
-
-void	Sys_UnloadCGame( void );
-void	*Sys_GetCGameAPI( void );
-
-void	Sys_UnloadUI( void );
-void	*Sys_GetUIAPI( void );
-
-//bot libraries
-void	Sys_UnloadBotLib( void );
-void	*Sys_GetBotLibAPI( void *parms );
-
 char	*Sys_GetCurrentUser( void );
 
 void	Q_CDECL Sys_Error( const char *error, ...);
@@ -431,9 +418,6 @@ void	Sys_Print( const char *msg );
 int		Sys_Milliseconds (void);
 
 void	Sys_SnapVector( float *v );
-
-// the system console is shown when a dedicated server is running
-void	Sys_DisplaySystemConsole( qboolean show );
 
 int		Sys_GetProcessorId( void );
 
@@ -457,7 +441,6 @@ qboolean	Sys_CheckCD( void );
 
 void	Sys_Mkdir( const char *path );
 char	*Sys_Cwd( void );
-void	Sys_SetDefaultCDPath(const char *path);
 char	*Sys_DefaultCDPath(void);
 void	Sys_SetDefaultInstallPath(const char *path);
 char	*Sys_DefaultInstallPath(void);
@@ -466,9 +449,6 @@ char	*Sys_DefaultHomePath(void);
 
 char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs );
 void	Sys_FreeFileList( char **list );
-
-void	Sys_BeginProfiling( void );
-void	Sys_EndProfiling( void );
 
 qboolean Sys_LowPhysicalMemory();
 unsigned int Sys_ProcessorCount();
