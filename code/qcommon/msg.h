@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef _MSG_H_
-#define _MSG_H_
+#ifndef _Q_MSG_H_
+#define _Q_MSG_H_
 
 #include "..\game\q_shared.h"
 #include "..\game\bg_public.h"
@@ -96,4 +96,4 @@ void MSG_WriteDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* t
 void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to);
 void MSG_ReportChangeVectors_f(void);
 
-#endif // #ifndef _MSG_H_
+#endif // #ifndef _Q_MSG_H_

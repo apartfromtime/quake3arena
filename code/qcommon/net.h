@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef _NET_H_
-#define _NET_H_
+#ifndef _Q_NET_H_
+#define _Q_NET_H_
 
 #include "..\game\q_shared.h"
 #include "msg.h"
@@ -124,4 +124,4 @@ void Netchan_TransmitNextFragment(netchan_t* chan);
 
 qboolean Netchan_Process(netchan_t* chan, msg_t* msg);
 
-#endif // #ifndef _NET_H_
+#endif // #ifndef _Q_NET_H_
