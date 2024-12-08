@@ -199,8 +199,3 @@ void Swap_Init (void)
 		_LittleFloat = FloatSwap;
 	}
 }
-
-
-
-
-

@@ -1273,10 +1273,13 @@
     <ClInclude Include="game\g_public.h" />
     <ClInclude Include="qcommon\cvar.h" />
     <ClInclude Include="qcommon\filesystem.h" />
+    <ClInclude Include="qcommon\msg.h" />
+    <ClInclude Include="qcommon\net.h" />
     <ClInclude Include="qcommon\q_dict.h" />
     <ClInclude Include="qcommon\q_heap.h" />
     <ClInclude Include="qcommon\q_list.h" />
     <ClInclude Include="qcommon\q_string.h" />
+    <ClInclude Include="qcommon\vm.h" />
     <ClInclude Include="system\sys_public.h" />
     <ClInclude Include="ui\keycodes.h" />
     <ClInclude Include="client\keys.h" />

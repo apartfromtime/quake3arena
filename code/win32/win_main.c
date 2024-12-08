@@ -95,15 +95,6 @@ qboolean Sys_LowPhysicalMemory() {
 }
 
 /*
-==================
-Sys_BeginProfiling
-==================
-*/
-void Sys_BeginProfiling( void ) {
-	// this is just used on the mac build
-}
-
-/*
 =============
 Sys_Error
 

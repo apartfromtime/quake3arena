@@ -138,9 +138,6 @@ int Sys_MonkeyShouldBeSpanked( void ) {
   return 0;
 }
 
-void Sys_BeginProfiling( void ) {
-}
-
 /*
 =================
 Sys_In_Restart_f
