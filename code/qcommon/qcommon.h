@@ -431,15 +431,18 @@ qboolean	Sys_CheckCD( void );
 
 void	Sys_Mkdir( const char *path );
 char	*Sys_Cwd( void );
+void	Sys_SetDefaultCDPath(const char* path);
 char	*Sys_DefaultCDPath(void);
+void	Sys_SetDefaultInstallPath(const char* path);
 char	*Sys_DefaultInstallPath(void);
+void  Sys_SetDefaultHomePath(const char* path);
 char	*Sys_DefaultHomePath(void);
 
 char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs );
 void	Sys_FreeFileList( char **list );
 
 qboolean Sys_LowPhysicalMemory();
-unsigned int Sys_ProcessorCount();			// FIXME: implement this
+unsigned int Sys_ProcessorCount();
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
  * Compression book.  The ranks are not actually stored, but implicitly defined
