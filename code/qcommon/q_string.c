@@ -84,6 +84,29 @@ void Q_strncpyz( char *dest, const char *src, int destsize )
     dest[destsize-1] = 0;
 }
 
+qboolean Q_strgtr(const char* s0, const char* s1)
+{
+    int l0, l1, i;
+
+    l0 = strlen(s0);
+    l1 = strlen(s1);
+
+    if (l1 < l0) {
+        l0 = l1;
+    }
+
+    for (i = 0; i < l0; i++) {
+        if (s1[i] > s0[i]) {
+            return qtrue;
+        }
+        if (s1[i] < s0[i]) {
+            return qfalse;
+        }
+    }
+
+    return qfalse;
+}
+
 int Q_stricmpn(const char* s1, const char* s2, int n)
 {
     int c1, c2;
