@@ -1357,7 +1357,43 @@ static void LoadTGA ( const char *name, byte **pic, int *width, int *height)
   ri.FS_FreeFile (buffer);
 }
 
-static void LoadJPG( const char *filename, unsigned char **pic, int *width, int *height ) {
+void WriteTGA(char* filename, byte* data, int width, int height)
+{
+	byte* buffer;
+	int		i, c;
+
+	buffer = Z_Malloc(width * height * 4 + 18);
+	Com_Memset(buffer, 0, 18);
+	buffer[2] = 2;		// uncompressed type
+	buffer[12] = width & 255;
+	buffer[13] = width >> 8;
+	buffer[14] = height & 255;
+	buffer[15] = height >> 8;
+	buffer[16] = 32;	// pixel size
+
+	// swap rgb to bgr
+	c = 18 + width * height * 4;
+	for (i = 18; i < c; i += 4)
+	{
+		buffer[i] = data[i - 18 + 2];		// blue
+		buffer[i + 1] = data[i - 18 + 1];		// green
+		buffer[i + 2] = data[i - 18 + 0];		// red
+		buffer[i + 3] = data[i - 18 + 3];		// alpha
+	}
+
+	ri.FS_WriteFile(filename, buffer, c);
+	Z_Free(buffer);
+}
+
+/*
+=========================================================
+
+JPEG
+
+=========================================================
+*/
+
+static void LoadJPG( const char *filename, byte **pic, int *width, int *height ) {
   /* This struct contains the JPEG decompression parameters and pointers to
    * working space (which is allocated as needed by the JPEG library).
    */

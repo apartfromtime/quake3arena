@@ -1593,6 +1593,7 @@ void RE_StretchPic ( float x, float y, float w, float h,
 					  float s1, float t1, float s2, float t2, qhandle_t hShader );
 void RE_BeginFrame( stereoFrame_t stereoFrame );
 void RE_EndFrame( int *frontEndMsec, int *backEndMsec );
+void WriteTGA(char* filename, byte* data, int width, int height);
 void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer);
 
 // font stuff
