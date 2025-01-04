@@ -234,6 +234,9 @@ qint64  LittleLong64(qint64 l);
 float	BigFloat(float l);
 float	LittleFloat(float l);
 
+int ReadIntLE(const byte* src);
+float ReadFltLE(const byte* src);
+
 void	Swap_Init(void);
 
 #ifdef __cplusplus

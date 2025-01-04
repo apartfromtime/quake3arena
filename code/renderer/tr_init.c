@@ -1022,7 +1022,7 @@ void R_Init( void ) {
 	Com_Memset( &backEnd, 0, sizeof( backEnd ) );
 	Com_Memset( &tess, 0, sizeof( tess ) );
 
-//	Swap_Init();
+	Swap_Init();
 
 	if ( (int)tess.xyz & 15 ) {
 		Com_Printf( "WARNING: tess.xyz not 16 byte aligned\n" );
