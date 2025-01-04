@@ -391,11 +391,11 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 					colorBlack[3] = newColor[3];
 					trap_R_SetColor( colorBlack );
 					Text_PaintChar(x + ofs, y - yadj + ofs, 
-														glyph->imageWidth,
-														glyph->imageHeight,
+														glyph->cellW,
+														glyph->cellH,
 														useScale, 
-														glyph->s,
-														glyph->t,
+														glyph->s1,
+														glyph->t1,
 														glyph->s2,
 														glyph->t2,
 														glyph->glyph);
@@ -403,11 +403,11 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
 					colorBlack[3] = 1.0;
 				}
 				Text_PaintChar(x, y - yadj, 
-													glyph->imageWidth,
-													glyph->imageHeight,
+													glyph->cellW,
+													glyph->cellH,
 													useScale, 
-													glyph->s,
-													glyph->t,
+													glyph->s1,
+													glyph->t1,
 													glyph->s2,
 													glyph->t2,
 													glyph->glyph);
@@ -461,11 +461,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 					colorBlack[3] = newColor[3];
 					trap_R_SetColor( colorBlack );
 					Text_PaintChar(x + ofs, y - yadj + ofs, 
-														glyph->imageWidth,
-														glyph->imageHeight,
+														glyph->cellW,
+														glyph->cellH,
 														useScale, 
-														glyph->s,
-														glyph->t,
+														glyph->s1,
+														glyph->t1,
 														glyph->s2,
 														glyph->t2,
 														glyph->glyph);
@@ -473,11 +473,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 					trap_R_SetColor( newColor );
 				}
 				Text_PaintChar(x, y - yadj, 
-													glyph->imageWidth,
-													glyph->imageHeight,
+													glyph->cellW,
+													glyph->cellH,
 													useScale, 
-													glyph->s,
-													glyph->t,
+													glyph->s1,
+													glyph->t1,
 													glyph->s2,
 													glyph->t2,
 													glyph->glyph);
@@ -485,11 +485,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 	      yadj = useScale * glyph2->top;
 		    if (count == cursorPos && !((uiInfo.uiDC.realTime/BLINK_DIVISOR) & 1)) {
 					Text_PaintChar(x, y - yadj, 
-														glyph2->imageWidth,
-														glyph2->imageHeight,
+														glyph2->cellW,
+														glyph2->cellH,
 														useScale, 
-														glyph2->s,
-														glyph2->t,
+														glyph2->s1,
+														glyph2->t1,
 														glyph2->s2,
 														glyph2->t2,
 														glyph2->glyph);
@@ -504,11 +504,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
     if (cursorPos == len && !((uiInfo.uiDC.realTime/BLINK_DIVISOR) & 1)) {
         yadj = useScale * glyph2->top;
         Text_PaintChar(x, y - yadj, 
-                          glyph2->imageWidth,
-                          glyph2->imageHeight,
+                          glyph2->cellW,
+                          glyph2->cellH,
                           useScale, 
-                          glyph2->s,
-                          glyph2->t,
+                          glyph2->s1,
+                          glyph2->t1,
                           glyph2->s2,
                           glyph2->t2,
                           glyph2->glyph);
@@ -556,11 +556,11 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 					break;
 				}
 		    Text_PaintChar(x, y - yadj, 
-			                 glyph->imageWidth,
-				               glyph->imageHeight,
+			                 glyph->cellW,
+				               glyph->cellH,
 				               useScale, 
-						           glyph->s,
-								       glyph->t,
+						           glyph->s1,
+								       glyph->t1,
 								       glyph->s2,
 									     glyph->t2,
 										   glyph->glyph);

@@ -1597,8 +1597,8 @@ void WriteTGA(char* filename, byte* data, int width, int height);
 void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer);
 
 // font stuff
-void R_InitFreeType();
-void R_DoneFreeType();
+void R_InitFont();
+void R_DoneFont();
 void RE_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font);
 
 

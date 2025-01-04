@@ -1247,11 +1247,11 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 					break;
 				}
 		    CG_Text_PaintChar(x, y - yadj, 
-			                    glyph->imageWidth,
-				                  glyph->imageHeight,
+			                    glyph->cellW,
+				                  glyph->cellH,
 					                useScale, 
-						              glyph->s,
-							            glyph->t,
+						              glyph->s1,
+							            glyph->t1,
 								          glyph->s2,
 									        glyph->t2,
 										      glyph->glyph);

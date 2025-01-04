@@ -1094,8 +1094,7 @@ void R_Init( void ) {
 
 	R_ModelInit();
 
-	R_InitFreeType();
-
+	R_InitFont();
 
 	err = qglGetError();
 	if ( err != GL_NO_ERROR )
@@ -1130,7 +1129,7 @@ void RE_Shutdown( qboolean destroyWindow ) {
 		R_DeleteTextures();
 	}
 
-	R_DoneFreeType();
+	R_DoneFont();
 
 	// shut down platform specific OpenGL stuff
 	if ( destroyWindow ) {

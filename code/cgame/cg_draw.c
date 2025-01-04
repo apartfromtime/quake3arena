@@ -168,11 +168,11 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 					colorBlack[3] = newColor[3];
 					trap_R_SetColor( colorBlack );
 					CG_Text_PaintChar(x + ofs, y - yadj + ofs, 
-														glyph->imageWidth,
-														glyph->imageHeight,
+														glyph->cellW,
+														glyph->cellH,
 														useScale, 
-														glyph->s,
-														glyph->t,
+														glyph->s1,
+														glyph->t1,
 														glyph->s2,
 														glyph->t2,
 														glyph->glyph);
@@ -180,11 +180,11 @@ void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char *text
 					trap_R_SetColor( newColor );
 				}
 				CG_Text_PaintChar(x, y - yadj, 
-													glyph->imageWidth,
-													glyph->imageHeight,
+													glyph->cellW,
+													glyph->cellH,
 													useScale, 
-													glyph->s,
-													glyph->t,
+													glyph->s1,
+													glyph->t1,
 													glyph->s2,
 													glyph->t2,
 													glyph->glyph);
