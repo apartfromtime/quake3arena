@@ -2212,7 +2212,7 @@ qhandle_t RE_RegisterSkin( const char *name ) {
 	skin_t		*skin;
 	skinSurface_t	*surf;
 	char		*text, *text_p;
-	char		*token;
+	const char	*token;
 	char		surfName[MAX_QPATH];
 
 	if ( !name || !name[0] ) {
