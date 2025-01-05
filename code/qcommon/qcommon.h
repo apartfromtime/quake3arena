@@ -185,12 +185,10 @@ MISC
 ==============================================================
 */
 
-// centralizing the declarations for cl_cdkey
-// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=470
+// declarations for cl_cdkey
 extern char cl_cdkey[34];
 
-// TTimo
-// centralized and cleaned, that's the max string you can send to a Com_Printf / Com_DPrintf (above gets truncated)
+// the max string you can send to a Com_Printf / Com_DPrintf (above gets truncated)
 #define	MAXPRINTMSG	4096
 
 char		*CopyString( const char *in );
@@ -206,9 +204,6 @@ int			Com_EventLoop( void );
 int			Com_Milliseconds( void );	// will be journaled properly
 unsigned	Com_BlockChecksum( const void *buffer, int length );
 unsigned	Com_BlockChecksumKey (void *buffer, int length, int key);
-int			Com_HashKey(char *string, int maxlen);
-int			Com_Filter(const char *filter, const char *name, int casesensitive);
-int			Com_FilterPath(char *filter, char *name, int casesensitive);
 int			Com_RealTime(qtime_t *qtime);
 qboolean	Com_SafeMode( void );
 

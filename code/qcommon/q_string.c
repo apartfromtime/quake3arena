@@ -77,7 +77,7 @@ void Q_strncpyz( char *dest, const char *src, int destsize )
         Com_Error(ERR_FATAL, "Q_strncpyz: NULL src");
     }
     if (destsize < 1) {
-        Com_Error(ERR_FATAL,"Q_strncpyz: destsize < 1"); 
+        Com_Error(ERR_FATAL, "Q_strncpyz: destsize < 1"); 
     }
 
     strncpy(dest, src, destsize-1);
@@ -480,6 +480,22 @@ int Com_HashString(const char* fname)
 
     hash &= (FILE_HASH_SIZE - 1);
     
+    return hash;
+}
+
+/*
+============
+Com_HashKey
+============
+*/
+int Com_HashKey(char* string, int maxlen) {
+    int register hash, i;
+
+    hash = 0;
+    for (i = 0; i < maxlen && string[i] != '\0'; i++) {
+        hash += string[i] * (119 + i);
+    }
+    hash = (hash ^ (hash >> 10) ^ (hash >> 20));
     return hash;
 }
 
