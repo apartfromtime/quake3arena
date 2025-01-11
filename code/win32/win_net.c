@@ -468,7 +468,7 @@ NET_IPSocket
 int NET_IPSocket( char *net_interface, int port ) {
 	SOCKET				newsocket;
 	struct sockaddr_in	address;
-	qboolean			_true = qtrue;
+	unsigned long		_true = qtrue;
 	int					i = 1;
 	int					err;
 
