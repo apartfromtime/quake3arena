@@ -100,7 +100,7 @@ R_GetGlyphInfo(FT_GlyphSlot glyph, int* left, int* right, int* width, int* top,
     *top = _CEIL(glyph->metrics.horiBearingY);
     *bottom = _FLOOR(glyph->metrics.horiBearingY - glyph->metrics.height);
     *height = _TRUNC(*top - *bottom);
-    *pitch = (qtrue ? (*width + 3) & -4 : (*width + 7) >> 3);
+    *pitch = (true ? (*width + 3) & -4 : (*width + 7) >> 3);
 }
 
 FT_Bitmap*
@@ -145,7 +145,7 @@ R_RenderGlyph(FT_GlyphSlot glyph, glyphInfo_t* glyphOut)
 
 static glyphInfo_t*
 RE_ConstructGlyphInfo(unsigned char* imageOut, int* xOut, int* yOut, int* maxHeight,
-    FT_Face face, const unsigned char c, qboolean calcHeight)
+    FT_Face face, const unsigned char c, bool calcHeight)
 {
     int i;
     static glyphInfo_t glyph;
@@ -328,7 +328,7 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
 
     for (i = GLYPH_START; i < GLYPH_END; i++)
     {
-        glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qtrue);
+        glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, true);
     }
 
     xOut = 0;
@@ -339,7 +339,7 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
 
     while (i <= GLYPH_END)
     {
-        glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qfalse);
+        glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, false);
 
         if (xOut == -1 || yOut == -1 || i == GLYPH_END) {
 
@@ -378,8 +378,8 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
                 WriteTGA(name, imageBuff, 256, 256);
             }
 
-            image = R_CreateImage(name, imageBuff, 256, 256, qfalse, qfalse, GL_CLAMP);
-            h = RE_RegisterShaderFromImage(name, LIGHTMAP_2D, image, qfalse);
+            image = R_CreateImage(name, imageBuff, 256, 256, false, false, GL_CLAMP);
+            h = RE_RegisterShaderFromImage(name, LIGHTMAP_2D, image, false);
             
             for (j = lastStart; j < i; j++)
             {

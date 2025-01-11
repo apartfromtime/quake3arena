@@ -189,8 +189,8 @@ static void UI_Mods_MenuInit( void ) {
 	UI_ModsMenu_Cache();
 
 	Com_Memset( &s_mods, 0 ,sizeof(mods_t) );
-	s_mods.menu.wrapAround = qtrue;
-	s_mods.menu.fullscreen = qtrue;
+	s_mods.menu.wrapAround = true;
+	s_mods.menu.fullscreen = true;
 
 	s_mods.banner.generic.type		= MTYPE_BTEXT;
 	s_mods.banner.generic.x			= 320;

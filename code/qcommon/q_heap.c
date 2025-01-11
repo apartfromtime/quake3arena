@@ -94,7 +94,7 @@ void Z_ClearZone(memzone_t* zone, int size);
 Zone_InitSmallZoneMemory
 =================
 */
-qboolean Zone_InitSmallZoneMemory(int smallSize)
+bool Zone_InitSmallZoneMemory(int smallSize)
 {
 	s_smallZoneTotal = 1024 * smallSize;
 
@@ -102,12 +102,12 @@ qboolean Zone_InitSmallZoneMemory(int smallSize)
 	smallzone = calloc(s_smallZoneTotal, 1);
 
 	if (!smallzone) {
-		return qfalse;
+		return false;
 	}
 
 	Z_ClearZone(smallzone, s_smallZoneTotal);
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -115,7 +115,7 @@ qboolean Zone_InitSmallZoneMemory(int smallSize)
 Zone_InitMemory
 ========================
 */
-qboolean Zone_InitMemory(int zoneSize)
+bool Zone_InitMemory(int zoneSize)
 {
 	s_zoneTotal = 1024 * 1024 * zoneSize;
 
@@ -124,12 +124,12 @@ qboolean Zone_InitMemory(int zoneSize)
 
 	if (!mainzone) {
 
-		return qfalse;
+		return false;
 	}
 
 	Z_ClearZone(mainzone, s_zoneTotal);
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -741,7 +741,7 @@ static	int		s_hunkTotal;
 Com_InitHunkMemory
 =================
 */
-qboolean Hunk_InitMemory(int hunkSize)
+bool Hunk_InitMemory(int hunkSize)
 {
 	s_hunkTotal = 1024 * 1024 * hunkSize;
 
@@ -749,7 +749,7 @@ qboolean Hunk_InitMemory(int hunkSize)
 	s_hunkData = calloc(s_hunkTotal + 31, 1);
 
 	if (!s_hunkData) {
-		return qfalse;
+		return false;
 	}
 
 	// cacheline align
@@ -757,7 +757,7 @@ qboolean Hunk_InitMemory(int hunkSize)
 
 	Hunk_Clear();
 
-	return qtrue;
+	return true;
 }
 
 void Hunk_Meminfo(void)
@@ -874,7 +874,7 @@ void Hunk_SmallLog(void)
 
 	for (block = hunkblocks; block; block = block->next)
 	{
-		block->printed = qfalse;
+		block->printed = false;
 	}
 
 	size = 0;
@@ -901,7 +901,7 @@ void Hunk_SmallLog(void)
 
 			size += block2->size;
 			locsize += block2->size;
-			block2->printed = qtrue;
+			block2->printed = true;
 		}
 
 #ifdef HUNK_DEBUG
@@ -964,13 +964,13 @@ void Hunk_ClearToMark(void)
 Hunk_CheckMark
 =================
 */
-qboolean Hunk_CheckMark(void)
+bool Hunk_CheckMark(void)
 {
 	if (hunk_low.mark || hunk_high.mark) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 
 /*

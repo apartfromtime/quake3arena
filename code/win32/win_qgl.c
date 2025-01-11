@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../renderer/tr_local.h"
 #include "glw_win.h"
 
-void QGL_EnableLogging( qboolean enable );
+void QGL_EnableLogging( bool enable );
 
 int ( WINAPI * qwglSwapIntervalEXT)( int interval );
 BOOL  ( WINAPI * qwglGetDeviceGammaRamp3DFX)( HDC, LPVOID );
@@ -3180,7 +3180,7 @@ void QGL_Shutdown( void )
 
 #define GR_NUM_BOARDS 0x0f
 
-static qboolean GlideIsValid( void )
+static bool GlideIsValid( void )
 {
 	HMODULE hGlide;
 //	int numBoards;
@@ -3189,7 +3189,7 @@ static qboolean GlideIsValid( void )
     if ( ( hGlide = LoadLibrary("Glide3X") ) != 0 ) 
 	{
 		// FIXME: 3Dfx needs to fix this shit
-		return qtrue;
+		return true;
 
 #if 0
         grGet = (void *)GetProcAddress( hGlide, "_grGet@12");
@@ -3210,14 +3210,14 @@ static qboolean GlideIsValid( void )
 
 		if ( numBoards > 0 )
 		{
-			return qtrue;
+			return true;
 		}
 
 		ri.Printf( PRINT_WARNING, "WARNING: invalid Glide installation!\n" );
 #endif
     }
 
-	return qfalse;
+	return false;
 } 
 
 #	pragma warning (disable : 4113 4133 4047 )
@@ -3232,7 +3232,7 @@ static qboolean GlideIsValid( void )
 ** operating systems we need to do the right thing, whatever that
 ** might be.
 */
-qboolean QGL_Init( const char *dllname )
+bool QGL_Init( const char *dllname )
 {
 	char systemDir[1024];
 	char libName[1024];
@@ -3249,7 +3249,7 @@ qboolean QGL_Init( const char *dllname )
 		if ( !GlideIsValid() )
 		{
 			ri.Printf( PRINT_ALL, "...WARNING: missing Glide installation, assuming no 3Dfx available\n" );
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -3267,7 +3267,7 @@ qboolean QGL_Init( const char *dllname )
 	if ( ( glw_state.hinstOpenGL = LoadLibrary( dllname ) ) == 0 )
 	{
 		ri.Printf( PRINT_ALL, "failed\n" );
-		return qfalse;
+		return false;
 	}
 	ri.Printf( PRINT_ALL, "succeeded\n" );
 
@@ -3641,12 +3641,12 @@ qboolean QGL_Init( const char *dllname )
 	// check logging
 	QGL_EnableLogging( r_logFile->integer );
 
-	return qtrue;
+	return true;
 }
 
-void QGL_EnableLogging( qboolean enable )
+void QGL_EnableLogging( bool enable )
 {
-	static qboolean isEnabled;
+	static bool isEnabled;
 
 	// return if we're already active
 	if ( isEnabled && enable ) {
@@ -3655,7 +3655,7 @@ void QGL_EnableLogging( qboolean enable )
 		if ( r_logFile->integer ) {
 			return;
 		}
-		enable = qfalse;
+		enable = false;
 	}
 
 	// return if we're already disabled

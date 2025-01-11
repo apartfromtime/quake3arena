@@ -228,8 +228,8 @@ static void UI_RemoveBotsMenu_Init( void ) {
 	int		y;
 
 	Com_Memset( &removeBotsMenuInfo, 0 ,sizeof(removeBotsMenuInfo) );
-	removeBotsMenuInfo.menu.fullscreen = qfalse;
-	removeBotsMenuInfo.menu.wrapAround = qtrue;
+	removeBotsMenuInfo.menu.fullscreen = false;
+	removeBotsMenuInfo.menu.wrapAround = true;
 
 	UI_RemoveBots_Cache();
 

@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 typedef struct
 {
-    qboolean    frameMemory;
+    bool    frameMemory;
     int         currentElements;
     int         maxElements;            // will reallocate and move when exceeded
     void**      elements;

@@ -75,8 +75,8 @@ int			com_frameTime;
 int			com_frameMsec;
 int			com_frameNumber;
 
-qboolean	com_errorEntered;
-qboolean	com_fullyInitialized;
+bool	com_errorEntered;
+bool	com_fullyInitialized;
 
 char	com_errorMessage[MAXPRINTMSG];
 
@@ -124,7 +124,7 @@ void Q_CDECL Com_Printf(const char* fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
-	static qboolean opening_qconsole = qfalse;
+	static bool opening_qconsole = false;
 
 	va_start(argptr, fmt);
 	Q_vsnprintf(msg, sizeof(msg), fmt, argptr);
@@ -159,7 +159,7 @@ void Q_CDECL Com_Printf(const char* fmt, ...)
 			struct tm* newtime;
 			time_t aclock;
 
-			opening_qconsole = qtrue;
+			opening_qconsole = true;
 
 			time(&aclock);
 			newtime = localtime(&aclock);
@@ -172,7 +172,7 @@ void Q_CDECL Com_Printf(const char* fmt, ...)
 				FS_ForceFlush(logfile);
 			}
 
-			opening_qconsole = qfalse;
+			opening_qconsole = false;
 		}
 		if (logfile && FS_Initialized()) {
 			FS_Write(msg, strlen(msg), logfile);
@@ -250,7 +250,7 @@ void Q_CDECL Com_Error( int code, const char *fmt, ... ) {
 	if ( com_errorEntered ) {
 		Sys_Error( "recursive error after: %s", com_errorMessage );
 	}
-	com_errorEntered = qtrue;
+	com_errorEntered = true;
 
 	va_start (argptr,fmt);
 	vsprintf (com_errorMessage,fmt,argptr);
@@ -261,23 +261,23 @@ void Q_CDECL Com_Error( int code, const char *fmt, ... ) {
 	}
 
 	if ( code == ERR_SERVERDISCONNECT ) {
-		CL_Disconnect( qtrue );
+		CL_Disconnect( true );
 		CL_FlushMemory( );
-		com_errorEntered = qfalse;
+		com_errorEntered = false;
 		longjmp (abortframe, -1);
 	} else if ( code == ERR_DROP || code == ERR_DISCONNECT ) {
 		Com_Printf ("********************\nERROR: %s\n********************\n", com_errorMessage);
 		SV_Shutdown (va("Server crashed: %s\n",  com_errorMessage));
-		CL_Disconnect( qtrue );
+		CL_Disconnect( true );
 		CL_FlushMemory( );
-		com_errorEntered = qfalse;
+		com_errorEntered = false;
 		longjmp (abortframe, -1);
 	} else if ( code == ERR_NEED_CD ) {
 		SV_Shutdown( "Server didn't have CD\n" );
 		if ( com_cl_running && com_cl_running->integer ) {
-			CL_Disconnect( qtrue );
+			CL_Disconnect( true );
 			CL_FlushMemory( );
-			com_errorEntered = qfalse;
+			com_errorEntered = false;
 			CL_CDDialog();
 		} else {
 			Com_Printf("Server didn't have CD\n" );
@@ -308,7 +308,7 @@ void Com_Quit_f( void ) {
 		SV_Shutdown ("Server quit\n");
 		CL_Shutdown ();
 		Com_Shutdown ();
-		FS_Shutdown(qtrue);
+		FS_Shutdown(true);
 	}
 	Sys_Quit ();
 }
@@ -375,7 +375,7 @@ Check for "safe" on the command line, which will
 skip loading of q3config.cfg
 ===================
 */
-qboolean Com_SafeMode( void ) {
+bool Com_SafeMode( void ) {
 	int		i;
 
 	for ( i = 0 ; i < com_numConsoleLines ; i++ ) {
@@ -383,10 +383,10 @@ qboolean Com_SafeMode( void ) {
 		if ( !Q_stricmp( Cmd_Argv(0), "safe" )
 			|| !Q_stricmp( Cmd_Argv(0), "cvar_restart" ) ) {
 			com_consoleLines[i][0] = 0;
-			return qtrue;
+			return true;
 		}
 	}
-	return qfalse;
+	return false;
 }
 
 
@@ -430,15 +430,15 @@ Com_AddStartupCommands
 Adds command line parameters as script statements
 Commands are seperated by + signs
 
-Returns qtrue if any late commands were added, which
+Returns true if any late commands were added, which
 will keep the demoloop from immediately starting
 =================
 */
-qboolean Com_AddStartupCommands( void ) {
+bool Com_AddStartupCommands( void ) {
 	int		i;
-	qboolean	added;
+	bool	added;
 
-	added = qfalse;
+	added = false;
 	// quote every token, so args with semicolons can work
 	for (i=0 ; i < com_numConsoleLines ; i++) {
 		if ( !com_consoleLines[i] || !com_consoleLines[i][0] ) {
@@ -447,7 +447,7 @@ qboolean Com_AddStartupCommands( void ) {
 
 		// set commands won't override menu startup
 		if ( Q_stricmpn( com_consoleLines[i], "set", 3 ) ) {
-			added = qtrue;
+			added = true;
 		}
 		Cbuf_AddText( com_consoleLines[i] );
 		Cbuf_AddText( "\n" );
@@ -568,8 +568,8 @@ void Com_InitJournaling( void ) {
 		com_journalDataFile = FS_FOpenFileWrite( "journaldata.dat" );
 	} else if ( com_journal->integer == 2 ) {
 		Com_Printf( "Replaying journaled events\n");
-		FS_FOpenFileRead( "journal.dat", &com_journalFile, qtrue );
-		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile, qtrue );
+		FS_FOpenFileRead( "journal.dat", &com_journalFile, true );
+		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile, true );
 	}
 
 	if ( !com_journalFile || !com_journalDataFile ) {
@@ -656,7 +656,7 @@ void Com_PushEvent( sysEvent_t *event ) {
 
 		// don't print the warning constantly, or it can give time for more...
 		if ( !printedWarning ) {
-			printedWarning = qtrue;
+			printedWarning = true;
 			Com_Printf( "WARNING: Com_PushEvent overflow\n" );
 		}
 
@@ -665,7 +665,7 @@ void Com_PushEvent( sysEvent_t *event ) {
 		}
 		com_pushedEventsTail++;
 	} else {
-		printedWarning = qfalse;
+		printedWarning = false;
 	}
 
 	*ev = *event;
@@ -904,7 +904,7 @@ char	cl_cdkey[34] = "123456789";
 Com_ReadCDKey
 =================
 */
-qboolean CL_CDKeyValidate( const char *key, const char *checksum );
+bool CL_CDKeyValidate( const char *key, const char *checksum );
 void Com_ReadCDKey( const char *filename ) {
 	qhandle_t	f;
 	char			buffer[33];
@@ -1006,7 +1006,7 @@ void Com_InitSmallZoneMemory(void)
 {
 	int memAlloc = 512;
 
-	if (Zone_InitSmallZoneMemory(memAlloc) == qfalse) {
+	if (Zone_InitSmallZoneMemory(memAlloc) == false) {
 		Com_Error(ERR_FATAL, "Small zone data failed to allocate %1.1f megs",
 			(float)memAlloc / 1024);
 	}
@@ -1037,7 +1037,7 @@ void Com_InitZoneMemory(void)
 		memAlloc = cv->integer;
 	}
 
-	if (Zone_InitMemory(memAlloc) == qfalse) {
+	if (Zone_InitMemory(memAlloc) == false) {
 		Com_Error(ERR_FATAL, "Zone data failed to allocate %i megs", memAlloc);
 	}
 
@@ -1085,7 +1085,7 @@ void Com_InitHunkMemory(void)
 		memAlloc = cv->integer;
 	}
 
-	if (Hunk_InitMemory(memAlloc) == qfalse) {
+	if (Hunk_InitMemory(memAlloc) == false) {
 		Com_Error(ERR_FATAL, "Hunk data failed to allocate %i megs", memAlloc);
 	}
 
@@ -1221,10 +1221,10 @@ void Com_Init( char *commandLine ) {
 	VM_Init();
 	SV_Init();
 
-	com_dedicated->modified = qfalse;
+	com_dedicated->modified = false;
 	if ( !com_dedicated->integer ) {
 		CL_Init();
-		Sys_ShowConsole( com_viewlog->integer, qfalse );
+		Sys_ShowConsole( com_viewlog->integer, false );
 	}
 
 	// set com_frameTime so that if a map is started on the
@@ -1252,7 +1252,7 @@ void Com_Init( char *commandLine ) {
 	// make sure single player is off by default
 	Cvar_Set("ui_singlePlayerActive", "0");
 
-	com_fullyInitialized = qtrue;
+	com_fullyInitialized = true;
 	Com_Printf ("--- Common Initialization Complete ---\n");	
 }
 
@@ -1425,9 +1425,9 @@ void Com_Frame( void ) {
 	// if "viewlog" has been modified, show or hide the log console
 	if ( com_viewlog->modified ) {
 		if ( !com_dedicated->value ) {
-			Sys_ShowConsole( com_viewlog->integer, qfalse );
+			Sys_ShowConsole( com_viewlog->integer, false );
 		}
-		com_viewlog->modified = qfalse;
+		com_viewlog->modified = false;
 	}
 
 	//
@@ -1474,13 +1474,13 @@ void Com_Frame( void ) {
 	if ( com_dedicated->modified ) {
 		// get the latched value
 		Cvar_Get( "dedicated", "0", 0 );
-		com_dedicated->modified = qfalse;
+		com_dedicated->modified = false;
 		if ( !com_dedicated->integer ) {
 			CL_Init();
-			Sys_ShowConsole( com_viewlog->integer, qfalse );
+			Sys_ShowConsole( com_viewlog->integer, false );
 		} else {
 			CL_Shutdown();
-			Sys_ShowConsole( 1, qtrue );
+			Sys_ShowConsole( 1, true );
 		}
 	}
 

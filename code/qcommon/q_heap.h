@@ -81,8 +81,8 @@ void* Z_TagMalloc(int size, int tag);	// NOT 0 filled memory
 void* Z_Malloc(int size);			// returns 0 filled memory
 void* S_Malloc(int size);			// NOT 0 filled memory only for small allocations
 #endif
-qboolean Zone_InitSmallZoneMemory(int zoneSize);
-qboolean Zone_InitMemory(int zoneSize);
+bool Zone_InitSmallZoneMemory(int zoneSize);
+bool Zone_InitMemory(int zoneSize);
 void Zone_Meminfo(void);
 void Zone_TouchMemory(void);
 void Z_CheckHeap(void);
@@ -109,13 +109,13 @@ void* Hunk_AllocDebug(int size, ha_pref preference, char* label, char* file, int
 void* Hunk_Alloc(int size, ha_pref preference);
 #endif
 
-qboolean Hunk_InitMemory(int hunkSize);
+bool Hunk_InitMemory(int hunkSize);
 void Hunk_Meminfo(void);
 void Hunk_TouchMemory(void);
 void Hunk_Clear(void);
 void Hunk_ClearToMark(void);
 void Hunk_SetMark(void);
-qboolean Hunk_CheckMark(void);
+bool Hunk_CheckMark(void);
 void Hunk_ClearTempMemory(void);
 void* Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void* buf);

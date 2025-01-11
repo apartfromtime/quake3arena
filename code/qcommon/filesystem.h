@@ -83,12 +83,12 @@ typedef enum
 
 #define BASEGAME "baseq3"
 
-qboolean FS_Initialized();
+bool FS_Initialized();
 
 void	FS_InitFilesystem(void);
-void	FS_Shutdown(qboolean closemfp);
+void	FS_Shutdown(bool closemfp);
 
-qboolean	FS_ConditionalRestart(int checksumFeed);
+bool	FS_ConditionalRestart(int checksumFeed);
 void	FS_Restart(int checksumFeed);
 // shutdown and restart the filesystem so changes to fs_gamedir can take effect
 
@@ -99,7 +99,7 @@ char** FS_ListFiles(const char* directory, const char* extension, int* numfiles)
 
 void	FS_FreeFileList(char** list);
 
-qboolean FS_FileExists(const char* file);
+bool FS_FileExists(const char* file);
 
 int		FS_LoadStack();
 
@@ -113,7 +113,7 @@ int		FS_filelength(qhandle_t f);
 qhandle_t FS_SV_FOpenFileWrite(const char* filename);
 int		FS_SV_FOpenFileRead(const char* filename, qhandle_t* fp);
 void	FS_SV_Rename(const char* from, const char* to);
-int		FS_FOpenFileRead(const char* qpath, qhandle_t* file, qboolean uniqueFILE);
+int		FS_FOpenFileRead(const char* qpath, qhandle_t* file, bool uniqueFILE);
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
@@ -166,7 +166,7 @@ int		FS_FOpenFileByMode(const char* qpath, qhandle_t* f, fsMode_t mode);
 int		FS_Seek(qhandle_t f, long offset, int origin);
 // seek on a file (doesn't work for zip files!!!!!!!!)
 
-qboolean FS_FilenameCompare(const char* s1, const char* s2);
+bool FS_FilenameCompare(const char* s1, const char* s2);
 
 const char* FS_GamePureChecksum(void);
 // Returns the checksum of the pk3 from which the server loaded the qagame.qvm
@@ -194,8 +194,8 @@ void FS_PureServerSetLoadedPaks(const char* pakSums, const char* pakNames);
 // separated checksums will be checked for files, with the
 // sole exception of .cfg files.
 
-qboolean FS_idPak(char* pak, char* base);
-qboolean FS_ComparePaks(char* neededpaks, int len, qboolean dlstring);
+bool FS_idPak(char* pak, char* base);
+bool FS_ComparePaks(char* neededpaks, int len, bool dlstring);
 
 void FS_Rename(const char* from, const char* to);
 

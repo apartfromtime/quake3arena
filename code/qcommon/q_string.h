@@ -38,7 +38,7 @@ int Q_islower(int c);
 int Q_isupper(int c);
 int Q_isalpha(int c);
 
-qboolean Q_strgtr(const char* s0, const char* s1);
+bool Q_strgtr(const char* s0, const char* s1);
 
 // portable case insensitive compare
 int Q_stricmp(const char *s1, const char *s2);

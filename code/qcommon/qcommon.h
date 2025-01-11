@@ -204,7 +204,7 @@ int			Com_Milliseconds( void );	// will be journaled properly
 unsigned	Com_BlockChecksum( const void *buffer, int length );
 unsigned	Com_BlockChecksumKey (void *buffer, int length, int key);
 int			Com_RealTime(qtime_t *qtime);
-qboolean	Com_SafeMode( void );
+bool	Com_SafeMode( void );
 
 void		Com_StartupVariable( const char *match );
 // checks for and removes command line "+set var arg" constructs
@@ -237,7 +237,7 @@ extern	int		time_backend;		// renderer backend time
 extern	int		com_frameTime;
 extern	int		com_frameMsec;
 
-extern	qboolean	com_errorEntered;
+extern	bool	com_errorEntered;
 
 extern	qhandle_t	com_journalFile;
 extern	qhandle_t	com_journalDataFile;
@@ -330,18 +330,18 @@ void	Sys_EndStreamedFile( qhandle_t f );
 int		Sys_StreamedRead( void *buffer, int size, int count, qhandle_t f );
 void	Sys_StreamSeek( qhandle_t f, int offset, int origin );
 
-void	Sys_ShowConsole( int level, qboolean quitOnClose );
+void	Sys_ShowConsole( int level, bool quitOnClose );
 void	Sys_SetErrorText( const char *text );
 
 void	Sys_SendPacket( int length, const void *data, netadr_t to );
 
-qboolean	Sys_StringToAdr( const char *s, netadr_t *a );
+bool	Sys_StringToAdr( const char *s, netadr_t *a );
 //Does NOT parse port numbers, only base addresses.
 
-qboolean	Sys_IsLANAddress (netadr_t adr);
+bool	Sys_IsLANAddress (netadr_t adr);
 void		Sys_ShowIP(void);
 
-qboolean	Sys_CheckCD( void );
+bool	Sys_CheckCD( void );
 
 void	Sys_Mkdir( const char *path );
 char	*Sys_Cwd( void );
@@ -352,10 +352,10 @@ char	*Sys_DefaultInstallPath(void);
 void  Sys_SetDefaultHomePath(const char* path);
 char	*Sys_DefaultHomePath(void);
 
-char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs );
+char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, bool wantsubs );
 void	Sys_FreeFileList( char **list );
 
-qboolean Sys_LowPhysicalMemory();
+bool Sys_LowPhysicalMemory();
 unsigned int Sys_ProcessorCount();
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data

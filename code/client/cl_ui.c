@@ -153,7 +153,7 @@ static int LAN_AddServer(int source, const char *name, const char *address) {
 		if (i >= *count) {
 			servers[*count].adr = adr;
 			Q_strncpyz(servers[*count].hostName, name, sizeof(servers[*count].hostName));
-			servers[*count].visible = qtrue;
+			servers[*count].visible = true;
 			(*count)++;
 			return 1;
 		}
@@ -466,7 +466,7 @@ static void LAN_GetPingInfo( int n, char *buf, int buflen ) {
 LAN_MarkServerVisible
 ====================
 */
-static void LAN_MarkServerVisible(int source, int n, qboolean visible ) {
+static void LAN_MarkServerVisible(int source, int n, bool visible ) {
 	if (n == -1) {
 		int count = MAX_OTHER_SERVERS;
 		serverInfo_t *server = NULL;
@@ -533,7 +533,7 @@ static int LAN_ServerIsVisible(int source, int n ) {
 			}
 			break;
 	}
-	return qfalse;
+	return false;
 }
 
 /*
@@ -541,7 +541,7 @@ static int LAN_ServerIsVisible(int source, int n ) {
 LAN_UpdateVisiblePings
 =======================
 */
-qboolean LAN_UpdateVisiblePings(int source ) {
+bool LAN_UpdateVisiblePings(int source ) {
 	return CL_UpdateVisiblePings_f(source);
 }
 
@@ -676,19 +676,19 @@ static int GetConfigString(int index, char *buf, int size)
 	int		offset;
 
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
-		return qfalse;
+		return false;
 
 	offset = cl.gameState.stringOffsets[index];
 	if (!offset) {
 		if( size ) {
 			buf[0] = 0;
 		}
-		return qfalse;
+		return false;
 	}
 
 	Q_strncpyz( buf, cl.gameState.stringData+offset, size);
  
-	return qtrue;
+	return true;
 }
 
 /*
@@ -1073,7 +1073,7 @@ CL_ShutdownUI
 */
 void CL_ShutdownUI( void ) {
 	cls.keyCatchers &= ~KEYCATCH_UI;
-	cls.uiStarted = qfalse;
+	cls.uiStarted = false;
 	if ( !uivm ) {
 		return;
 	}
@@ -1107,7 +1107,7 @@ void CL_InitUI( void ) {
 	}
 	else if (v != UI_API_VERSION) {
 		Com_Error( ERR_DROP, "User Interface is version %d, expected %d", v, UI_API_VERSION );
-		cls.uiStarted = qfalse;
+		cls.uiStarted = false;
 	}
 	else {
 		// init for this gamestate
@@ -1115,11 +1115,11 @@ void CL_InitUI( void ) {
 	}
 }
 
-qboolean UI_UsesUniqueCDKey() {
+bool UI_UsesUniqueCDKey() {
 	if (uivm) {
-		return (VM_Call( uivm, UI_HASUNIQUECDKEY) == qtrue);
+		return (VM_Call( uivm, UI_HASUNIQUECDKEY) == true);
 	} else {
-		return qfalse;
+		return false;
 	}
 }
 
@@ -1130,9 +1130,9 @@ UI_GameCommand
 See if the current console command is claimed by the ui
 ====================
 */
-qboolean UI_GameCommand( void ) {
+bool UI_GameCommand( void ) {
 	if ( !uivm ) {
-		return qfalse;
+		return false;
 	}
 
 	return VM_Call( uivm, UI_CONSOLE_COMMAND, cls.realtime );

@@ -301,15 +301,15 @@ Some characters are illegal in info strings because they
 can mess up the server's parsing
 ==================
 */
-qboolean Info_Validate(const char *s)
+bool Info_Validate(const char *s)
 {
     if (strchr(s, '\"')) {
-        return qfalse;
+        return false;
     }
     if (strchr(s, ';')) {
-        return qfalse;
+        return false;
     }
-    return qtrue;
+    return true;
 }
 
 /*

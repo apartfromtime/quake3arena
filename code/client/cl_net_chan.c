@@ -155,13 +155,13 @@ int newsize = 0;
 CL_Netchan_Process
 =================
 */
-qboolean CL_Netchan_Process( netchan_t *chan, msg_t *msg ) {
+bool CL_Netchan_Process( netchan_t *chan, msg_t *msg ) {
 	int ret;
 
 	ret = Netchan_Process( chan, msg );
 	if (!ret)
-		return qfalse;
+		return false;
 	CL_Netchan_Decode( msg );
 	newsize += msg->cursize;
-	return qtrue;
+	return true;
 }
