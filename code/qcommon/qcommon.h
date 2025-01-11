@@ -192,7 +192,6 @@ extern char cl_cdkey[34];
 #define	MAXPRINTMSG	4096
 
 char		*CopyString( const char *in );
-void		Info_Print( const char *s );
 
 void		Com_BeginRedirect (char *buffer, int buffersize, void (*flush)(char *));
 void		Com_EndRedirect( void );

@@ -26,9 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // key / value info strings
 //
+void Info_Print(const char* s);
 char *Info_ValueForKey(const char* s, const char* key);
 void Info_RemoveKey(char* s, const char* key);
-void Info_RemoveKey_big(char* s, const char* key);
+void Info_RemoveKey_Big(char* s, const char* key);
 void Info_SetValueForKey(char* s, const char* key, const char* value);
 void Info_SetValueForKey_Big(char* s, const char* key, const char* value);
 qboolean Info_Validate(const char* s);
