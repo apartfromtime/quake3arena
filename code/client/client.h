@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 // client.h -- primary header for client
 
+#ifndef _CLIENT_H_
+#define _CLIENT_H_
+
 #include "../game/q_shared.h"
 #include "../qcommon/qcommon.h"
 #include "../renderer/tr_public.h"
@@ -32,6 +35,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	RETRANSMIT_TIMEOUT	3000	// time between connection packet retransmits
 
+
+typedef enum
+{
+	AXIS_SIDE,
+	AXIS_FORWARD,
+	AXIS_UP,
+	AXIS_ROLL,
+	AXIS_YAW,
+	AXIS_PITCH,
+	MAX_JOYSTICK_AXIS
+} joystickAxis_t;
 
 // snapshots are a view of the server at a given time
 typedef struct {
@@ -352,14 +366,30 @@ extern	cvar_t	*cl_inGameVideo;
 // cl_main
 //
 
+// adds the current command line as a clc_clientCommand to the client message.
+// things like godmode, noclip, etc, are commands directed to the server,
+// so when they are typed in at the console, they will need to be forwarded.
+void	CL_ForwardCommandToServer(const char* string);
+// do a screen update before starting to load a map
+// when the server is going to load a new map, the entire hunk
+// will be cleared, so the client must shutdown cgame, ui, and
+// the renderer
+void CL_MapLoading(void);
 void CL_Init (void);
+void CL_Shutdown(void);
+void CL_Frame(int msec);
+// dump all memory on an error
 void CL_FlushMemory(void);
+// shutdown all the client stuff
 void CL_ShutdownAll(void);
 void CL_AddReliableCommand( const char *cmd );
 
+// start all the client stuff using the hunk
 void CL_StartHunkUsers( void );
 
+void CL_Disconnect(qboolean showMainMenu);
 void CL_Disconnect_f (void);
+void CL_PacketEvent(netadr_t from, msg_t* msg);
 void CL_GetChallengePacket (void);
 void CL_Vid_Restart_f( void );
 void CL_Snd_Restart_f (void);
@@ -377,6 +407,8 @@ int CL_GetPingQueueCount( void );
 
 void CL_ShutdownRef( void );
 void CL_InitRef( void );
+// bring up the "need a cd to play" dialog
+void CL_CDDialog(void);
 qboolean CL_CDKeyValidate( const char *key, const char *checksum );
 int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
 
@@ -430,8 +462,9 @@ qboolean CL_UpdateVisiblePings_f( int source );
 //
 // console
 //
-void Con_DrawCharacter (int cx, int line, int num);
 
+void CL_ConsolePrint(char* text);
+void Con_DrawCharacter (int cx, int line, int num);
 void Con_CheckResize (void);
 void Con_Init (void);
 void Con_Clear_f (void);
@@ -489,6 +522,7 @@ void CIN_CloseAllVideos(void);
 //
 // cl_cgame.c
 //
+qboolean CL_GameCommand(void);
 void CL_InitCGame( void );
 void CL_ShutdownCGame( void );
 qboolean CL_GameCommand( void );
@@ -500,6 +534,8 @@ void CL_ShaderStateChanged(void);
 //
 // cl_ui.c
 //
+qboolean UI_UsesUniqueCDKey();
+qboolean UI_GameCommand(void);
 void CL_InitUI( void );
 void CL_ShutdownUI( void );
 int Key_GetCatcher( void );
@@ -514,3 +550,22 @@ void LAN_SaveServersToCache();
 void CL_Netchan_Transmit( netchan_t *chan, msg_t* msg);	//int length, const byte *data );
 void CL_Netchan_TransmitNextFragment( netchan_t *chan );
 qboolean CL_Netchan_Process( netchan_t *chan, msg_t *msg );
+
+
+//
+// cl_keys.c
+//
+
+// for writing the config files
+void Key_WriteBindings(qhandle_t f);
+void CL_KeyEvent(int key, qboolean down, unsigned time);
+// char events are for field typing, not game control
+void CL_CharEvent(int key);
+void CL_MouseEvent(int dx, int dy, int time);
+void CL_JoystickEvent(int axis, int value, int time);
+
+// the keyboard binding interface must be setup before execing
+// config files, but the rest of client startup will happen later
+void CL_InitKeyCommands(void);
+
+#endif // #ifndef _CLIENT_H_

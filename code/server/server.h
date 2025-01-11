@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 // server.h
 
+#ifndef _SERVER_H_
+#define _SERVER_H_
+
 #include "../game/q_shared.h"
 #include "../qcommon/qcommon.h"
 #include "../game/g_public.h"
@@ -249,6 +252,9 @@ extern	cvar_t	*sv_strictAuth;
 //
 // sv_main.c
 //
+
+void SV_PacketEvent(netadr_t from, msg_t* msg);
+void SV_Frame(int msec);
 void SV_FinalMessage (char *message);
 void Q_CDECL SV_SendServerCommand( client_t *cl, const char *fmt, ...);
 
@@ -266,6 +272,8 @@ void SV_MasterShutdown (void);
 //
 // sv_init.c
 //
+void SV_Init(void);
+void SV_Shutdown(char* finalmsg);
 void SV_SetConfigstring( int index, const char *val );
 void SV_GetConfigstring( int index, char *buffer, int bufferSize );
 
@@ -315,6 +323,7 @@ void SV_SendClientSnapshot( client_t *client );
 //
 // sv_game.c
 //
+qboolean SV_GameCommand(void);
 int	SV_NumForGentity( sharedEntity_t *ent );
 sharedEntity_t *SV_GentityNum( int num );
 playerState_t *SV_GameClientNum( int num );
@@ -402,3 +411,4 @@ void SV_Netchan_Transmit( client_t *client, msg_t *msg);
 void SV_Netchan_TransmitNextFragment( client_t *client );
 qboolean SV_Netchan_Process( client_t *client, msg_t *msg );
 
+#endif // #ifndef _SERVER_H_

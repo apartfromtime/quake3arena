@@ -65,6 +65,7 @@ qhandle_t	S_RegisterSound( const char *sample, qboolean compressed );
 
 void S_DisplayFreeMemory(void);
 
+// call before filesystem access
 void S_ClearSoundBuffer( void );
 
 void SNDDMA_Activate( void );

@@ -242,6 +242,11 @@ extern	qboolean	com_errorEntered;
 extern	qhandle_t	com_journalFile;
 extern	qhandle_t	com_journalDataFile;
 
+// commandLine should not include the executable name (argv[0])
+void Com_Init(char* commandLine);
+void Com_Frame(void);
+void Com_Shutdown(void);
+
 
 /*
 ==============================================================
@@ -255,11 +260,6 @@ MEMORY
 
 void Com_TouchMemory(void);
 
-// commandLine should not include the executable name (argv[0])
-void Com_Init(char* commandLine);
-void Com_Frame(void);
-void Com_Shutdown(void);
-
 
 /*
 ==============================================================
@@ -269,78 +269,8 @@ CLIENT / SERVER SYSTEMS
 ==============================================================
 */
 
-//
-// client interface
-//
-void CL_InitKeyCommands( void );
-// the keyboard binding interface must be setup before execing
-// config files, but the rest of client startup will happen later
-
-void CL_Init( void );
-void CL_Disconnect( qboolean showMainMenu );
-void CL_Shutdown( void );
-void CL_Frame( int msec );
-qboolean CL_GameCommand( void );
-void CL_KeyEvent (int key, qboolean down, unsigned time);
-
-void CL_CharEvent( int key );
-// char events are for field typing, not game control
-
-void CL_MouseEvent( int dx, int dy, int time );
-
-void CL_JoystickEvent( int axis, int value, int time );
-
-void CL_PacketEvent( netadr_t from, msg_t *msg );
-
-void CL_ConsolePrint( char *text );
-
-void CL_MapLoading( void );
-// do a screen update before starting to load a map
-// when the server is going to load a new map, the entire hunk
-// will be cleared, so the client must shutdown cgame, ui, and
-// the renderer
-
-void	CL_ForwardCommandToServer( const char *string );
-// adds the current command line as a clc_clientCommand to the client message.
-// things like godmode, noclip, etc, are commands directed to the server,
-// so when they are typed in at the console, they will need to be forwarded.
-
-void CL_CDDialog( void );
-// bring up the "need a cd to play" dialog
-
-void CL_ShutdownAll( void );
-// shutdown all the client stuff
-
-void CL_FlushMemory( void );
-// dump all memory on an error
-
-void CL_StartHunkUsers( void );
-// start all the client stuff using the hunk
-
-void Key_WriteBindings( qhandle_t f );
-// for writing the config files
-
-void S_ClearSoundBuffer( void );
-// call before filesystem access
-
-void SCR_DebugGraph (float value, int color);	// FIXME: move logging to common?
-
-
-//
-// server interface
-//
-void SV_Init( void );
-void SV_Shutdown( char *finalmsg );
-void SV_Frame( int msec );
-void SV_PacketEvent( netadr_t from, msg_t *msg );
-qboolean SV_GameCommand( void );
-
-
-//
-// UI interface
-//
-qboolean UI_GameCommand( void );
-qboolean UI_usesUniqueCDKey();
+#include "../client/client.h"
+#include "../server/server.h"
 
 /*
 ==============================================================
@@ -349,16 +279,6 @@ NON-PORTABLE SYSTEM SERVICES
 
 ==============================================================
 */
-
-typedef enum {
-	AXIS_SIDE,
-	AXIS_FORWARD,
-	AXIS_UP,
-	AXIS_ROLL,
-	AXIS_YAW,
-	AXIS_PITCH,
-	MAX_JOYSTICK_AXIS
-} joystickAxis_t;
 
 typedef enum {
   // bk001129 - make sure SE_NONE is zero
