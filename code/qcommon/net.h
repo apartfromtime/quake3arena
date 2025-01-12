@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _Q_NET_H_
 
 #include "..\game\q_shared.h"
+#include "net_types.h"
 #include "msg.h"
 
 #define	PACKET_BACKUP	32	// number of old messages that must be kept on client and
@@ -33,16 +34,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	PORT_ANY				-1
 #define	MAX_RELIABLE_COMMANDS	64			// max string commands buffered for restransmit
 
-typedef enum
-{
-	NA_BOT,
-	NA_BAD,					// an address lookup failed
-	NA_LOOPBACK,
-	NA_BROADCAST,
-	NA_IP,
-	NA_IPX,
-	NA_BROADCAST_IPX
-} netadrtype_t;
 
 typedef enum
 {
@@ -50,15 +41,7 @@ typedef enum
 	NS_SERVER
 } netsrc_t;
 
-typedef struct
-{
-	netadrtype_t	type;
 
-	byte	ip[4];
-	byte	ipx[10];
-
-	unsigned short	port;
-} netadr_t;
 
 void		NET_Init(void);
 void		NET_Shutdown(void);

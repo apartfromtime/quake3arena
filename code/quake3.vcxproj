@@ -1275,6 +1275,7 @@
     <ClInclude Include="qcommon\filesystem.h" />
     <ClInclude Include="qcommon\msg.h" />
     <ClInclude Include="qcommon\net.h" />
+    <ClInclude Include="qcommon\net_types.h" />
     <ClInclude Include="qcommon\q_dict.h" />
     <ClInclude Include="qcommon\q_heap.h" />
     <ClInclude Include="qcommon\q_list.h" />

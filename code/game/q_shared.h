@@ -49,7 +49,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <assert.h>
 #include <math.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -63,10 +62,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <malloc.h>			// for _alloca()
 
 #endif	// #ifdef WIN32
-
-typedef unsigned char 		byte;
-
-typedef int		qhandle_t;
 
 #ifndef NULL
 #define NULL ((void *)0)
