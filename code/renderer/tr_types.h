@@ -31,20 +31,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define GLYPH_CHAREND 127
 #define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
 
-typedef struct
+typedef struct _glyphInfo
 {
-    int height;       // number of scan lines
-    int top;          // top of glyph in buffer
-    int bottom;       // bottom of glyph in buffer
-    int pitch;        // width for copying
-    int xSkip;        // x adjustment
-    int imageWidth;   // width of actual image
-    int imageHeight;  // height of actual image
-    float s;          // x offset in image where glyph starts
-    float t;          // y offset in image where glyph starts
+    int height;			// number of scan lines
+    int top;			// top of glyph in buffer
+    int bottom;			// bottom of glyph in buffer
+    int pitch;			// width for copying
+    int xSkip;			// x adjustment
+    int cellW;			// width of actual image
+    int cellH;			// height of actual image
+    float s1;			// x offset in image where glyph starts
+    float t1;			// y offset in image where glyph starts
     float s2;
     float t2;
-    qhandle_t glyph;  // handle to the shader with the glyph
+    qhandle_t glyph;	// handle to the shader with the glyph
     char shaderName[32];
 } glyphInfo_t;
 
@@ -113,7 +113,7 @@ typedef struct {
 	float		shadowPlane;		// projection shadows go here, stencils go slightly lower
 
 	vec3_t		axis[3];			// rotation vectors
-	qboolean	nonNormalizedAxes;	// axis are not normalized, i.e. they have scale
+	bool	nonNormalizedAxes;	// axis are not normalized, i.e. they have scale
 	float		origin[3];			// also used as MODEL_BEAM's "from"
 	int			frame;				// also used as MODEL_BEAM's diameter
 
@@ -213,9 +213,9 @@ typedef struct {
 	glDriverType_t			driverType;
 	glHardwareType_t		hardwareType;
 
-	qboolean				deviceSupportsGamma;
+	bool				deviceSupportsGamma;
 	textureCompression_t	textureCompression;
-	qboolean				textureEnvAddAvailable;
+	bool				textureEnvAddAvailable;
 
 	int						vidWidth, vidHeight;
 	// aspect is the screen's physical width / height, which may be different
@@ -228,9 +228,9 @@ typedef struct {
 	// synonymous with "does rendering consume the entire screen?", therefore
 	// a Voodoo or Voodoo2 will have this set to TRUE, as will a Win32 ICD that
 	// used CDS.
-	qboolean				isFullscreen;
-	qboolean				stereoEnabled;
-	qboolean				smpActive;		// dual processor
+	bool				isFullscreen;
+	bool				stereoEnabled;
+	bool				smpActive;		// dual processor
 } glconfig_t;
 
 // FIXME: VM should be OS agnostic .. in theory

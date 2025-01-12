@@ -47,26 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  **********************************************************************/
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include <ctype.h>
-#include <limits.h>
 
-#ifdef WIN32			// mac doesn't have malloc.h
-
-#include <malloc.h>			// for _alloca()
-
-#endif	// #ifdef WIN32
-
-typedef enum { qfalse, qtrue }	qboolean;
-typedef unsigned char 		byte;
-
-typedef int		qhandle_t;
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -233,6 +214,9 @@ qint64  BigLong64(qint64 l);
 qint64  LittleLong64(qint64 l);
 float	BigFloat(float l);
 float	LittleFloat(float l);
+
+int ReadIntLE(const byte* src);
+float ReadFltLE(const byte* src);
 
 void	Swap_Init(void);
 

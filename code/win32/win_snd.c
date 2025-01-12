@@ -30,7 +30,7 @@ HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS
 #define SECONDARY_BUFFER_SIZE	0x10000
 
 
-static qboolean	dsound_init;
+static bool	dsound_init;
 static int		sample16;
 static DWORD	gSndBufSize;
 static DWORD	locksize;
@@ -101,7 +101,7 @@ void SNDDMA_Shutdown( void ) {
 	pDS = NULL;
 	pDSBuf = NULL;
 	pDSPBuf = NULL;
-	dsound_init = qfalse;
+	dsound_init = false;
 	Com_Memset ((void *)&dma, 0, sizeof (dma));
 	CoUninitialize( );
 }
@@ -114,7 +114,7 @@ Initialize direct sound
 Returns false if failed
 ==================
 */
-qboolean SNDDMA_Init(void) {
+bool SNDDMA_Init(void) {
 
 	Com_Memset ((void *)&dma, 0, sizeof (dma));
 	dsound_init = 0;
@@ -122,14 +122,14 @@ qboolean SNDDMA_Init(void) {
 	CoInitialize(NULL);
 
 	if ( !SNDDMA_InitDS () ) {
-		return qfalse;
+		return false;
 	}
 
-	dsound_init = qtrue;
+	dsound_init = true;
 
 	Com_DPrintf("Completed successfully\n" );
 
-    return qtrue;
+    return true;
 }
 
 #undef DEFINE_GUID
@@ -165,7 +165,7 @@ int SNDDMA_InitDS ()
 	    if( FAILED( hresult = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, &IID_IDirectSound, (void **)&pDS))) {
 			Com_Printf ("failed\n");
 			SNDDMA_Shutdown ();
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -178,7 +178,7 @@ int SNDDMA_InitDS ()
 	if ( DS_OK != pDS->lpVtbl->SetCooperativeLevel( pDS, g_wv.hWnd, DSSCL_PRIORITY ) )	{
 		Com_Printf ("failed\n");
 		SNDDMA_Shutdown ();
-		return qfalse;
+		return false;
 	}
 	Com_DPrintf("ok\n" );
 
@@ -231,7 +231,7 @@ int SNDDMA_InitDS ()
 		if (DS_OK != pDS->lpVtbl->CreateSoundBuffer(pDS, &dsbuf, &pDSBuf, NULL)) {
 			Com_Printf( "failed\n" );
 			SNDDMA_Shutdown ();
-			return qfalse;
+			return false;
 		}
 		Com_DPrintf( "forced to software.  ok\n" );
 	}
@@ -240,14 +240,14 @@ int SNDDMA_InitDS ()
 	if ( DS_OK != pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING) ) {
 		Com_Printf ("*** Looped sound play failed ***\n");
 		SNDDMA_Shutdown ();
-		return qfalse;
+		return false;
 	}
 
 	// get the returned buffer size
 	if ( DS_OK != pDSBuf->lpVtbl->GetCaps (pDSBuf, &dsbcaps) ) {
 		Com_Printf ("*** GetCaps failed ***\n");
 		SNDDMA_Shutdown ();
-		return qfalse;
+		return false;
 	}
 	
 	gSndBufSize = dsbcaps.dwBufferBytes;

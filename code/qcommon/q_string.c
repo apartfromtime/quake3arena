@@ -77,11 +77,34 @@ void Q_strncpyz( char *dest, const char *src, int destsize )
         Com_Error(ERR_FATAL, "Q_strncpyz: NULL src");
     }
     if (destsize < 1) {
-        Com_Error(ERR_FATAL,"Q_strncpyz: destsize < 1"); 
+        Com_Error(ERR_FATAL, "Q_strncpyz: destsize < 1"); 
     }
 
     strncpy(dest, src, destsize-1);
     dest[destsize-1] = 0;
+}
+
+bool Q_strgtr(const char* s0, const char* s1)
+{
+    int l0, l1, i;
+
+    l0 = strlen(s0);
+    l1 = strlen(s1);
+
+    if (l1 < l0) {
+        l0 = l1;
+    }
+
+    for (i = 0; i < l0; i++) {
+        if (s1[i] > s0[i]) {
+            return true;
+        }
+        if (s1[i] < s0[i]) {
+            return false;
+        }
+    }
+
+    return false;
 }
 
 int Q_stricmpn(const char* s1, const char* s2, int n)
@@ -341,7 +364,7 @@ int Com_Filter(const char* filter, const char* name, int casesensitive)
             buf[i] = '\0';
             if (strlen(buf)) {
                 ptr = Com_StringContains(name, buf, casesensitive);
-                if (!ptr) return qfalse;
+                if (!ptr) return false;
                 name = ptr + strlen(buf);
             }
         }
@@ -354,30 +377,30 @@ int Com_Filter(const char* filter, const char* name, int casesensitive)
         }
         else if (*filter == '[') {
             filter++;
-            found = qfalse;
+            found = false;
             while (*filter && !found) {
                 if (*filter == ']' && *(filter + 1) != ']') break;
                 if (*(filter + 1) == '-' && *(filter + 2) && (*(filter + 2) != ']' || *(filter + 3) == ']')) {
                     if (casesensitive) {
-                        if (*name >= *filter && *name <= *(filter + 2)) found = qtrue;
+                        if (*name >= *filter && *name <= *(filter + 2)) found = true;
                     }
                     else {
                         if (toupper(*name) >= toupper(*filter) &&
-                            toupper(*name) <= toupper(*(filter + 2))) found = qtrue;
+                            toupper(*name) <= toupper(*(filter + 2))) found = true;
                     }
                     filter += 3;
                 }
                 else {
                     if (casesensitive) {
-                        if (*filter == *name) found = qtrue;
+                        if (*filter == *name) found = true;
                     }
                     else {
-                        if (toupper(*filter) == toupper(*name)) found = qtrue;
+                        if (toupper(*filter) == toupper(*name)) found = true;
                     }
                     filter++;
                 }
             }
-            if (!found) return qfalse;
+            if (!found) return false;
             while (*filter) {
                 if (*filter == ']' && *(filter + 1) != ']') break;
                 filter++;
@@ -387,17 +410,17 @@ int Com_Filter(const char* filter, const char* name, int casesensitive)
         }
         else {
             if (casesensitive) {
-                if (*filter != *name) return qfalse;
+                if (*filter != *name) return false;
             }
             else {
-                if (toupper(*filter) != toupper(*name)) return qfalse;
+                if (toupper(*filter) != toupper(*name)) return false;
             }
             filter++;
             name++;
         }
     }
     
-    return qtrue;
+    return true;
 }
 
 /*
@@ -457,6 +480,22 @@ int Com_HashString(const char* fname)
 
     hash &= (FILE_HASH_SIZE - 1);
     
+    return hash;
+}
+
+/*
+============
+Com_HashKey
+============
+*/
+int Com_HashKey(char* string, int maxlen) {
+    int register hash, i;
+
+    hash = 0;
+    for (i = 0; i < maxlen && string[i] != '\0'; i++) {
+        hash += string[i] * (119 + i);
+    }
+    hash = (hash ^ (hash >> 10) ^ (hash >> 20));
     return hash;
 }
 

@@ -336,7 +336,7 @@ void MenuField_Draw( menufield_s *f )
 	int		w;
 	int		h;
 	int		style;
-	qboolean focus;
+	bool focus;
 	float	*color;
 
 	x =	f->generic.x;
@@ -356,11 +356,11 @@ void MenuField_Draw( menufield_s *f )
 	}	
 
 	if (Menu_ItemAtCursor( f->generic.parent ) == f) {
-		focus = qtrue;
+		focus = true;
 		style |= UI_PULSE;
 	}
 	else {
-		focus = qfalse;
+		focus = false;
 	}
 
 	if (f->generic.flags & QMF_GRAYED)

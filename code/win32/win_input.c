@@ -29,9 +29,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 typedef struct {
 	int			oldButtonState;
 
-	qboolean	mouseActive;
-	qboolean	mouseInitialized;
-  qboolean  mouseStartupDelayed; // delay mouse init to try DI again when we have a window
+	bool	mouseActive;
+	bool	mouseInitialized;
+  bool  mouseStartupDelayed; // delay mouse init to try DI again when we have a window
 } WinMouseVars_t;
 
 static WinMouseVars_t s_wmv;
@@ -61,7 +61,7 @@ static MidiInfo_t s_midiInfo;
 #define	JOY_MAX_AXES		6				// X, Y, Z, R, U, V
 
 typedef struct {
-	qboolean	avail;
+	bool	avail;
 	int			id;			// joystick number
 	JOYCAPS		jc;
 
@@ -87,7 +87,7 @@ cvar_t	*in_joyBallScale;
 cvar_t	*in_debugJoystick;
 cvar_t	*joy_threshold;
 
-qboolean	in_appactive;
+bool	in_appactive;
 
 // forward-referenced functions
 void IN_StartupJoystick (void);
@@ -254,7 +254,7 @@ void IN_DIMouse( int *mx, int *my );
 IN_InitDIMouse
 ========================
 */
-qboolean IN_InitDIMouse( void ) {
+bool IN_InitDIMouse( void ) {
     HRESULT		hr;
 	int			x, y;
 	DIPROPDWORD	dipdw = {
@@ -274,7 +274,7 @@ qboolean IN_InitDIMouse( void ) {
 		
 		if (hInstDI == NULL) {
 			Com_Printf ("Couldn't load dinput.dll\n");
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -284,7 +284,7 @@ qboolean IN_InitDIMouse( void ) {
 
 		if (!pDirectInputCreate) {
 			Com_Printf ("Couldn't get DI proc addr\n");
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -293,7 +293,7 @@ qboolean IN_InitDIMouse( void ) {
 
 	if (FAILED(hr)) {
 		Com_Printf ("iDirectInputCreate failed\n");
-		return qfalse;
+		return false;
 	}
 
 	// obtain an interface to the system mouse device.
@@ -301,7 +301,7 @@ qboolean IN_InitDIMouse( void ) {
 
 	if (FAILED(hr)) {
 		Com_Printf ("Couldn't open DI mouse device\n");
-		return qfalse;
+		return false;
 	}
 
 	// set the data format to "mouse format".
@@ -309,7 +309,7 @@ qboolean IN_InitDIMouse( void ) {
 
 	if (FAILED(hr)) 	{
 		Com_Printf ("Couldn't set DI mouse format\n");
-		return qfalse;
+		return false;
 	}
 
 	// set the cooperativity level.
@@ -319,7 +319,7 @@ qboolean IN_InitDIMouse( void ) {
 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=50
 	if (FAILED(hr)) {
 		Com_Printf ("Couldn't set DI coop level\n");
-		return qfalse;
+		return false;
 	}
 
 
@@ -329,7 +329,7 @@ qboolean IN_InitDIMouse( void ) {
 
 	if (FAILED(hr)) {
 		Com_Printf ("Couldn't set DI buffersize\n");
-		return qfalse;
+		return false;
 	}
 
 	// clear any pending samples
@@ -337,7 +337,7 @@ qboolean IN_InitDIMouse( void ) {
 	IN_DIMouse( &x, &y );
 
 	Com_Printf( "DirectInput initialized.\n");
-	return qtrue;
+	return true;
 }
 
 /*
@@ -433,30 +433,30 @@ void IN_DIMouse( int *mx, int *my ) {
 		switch (od.dwOfs) {
 		case DIMOFS_BUTTON0:
 			if (od.dwData & 0x80)
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE1, qtrue, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE1, true, 0, NULL );
 			else
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE1, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE1, false, 0, NULL );
 			break;
 
 		case DIMOFS_BUTTON1:
 			if (od.dwData & 0x80)
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE2, qtrue, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE2, true, 0, NULL );
 			else
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE2, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE2, false, 0, NULL );
 			break;
 			
 		case DIMOFS_BUTTON2:
 			if (od.dwData & 0x80)
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE3, qtrue, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE3, true, 0, NULL );
 			else
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE3, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE3, false, 0, NULL );
 			break;
 
 		case DIMOFS_BUTTON3:
 			if (od.dwData & 0x80)
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE4, qtrue, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE4, true, 0, NULL );
 			else
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE4, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MOUSE4, false, 0, NULL );
 			break;      
     // https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=50
 		case DIMOFS_Z:
@@ -464,11 +464,11 @@ void IN_DIMouse( int *mx, int *my ) {
 			if (value == 0) {
 
 			} else if (value < 0) {
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELDOWN, qtrue, 0, NULL );
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELDOWN, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELDOWN, true, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELDOWN, false, 0, NULL );
 			} else {
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELUP, qtrue, 0, NULL );
-				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELUP, qfalse, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELUP, true, 0, NULL );
+				Sys_QueEvent( od.dwTimeStamp, SE_KEY, K_MWHEELUP, false, 0, NULL );
 			}
 			break;
 		}
@@ -508,7 +508,7 @@ void IN_ActivateMouse( void )
 	}
 	if ( !in_mouse->integer ) 
 	{
-		s_wmv.mouseActive = qfalse;
+		s_wmv.mouseActive = false;
 		return;
 	}
 	if ( s_wmv.mouseActive ) 
@@ -516,7 +516,7 @@ void IN_ActivateMouse( void )
 		return;
 	}
 
-	s_wmv.mouseActive = qtrue;
+	s_wmv.mouseActive = true;
 
 	if ( in_mouse->integer != -1 ) {
 		IN_ActivateDIMouse();
@@ -539,7 +539,7 @@ void IN_DeactivateMouse( void ) {
 	if (!s_wmv.mouseActive ) {
 		return;
 	}
-	s_wmv.mouseActive = qfalse;
+	s_wmv.mouseActive = false;
 
 	IN_DeactivateDIMouse();
 	IN_DeactivateWin32Mouse();
@@ -554,8 +554,8 @@ IN_StartupMouse
 */
 void IN_StartupMouse( void ) 
 {
-	s_wmv.mouseInitialized = qfalse;
-  s_wmv.mouseStartupDelayed = qfalse;
+	s_wmv.mouseInitialized = false;
+  s_wmv.mouseStartupDelayed = false;
 
 	if ( in_mouse->integer == 0 ) {
 		Com_Printf ("Mouse control not active.\n");
@@ -576,16 +576,16 @@ void IN_StartupMouse( void )
     if (!g_wv.hWnd)
     {
       Com_Printf ("No window for DirectInput mouse init, delaying\n");
-      s_wmv.mouseStartupDelayed = qtrue;
+      s_wmv.mouseStartupDelayed = true;
       return;
     }
 		if ( IN_InitDIMouse() ) {
-	    s_wmv.mouseInitialized = qtrue;
+	    s_wmv.mouseInitialized = true;
 			return;
 		}
 		Com_Printf ("Falling back to Win32 mouse support...\n");
 	}
-	s_wmv.mouseInitialized = qtrue;
+	s_wmv.mouseInitialized = true;
 	IN_InitWin32Mouse();
 }
 
@@ -607,13 +607,13 @@ void IN_MouseEvent (int mstate)
 		if ( (mstate & (1<<i)) &&
 			!(s_wmv.oldButtonState & (1<<i)) )
 		{
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_MOUSE1 + i, qtrue, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_MOUSE1 + i, true, 0, NULL );
 		}
 
 		if ( !(mstate & (1<<i)) &&
 			(s_wmv.oldButtonState & (1<<i)) )
 		{
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_MOUSE1 + i, qfalse, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_MOUSE1 + i, false, 0, NULL );
 		}
 	}	
 
@@ -661,8 +661,8 @@ void IN_Startup( void ) {
 	IN_StartupMIDI();
 	Com_Printf ("------------------------------------\n");
 
-	in_mouse->modified = qfalse;
-	in_joystick->modified = qfalse;
+	in_mouse->modified = false;
+	in_joystick->modified = false;
 }
 
 /*
@@ -716,7 +716,7 @@ The window may have been destroyed and recreated
 between a deactivate and an activate.
 ===========
 */
-void IN_Activate (qboolean active) {
+void IN_Activate (bool active) {
 	in_appactive = active;
 
 	if ( !active )
@@ -742,7 +742,7 @@ void IN_Frame (void) {
 		{
 			Com_Printf("Proceeding with delayed mouse init\n");
       IN_StartupMouse();
-			s_wmv.mouseStartupDelayed = qfalse;
+			s_wmv.mouseStartupDelayed = false;
 		}
 		return;
 	}
@@ -800,7 +800,7 @@ void IN_StartupJoystick (void) {
 	MMRESULT	mmr;
 
 	// assume no joystick
-	joy.avail = qfalse; 
+	joy.avail = false; 
 
 	if (! in_joystick->integer ) {
 		Com_Printf ("Joystick is not active.\n");
@@ -861,7 +861,7 @@ void IN_StartupJoystick (void) {
 	joy.oldpovstate = 0;
 
 	// mark the joystick as available
-	joy.avail = qtrue; 
+	joy.avail = true; 
 }
 
 /*
@@ -950,10 +950,10 @@ void IN_JoyMove( void ) {
 	buttonstate = joy.ji.dwButtons;
 	for ( i=0 ; i < joy.jc.wNumButtons ; i++ ) {
 		if ( (buttonstate & (1<<i)) && !(joy.oldbuttonstate & (1<<i)) ) {
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_JOY1 + i, qtrue, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_JOY1 + i, true, 0, NULL );
 		}
 		if ( !(buttonstate & (1<<i)) && (joy.oldbuttonstate & (1<<i)) ) {
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_JOY1 + i, qfalse, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, K_JOY1 + i, false, 0, NULL );
 		}
 	}
 	joy.oldbuttonstate = buttonstate;
@@ -989,11 +989,11 @@ void IN_JoyMove( void ) {
 	// determine which bits have changed and key an auxillary event for each change
 	for (i=0 ; i < 16 ; i++) {
 		if ( (povstate & (1<<i)) && !(joy.oldpovstate & (1<<i)) ) {
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, joyDirectionKeys[i], qtrue, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, joyDirectionKeys[i], true, 0, NULL );
 		}
 
 		if ( !(povstate & (1<<i)) && (joy.oldpovstate & (1<<i)) ) {
-			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, joyDirectionKeys[i], qfalse, 0, NULL );
+			Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, joyDirectionKeys[i], false, 0, NULL );
 		}
 	}
 	joy.oldpovstate = povstate;
@@ -1025,7 +1025,7 @@ static void MIDI_NoteOff( int note )
 	if ( qkey > 255 || qkey < K_AUX1 )
 		return;
 
-	Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, qkey, qfalse, 0, NULL );
+	Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, qkey, false, 0, NULL );
 }
 
 static void MIDI_NoteOn( int note, int velocity )
@@ -1040,7 +1040,7 @@ static void MIDI_NoteOn( int note, int velocity )
 	if ( qkey > 255 || qkey < K_AUX1 )
 		return;
 
-	Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, qkey, qtrue, 0, NULL );
+	Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, qkey, true, 0, NULL );
 }
 
 static void CALLBACK MidiInProc( HMIDIIN hMidiIn, UINT uMsg, DWORD dwInstance, 
@@ -1077,7 +1077,7 @@ static void CALLBACK MidiInProc( HMIDIIN hMidiIn, UINT uMsg, DWORD dwInstance,
 		break;
 	}
 
-//	Sys_QueEvent( sys_msg_time, SE_KEY, wMsg, qtrue, 0, NULL );
+//	Sys_QueEvent( sys_msg_time, SE_KEY, wMsg, true, 0, NULL );
 }
 
 static void MidiInfo_f( void )

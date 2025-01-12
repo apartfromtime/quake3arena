@@ -41,57 +41,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 static char		sys_cmdline[MAX_STRING_CHARS];
 
-// define this to use alternate spanking method
-// I found out that the regular way doesn't work on my box for some reason
-// see the associated spank.sh script
-#define ALT_SPANK
-#ifdef ALT_SPANK
-#include <stdio.h>
-#include <sys\stat.h>
-
-int fh = 0;
-
-void Spk_Open(char *name)
-{
-  fh = open( name, O_TRUNC | O_CREAT | O_WRONLY, S_IREAD | S_IWRITE );
-};
-
-void Spk_Close()
-{
-  if (!fh)
-    return;
-
-  close( fh );
-  fh = 0;
-}
-
-void Spk_Printf (const char *text, ...)
-{
-  va_list argptr;
-  char buf[32768];
-
-  if (!fh)
-    return;
-
-  va_start (argptr,text);
-  vsprintf (buf, text, argptr);
-  write(fh, buf, strlen(buf));
-  _commit(fh);
-  va_end (argptr);
-
-};
-#endif
-
 /*
 ==================
 Sys_LowPhysicalMemory()
 ==================
 */
 
-qboolean Sys_LowPhysicalMemory() {
+bool Sys_LowPhysicalMemory() {
 	MEMORYSTATUS stat;
   GlobalMemoryStatus (&stat);
-	return (stat.dwTotalPhys <= MEM_THRESHOLD) ? qtrue : qfalse;
+	return (stat.dwTotalPhys <= MEM_THRESHOLD) ? true : false;
 }
 
 /*
@@ -114,7 +73,7 @@ void Q_CDECL Sys_Error( const char *error, ... ) {
 	Conbuf_AppendText( "\n" );
 
 	Sys_SetErrorText( text );
-	Sys_ShowConsole( 1, qtrue );
+	Sys_ShowConsole( 1, true );
 
 	timeEndPeriod( 1 );
 
@@ -245,7 +204,7 @@ void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, ch
 			break;
 		}
 		Com_sprintf( filename, sizeof(filename), "%s\\%s", subdirs, findinfo.name );
-		if (!Com_FilterPath( filter, filename, qfalse ))
+		if (!Com_FilterPath( filter, filename, false ))
 			continue;
 		list[ *numfiles ] = CopyString( filename );
 		(*numfiles)++;
@@ -254,28 +213,7 @@ void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, ch
 	_findclose (findhandle);
 }
 
-static qboolean strgtr(const char *s0, const char *s1) {
-	int l0, l1, i;
-
-	l0 = strlen(s0);
-	l1 = strlen(s1);
-
-	if (l1<l0) {
-		l0 = l1;
-	}
-
-	for(i=0;i<l0;i++) {
-		if (s1[i] > s0[i]) {
-			return qtrue;
-		}
-		if (s1[i] < s0[i]) {
-			return qfalse;
-		}
-	}
-	return qfalse;
-}
-
-char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs ) {
+char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, bool wantsubs ) {
 	char		search[MAX_OSPATH];
 	int			nfiles;
 	char		**listCopy;
@@ -358,7 +296,7 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 	do {
 		flag = 0;
 		for(i=1; i<nfiles; i++) {
-			if (strgtr(listCopy[i-1], listCopy[i])) {
+			if (Q_strgtr(listCopy[i-1], listCopy[i])) {
 				char *temp = listCopy[i];
 				listCopy[i] = listCopy[i-1];
 				listCopy[i-1] = temp;
@@ -395,7 +333,7 @@ Search all the drives to see if there is a valid CD to grab
 the cddir from
 ================
 */
-qboolean Sys_ScanForCD( void ) {
+bool Sys_ScanForCD( void ) {
 	static char	cddir[MAX_OSPATH];
 	char		drive[4];
 	FILE		*f;
@@ -423,19 +361,19 @@ qboolean Sys_ScanForCD( void ) {
 		f = fopen( test, "r" );
 		if ( f ) {
 			fclose (f);
-			return qtrue;
+			return true;
     } else {
       sprintf(cddir, "%s%s", drive, CD_BASEDIR_LINUX);
       sprintf(test, "%s\\%s", cddir, CD_EXE_LINUX);
   		f = fopen( test, "r" );
 	  	if ( f ) {
 		  	fclose (f);
-			  return qtrue;
+			  return true;
       }
     }
 	}
 
-	return qfalse;
+	return false;
 }
 
 /*
@@ -445,9 +383,9 @@ Sys_CheckCD
 Return true if the proper CD is in the drive
 ================
 */
-qboolean	Sys_CheckCD( void ) {
+bool	Sys_CheckCD( void ) {
   // FIXME: mission pack
-  return qtrue;
+  return true;
 	//return Sys_ScanForCD();
 }
 
@@ -646,8 +584,8 @@ void Sys_StreamSeek( qhandle_t f, int offset, int origin ) {
 typedef struct {
 	qhandle_t	file;
 	byte	*buffer;
-	qboolean	eof;
-	qboolean	active;
+	bool	eof;
+	bool	active;
 	int		bufferSize;
 	int		streamPosition;	// next byte to be returned by Sys_StreamRead
 	int		threadPosition;	// next byte to be read from file
@@ -696,7 +634,7 @@ void Sys_StreamThread( void ) {
 				stream.sIO[i].threadPosition += r;
 
 				if ( r != readCount ) {
-					stream.sIO[i].eof = qtrue;
+					stream.sIO[i].eof = true;
 				}
 			}
 		}
@@ -728,7 +666,7 @@ void Sys_InitStreamThread( void ) {
 	   0,			//   DWORD fdwCreate,
 	   &stream.threadId);
 	for(i=0;i<MAX_FILE_HANDLES;i++) {
-		stream.sIO[i].active = qfalse;
+		stream.sIO[i].active = false;
 	}
 }
 
@@ -758,8 +696,8 @@ void Sys_BeginStreamedFile( qhandle_t f, int readAhead ) {
 	stream.sIO[f].bufferSize = readAhead;
 	stream.sIO[f].streamPosition = 0;
 	stream.sIO[f].threadPosition = 0;
-	stream.sIO[f].eof = qfalse;
-	stream.sIO[f].active = qtrue;
+	stream.sIO[f].eof = false;
+	stream.sIO[f].active = true;
 
 	// let the thread start running
 //	LeaveCriticalSection( &stream.crit );
@@ -779,7 +717,7 @@ void Sys_EndStreamedFile( qhandle_t f ) {
 	EnterCriticalSection( &stream.crit );
 
 	stream.sIO[f].file = 0;
-	stream.sIO[f].active = qfalse;
+	stream.sIO[f].active = false;
 
 	Z_Free( stream.sIO[f].buffer );
 
@@ -802,7 +740,7 @@ int Sys_StreamedRead( void *buffer, int size, int count, qhandle_t f ) {
 	int		bufferPoint;
 	byte	*dest;
 
-	if (stream.sIO[f].active == qfalse) {
+	if (stream.sIO[f].active == false) {
 		Com_Error( ERR_FATAL, "Streamed read with non-streaming file" );
 	}
 
@@ -865,7 +803,7 @@ void Sys_StreamSeek( qhandle_t f, int offset, int origin ) {
 	FS_Seek( f, offset, origin );
 	stream.sIO[f].streamPosition = 0;
 	stream.sIO[f].threadPosition = 0;
-	stream.sIO[f].eof = qfalse;
+	stream.sIO[f].eof = false;
 
 	// let the thread start running at the new position
 	LeaveCriticalSection( &stream.crit );
@@ -1210,7 +1148,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	// hide the early console since we've reached the point where we
 	// have a working graphics subsystems
 	if ( !com_dedicated->integer && !com_viewlog->integer ) {
-		Sys_ShowConsole( 0, qfalse );
+		Sys_ShowConsole( 0, false );
 	}
 
     // main game loop

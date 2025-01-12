@@ -21,7 +21,7 @@ int		Com_GetCurrentParseLine(void);
 const char* Com_Parse(const char* (*data_p));
 const char* Com_ParseOnLine(const char* (*data_p));
 const char* Com_ParseRestOfLine(const char* (*data_p));
-char* Com_ParseExt(const char* (*data_p), qboolean allowLineBreak);
+char* Com_ParseExt(const char* (*data_p), bool allowLineBreak);
 int		Com_Compress(char* data_p);
 void Com_ParseError(const char* format, ...);
 void Com_ParseWarning(const char* format, ...);
@@ -50,9 +50,9 @@ typedef struct pc_token_s
 
 // data is an in/out parm, returns a parsed out token
 #ifdef __cplusplus
-void Com_MatchToken(const char* (*buf_p), const char* match, qboolean warning = qfalse);
+void Com_MatchToken(const char* (*buf_p), const char* match, bool warning = false);
 #else
-void Com_MatchToken(const char* (*buf_p), const char* match, qboolean warning);
+void Com_MatchToken(const char* (*buf_p), const char* match, bool warning);
 #endif
 
 void Com_SkipBracedSection(const char* (*program));

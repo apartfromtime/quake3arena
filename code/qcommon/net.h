@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _Q_NET_H_
 
 #include "..\game\q_shared.h"
+#include "net_types.h"
 #include "msg.h"
 
 #define	PACKET_BACKUP	32	// number of old messages that must be kept on client and
@@ -33,16 +34,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	PORT_ANY				-1
 #define	MAX_RELIABLE_COMMANDS	64			// max string commands buffered for restransmit
 
-typedef enum
-{
-	NA_BOT,
-	NA_BAD,					// an address lookup failed
-	NA_LOOPBACK,
-	NA_BROADCAST,
-	NA_IP,
-	NA_IPX,
-	NA_BROADCAST_IPX
-} netadrtype_t;
 
 typedef enum
 {
@@ -50,32 +41,24 @@ typedef enum
 	NS_SERVER
 } netsrc_t;
 
-typedef struct
-{
-	netadrtype_t	type;
 
-	byte	ip[4];
-	byte	ipx[10];
-
-	unsigned short	port;
-} netadr_t;
 
 void		NET_Init(void);
 void		NET_Shutdown(void);
 void		NET_Restart(void);
-void		NET_Config(qboolean enableNetworking);
+void		NET_Config(bool enableNetworking);
 
 void		NET_SendPacket(netsrc_t sock, int length, const void* data, netadr_t to);
 void		Q_CDECL NET_OutOfBandPrint(netsrc_t net_socket, netadr_t adr,
 	const char* format, ...);
 void		Q_CDECL NET_OutOfBandData(netsrc_t sock, netadr_t adr, byte* format, int len);
 
-qboolean	NET_CompareAdr(netadr_t a, netadr_t b);
-qboolean	NET_CompareBaseAdr(netadr_t a, netadr_t b);
-qboolean	NET_IsLocalAddress(netadr_t adr);
+bool	NET_CompareAdr(netadr_t a, netadr_t b);
+bool	NET_CompareBaseAdr(netadr_t a, netadr_t b);
+bool	NET_IsLocalAddress(netadr_t adr);
 const char* NET_AdrToString(netadr_t a);
-qboolean	NET_StringToAdr(const char* s, netadr_t* a);
-qboolean	NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message);
+bool	NET_StringToAdr(const char* s, netadr_t* a);
+bool	NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message);
 void		NET_Sleep(int msec);
 
 
@@ -110,7 +93,7 @@ typedef struct
 
 	// outgoing fragment buffer
 	// we need to space out the sending of large fragmented messages
-	qboolean	unsentFragments;
+	bool	unsentFragments;
 	int			unsentFragmentStart;
 	int			unsentLength;
 	byte		unsentBuffer[MAX_MSGLEN];
@@ -122,6 +105,6 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport);
 void Netchan_Transmit(netchan_t* chan, int length, const byte* data);
 void Netchan_TransmitNextFragment(netchan_t* chan);
 
-qboolean Netchan_Process(netchan_t* chan, msg_t* msg);
+bool Netchan_Process(netchan_t* chan, msg_t* msg);
 
 #endif // #ifndef _Q_NET_H_

@@ -82,7 +82,7 @@ typedef struct {
 	menutext_s		mapname;
 	menubitmap_s	item_null;
 
-	qboolean		multiplayer;
+	bool		multiplayer;
 	int				currentmap;
 	int				nummaps;
 	int				page;
@@ -107,7 +107,7 @@ static int gametype_remap2[] = {0, 2, 0, 1, 3};
 // use ui_servers2.c definition
 extern const char* punkbuster_items[];
 
-static void UI_ServerOptionsMenu( qboolean multiplayer );
+static void UI_ServerOptionsMenu( bool multiplayer );
 
 
 /*
@@ -123,7 +123,7 @@ static int GametypeBits( char *string ) {
 	bits = 0;
 	p = string;
 	while( 1 ) {
-		token = Com_ParseExt( &p, qfalse );
+		token = Com_ParseExt( &p, false );
 		if( token[0] == 0 ) {
 			break;
 		}
@@ -391,8 +391,8 @@ static void StartServer_MenuInit( void ) {
 
 	StartServer_Cache();
 
-	s_startserver.menu.wrapAround = qtrue;
-	s_startserver.menu.fullscreen = qtrue;
+	s_startserver.menu.wrapAround = true;
+	s_startserver.menu.fullscreen = true;
 
 	s_startserver.banner.generic.type  = MTYPE_BTEXT;
 	s_startserver.banner.generic.x	   = 320;
@@ -554,7 +554,7 @@ void StartServer_Cache( void )
 {
 	int				i;
 	const char		*info;
-	qboolean		precache;
+	bool		precache;
 	char			picname[64];
 
 	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );	
@@ -596,7 +596,7 @@ void StartServer_Cache( void )
 UI_StartServerMenu
 =================
 */
-void UI_StartServerMenu( qboolean multiplayer ) {
+void UI_StartServerMenu( bool multiplayer ) {
 	StartServer_MenuInit();
 	s_startserver.multiplayer = multiplayer;
 	UI_PushMenu( &s_startserver.menu );
@@ -647,12 +647,12 @@ typedef struct {
 	menubitmap_s		next;
 	menubitmap_s		back;
 
-	qboolean			multiplayer;
+	bool			multiplayer;
 	int					gametype;
 	char				mapnamebuffer[32];
 	char				playerNameBuffers[PLAYER_SLOTS][16];
 
-	qboolean			newBot;
+	bool			newBot;
 	int					newBotIndex;
 	char				newBotName[16];
 	
@@ -696,7 +696,7 @@ static const char *botSkill_list[] = {
 BotAlreadySelected
 =================
 */
-static qboolean BotAlreadySelected( const char *checkName ) {
+static bool BotAlreadySelected( const char *checkName ) {
 	int		n;
 
 	for( n = 1; n < PLAYER_SLOTS; n++ ) {
@@ -708,11 +708,11 @@ static qboolean BotAlreadySelected( const char *checkName ) {
 			continue;
 		}
 		if( Q_stricmp( checkName, s_serveroptions.playerNameBuffers[n] ) == 0 ) {
-			return qtrue;
+			return true;
 		}
 	}
 
-	return qfalse;
+	return false;
 }
 
 
@@ -1008,7 +1008,7 @@ static void ServerOptions_LevelshotDraw( void *self ) {
 	// strange place for this, but it works
 	if( s_serveroptions.newBot ) {
 		Q_strncpyz( s_serveroptions.playerNameBuffers[s_serveroptions.newBotIndex], s_serveroptions.newBotName, 16 );
-		s_serveroptions.newBot = qfalse;
+		s_serveroptions.newBot = false;
 	}
 
 	b = (menubitmap_s *)self;
@@ -1181,7 +1181,7 @@ static void PlayerName_Draw( void *item ) {
 	float		*color;
 	int			x, y;
 	int			style;
-	qboolean	focus;
+	bool	focus;
 
 	s = (menutext_s *)item;
 
@@ -1225,7 +1225,7 @@ ServerOptions_MenuInit
 */
 #define OPTIONS_X	456
 
-static void ServerOptions_MenuInit( qboolean multiplayer ) {
+static void ServerOptions_MenuInit( bool multiplayer ) {
 	int		y;
 	int		n;
 
@@ -1236,8 +1236,8 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 
 	ServerOptions_Cache();
 
-	s_serveroptions.menu.wrapAround = qtrue;
-	s_serveroptions.menu.fullscreen = qtrue;
+	s_serveroptions.menu.wrapAround = true;
+	s_serveroptions.menu.fullscreen = true;
 
 	s_serveroptions.banner.generic.type			= MTYPE_BTEXT;
 	s_serveroptions.banner.generic.x			= 320;
@@ -1491,7 +1491,7 @@ void ServerOptions_Cache( void ) {
 UI_ServerOptionsMenu
 =================
 */
-static void UI_ServerOptionsMenu( qboolean multiplayer ) {
+static void UI_ServerOptionsMenu( bool multiplayer ) {
 	ServerOptions_MenuInit( multiplayer );
 	UI_PushMenu( &s_serveroptions.menu );
 }
@@ -1810,7 +1810,7 @@ static void UI_BotSelectMenu_SelectEvent( void* ptr, int event ) {
 	}
 	UI_PopMenu();
 
-	s_serveroptions.newBot = qtrue;
+	s_serveroptions.newBot = true;
 	Q_strncpyz( s_serveroptions.newBotName, botSelectInfo.botnames[botSelectInfo.selectedmodel % MAX_MODELSPERPAGE], 16 );
 }
 
@@ -1838,8 +1838,8 @@ static void UI_BotSelectMenu_Init( char *bot ) {
 	int		x, y;
 
 	Com_Memset( &botSelectInfo, 0 ,sizeof(botSelectInfo) );
-	botSelectInfo.menu.wrapAround = qtrue;
-	botSelectInfo.menu.fullscreen = qtrue;
+	botSelectInfo.menu.wrapAround = true;
+	botSelectInfo.menu.fullscreen = true;
 
 	UI_BotSelectMenu_Cache();
 

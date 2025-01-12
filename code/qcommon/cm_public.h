@@ -62,8 +62,8 @@ typedef struct cplane_s {
 
 // a trace is returned when a box is swept through the world
 typedef struct {
-	qboolean	allsolid;	// if true, plane is not valid
-	qboolean	startsolid;	// if true, the initial point was in a solid area
+	bool	allsolid;	// if true, plane is not valid
+	bool	startsolid;	// if true, the initial point was in a solid area
 	float		fraction;	// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;		// final position
 	cplane_t	plane;		// surface normal at impact, transformed to world space
@@ -90,7 +90,7 @@ typedef struct {
 } orientation_t;
 
 
-void		CM_LoadMap( const char *name, qboolean clientload, int *checksum);
+void		CM_LoadMap( const char *name, bool clientload, int *checksum);
 void		CM_ClearMap( void );
 qhandle_t CM_InlineModel( int index );		// 0 = world, 1 + are bmodels
 qhandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
@@ -125,8 +125,8 @@ int			CM_BoxLeafnums( const vec3_t mins, const vec3_t maxs, int *list,
 int			CM_LeafCluster (int leafnum);
 int			CM_LeafArea (int leafnum);
 
-void		CM_AdjustAreaPortalState( int area1, int area2, qboolean open );
-qboolean	CM_AreasConnected( int area1, int area2 );
+void		CM_AdjustAreaPortalState( int area1, int area2, bool open );
+bool	CM_AreasConnected( int area1, int area2 );
 
 int			CM_WriteAreaBits( byte *buffer, int area );
 

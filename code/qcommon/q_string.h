@@ -38,6 +38,8 @@ int Q_islower(int c);
 int Q_isupper(int c);
 int Q_isalpha(int c);
 
+bool Q_strgtr(const char* s0, const char* s1);
+
 // portable case insensitive compare
 int Q_stricmp(const char *s1, const char *s2);
 int Q_strncmp(const char *s1, const char *s2, int n);
@@ -59,12 +61,14 @@ int Q_PrintStrlen(const char* string);
 char* Q_CleanStr(char* string);
 
 int Com_HashString(const char* fname);
+int Com_HashKey(char* string, int maxlen);
 char* Com_SkipPath(char* pathname);
 // it is ok for out == in
 void Com_StripExtension(const char* in, char* out);
 // "extension" should include the dot: ".map"
 void Com_DefaultExtension(char* path, int maxSize, const char* extension);
 int Com_Filter(const char* filter, const char* name, int casesensitive);
+int Com_FilterPath(char* filter, char* name, int casesensitive);
 const char* Com_StringContains(const char* str1, const char* str2, int casesensitive);
 
 #endif // #ifndef Q_STRING_H

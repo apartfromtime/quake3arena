@@ -69,7 +69,7 @@ typedef struct cvar_s
 	char		*resetString;		// cvar_restart will reset to this value
 	char		*latchedString;		// for CVAR_LATCH vars
 	int			flags;
-	qboolean	modified;			// set each time the cvar is changed
+	bool	modified;			// set each time the cvar is changed
 	int			modificationCount;	// incremented each time the cvar is changed
 	float		value;				// atof( string )
 	int			integer;			// atoi( string )
@@ -146,7 +146,7 @@ void 	Cvar_Reset(const char* var_name);
 void	Cvar_SetCheatState(void);
 // reset all testing vars to a safe value
 
-qboolean Cvar_Command(void);
+bool Cvar_Command(void);
 // called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)

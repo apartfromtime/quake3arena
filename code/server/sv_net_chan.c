@@ -24,6 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/qcommon.h"
 #include "server.h"
 
+// these must match (but opposite) those in client
+#define	SV_ENCODE_START		4
+#define SV_DECODE_START		12
+
 /*
 ==============
 SV_Netchan_Encode
@@ -196,12 +200,12 @@ void SV_Netchan_Transmit( client_t *client, msg_t *msg) {	//int length, const by
 Netchan_SV_Process
 =================
 */
-qboolean SV_Netchan_Process( client_t *client, msg_t *msg ) {
+bool SV_Netchan_Process( client_t *client, msg_t *msg ) {
 	int ret;
 	ret = Netchan_Process( &client->netchan, msg );
 	if (!ret)
-		return qfalse;
+		return false;
 	SV_Netchan_Decode( client, msg );
-	return qtrue;
+	return true;
 }
 

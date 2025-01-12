@@ -66,7 +66,7 @@ void Weapon_Gauntlet( gentity_t *ent ) {
 CheckGauntletAttack
 ===============
 */
-qboolean CheckGauntletAttack( gentity_t *ent ) {
+bool CheckGauntletAttack( gentity_t *ent ) {
 	trace_t		tr;
 	vec3_t		end;
 	gentity_t	*tent;
@@ -82,7 +82,7 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 
 	trap_Trace (&tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT);
 	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
-		return qfalse;
+		return false;
 	}
 
 	traceEnt = &g_entities[ tr.entityNum ];
@@ -96,7 +96,7 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	}
 
 	if ( !traceEnt->takedamage) {
-		return qfalse;
+		return false;
 	}
 
 	if (ent->client->ps.powerups[PW_QUAD] ) {
@@ -115,7 +115,7 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 		damage, 0, MOD_GAUNTLET );
 
-	return qtrue;
+	return true;
 }
 
 
@@ -262,7 +262,7 @@ SHOTGUN
 // client predicts same spreads
 #define	DEFAULT_SHOTGUN_DAMAGE	10
 
-qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
+bool ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 	trace_t		tr;
 	int			damage, i, passent;
 	gentity_t	*traceEnt;
@@ -280,7 +280,7 @@ qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 
 		// send bullet impact
 		if (  tr.surfaceFlags & SURF_NOIMPACT ) {
-			return qfalse;
+			return false;
 		}
 
 		if ( traceEnt->takedamage) {
@@ -303,19 +303,19 @@ qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 				G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 					damage, 0, MOD_SHOTGUN);
 				if( LogAccuracyHit( traceEnt, ent ) ) {
-					return qtrue;
+					return true;
 				}
 			}
 #else
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos,	damage, 0, MOD_SHOTGUN);
 				if( LogAccuracyHit( traceEnt, ent ) ) {
-					return qtrue;
+					return true;
 				}
 #endif
 		}
-		return qfalse;
+		return false;
 	}
-	return qfalse;
+	return false;
 }
 
 // this should match CG_ShotgunPattern
@@ -325,7 +325,7 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 	vec3_t		end;
 	vec3_t		forward, right, up;
 	int			oldScore;
-	qboolean	hitClient = qfalse;
+	bool	hitClient = false;
 
 	// derive the right and up vectors from the forward vector, because
 	// the client won't have any other information
@@ -343,7 +343,7 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		VectorMA (end, r, right, end);
 		VectorMA (end, u, up, end);
 		if( ShotgunPellet( origin, end, ent ) && !hitClient ) {
-			hitClient = qtrue;
+			hitClient = true;
 			ent->client->accuracy_hits++;
 		}
 	}
@@ -574,7 +574,7 @@ void Weapon_GrapplingHook_Fire (gentity_t *ent)
 	if (!ent->client->fireHeld && !ent->client->hook)
 		fire_grapple (ent, muzzle, forward);
 
-	ent->client->fireHeld = qtrue;
+	ent->client->fireHeld = true;
 }
 
 void Weapon_HookFree (gentity_t *ent)
@@ -743,32 +743,32 @@ void weapon_proxlauncher_fire (gentity_t *ent) {
 LogAccuracyHit
 ===============
 */
-qboolean LogAccuracyHit( gentity_t *target, gentity_t *attacker ) {
+bool LogAccuracyHit( gentity_t *target, gentity_t *attacker ) {
 	if( !target->takedamage ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( target == attacker ) {
-		return qfalse;
+		return false;
 	}
 
 	if( !target->client ) {
-		return qfalse;
+		return false;
 	}
 
 	if( !attacker->client ) {
-		return qfalse;
+		return false;
 	}
 
 	if( target->client->ps.stats[STAT_HEALTH] <= 0 ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( OnSameTeam( target, attacker ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 

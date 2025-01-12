@@ -151,7 +151,8 @@ typedef union {
     unsigned int i;
 } _FloatByteUnion;
 
-float FloatSwap (float f) {
+float FloatSwap (float f)
+{
 	const _FloatByteUnion* in;
 	_FloatByteUnion out;
 
@@ -164,6 +165,19 @@ float FloatSwap (float f) {
 float FloatNoSwap (float f)
 {
 	return f;
+}
+
+int
+ReadIntLE(const byte* src)
+{
+	return LittleLong((src[0]+(src[1]<<8)+(src[2]<<16)+(src[3]<<24)));
+}
+
+float
+ReadFltLE(const byte* src)
+{
+	_FloatByteUnion	f = {.i=(src[0]+(src[1]<<8)+(src[2]<<16)+(src[3]<<24))};
+	return LittleFloat(f.f);
 }
 
 /*

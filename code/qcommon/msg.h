@@ -31,9 +31,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 typedef struct
 {
-	qboolean	allowoverflow;	// if false, do a Com_Error
-	qboolean	overflowed;		// set to true if the buffer size failed (with allowoverflow set)
-	qboolean	oob;			// set to true if the buffer size failed (with allowoverflow set)
+	bool	allowoverflow;	// if false, do a Com_Error
+	bool	overflowed;		// set to true if the buffer size failed (with allowoverflow set)
+	bool	oob;			// set to true if the buffer size failed (with allowoverflow set)
 	byte*		data;
 	int			maxsize;
 	int			cursize;
@@ -88,7 +88,7 @@ void MSG_WriteDeltaUsercmdKey(msg_t* msg, int key, usercmd_t* from, usercmd_t* t
 void MSG_ReadDeltaUsercmdKey(msg_t* msg, int key, usercmd_t* from, usercmd_t* to);
 
 void MSG_WriteDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to,
-	qboolean force);
+	bool force);
 void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to,
 	int number);
 

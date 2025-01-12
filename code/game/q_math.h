@@ -242,14 +242,14 @@ void vectoangles(vec3_c value1, angles_p angles);
 void AnglesToAxis(angles_c angles, mat3_p axis);
 
 void AxisCopy(mat3_c in, mat3_p out);
-qboolean AxisRotated(mat3_c in);			// assumes a non-degenerate axis
+bool AxisRotated(mat3_c in);			// assumes a non-degenerate axis
 
 int SignbitsForNormal(vec3_c normal);
 int BoxOnPlaneSide(const Bounds& b, struct cplane_s* p);
 
 void AnglesSubtract(angles_c v1, angles_c v2, angles_p v3);
 
-qboolean PlaneFromPoints(idVec4_t& plane, vec3_c a, vec3_c b, vec3_c c);
+bool PlaneFromPoints(idVec4_t& plane, vec3_c a, vec3_c b, vec3_c c);
 void ProjectPointOnPlane(vec3_p dst, vec3_c p, vec3_c normal);
 void RotatePointAroundVector(vec3_p dst, vec3_c dir, vec3_c point, float degrees);
 void RotateAroundDirection(mat3_p axis, float yaw);
@@ -306,7 +306,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
 
 void AnglesSubtract(vec3_t v1, vec3_t v2, vec3_t v3);
 
-qboolean PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c);
+bool PlaneFromPoints(vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c);
 void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal);
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
 void RotateAroundDirection(vec3_t axis[3], float yaw);
