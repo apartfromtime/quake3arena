@@ -46,7 +46,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 aas_t aasworld;
 
-libvar_t *saveroutingcache;
+cvar_t *saveroutingcache;
 
 //===========================================================================
 //
@@ -197,6 +197,8 @@ void AAS_SetInitialized(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* aas_optimize;
+
 void AAS_ContinueInit(float time)
 {
 	//if no AAS file loaded
@@ -209,10 +211,13 @@ void AAS_ContinueInit(float time)
 	AAS_InitClustering();
 	//if reachability has been calculated and an AAS file should be written
 	//or there is a forced data optimization
-	if (aasworld.savefile || ((int)LibVarGetValue("forcewrite")))
+	if (aasworld.savefile || ((int)Botlib_CvarGetValue("forcewrite")))
 	{
 		//optimize the AAS data
-		if ((int)LibVarValue("aasoptimize", "0")) AAS_Optimize();
+		aas_optimize = Botlib_CvarGet("aasoptimize", "0");
+		if (aas_optimize->integer) {
+			AAS_Optimize();
+		}
 		//save the AAS file
 		if (AAS_WriteAASFile(aasworld.filename))
 		{
@@ -249,27 +254,27 @@ int AAS_StartFrame(float time)
 	//
 	if (bot_developer)
 	{
-		if (LibVarGetValue("showcacheupdates"))
+		if (Botlib_CvarGetValue("showcacheupdates"))
 		{
 			AAS_RoutingInfo();
-			LibVarSet("showcacheupdates", "0");
+			Botlib_CvarSet("showcacheupdates", "0");
 		} //end if
-		if (LibVarGetValue("showmemoryusage"))
+		if (Botlib_CvarGetValue("showmemoryusage"))
 		{
 			PrintUsedMemorySize();
-			LibVarSet("showmemoryusage", "0");
+			Botlib_CvarSet("showmemoryusage", "0");
 		} //end if
-		if (LibVarGetValue("memorydump"))
+		if (Botlib_CvarGetValue("memorydump"))
 		{
 			PrintMemoryLabels();
-			LibVarSet("memorydump", "0");
+			Botlib_CvarSet("memorydump", "0");
 		} //end if
 	} //end if
 	//
 	if (saveroutingcache->value)
 	{
 		AAS_WriteRouteCache();
-		LibVarSet("saveroutingcache", "0");
+		Botlib_CvarSet("saveroutingcache", "0");
 	} //end if
 	//
 	aasworld.numframes++;
@@ -380,12 +385,19 @@ int AAS_LoadMap(const char *mapname)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+extern cvar_t* maxclients;
+extern cvar_t* maxentities;
+
 int AAS_Setup(void)
 {
-	aasworld.maxclients = (int) LibVarValue("maxclients", "128");
-	aasworld.maxentities = (int) LibVarValue("maxentities", "1024");
+	maxclients = Botlib_CvarGet("maxclients", "128");
+	maxentities = Botlib_CvarGet("maxentities", "1024");
+
+	aasworld.maxclients = maxclients->integer;
+	aasworld.maxentities = maxentities->integer;
+
 	// as soon as it's set to 1 the routing cache will be saved
-	saveroutingcache = LibVar("saveroutingcache", "0");
+	saveroutingcache = Botlib_CvarGet("saveroutingcache", "0");
 	//allocate memory for the entities
 	if (aasworld.entities) FreeMemory(aasworld.entities);
 	aasworld.entities = (aas_entity_t *) GetClearedHunkMemory(aasworld.maxentities * sizeof(aas_entity_t));

@@ -173,7 +173,7 @@ campspot_t *campspots = NULL; // bk001206 - init
 //the game type
 int g_gametype = 0; // bk001206 - init
 //additional dropped item weight
-libvar_t *droppedweight = NULL; // bk001206 - init
+cvar_t *droppedweight = NULL; // bk001206 - init
 
 //========================================================================
 //
@@ -255,12 +255,12 @@ itemconfig_t *LoadItemConfig(char *filename)
 	itemconfig_t *ic;
 	iteminfo_t *ii;
 
-	max_iteminfo = (int) LibVarValue("max_iteminfo", "256");
+	max_iteminfo = Botlib_CvarGet("max_iteminfo", "256")->integer;
 	if (max_iteminfo < 0)
 	{
 		botimport.Print(PRT_ERROR, "max_iteminfo = %d\n", max_iteminfo);
 		max_iteminfo = 256;
-		LibVarSet( "max_iteminfo", "256" );
+		Botlib_CvarSet( "max_iteminfo", "256" );
 	}
 
 	strncpy( path, filename, MAX_PATH );
@@ -356,7 +356,7 @@ void InitLevelItemHeap(void)
 
 	if (levelitemheap) FreeMemory(levelitemheap);
 
-	max_levelitems = (int) LibVarValue("max_levelitems", "256");
+	max_levelitems = Botlib_CvarGet("max_levelitems", "256")->integer;
 	levelitemheap = (levelitem_t *) GetClearedMemory(max_levelitems * sizeof(levelitem_t));
 
 	for (i = 0; i < max_levelitems-1; i++)
@@ -1753,14 +1753,18 @@ void BotFreeGoalState(int handle)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* bot_itemconfig;
+
 int BotSetupGoalAI(void)
 {
 	char *filename;
 
 	//check if teamplay is on
-	g_gametype = LibVarValue("g_gametype", "0");
+	g_gametype = Botlib_CvarGet("g_gametype", "0")->integer;
 	//item configuration file
-	filename = LibVarString("itemconfig", "items.c");
+	bot_itemconfig = Botlib_CvarGet("itemconfig", "items.c");
+
+	filename = bot_itemconfig->string;
 	//load the item configuration
 	itemconfig = LoadItemConfig(filename);
 	if (!itemconfig)
@@ -1769,7 +1773,7 @@ int BotSetupGoalAI(void)
 		return BLERR_CANNOTLOADITEMCONFIG;
 	} //end if
 	//
-	droppedweight = LibVar("droppedweight", "1000");
+	droppedweight = Botlib_CvarGet("droppedweight", "1000");
 	//everything went ok
 	return BLERR_NOERROR;
 } //end of the function BotSetupGoalAI

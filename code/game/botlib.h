@@ -189,6 +189,13 @@ typedef struct botlib_import_s
 	void		(*FreeMemory)(void *ptr);		// free memory from Zone
 	int			(*AvailableMemory)(void);		// available Zone memory
 	void		*(*HunkAlloc)(int size);		// allocate from hunk
+
+	// cvar
+	cvar_t* (*Cvar_Get)(const char* name, const char* value, int flags);
+	void	(*Cvar_Set)(const char* name, const char* value);
+	char*	(*Cvar_VariableString)(const char* var_name);
+	float	(*Cvar_VariableValue)(const char* var_name);
+	
 	//file system access
 	int			(*FS_FOpenFile)( const char *qpath, qhandle_t *file, fsMode_t mode );
 	int			(*FS_Read)( void *buffer, int len, qhandle_t f );
@@ -407,10 +414,6 @@ typedef struct botlib_export_s
 	int (*BotLibSetup)(void);
 	//shutdown the bot library, returns BLERR_
 	int (*BotLibShutdown)(void);
-	//sets a library variable returns BLERR_
-	int (*BotLibVarSet)(char *var_name, char *value);
-	//gets a library variable returns BLERR_
-	int (*BotLibVarGet)(char *var_name, char *value, int size);
 
 	//sets a C-like define returns BLERR_
 	int (*PC_AddGlobalDefine)(char *string);

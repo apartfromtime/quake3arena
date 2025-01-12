@@ -1466,8 +1466,8 @@ void AAS_InitClustering(void)
 	{
 #ifndef BSPC
 		//if clustering isn't forced
-		if (!((int)LibVarGetValue("forceclustering")) &&
-			!((int)LibVarGetValue("forcereachability"))) return;
+		if (!((int)Botlib_CvarGetValue("forceclustering")) &&
+			!((int)Botlib_CvarGetValue("forcereachability"))) return;
 #endif
 	} //end if
 	//set all view portals as cluster portals in case we re-calculate the reachabilities and clusters (with -reach)

@@ -141,7 +141,7 @@ void FreeWeightConfig2(weightconfig_t *config)
 //===========================================================================
 void FreeWeightConfig(weightconfig_t *config)
 {
-	if (!LibVarGetValue("bot_reloadcharacters")) return;
+	if (!Botlib_CvarGetValue("bot_reloadcharacters")) return;
 	FreeWeightConfig2(config);
 } //end of the function FreeWeightConfig
 //===========================================================================
@@ -289,7 +289,7 @@ weightconfig_t *ReadWeightConfig(char *filename)
 	starttime = Sys_MilliSeconds();
 #endif //DEBUG
 
-	if (!LibVarGetValue("bot_reloadcharacters"))
+	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		avail = -1;
 		for( n = 0; n < MAX_WEIGHT_FILES; n++ )
@@ -428,7 +428,7 @@ weightconfig_t *ReadWeightConfig(char *filename)
 	} //end if
 #endif //DEBUG
 	//
-	if (!LibVarGetValue("bot_reloadcharacters"))
+	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		weightFileList[avail] = config;
 	} //end if

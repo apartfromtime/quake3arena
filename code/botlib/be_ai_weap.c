@@ -205,19 +205,19 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 	weaponconfig_t *wc;
 	weaponinfo_t weaponinfo;
 
-	max_weaponinfo = (int) LibVarValue("max_weaponinfo", "32");
+	max_weaponinfo = Botlib_CvarGet("max_weaponinfo", "32")->integer;
 	if (max_weaponinfo < 0)
 	{
 		botimport.Print(PRT_ERROR, "max_weaponinfo = %d\n", max_weaponinfo);
 		max_weaponinfo = 32;
-		LibVarSet("max_weaponinfo", "32");
+		Botlib_CvarSet("max_weaponinfo", "32");
 	} //end if
-	max_projectileinfo = (int) LibVarValue("max_projectileinfo", "32");
+	max_projectileinfo = Botlib_CvarGet("max_projectileinfo", "32")->integer;
 	if (max_projectileinfo < 0)
 	{
 		botimport.Print(PRT_ERROR, "max_projectileinfo = %d\n", max_projectileinfo);
 		max_projectileinfo = 32;
-		LibVarSet("max_projectileinfo", "32");
+		Botlib_CvarSet("max_projectileinfo", "32");
 	} //end if
 	strncpy(path, filename, MAX_PATH);
 	PC_SetBaseFolder(BOTFILESBASEFOLDER);
@@ -501,11 +501,14 @@ void BotFreeWeaponState(int handle)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* bot_weaponconfig;
+
 int BotSetupWeaponAI(void)
 {
 	char *file;
 
-	file = LibVarString("weaponconfig", "weapons.c");
+	bot_weaponconfig = Botlib_CvarGet("weaponconfig", "weapons.c");
+	file = bot_weaponconfig->string;
 	weaponconfig = LoadWeaponConfig(file);
 	if (!weaponconfig)
 	{

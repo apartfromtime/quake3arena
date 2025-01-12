@@ -104,7 +104,8 @@ void AAS_InitAASLinkHeap(void)
 #ifdef BSPC
 		max_aaslinks = 6144;
 #else
-		max_aaslinks = (int) LibVarValue("max_aaslinks", "6144");
+
+		max_aaslinks = Botlib_CvarGet("max_aaslinks", "6144")->integer;
 #endif
 		if (max_aaslinks < 0) max_aaslinks = 0;
 		aasworld.linkheapsize = max_aaslinks;

@@ -243,7 +243,7 @@ void InitConsoleMessageHeap(void)
 
 	if (consolemessageheap) FreeMemory(consolemessageheap);
 	//
-	max_messages = (int) LibVarValue("max_messages", "1024");
+	max_messages = Botlib_CvarGet("max_messages", "1024")->integer;
 	consolemessageheap = (bot_consolemessage_t *) GetClearedHunkMemory(max_messages *
 												sizeof(bot_consolemessage_t));
 	consolemessageheap[0].prev = NULL;
@@ -2206,7 +2206,7 @@ int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
 	if (!cs) return BLERR_CANNOTLOADICHAT;
 	BotFreeChatFile(chatstate);
 
-	if (!LibVarGetValue("bot_reloadcharacters"))
+	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		avail = -1;
 		for( n = 0; n < MAX_CLIENTS; n++ ) {
@@ -2239,7 +2239,7 @@ int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
 		botimport.Print(PRT_FATAL, "couldn't load chat %s from %s\n", chatname, chatfile);
 		return BLERR_CANNOTLOADICHAT;
 	} //end if
-	if (!LibVarGetValue("bot_reloadcharacters"))
+	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		ichatdata[avail] = GetClearedMemory( sizeof(bot_ichatdata_t) );
 		ichatdata[avail]->chat = cs->chat;
@@ -2474,7 +2474,7 @@ int BotNumInitialChats(int chatstate, char *type)
 	{
 		if (!Q_stricmp(t->name, type))
 		{
-			if (LibVarGetValue("bot_testichat")) {
+			if (Botlib_CvarGetValue("bot_testichat")) {
 				botimport.Print(PRT_MESSAGE, "%s has %d chat lines\n", type, t->numchatmessages);
 				botimport.Print(PRT_MESSAGE, "-------------------\n");
 			}
@@ -2744,7 +2744,7 @@ int BotReplyChat(int chatstate, char *message, int mcontext, int vcontext, char 
 			bestmatch.variables[7].length = strlen(var7);
 			index += strlen(var7);
 		}
-		if (LibVarGetValue("bot_testrchat"))
+		if (Botlib_CvarGetValue("bot_testrchat"))
 		{
 			for (m = bestrchat->firstchatmessage; m; m = m->next)
 			{
@@ -2792,7 +2792,7 @@ void BotEnterChat(int chatstate, int clientto, int sendto)
 	if (strlen(cs->chatmessage))
 	{
 		BotRemoveTildes(cs->chatmessage);
-		if (LibVarGetValue("bot_testichat")) {
+		if (Botlib_CvarGetValue("bot_testichat")) {
 			botimport.Print(PRT_MESSAGE, "%s\n", cs->chatmessage);
 		}
 		else {
@@ -2929,7 +2929,7 @@ void BotFreeChatState(int handle)
 		return;
 	} //end if
 	cs = botchatstates[handle];
-	if (LibVarGetValue("bot_reloadcharacters"))
+	if (Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		BotFreeChatFile(handle);
 	} //end if
@@ -2948,6 +2948,11 @@ void BotFreeChatState(int handle)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* bot_synfile;
+cvar_t* bot_rndfile;
+cvar_t* bot_matchfile;
+cvar_t* bot_rchatfile;
+
 int BotSetupChatAI(void)
 {
 	char *file;
@@ -2956,16 +2961,23 @@ int BotSetupChatAI(void)
 	int starttime = Sys_MilliSeconds();
 #endif //DEBUG
 
-	file = LibVarString("synfile", "syn.c");
+	bot_synfile = Botlib_CvarGet("synfile", "syn.c");
+	bot_rndfile = Botlib_CvarGet("rndfile", "rnd.c");
+	bot_matchfile = Botlib_CvarGet("matchfile", "match.c");
+	bot_rchatfile = Botlib_CvarGet("rchatfile", "rchat.c");
+
+	file = bot_synfile->string;
 	synonyms = BotLoadSynonyms(file);
-	file = LibVarString("rndfile", "rnd.c");
+
+	file = bot_rndfile->string;
 	randomstrings = BotLoadRandomStrings(file);
-	file = LibVarString("matchfile", "match.c");
+
+	file = bot_matchfile->string;
 	matchtemplates = BotLoadMatchTemplates(file);
 	//
-	if (!LibVarValue("nochat", "0"))
+	if (!Botlib_CvarGet("nochat", "0")->integer)
 	{
-		file = LibVarString("rchatfile", "rchat.c");
+		file = bot_rchatfile->string;
 		replychats = BotLoadReplyChat(file);
 	} //end if
 

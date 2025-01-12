@@ -1212,6 +1212,8 @@ void AAS_InitReachabilityAreas(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* max_routingcache;
+
 void AAS_InitRouting(void)
 {
 	AAS_InitTravelFlagFromType();
@@ -1238,7 +1240,8 @@ void AAS_InitRouting(void)
 #endif //ROUTING_DEBUG
 	//
 	routingcachesize = 0;
-	max_routingcachesize = 1024 * (int) LibVarValue("max_routingcache", "4096");
+	max_routingcache = Botlib_CvarGet("max_routingcache", "4096");
+	max_routingcachesize = 1024 * max_routingcache->integer;
 	// read any routing cache if available
 	AAS_ReadRouteCache();
 } //end of the function AAS_InitRouting
