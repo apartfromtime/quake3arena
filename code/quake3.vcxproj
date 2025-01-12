@@ -1273,6 +1273,7 @@
     <ClInclude Include="game\g_public.h" />
     <ClInclude Include="qcommon\cvar.h" />
     <ClInclude Include="qcommon\filesystem.h" />
+    <ClInclude Include="qcommon\huffman.h" />
     <ClInclude Include="qcommon\msg.h" />
     <ClInclude Include="qcommon\net.h" />
     <ClInclude Include="qcommon\net_types.h" />

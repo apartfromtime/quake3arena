@@ -24,6 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/qcommon.h"
 #include "server.h"
 
+// these must match (but opposite) those in client
+#define	SV_ENCODE_START		4
+#define SV_DECODE_START		12
+
 /*
 ==============
 SV_Netchan_Encode

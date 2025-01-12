@@ -24,6 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/qcommon.h"
 #include "client.h"
 
+// these must match (but opposite) those in server
+#define	CL_ENCODE_START		12
+#define CL_DECODE_START		4
+
 /*
 ==============
 CL_Netchan_Encode
