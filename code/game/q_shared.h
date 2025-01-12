@@ -47,21 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  **********************************************************************/
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include <ctype.h>
-#include <limits.h>
 
-#ifdef WIN32			// mac doesn't have malloc.h
-
-#include <malloc.h>			// for _alloca()
-
-#endif	// #ifdef WIN32
 
 #ifndef NULL
 #define NULL ((void *)0)

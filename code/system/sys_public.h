@@ -93,7 +93,22 @@
 #endif // #if defined _WIN64
 #endif // #if defined _WIN32 || defined WIN32 || defined __NT__ || defined __WIN32__
 
+#include <assert.h>
+#include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <ctype.h>
+#include <limits.h>
+
+#ifdef WIN32			// mac doesn't have malloc.h
+
+#include <malloc.h>			// for _alloca()
+
+#endif	// #ifdef WIN32
 
 typedef unsigned char 		byte;
 typedef int		qhandle_t;
