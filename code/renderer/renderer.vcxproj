@@ -575,8 +575,8 @@
     <ClInclude Include="..\game\surfaceflags.h" />
     <ClInclude Include="tr_local.h" />
     <ClInclude Include="tr_public.h" />
-    <ClInclude Include="..\cgame\tr_types.h" />
     <ClInclude Include="..\win32\win_local.h" />
+    <ClInclude Include="tr_types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
