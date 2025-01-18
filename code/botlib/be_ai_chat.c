@@ -569,23 +569,27 @@ void StringReplaceWords(char *string, char *synonym, char *replacement)
 //===========================================================================
 void BotDumpSynonymList(bot_synonymlist_t *synlist)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_synonymlist_t *syn;
 	bot_synonym_t *synonym;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+
 	for (syn = synlist; syn; syn = syn->next)
 	{
-	        fprintf(fp, "%ld : [", syn->context);
+		Bot_LogPrintf("%ld : [", syn->context);
+		
 		for (synonym = syn->firstsynonym; synonym; synonym = synonym->next)
 		{
-			fprintf(fp, "(\"%s\", %1.2f)", synonym->string, synonym->weight);
-			if (synonym->next) fprintf(fp, ", ");
-		} //end for
-		fprintf(fp, "]\n");
-	} //end for
-} //end of the function BotDumpSynonymList
+			Bot_LogPrintf("(\"%s\", %1.2f)", synonym->string, synonym->weight);
+			if (synonym->next) Bot_LogPrintf(", ");
+		}
+		
+		Bot_LogPrintf("]\r\n");
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -920,23 +924,26 @@ int BotLoadChatMessage(source_t *source, char *chatmessagestring)
 //===========================================================================
 void BotDumpRandomStringList(bot_randomlist_t *randomlist)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_randomlist_t *random;
 	bot_randomstring_t *rs;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+	
 	for (random = randomlist; random; random = random->next)
 	{
-		fprintf(fp, "%s = {", random->string);
+		Bot_LogPrintf("%s = {", random->string);
+		
 		for (rs = random->firstrandomstring; rs; rs = rs->next)
 		{
-			fprintf(fp, "\"%s\"", rs->string);
-			if (rs->next) fprintf(fp, ", ");
-			else fprintf(fp, "}\n");
-		} //end for
-	} //end for
-} //end of the function BotDumpRandomStringList
+			Bot_LogPrintf("\"%s\"", rs->string);
+			if (rs->next) Bot_LogPrintf(", ");
+			else Bot_LogPrintf("}\r\n");
+		}
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -1076,35 +1083,41 @@ char *RandomString(char *name)
 //===========================================================================
 void BotDumpMatchTemplates(bot_matchtemplate_t *matches)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_matchtemplate_t *mt;
 	bot_matchpiece_t *mp;
 	bot_matchstring_t *ms;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+
 	for (mt = matches; mt; mt = mt->next)
 	{
-	        fprintf(fp, "{ " );
+		Bot_LogPrintf("{ " );
+
 		for (mp = mt->first; mp; mp = mp->next)
 		{
 			if (mp->type == MT_STRING)
 			{
 				for (ms = mp->firststring; ms; ms = ms->next)
 				{
-					fprintf(fp, "\"%s\"", ms->string);
-					if (ms->next) fprintf(fp, "|");
-				} //end for
-			} //end if
+					Bot_LogPrintf("\"%s\"", ms->string);
+
+					if (ms->next) Bot_LogPrintf("|");
+				}
+			}
 			else if (mp->type == MT_VARIABLE)
 			{
-				fprintf(fp, "%d", mp->variable);
-			} //end else if
-			if (mp->next) fprintf(fp, ", ");
-		} //end for
-		fprintf(fp, " = (%d, %d);}\n", mt->type, mt->subtype);
-	} //end for
-} //end of the function BotDumpMatchTemplates
+				Bot_LogPrintf("%d", mp->variable);
+			}
+
+			if (mp->next) Bot_LogPrintf(", ");
+		}
+
+		Bot_LogPrintf(" = (%d, %d);}\r\n", mt->type, mt->subtype);
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -1365,7 +1378,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 	lastvariable = -1;
 	//pointer to the string to compare the match string with
 	strptr = match->string;
-	//Log_Write("match: %s", strptr);
+	//Log_Write("match: %s\r\n", strptr);
 	//compare the string with the current match string
 	for (mp = pieces; mp; mp = mp->next)
 	{
@@ -1380,7 +1393,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 					newstrptr = strptr;
 					break;
 				} //end if
-				//Log_Write("MT_STRING: %s", mp->string);
+				//Log_Write("MT_STRING: %s\r\n", mp->string);
 				index = StringContains(strptr, ms->string, false);
 				if (index >= 0)
 				{
@@ -1406,7 +1419,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 		//if it is a variable piece of string
 		else if (mp->type == MT_VARIABLE)
 		{
-			//Log_Write("MT_VARIABLE");
+			//Log_Write("MT_VARIABLE: %d\r\n", mp->variable);
 			match->variables[mp->variable].offset = strptr - match->string;
 			lastvariable = mp->variable;
 		} //end else if
@@ -1551,7 +1564,7 @@ bot_stringlist_t *BotCheckChatMessageIntegrety(char *message, bot_stringlist_t *
 					{
 						if (!BotFindStringInList(stringlist, temp))
 						{
-							Log_Write("%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp);
+							Bot_LogPrintf("%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp);
 							s = GetClearedMemory(sizeof(bot_stringlist_t) + strlen(temp) + 1);
 							s->string = (char *) s + sizeof(bot_stringlist_t);
 							strcpy(s->string, temp);
@@ -1635,53 +1648,63 @@ void BotCheckReplyChatIntegrety(bot_replychat_t *replychat)
 //===========================================================================
 void BotDumpReplyChat(bot_replychat_t *replychat)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_replychat_t *rp;
 	bot_replychatkey_t *key;
 	bot_chatmessage_t *cm;
 	bot_matchpiece_t *mp;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
-	fprintf(fp, "BotDumpReplyChat:\n");
+
+	Bot_LogPrintf("BotDumpReplyChat:\r\n");
+	
 	for (rp = replychat; rp; rp = rp->next)
 	{
-		fprintf(fp, "[");
+		Bot_LogPrintf("[");
+
 		for (key = rp->keys; key; key = key->next)
 		{
-			if (key->flags & RCKFL_AND) fprintf(fp, "&");
-			else if (key->flags & RCKFL_NOT) fprintf(fp, "!");
+			if (key->flags & RCKFL_AND) Bot_LogPrintf("&");
+			else if (key->flags & RCKFL_NOT) Bot_LogPrintf("!");
 			//
-			if (key->flags & RCKFL_NAME) fprintf(fp, "name");
-			else if (key->flags & RCKFL_GENDERFEMALE) fprintf(fp, "female");
-			else if (key->flags & RCKFL_GENDERMALE) fprintf(fp, "male");
-			else if (key->flags & RCKFL_GENDERLESS) fprintf(fp, "it");
+			if (key->flags & RCKFL_NAME) Bot_LogPrintf("name");
+			else if (key->flags & RCKFL_GENDERFEMALE) Bot_LogPrintf("female");
+			else if (key->flags & RCKFL_GENDERMALE) Bot_LogPrintf("male");
+			else if (key->flags & RCKFL_GENDERLESS) Bot_LogPrintf("it");
 			else if (key->flags & RCKFL_VARIABLES)
 			{
-				fprintf(fp, "(");
+				Bot_LogPrintf("(");
+
 				for (mp = key->match; mp; mp = mp->next)
 				{
-					if (mp->type == MT_STRING) fprintf(fp, "\"%s\"", mp->firststring->string);
-					else fprintf(fp, "%d", mp->variable);
-					if (mp->next) fprintf(fp, ", ");
-				} //end for
-				fprintf(fp, ")");
-			} //end if
+					if (mp->type == MT_STRING) Bot_LogPrintf("\"%s\"", mp->firststring->string);
+					else Bot_LogPrintf("%d", mp->variable);
+					if (mp->next) Bot_LogPrintf(", ");
+				}
+
+				Bot_LogPrintf(")");
+			}
 			else if (key->flags & RCKFL_STRING)
 			{
-				fprintf(fp, "\"%s\"", key->string);
-			} //end if
-			if (key->next) fprintf(fp, ", ");
-			else fprintf(fp, "] = %1.0f\n", rp->priority);
-		} //end for
-		fprintf(fp, "{\n");
+				Bot_LogPrintf("\"%s\"", key->string);
+			}
+
+			if (key->next) Bot_LogPrintf(", ");
+			else Bot_LogPrintf("] = %1.0f\r\n", rp->priority);
+		}
+		
+		Bot_LogPrintf("{\r\n");
+
 		for (cm = rp->firstchatmessage; cm; cm = cm->next)
 		{
-			fprintf(fp, "\t\"%s\";\n", cm->chatmessage);
-		} //end for
-		fprintf(fp, "}\n");
-	} //end for
-} //end of the function BotDumpReplyChat
+			Bot_LogPrintf("\t\"%s\";\r\n", cm->chatmessage);
+		}
+
+		Bot_LogPrintf("}\r\n");
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -1990,19 +2013,19 @@ void BotDumpInitialChat(bot_chat_t *chat)
 	bot_chattype_t *t;
 	bot_chatmessage_t *m;
 
-	Log_Write("{");
+	Bot_LogPrintf("{");
 	for (t = chat->types; t; t = t->next)
 	{
-		Log_Write(" type \"%s\"", t->name);
-		Log_Write(" {");
-		Log_Write("  numchatmessages = %d", t->numchatmessages);
+		Bot_LogPrintf(" type \"%s\"", t->name);
+		Bot_LogPrintf(" {");
+		Bot_LogPrintf("  numchatmessages = %d", t->numchatmessages);
 		for (m = t->firstchatmessage; m; m = m->next)
 		{
-			Log_Write("  \"%s\"", m->chatmessage);
+			Bot_LogPrintf("  \"%s\"", m->chatmessage);
 		} //end for
-		Log_Write(" }");
+		Bot_LogPrintf(" }");
 	} //end for
-	Log_Write("}");
+	Bot_LogPrintf("}\r\n");
 } //end of the function BotDumpInitialChat
 //===========================================================================
 //

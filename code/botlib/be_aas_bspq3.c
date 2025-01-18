@@ -49,13 +49,6 @@ extern botlib_import_t botimport;
 
 #define MAX_BSPENTITIES		2048
 
-typedef struct rgb_s
-{
-	int red;
-	int green;
-	int blue;
-} rgb_t;
-
 //bsp entity epair
 typedef struct bsp_epair_s
 {
@@ -182,7 +175,7 @@ bool AAS_EntityCollision(int entnum,
 	return false;
 } //end of the function AAS_EntityCollision
 //===========================================================================
-// returns true if in Potentially Hearable Set
+// returns true if in Potentially Visible Set
 //
 // Parameter:				-
 // Returns:					-
@@ -193,7 +186,7 @@ bool AAS_inPVS(vec3_t p1, vec3_t p2)
 	return botimport.inPVS(p1, p2);
 } //end of the function AAS_InPVS
 //===========================================================================
-// returns true if in Potentially Visible Set
+// returns true if in Potentially Hearable Set
 //
 // Parameter:				-
 // Returns:					-

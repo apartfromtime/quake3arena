@@ -421,7 +421,7 @@ int AAS_BestReachableArea(vec3_t origin, vec3_t mins, vec3_t maxs, vec3_t goalor
 #if 0
 			if (AAS_PointAreaNum(start))
 			{
-				Log_Write("point %f %f %f in area %d but trace startsolid", start[0], start[1], start[2], areanum);
+				Log_Write("point %f %f %f in area %d but trace startsolid\r\n", start[0], start[1], start[2], areanum);
 				AAS_DrawPermanentCross(start, 4, LINECOLOR_RED);
 			} //end if
 			botimport.Print(PRT_MESSAGE, "AAS_BestReachableArea: start solid\n");
@@ -3343,7 +3343,7 @@ void AAS_Reachability_FuncBobbing(void)
 		move_start[axis] -= height;
 		move_end[axis] += height;
 		//
-		Log_Write("funcbob model %d, start = {%1.1f, %1.1f, %1.1f} end = {%1.1f, %1.1f, %1.1f}\n",
+		Bot_LogPrintf("funcbob model %d, start = {%1.1f, %1.1f, %1.1f} end = {%1.1f, %1.1f, %1.1f}\r\n",
 					modelnum, move_start[0], move_start[1], move_start[2], move_end[0], move_end[1], move_end[2]);
 		//
 #ifndef BSPC
@@ -3436,7 +3436,7 @@ void AAS_Reachability_FuncBobbing(void)
 					//trace = AAS_TraceClientBBox(endreach->end, move_end_top, PRESENCE_NORMAL, -1);
 					//if (trace.fraction < 1) continue;
 					//
-					Log_Write("funcbob reach from area %d to %d\n", startreach->areanum, endreach->areanum);
+					Bot_LogPrintf("funcbob reach from area %d to %d\r\n", startreach->areanum, endreach->areanum);
 					//
 					//
 					if (i == 0) VectorCopy(move_start_top, org);
@@ -3821,7 +3821,7 @@ int AAS_Reachability_Grapple(int area1num, int area2num)
 	//if not a swim area
 	if (!AAS_AreaSwim(area1num))
 	{
-		if (!AAS_PointAreaNum(start)) Log_Write("area %d center %f %f %f in solid?\r\n", area1num,
+		if (!AAS_PointAreaNum(start)) Bot_LogPrintf("area %d center %f %f %f in solid?\r\n", area1num,
 								start[0], start[1], start[2]);
 		VectorCopy(start, end);
 		end[2] -= 1000;
@@ -4035,7 +4035,7 @@ int AAS_Reachability_WeaponJump(int area1num, int area2num)
 	//
 	VectorCopy(aasworld.areas[area1num].center, start);
 	//if not a swim area
-	if (!AAS_PointAreaNum(start)) Log_Write("area %d center %f %f %f in solid?\r\n", area1num,
+	if (!AAS_PointAreaNum(start)) Bot_LogPrintf("area %d center %f %f %f in solid?\r\n", area1num,
 							start[0], start[1], start[2]);
 	VectorCopy(start, end);
 	end[2] -= 1000;

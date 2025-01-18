@@ -20,27 +20,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-/*****************************************************************************
- * name:		l_log.h
- *
- * desc:		log file
- *
- * $Archive: /source/code/botlib/l_log.h $
- *
- *****************************************************************************/
+/*
+=============================================================================
 
-//open a log file
-void Log_Open(char *filename);
-//close the current log file
-void Log_Close(void);
-//close log file if present
-void Log_Shutdown(void);
-//write to the current opened log file
-void Q_CDECL Log_Write(char *fmt, ...);
-//write to the current opened log file with a time stamp
-void Q_CDECL Log_WriteTimeStamped(char *fmt, ...);
-//returns a pointer to the log file
-FILE *Log_FilePointer(void);
-//flush log file
-void Log_Flush(void);
+BOT LOG
+
+=============================================================================
+*/
+
+void Bot_LogOpen(char* filename);
+void Bot_LogShutdown(void);
+void Q_CDECL Bot_LogPrintf(char* fmt, ...);
+void Q_CDECL Bot_LogPrintfTimeStamped(char* fmt, ...);
+qhandle_t Bot_LogFilePointer(void);
 

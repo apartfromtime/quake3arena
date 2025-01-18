@@ -898,7 +898,7 @@ void AAS_CreateAllRoutingCache(void)
 			if (i == j) continue;
 			if (!AAS_AreaReachability(j)) continue;
 			t = AAS_AreaTravelTimeToGoalArea(i, aasworld.areas[i].center, j, TFL_DEFAULT);
-			//Log_Write("traveltime from %d to %d is %d", i, j, t);
+			//Log_Write("traveltime from %d to %d is %d\r\n", i, j, t);
 		} //end for
 	} //end for
 	aasworld.initialized = false;
@@ -1633,7 +1633,7 @@ int AAS_AreaRouteToGoalArea(int areanum, vec3_t origin, int goalareanum, int tra
 	if (aasworld.frameroutingupdates > MAX_FRAMEROUTINGUPDATES)
 	{
 #ifdef DEBUG
-		//Log_Write("WARNING: AAS_AreaTravelTimeToGoalArea: frame routing updates overflowed");
+		//Log_Write("WARNING: AAS_AreaTravelTimeToGoalArea: frame routing updates overflowed\r\n");
 #endif
 		return 0;
 	} //end if
@@ -2030,7 +2030,7 @@ int AAS_RandomGoalArea(int areanum, int travelflags, int *goalareanum, vec3_t go
 				} //end if
 				VectorCopy(aasworld.areas[n].center, start);
 				if (!AAS_PointAreaNum(start))
-					Log_Write("area %d center %f %f %f in solid?", n, start[0], start[1], start[2]);
+					Bot_LogPrintf("area %d center %f %f %f in solid?\r\n", n, start[0], start[1], start[2]);
 				VectorCopy(start, end);
 				end[2] -= 300;
 				trace = AAS_TraceClientBBox(start, end, PRESENCE_CROUCH, -1);

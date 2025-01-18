@@ -133,6 +133,7 @@ bool BotLibSetup(char *str)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* bot_logfile;
 cvar_t* maxclients;
 cvar_t* maxentities;
 
@@ -144,7 +145,9 @@ int Export_BotLibSetup(void)
 	Com_Memset( &botlibglobals, 0, sizeof(botlibglobals) );
 	//initialize byte swapping (litte endian etc.)
 //	Swap_Init();
-	Log_Open("botlib.log");
+	bot_logfile = Botlib_CvarGet("bot_log", "0");
+
+	Bot_LogOpen("botlib.log");
 	//
 	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
 	//
@@ -205,7 +208,7 @@ int Export_BotLibShutdown(void)
 	PrintMemoryLabels();
 #endif
 	//shut down library log file
-	Log_Shutdown();
+	Bot_LogShutdown();
 	//
 	botlibsetup = false;
 	botlibglobals.botlibsetup = false;

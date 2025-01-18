@@ -478,6 +478,7 @@ SV_BotInitCvars
 */
 void SV_BotInitCvars(void) {
 
+	Cvar_Get("bot_log", "0", 0);						// bot log file
 	Cvar_Get("bot_enable", "1", 0);						//enable the bot
 	Cvar_Get("bot_developer", "0", CVAR_CHEAT);			//bot developer mode
 	Cvar_Get("bot_debug", "0", CVAR_CHEAT);				//enable bot debugging

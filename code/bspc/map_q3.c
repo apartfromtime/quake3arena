@@ -62,13 +62,13 @@ int	Q3_BrushContents(mapbrush_t *b)
 	{
 		if (contents)
 		{
-			Log_Write("WARNING: hint brush with contents: ");
+			Bot_LogPrintf("WARNING: hint brush with contents: ");
 			PrintContents(contents);
-			Log_Write("\r\n");
+			Bot_LogPrintf("\r\n");
 			//
-			Log_Write("brush contents is: ");
+			Bot_LogPrintf("brush contents is: ");
 			PrintContents(b->contents);
-			Log_Write("\r\n");
+			Bot_LogPrintf("\r\n");
 		} //end if
 		return 0;
 	} //end if
@@ -80,14 +80,14 @@ int	Q3_BrushContents(mapbrush_t *b)
 	//
 	if (mixed)
 	{
-		Log_Write("Entity %i, Brush %i: mixed face contents "
+		Bot_LogPrintf("Entity %i, Brush %i: mixed face contents "
 			, b->entitynum, b->brushnum);
 		PrintContents(contents);
-		Log_Write("\r\n");
+		Bot_LogPrintf("\r\n");
 		//
-		Log_Write("brush contents is: ");
+		Bot_LogPrintf("brush contents is: ");
 		PrintContents(b->contents);
-		Log_Write("\r\n");
+		Bot_LogPrintf("\r\n");
 		//
 		if (contents & CONTENTS_DONOTENTER) return CONTENTS_DONOTENTER;//Log_Print("mixed contents with donotenter\n");
 		/*
@@ -117,7 +117,7 @@ int	Q3_BrushContents(mapbrush_t *b)
 	} //end if
 	if (contents & CONTENTS_DONOTENTER)
 	{
-		Log_Print("brush %i is a donotenter brush, c = %X\n", b->brushnum, contents);
+		Bot_LogPrintf("brush %i is a donotenter brush, c = %X\n", b->brushnum, contents);
 	} //end if
 	return contents;
 } //end of the function Q3_BrushContents
@@ -236,13 +236,13 @@ void Q3_BSPBrushToMapBrush(q3_dbrush_t *bspbrush, entity_t *mapent)
 
 			if (s2->planenum == planenum)
 			{
-				Log_Print("Entity %i, Brush %i: duplicate plane\n"
+				Bot_LogPrintf("Entity %i, Brush %i: duplicate plane\n"
 					, b->entitynum, b->brushnum);
 				break;
 			}
 			if ( s2->planenum == (planenum^1) )
 			{
-				Log_Print("Entity %i, Brush %i: mirrored plane\n"
+				Bot_LogPrintf("Entity %i, Brush %i: mirrored plane\n"
 					, b->entitynum, b->brushnum);
 				break;
 			}
@@ -555,7 +555,7 @@ void AAS_CreateCurveBrushes(void)
 			//VectorCopy(pc->bounds[1], brush->maxs);
 			if (!winding)
 			{
-				Log_Print("WARNING: AAS_CreateCurveBrushes: no winding\n");
+				Bot_LogPrintf("WARNING: AAS_CreateCurveBrushes: no winding\n");
 				brush->numsides = 0;
 				continue;
 			} //end if
@@ -566,15 +566,15 @@ void AAS_CreateCurveBrushes(void)
 				//IDBUG: all the indexes into the mins and maxs were zero (not using i)
 				if (brush->mins[n] < -MAX_MAP_BOUNDS || brush->maxs[n] > MAX_MAP_BOUNDS)
 				{
-					Log_Print("entity %i, brush %i: bounds out of range\n", brush->entitynum, brush->brushnum);
-					Log_Print("brush->mins[%d] = %f, brush->maxs[%d] = %f\n", n, brush->mins[n], n, brush->maxs[n]);
+					Bot_LogPrintf("entity %i, brush %i: bounds out of range\n", brush->entitynum, brush->brushnum);
+					Bot_LogPrintf("brush->mins[%d] = %f, brush->maxs[%d] = %f\n", n, brush->mins[n], n, brush->maxs[n]);
 					brush->numsides = 0; //remove the brush
 					break;
 				} //end if
 				if (brush->mins[n] > MAX_MAP_BOUNDS || brush->maxs[n] < -MAX_MAP_BOUNDS)
 				{
-					Log_Print("entity %i, brush %i: no visible sides on brush\n", brush->entitynum, brush->brushnum);
-					Log_Print("brush->mins[%d] = %f, brush->maxs[%d] = %f\n", n, brush->mins[n], n, brush->maxs[n]);
+					Bot_LogPrintf("entity %i, brush %i: no visible sides on brush\n", brush->entitynum, brush->brushnum);
+					Bot_LogPrintf("brush->mins[%d] = %f, brush->maxs[%d] = %f\n", n, brush->mins[n], n, brush->maxs[n]);
 					brush->numsides = 0; //remove the brush
 					break;
 				} //end if
@@ -611,11 +611,11 @@ void Q3_LoadMapFromBSP(struct quakefile_s *qf)
 	int i;
 	vec3_t mins = {-1,-1,-1}, maxs = {1, 1, 1};
 
-	Log_Print("-- Q3_LoadMapFromBSP --\n");
+	Bot_LogPrintf("-- Q3_LoadMapFromBSP --\n");
 	//loaded map type
 	loadedmaptype = MAPTYPE_QUAKE3;
 
-	Log_Print("Loading map from %s...\n", qf->filename);
+	Bot_LogPrintf("Loading map from %s...\n", qf->filename);
 	//load the bsp file
 	Q3_LoadBSPFile(qf);
 
@@ -661,7 +661,7 @@ void Q3_LoadMapFromBSP(struct quakefile_s *qf)
 	{
 		Log_Write("brush contents: ");
 		PrintContents(mapbrushes[i].contents);
-		Log_Print("\n");
+		Log_Write("\n");
 	} //end for*/
 } //end of the function Q3_LoadMapFromBSP
 //===========================================================================

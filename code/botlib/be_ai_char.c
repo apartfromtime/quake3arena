@@ -106,19 +106,19 @@ void BotDumpCharacter(bot_character_t *ch)
 {
 	int i;
 
-	Log_Write("%s", ch->filename);
-	Log_Write("skill %d\n", ch->skill);
-	Log_Write("{\n");
+	Bot_LogPrintf("%s\r\n", ch->filename);
+	Bot_LogPrintf("skill %d\r\n", ch->skill);
+	Bot_LogPrintf("{\r\n");
 	for (i = 0; i < MAX_CHARACTERISTICS; i++)
 	{
 		switch(ch->c[i].type)
 		{
-			case CT_INTEGER: Log_Write(" %4d %d\n", i, ch->c[i].value.integer); break;
-			case CT_FLOAT: Log_Write(" %4d %f\n", i, ch->c[i].value._float); break;
-			case CT_STRING: Log_Write(" %4d %s\n", i, ch->c[i].value.string); break;
+			case CT_INTEGER: Bot_LogPrintf(" %4d %d\r\n", i, ch->c[i].value.integer); break;
+			case CT_FLOAT: Bot_LogPrintf(" %4d %f\r\n", i, ch->c[i].value._float); break;
+			case CT_STRING: Bot_LogPrintf(" %4d %s\r\n", i, ch->c[i].value.string); break;
 		} //end case
 	} //end for
-	Log_Write("}\n");
+	Bot_LogPrintf("}\r\n");
 } //end of the function BotDumpCharacter
 //========================================================================
 //

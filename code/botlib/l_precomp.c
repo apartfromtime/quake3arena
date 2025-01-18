@@ -531,12 +531,12 @@ void PC_PrintDefineHashTable(define_t **definehash)
 
 	for (i = 0; i < DEFINEHASHSIZE; i++)
 	{
-		Log_Write("%4d:", i);
+		Bot_LogPrintf("%4d:", i);
 		for (d = definehash[i]; d; d = d->hashnext)
 		{
-			Log_Write(" %s", d->name);
+			Bot_LogPrintf(" %s", d->name);
 		} //end for
-		Log_Write("\n");
+		Bot_LogPrintf("\n");
 	} //end for
 } //end of the function PC_PrintDefineHashTable
 //============================================================================
