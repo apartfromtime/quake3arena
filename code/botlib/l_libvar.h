@@ -20,16 +20,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-/*****************************************************************************
- * name:		l_libvar.h
- * desc:		botlib vars
- *****************************************************************************/
+/*
+=============================================================================
+
+BOT CVAR
+
+=============================================================================
+*/
 
 #include "..\qcommon\cvar.h"
 
-
-char *Botlib_CvarGetString(char *var_name);
-float Botlib_CvarGetValue(char *var_name);
-cvar_t* Botlib_CvarGet(char *var_name, char *value);
-void Botlib_CvarSet(char *var_name, char *value);
+char* Botlib_CvarGetString(char* var_name);
+float Botlib_CvarGetValue(char* var_name);
+cvar_t* Botlib_CvarGet(char* var_name, char* value);
+void Botlib_CvarSet(char* var_name, char* value);
 
