@@ -133,11 +133,14 @@ bool BotLibSetup(char *str)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+cvar_t* maxclients;
+cvar_t* maxentities;
+
 int Export_BotLibSetup(void)
 {
 	int		errnum;
 	
-	bot_developer = LibVarGetValue("bot_developer");
+	bot_developer = Botlib_CvarGetValue("bot_developer");
 	Com_Memset( &botlibglobals, 0, sizeof(botlibglobals) );
 	//initialize byte swapping (litte endian etc.)
 //	Swap_Init();
@@ -145,8 +148,11 @@ int Export_BotLibSetup(void)
 	//
 	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
 	//
-	botlibglobals.maxclients = (int) LibVarValue("maxclients", "128");
-	botlibglobals.maxentities = (int) LibVarValue("maxentities", "1024");
+	maxclients = Botlib_CvarGet("maxclients", "128");
+	maxentities = Botlib_CvarGet("maxentities", "1024");
+
+	botlibglobals.maxclients = maxclients->integer;
+	botlibglobals.maxentities = maxentities->integer;
 
 	errnum = AAS_Setup();			//be_aas_main.c
 	if (errnum != BLERR_NOERROR) return errnum;
@@ -189,8 +195,7 @@ int Export_BotLibShutdown(void)
 	AAS_Shutdown();
 	//shut down bot elemantary actions
 	EA_Shutdown();
-	//free all libvars
-	LibVarDeAllocAll();
+
 	//remove all global defines from the pre compiler
 	PC_RemoveAllGlobalDefines();
 
@@ -217,7 +222,7 @@ int Export_BotLibShutdown(void)
 //===========================================================================
 int Export_BotLibVarSet(char *var_name, char *value)
 {
-	LibVarSet(var_name, value);
+	Botlib_CvarSet(var_name, value);
 	return BLERR_NOERROR;
 } //end of the function Export_BotLibVarSet
 //===========================================================================
@@ -230,7 +235,7 @@ int Export_BotLibVarGet(char *var_name, char *value, int size)
 {
 	char *varvalue;
 
-	varvalue = LibVarGetString(var_name);
+	varvalue = Botlib_CvarGetString(var_name);
 	strncpy(value, varvalue, size-1);
 	value[size-1] = '\0';
 	return BLERR_NOERROR;
@@ -361,7 +366,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 	//BotOnGround(parm2, PRESENCE_NORMAL, 1, &newarea, &newarea);
 	//botimport.Print(PRT_MESSAGE, "%f %f %f\n", parm2[0], parm2[1], parm2[2]);
 	//*
-	highlightarea = LibVarGetValue("bot_highlightarea");
+	highlightarea = Botlib_CvarGetValue("bot_highlightarea");
 	if (highlightarea > 0)
 	{
 		newarea = highlightarea;
@@ -438,7 +443,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		*/
 	} //end if
 	//*
-	flood = LibVarGetValue("bot_flood");
+	flood = Botlib_CvarGetValue("bot_flood");
 	if (parm0 & 1)
 	{
 		if (flood)
@@ -845,10 +850,11 @@ static void Init_AI_Export( ai_export_t *ai ) {
 GetBotLibAPI
 ============
 */
-botlib_export_t *GetBotLibAPI(int apiVersion, botlib_import_t *import) {
+botlib_export_t *GetBotLibAPI(int apiVersion, botlib_import_t *import)
+{
 	assert(import);   // bk001129 - this wasn't set for baseq3/
-  botimport = *import;
-  assert(botimport.Print);   // bk001129 - pars pro toto
+	botimport = *import;
+	assert(botimport.Print);   // bk001129 - pars pro toto
 
 	Com_Memset( &be_botlib_export, 0, sizeof( be_botlib_export ) );
 
@@ -863,8 +869,6 @@ botlib_export_t *GetBotLibAPI(int apiVersion, botlib_import_t *import) {
 
 	be_botlib_export.BotLibSetup = Export_BotLibSetup;
 	be_botlib_export.BotLibShutdown = Export_BotLibShutdown;
-	be_botlib_export.BotLibVarSet = Export_BotLibVarSet;
-	be_botlib_export.BotLibVarGet = Export_BotLibVarGet;
 
 	be_botlib_export.PC_AddGlobalDefine = PC_AddGlobalDefine;
 	be_botlib_export.PC_LoadSourceHandle = PC_LoadSourceHandle;

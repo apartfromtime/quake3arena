@@ -461,10 +461,11 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_SHUTDOWN:
 		return SV_BotLibShutdown();
 	case BOTLIB_LIBVAR_SET:
-		return botlib_export->BotLibVarSet( VMA(1), VMA(2) );
+		Cvar_Set(VMA(1), VMA(2));
+		return 0;
 	case BOTLIB_LIBVAR_GET:
-		return botlib_export->BotLibVarGet( VMA(1), VMA(2), args[3] );
-
+		Cvar_Get(VMA(1), VMA(2), args[3]);
+		return 0;
 	case BOTLIB_PC_ADD_GLOBAL_DEFINE:
 		return botlib_export->PC_AddGlobalDefine( VMA(1) );
 	case BOTLIB_PC_LOAD_SOURCE:

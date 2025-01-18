@@ -103,16 +103,16 @@ typedef struct bot_movestate_s
 #define MODELTYPE_FUNC_DOOR		3
 #define MODELTYPE_FUNC_STATIC	4
 
-libvar_t *sv_maxstep;
-libvar_t *sv_maxbarrier;
-libvar_t *sv_gravity;
-libvar_t *weapindex_rocketlauncher;
-libvar_t *weapindex_bfg10k;
-libvar_t *weapindex_grapple;
-libvar_t *entitytypemissile;
-libvar_t *offhandgrapple;
-libvar_t *cmd_grappleoff;
-libvar_t *cmd_grappleon;
+cvar_t *sv_maxstep;
+cvar_t *sv_maxbarrier;
+cvar_t *sv_gravity;
+cvar_t *weapindex_rocketlauncher;
+cvar_t *weapindex_bfg10k;
+cvar_t *weapindex_grapple;
+cvar_t *entitytypemissile;
+cvar_t *offhandgrapple;
+cvar_t *cmd_grappleoff;
+cvar_t *cmd_grappleon;
 //type of model, func_plat or func_bobbing
 int modeltypes[MAX_MODELS];
 
@@ -3575,16 +3575,16 @@ void BotResetMoveState(int movestate)
 int BotSetupMoveAI(void)
 {
 	BotSetBrushModelTypes();
-	sv_maxstep = LibVar("sv_step", "18");
-	sv_maxbarrier = LibVar("sv_maxbarrier", "32");
-	sv_gravity = LibVar("sv_gravity", "800");
-	weapindex_rocketlauncher = LibVar("weapindex_rocketlauncher", "5");
-	weapindex_bfg10k = LibVar("weapindex_bfg10k", "9");
-	weapindex_grapple = LibVar("weapindex_grapple", "10");
-	entitytypemissile = LibVar("entitytypemissile", "3");
-	offhandgrapple = LibVar("offhandgrapple", "0");
-	cmd_grappleon = LibVar("cmd_grappleon", "grappleon");
-	cmd_grappleoff = LibVar("cmd_grappleoff", "grappleoff");
+	sv_maxstep = Botlib_CvarGet("sv_step", "18");
+	sv_maxbarrier = Botlib_CvarGet("sv_maxbarrier", "32");
+	sv_gravity = Botlib_CvarGet("sv_gravity", "800");
+	weapindex_rocketlauncher = Botlib_CvarGet("weapindex_rocketlauncher", "5");
+	weapindex_bfg10k = Botlib_CvarGet("weapindex_bfg10k", "9");
+	weapindex_grapple = Botlib_CvarGet("weapindex_grapple", "10");
+	entitytypemissile = Botlib_CvarGet("entitytypemissile", "3");
+	offhandgrapple = Botlib_CvarGet("offhandgrapple", "0");
+	cmd_grappleon = Botlib_CvarGet("cmd_grappleon", "grappleon");
+	cmd_grappleoff = Botlib_CvarGet("cmd_grappleoff", "grappleoff");
 	return BLERR_NOERROR;
 } //end of the function BotSetupMoveAI
 //===========================================================================

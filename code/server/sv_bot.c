@@ -115,7 +115,7 @@ void BotDrawDebugPolygons(void (*drawPoly)(int color, int numPoints, float *poin
 		if (svs.clients[0].lastUsercmd.buttons & BUTTON_ATTACK) parm0 |= 1;
 		if (bot_reachability->integer) parm0 |= 2;
 		if (bot_groundonly->integer) parm0 |= 4;
-		botlib_export->BotLibVarSet("bot_highlightarea", bot_highlightarea->string);
+		Cvar_Set("bot_highlightarea", bot_highlightarea->string);
 		botlib_export->Test(parm0, NULL, svs.clients[0].gentity->r.currentOrigin, 
 			svs.clients[0].gentity->r.currentAngles);
 	} //end if
@@ -540,6 +540,11 @@ void SV_BotInitBotLib(void) {
 	botlib_import.FreeMemory = BotImport_FreeMemory;
 	botlib_import.AvailableMemory = Z_AvailableMemory;
 	botlib_import.HunkAlloc = BotImport_HunkAlloc;
+
+	botlib_import.Cvar_Get = Cvar_Get;
+	botlib_import.Cvar_Set = Cvar_Set;
+	botlib_import.Cvar_VariableString = Cvar_VariableString;
+	botlib_import.Cvar_VariableValue = Cvar_VariableValue;
 
 	// file system access
 	botlib_import.FS_FOpenFile = FS_FOpenFileByMode;
