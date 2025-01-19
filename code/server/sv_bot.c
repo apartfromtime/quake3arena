@@ -308,6 +308,17 @@ int BotImport_ZoneAvailableMemory(void)
 	return Z_AvailableMemory();
 }
 
+#ifdef HUNK_DEBUG
+/*
+=================
+BotImport_HunkAllocDebug
+=================
+*/
+void* BotImport_HunkAllocDebug(int size, char* label, char* file, int line)
+{
+	return Hunk_AllocDebug(size, label, file, line);
+}
+#else
 /*
 =================
 BotImport_HunkAlloc
@@ -317,6 +328,7 @@ void *BotImport_HunkAlloc( int size ) {
 
 	return Hunk_Alloc( size );
 }
+#endif // HUNK_DEBUG
 
 /*
 ==================
@@ -553,7 +565,11 @@ void SV_BotInitBotLib(void) {
 #endif // ZONE_DEBUG
 	botlib_import.Zone_Free = Z_Free;
 	botlib_import.Zone_AvailableMemory = BotImport_ZoneAvailableMemory;
+#ifdef HUNK_DEBUG
+	botlib_import.Hunk_AllocDebug = BotImport_HunkAllocDebug;
+#else
 	botlib_import.Hunk_Alloc = BotImport_HunkAlloc;
+#endif // HUNK_DEBUG
 
 	botlib_import.Cvar_Get = Cvar_Get;
 	botlib_import.Cvar_Set = Cvar_Set;

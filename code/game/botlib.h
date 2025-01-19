@@ -382,7 +382,11 @@ typedef struct botlib_import_s
 #endif
 	void		(*Zone_Free)(void *ptr);		// free memory from Zone
 	int			(*Zone_AvailableMemory)(void);		// available Zone memory
-	void*		(*Hunk_Alloc)(int size);		// allocate from hunk
+#ifdef HUNK_DEBUG
+	void* (*Hunk_AllocDebug)(int size, char* label, char* file, int line);
+#else
+	void* (*Hunk_Alloc)(int size);
+#endif
 
 	// cvar
 	cvar_t* (*Cvar_Get)(const char* name, const char* value, int flags);
