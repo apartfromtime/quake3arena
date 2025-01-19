@@ -162,7 +162,7 @@ void AAS_EntityInfo(int entnum, aas_entityinfo_t *info)
 	if (!aasworld.initialized)
 	{
 		botimport.Print(PRT_FATAL, "AAS_EntityInfo: aasworld not initialized\n");
-		Com_Memset(info, 0, sizeof(aas_entityinfo_t));
+		//Com_Memset(info, 0, sizeof(aas_entityinfo_t));
 		return;
 	} //end if
 

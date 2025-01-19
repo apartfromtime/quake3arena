@@ -79,8 +79,6 @@ void* GetClearedMemory(unsigned long size)
 	ptr = GetMemory(size);
 #endif // ZONE_DEBUG
 
-	Com_Memset(ptr, 0, size);
-
 	return ptr;
 }
 
@@ -90,38 +88,14 @@ Bot_HunkAlloc
 =================
 */
 #ifdef MEMDEBUG
-void *GetHunkMemoryDebug(unsigned long size, char *label, char *file, int line)
+void* GetHunkMemoryDebug(unsigned long size, char* label, char* file, int line)
 #else
 void* GetHunkMemory(unsigned long size)
 #endif //MEMDEBUG
 {
-	void* ptr = NULL; 
-	
+	void* ptr = NULL;
+
 	ptr = botimport.Hunk_Alloc(size);
-
-	return ptr;
-}
-
-/*
-=================
-Bot_HunkMalloc
-=================
-*/
-#ifdef HUNK_DEBUG
-void *GetClearedHunkMemoryDebug(unsigned long size, char *label, char *file, int line)
-#else
-void* GetClearedHunkMemory(unsigned long size)
-#endif // HUNK_DEBUG
-{
-	void* ptr;
-
-#ifdef HUNK_DEBUG
-	ptr = GetHunkMemoryDebug(size, label, file, line);
-#else
-	ptr = GetHunkMemory(size);
-#endif // HUNK_DEBUG
-
-	Com_Memset(ptr, 0, size);
 
 	return ptr;
 }

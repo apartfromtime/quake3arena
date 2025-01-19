@@ -271,7 +271,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 		return NULL;
 	} //end if
 	//initialize item config
-	ic = (itemconfig_t *) GetClearedHunkMemory(sizeof(itemconfig_t) +
+	ic = (itemconfig_t *) GetHunkMemory(sizeof(itemconfig_t) +
 														max_iteminfo * sizeof(iteminfo_t));
 	ic->iteminfo = (iteminfo_t *) ((char *) ic + sizeof(itemconfig_t));
 	ic->numiteminfo = 0;

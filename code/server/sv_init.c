@@ -384,7 +384,7 @@ void SV_SpawnServer( char *server, bool killBots ) {
 	FS_ClearPakReferences(0);
 
 	// allocate the snapshot entities on the hunk
-	svs.snapshotEntities = Hunk_Alloc( sizeof(entityState_t)*svs.numSnapshotEntities, h_high );
+	svs.snapshotEntities = Hunk_Alloc( sizeof(entityState_t)*svs.numSnapshotEntities );
 	svs.nextSnapshotEntities = 0;
 
 	// toggle the server bit so clients can detect that a

@@ -226,7 +226,7 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 		return NULL;
 	} //end if
 	//initialize weapon config
-	wc = (weaponconfig_t *) GetClearedHunkMemory(sizeof(weaponconfig_t) +
+	wc = (weaponconfig_t *) GetHunkMemory(sizeof(weaponconfig_t) +
 										max_weaponinfo * sizeof(weaponinfo_t) +
 										max_projectileinfo * sizeof(projectileinfo_t));
 	wc->weaponinfo = (weaponinfo_t *) ((char *) wc + sizeof(weaponconfig_t));

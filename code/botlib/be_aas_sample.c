@@ -190,7 +190,7 @@ void AAS_InitAASLinkedEntities(void)
 {
 	if (!aasworld.loaded) return;
 	//if (aasworld.arealinkedentities) FreeMemory(aasworld.arealinkedentities);
-	aasworld.arealinkedentities = (aas_link_t **) GetClearedHunkMemory(
+	aasworld.arealinkedentities = (aas_link_t **) GetHunkMemory(
 						aasworld.numareas * sizeof(aas_link_t *));
 } //end of the function AAS_InitAASLinkedEntities
 //===========================================================================

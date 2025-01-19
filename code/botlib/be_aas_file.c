@@ -294,7 +294,7 @@ char *AAS_LoadAASLump(qhandle_t fp, int offset, int length, int *lastoffset, int
 	if (!length)
 	{
 		//just alloc a dummy
-		return (char *) GetClearedHunkMemory(size+1);
+		return (char *) GetHunkMemory(size+1);
 	} //end if
 	//seek to the data
 	if (offset != *lastoffset)
@@ -309,7 +309,7 @@ char *AAS_LoadAASLump(qhandle_t fp, int offset, int length, int *lastoffset, int
 		} //end if
 	} //end if
 	//allocate memory
-	buf = (char *) GetClearedHunkMemory(length+1);
+	buf = (char *) GetHunkMemory(length+1);
 	//read the data
 	if (length)
 	{

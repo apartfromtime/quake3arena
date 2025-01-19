@@ -55,9 +55,7 @@ void *GetClearedMemory(unsigned long size);
 #define GetClearedHunkMemory GetClearedMemory
 #else
 //allocate a memory block of the given size
-void *GetHunkMemory(unsigned long size);
-//allocate a memory block of the given size and clear it
-void *GetClearedHunkMemory(unsigned long size);
+void* GetHunkMemory(unsigned long size);
 #endif
 #endif
 

@@ -402,7 +402,7 @@ void AAS_ParseBSPEntities(void)
 		while(PS_ReadToken(script, &token))
 		{
 			if (!strcmp(token.string, "}")) break;
-			epair = (bsp_epair_t *) GetClearedHunkMemory(sizeof(bsp_epair_t));
+			epair = (bsp_epair_t *) GetHunkMemory(sizeof(bsp_epair_t));
 			epair->next = ent->epairs;
 			ent->epairs = epair;
 			if (token.type != TT_STRING)
@@ -473,7 +473,7 @@ int AAS_LoadBSPFile(void)
 {
 	AAS_DumpBSPData();
 	bspworld.entdatasize = strlen(botimport.BSPEntityData()) + 1;
-	bspworld.dentdata = (char *) GetClearedHunkMemory(bspworld.entdatasize);
+	bspworld.dentdata = (char *) GetHunkMemory(bspworld.entdatasize);
 	Com_Memcpy(bspworld.dentdata, botimport.BSPEntityData(), bspworld.entdatasize);
 	AAS_ParseBSPEntities();
 	bspworld.loaded = true;

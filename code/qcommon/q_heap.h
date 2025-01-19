@@ -41,6 +41,7 @@ typedef enum {
 	TAG_FREE,
 	TAG_GENERAL,
 	TAG_BOTLIB,
+	TAG_SOUND,
 	TAG_RENDERER,
 	TAG_SMALL,
 	TAG_STATIC
@@ -95,18 +96,11 @@ void Z_LogHeap(void);
 #define HUNK_DEBUG
 #endif
 
-typedef enum
-{
-	h_high,
-	h_low,
-	h_dontcare
-} ha_pref;
-
 #ifdef HUNK_DEBUG
-#define Hunk_Alloc(size, preference)			Hunk_AllocDebug(size, preference, #size, __FILE__, __LINE__)
-void* Hunk_AllocDebug(int size, ha_pref preference, char* label, char* file, int line);
+#define Hunk_Alloc(size)			Hunk_AllocDebug(size, #size, __FILE__, __LINE__)
+void* Hunk_AllocDebug(int size, char* label, char* file, int line);
 #else
-void* Hunk_Alloc(int size, ha_pref preference);
+void* Hunk_Alloc(int size);
 #endif
 
 bool Hunk_InitMemory(int hunkSize);

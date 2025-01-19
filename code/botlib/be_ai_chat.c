@@ -244,7 +244,7 @@ void InitConsoleMessageHeap(void)
 	if (consolemessageheap) FreeMemory(consolemessageheap);
 	//
 	max_messages = Botlib_CvarGet("max_messages", "1024")->integer;
-	consolemessageheap = (bot_consolemessage_t *) GetClearedHunkMemory(max_messages *
+	consolemessageheap = (bot_consolemessage_t *) GetHunkMemory(max_messages *
 												sizeof(bot_consolemessage_t));
 	consolemessageheap[0].prev = NULL;
 	consolemessageheap[0].next = &consolemessageheap[1];
@@ -614,7 +614,7 @@ bot_synonymlist_t *BotLoadSynonyms(char *filename)
 	for (pass = 0; pass < 2; pass++)
 	{
 		//
-		if (pass && size) ptr = (char *) GetClearedHunkMemory(size);
+		if (pass && size) ptr = (char *) GetHunkMemory(size);
 		//
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
 		source = LoadSourceFile(filename);
@@ -970,7 +970,7 @@ bot_randomlist_t *BotLoadRandomStrings(char *filename)
 	for (pass = 0; pass < 2; pass++)
 	{
 		//
-		if (pass && size) ptr = (char *) GetClearedHunkMemory(size);
+		if (pass && size) ptr = (char *) GetHunkMemory(size);
 		//
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
 		source = LoadSourceFile(filename);
@@ -1181,7 +1181,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 			} //end if
 			lastwasvariable = true;
 			//
-			matchpiece = (bot_matchpiece_t *) GetClearedHunkMemory(sizeof(bot_matchpiece_t));
+			matchpiece = (bot_matchpiece_t *) GetHunkMemory(sizeof(bot_matchpiece_t));
 			matchpiece->type = MT_VARIABLE;
 			matchpiece->variable = token.intvalue;
 			matchpiece->next = NULL;
@@ -1192,7 +1192,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 		else if (token.type == TT_STRING)
 		{
 			//
-			matchpiece = (bot_matchpiece_t *) GetClearedHunkMemory(sizeof(bot_matchpiece_t));
+			matchpiece = (bot_matchpiece_t *) GetHunkMemory(sizeof(bot_matchpiece_t));
 			matchpiece->firststring = NULL;
 			matchpiece->type = MT_STRING;
 			matchpiece->variable = 0;
@@ -1216,7 +1216,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 					} //end if
 				} //end if
 				StripDoubleQuotes(token.string);
-				matchstring = (bot_matchstring_t *) GetClearedHunkMemory(sizeof(bot_matchstring_t) + strlen(token.string) + 1);
+				matchstring = (bot_matchstring_t *) GetHunkMemory(sizeof(bot_matchstring_t) + strlen(token.string) + 1);
 				matchstring->string = (char *) matchstring + sizeof(bot_matchstring_t);
 				strcpy(matchstring->string, token.string);
 				if (!strlen(token.string)) emptystring = true;
@@ -1311,7 +1311,7 @@ bot_matchtemplate_t *BotLoadMatchTemplates(char *matchfile)
 			//
 			PC_UnreadLastToken(source);
 			//
-			matchtemplate = (bot_matchtemplate_t *) GetClearedHunkMemory(sizeof(bot_matchtemplate_t));
+			matchtemplate = (bot_matchtemplate_t *) GetHunkMemory(sizeof(bot_matchtemplate_t));
 			matchtemplate->context = context;
 			matchtemplate->next = NULL;
 			//add the match template to the list
@@ -1878,7 +1878,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 			return NULL;
 		} //end if
 		//
-		replychat = GetClearedHunkMemory(sizeof(bot_replychat_t));
+		replychat = GetHunkMemory(sizeof(bot_replychat_t));
 		replychat->keys = NULL;
 		replychat->next = replychatlist;
 		replychatlist = replychat;
@@ -1886,7 +1886,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 		do
 		{
 			//allocate a key
-			key = (bot_replychatkey_t *) GetClearedHunkMemory(sizeof(bot_replychatkey_t));
+			key = (bot_replychatkey_t *) GetHunkMemory(sizeof(bot_replychatkey_t));
 			key->flags = 0;
 			key->string = NULL;
 			key->match = NULL;
@@ -1932,7 +1932,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 					FreeSource(source);
 					return NULL;
 				} //end if
-				key->string = (char *) GetClearedHunkMemory(strlen(namebuffer) + 1);
+				key->string = (char *) GetHunkMemory(strlen(namebuffer) + 1);
 				strcpy(key->string, namebuffer);
 			} //end else if
 			else //normal string key
@@ -1945,7 +1945,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 					return NULL;
 				} //end if
 				StripDoubleQuotes(token.string);
-				key->string = (char *) GetClearedHunkMemory(strlen(token.string) + 1);
+				key->string = (char *) GetHunkMemory(strlen(token.string) + 1);
 				strcpy(key->string, token.string);
 			} //end else
 			//
@@ -1979,7 +1979,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 				FreeSource(source);
 				return NULL;
 			} //end if
-			chatmessage = (bot_chatmessage_t *) GetClearedHunkMemory(sizeof(bot_chatmessage_t) + strlen(chatmessagestring) + 1);
+			chatmessage = (bot_chatmessage_t *) GetHunkMemory(sizeof(bot_chatmessage_t) + strlen(chatmessagestring) + 1);
 			chatmessage->chatmessage = (char *) chatmessage + sizeof(bot_chatmessage_t);
 			strcpy(chatmessage->chatmessage, chatmessagestring);
 			chatmessage->time = -2*CHATMESSAGE_RECENTTIME;

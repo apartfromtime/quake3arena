@@ -491,7 +491,7 @@ void EA_ResetInput(int client)
 int EA_Setup(void)
 {
 	//initialize the bot inputs
-	botinputs = (bot_input_t *) GetClearedHunkMemory(
+	botinputs = (bot_input_t *) GetHunkMemory(
 									botlibglobals.maxclients * sizeof(bot_input_t));
 	return BLERR_NOERROR;
 } //end of the function EA_Setup
