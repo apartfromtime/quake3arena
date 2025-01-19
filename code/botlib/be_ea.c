@@ -503,6 +503,6 @@ int EA_Setup(void)
 //===========================================================================
 void EA_Shutdown(void)
 {
-	FreeMemory(botinputs);
+	//FreeMemory(botinputs);
 	botinputs = NULL;
 } //end of the function EA_Shutdown

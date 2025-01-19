@@ -134,7 +134,7 @@ void AAS_InitAASLinkHeap(void)
 //===========================================================================
 void AAS_FreeAASLinkHeap(void)
 {
-	if (aasworld.linkheap) FreeMemory(aasworld.linkheap);
+	//if (aasworld.linkheap) FreeMemory(aasworld.linkheap);
 	aasworld.linkheap = NULL;
 	aasworld.linkheapsize = 0;
 } //end of the function AAS_FreeAASLinkHeap
@@ -189,7 +189,7 @@ void AAS_DeAllocAASLink(aas_link_t *link)
 void AAS_InitAASLinkedEntities(void)
 {
 	if (!aasworld.loaded) return;
-	if (aasworld.arealinkedentities) FreeMemory(aasworld.arealinkedentities);
+	//if (aasworld.arealinkedentities) FreeMemory(aasworld.arealinkedentities);
 	aasworld.arealinkedentities = (aas_link_t **) GetClearedHunkMemory(
 						aasworld.numareas * sizeof(aas_link_t *));
 } //end of the function AAS_InitAASLinkedEntities
@@ -201,7 +201,7 @@ void AAS_InitAASLinkedEntities(void)
 //===========================================================================
 void AAS_FreeAASLinkedEntities(void)
 {
-	if (aasworld.arealinkedentities) FreeMemory(aasworld.arealinkedentities);
+	//if (aasworld.arealinkedentities) FreeMemory(aasworld.arealinkedentities);
 	aasworld.arealinkedentities = NULL;
 } //end of the function AAS_InitAASLinkedEntities
 //===========================================================================

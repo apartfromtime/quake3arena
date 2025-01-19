@@ -1137,10 +1137,10 @@ void BotFreeMatchPieces(bot_matchpiece_t *matchpieces)
 			for (ms = mp->firststring; ms; ms = nextms)
 			{
 				nextms = ms->next;
-				FreeMemory(ms);
+				//FreeMemory(ms);
 			} //end for
 		} //end if
-		FreeMemory(mp);
+		//FreeMemory(mp);
 	} //end for
 } //end of the function BotFreeMatchPieces
 //===========================================================================
@@ -1259,7 +1259,7 @@ void BotFreeMatchTemplates(bot_matchtemplate_t *mt)
 	{
 		nextmt = mt->next;
 		BotFreeMatchPieces(mt->first);
-		FreeMemory(mt);
+		//FreeMemory(mt);
 	} //end for
 } //end of the function BotFreeMatchTemplates
 //===========================================================================
@@ -1724,15 +1724,15 @@ void BotFreeReplyChat(bot_replychat_t *replychat)
 		{
 			nextkey = key->next;
 			if (key->match) BotFreeMatchPieces(key->match);
-			if (key->string) FreeMemory(key->string);
-			FreeMemory(key);
+			//if (key->string) FreeMemory(key->string);
+			//FreeMemory(key);
 		} //end for
 		for (cm = rp->firstchatmessage; cm; cm = nextcm)
 		{
 			nextcm = cm->next;
-			FreeMemory(cm);
+			//FreeMemory(cm);
 		} //end for
-		FreeMemory(rp);
+		//FreeMemory(rp);
 	} //end for
 } //end of the function BotFreeReplyChat
 //===========================================================================
@@ -3039,13 +3039,13 @@ void BotShutdownChatAI(void)
 			ichatdata[i] = NULL;
 		} //end if
 	} //end for
-	if (consolemessageheap) FreeMemory(consolemessageheap);
+	if (consolemessageheap) //FreeMemory(consolemessageheap);
 	consolemessageheap = NULL;
 	if (matchtemplates) BotFreeMatchTemplates(matchtemplates);
 	matchtemplates = NULL;
-	if (randomstrings) FreeMemory(randomstrings);
+	if (randomstrings) //FreeMemory(randomstrings);
 	randomstrings = NULL;
-	if (synonyms) FreeMemory(synonyms);
+	if (synonyms) //FreeMemory(synonyms);
 	synonyms = NULL;
 	if (replychats) BotFreeReplyChat(replychats);
 	replychats = NULL;

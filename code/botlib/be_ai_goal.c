@@ -283,7 +283,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			if (ic->numiteminfo >= max_iteminfo)
 			{
 				SourceError(source, "more than %d item info defined\n", max_iteminfo);
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -291,7 +291,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			Com_Memset(ii, 0, sizeof(iteminfo_t));
 			if (!PC_ExpectTokenType(source, TT_STRING, 0, &token))
 			{
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeMemory(source);
 				return NULL;
 			} //end if
@@ -299,7 +299,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			strncpy(ii->classname, token.string, sizeof(ii->classname)-1);
 			if (!ReadStructure(source, &iteminfo_struct, (char *) ii))
 			{
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -309,7 +309,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 		else
 		{
 			SourceError(source, "unknown definition %s\n", token.string);
-			FreeMemory(ic);
+			//FreeMemory(ic);
 			FreeSource(source);
 			return NULL;
 		} //end else
@@ -1787,7 +1787,7 @@ void BotShutdownGoalAI(void)
 {
 	int i;
 
-	if (itemconfig) FreeMemory(itemconfig);
+	if (itemconfig) //FreeMemory(itemconfig);
 	itemconfig = NULL;
 	if (levelitemheap) FreeMemory(levelitemheap);
 	levelitemheap = NULL;
