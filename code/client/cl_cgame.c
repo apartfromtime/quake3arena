@@ -37,7 +37,7 @@ CL_GetGameState
 ====================
 */
 void CL_GetGameState( gameState_t *gs ) {
-	*gs = cl.gameState;
+	*gs = g_clientActive.gameState;
 }
 
 /*
@@ -59,23 +59,23 @@ bool CL_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {
 	// cmds[cmdNumber] is the last properly generated command
 
 	// can't return anything that we haven't created yet
-	if ( cmdNumber > cl.cmdNumber ) {
-		Com_Error( ERR_DROP, "CL_GetUserCmd: %i >= %i", cmdNumber, cl.cmdNumber );
+	if ( cmdNumber > g_clientActive.cmdNumber ) {
+		Com_Error( ERR_DROP, "CL_GetUserCmd: %i >= %i", cmdNumber, g_clientActive.cmdNumber );
 	}
 
 	// the usercmd has been overwritten in the wrapping
 	// buffer because it is too far out of date
-	if ( cmdNumber <= cl.cmdNumber - CMD_BACKUP ) {
+	if ( cmdNumber <= g_clientActive.cmdNumber - CMD_BACKUP ) {
 		return false;
 	}
 
-	*ucmd = cl.cmds[ cmdNumber & CMD_MASK ];
+	*ucmd = g_clientActive.cmds[ cmdNumber & CMD_MASK ];
 
 	return true;
 }
 
 int CL_GetCurrentCmdNumber( void ) {
-	return cl.cmdNumber;
+	return g_clientActive.cmdNumber;
 }
 
 
@@ -86,17 +86,17 @@ CL_GetParseEntityState
 */
 bool	CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
 	// can't return anything that hasn't been parsed yet
-	if ( parseEntityNumber >= cl.parseEntitiesNum ) {
+	if ( parseEntityNumber >= g_clientActive.parseEntitiesNum ) {
 		Com_Error( ERR_DROP, "CL_GetParseEntityState: %i >= %i",
-			parseEntityNumber, cl.parseEntitiesNum );
+			parseEntityNumber, g_clientActive.parseEntitiesNum );
 	}
 
 	// can't return anything that has been overwritten in the circular buffer
-	if ( parseEntityNumber <= cl.parseEntitiesNum - MAX_PARSE_ENTITIES ) {
+	if ( parseEntityNumber <= g_clientActive.parseEntitiesNum - MAX_PARSE_ENTITIES ) {
 		return false;
 	}
 
-	*state = cl.parseEntities[ parseEntityNumber & ( MAX_PARSE_ENTITIES - 1 ) ];
+	*state = g_clientActive.parseEntities[ parseEntityNumber & ( MAX_PARSE_ENTITIES - 1 ) ];
 	return true;
 }
 
@@ -106,8 +106,8 @@ CL_GetCurrentSnapshotNumber
 ====================
 */
 void	CL_GetCurrentSnapshotNumber( int *snapshotNumber, int *serverTime ) {
-	*snapshotNumber = cl.snap.messageNum;
-	*serverTime = cl.snap.serverTime;
+	*snapshotNumber = g_clientActive.snap.messageNum;
+	*serverTime = g_clientActive.snap.serverTime;
 }
 
 /*
@@ -119,24 +119,24 @@ bool	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	clSnapshot_t	*clSnap;
 	int				i, count;
 
-	if ( snapshotNumber > cl.snap.messageNum ) {
+	if ( snapshotNumber > g_clientActive.snap.messageNum ) {
 		Com_Error( ERR_DROP, "CL_GetSnapshot: snapshotNumber > cl.snapshot.messageNum" );
 	}
 
 	// if the frame has fallen out of the circular buffer, we can't return it
-	if ( cl.snap.messageNum - snapshotNumber >= PACKET_BACKUP ) {
+	if ( g_clientActive.snap.messageNum - snapshotNumber >= PACKET_BACKUP ) {
 		return false;
 	}
 
 	// if the frame is not valid, we can't return it
-	clSnap = &cl.snapshots[snapshotNumber & PACKET_MASK];
+	clSnap = &g_clientActive.snapshots[snapshotNumber & PACKET_MASK];
 	if ( !clSnap->valid ) {
 		return false;
 	}
 
 	// if the entities in the frame have fallen out of their
 	// circular buffer, we can't return it
-	if ( cl.parseEntitiesNum - clSnap->parseEntitiesNum >= MAX_PARSE_ENTITIES ) {
+	if ( g_clientActive.parseEntitiesNum - clSnap->parseEntitiesNum >= MAX_PARSE_ENTITIES ) {
 		return false;
 	}
 
@@ -155,7 +155,7 @@ bool	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	snapshot->numEntities = count;
 	for ( i = 0 ; i < count ; i++ ) {
 		snapshot->entities[i] = 
-			cl.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
+			g_clientActive.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
 	}
 
 	// FIXME: configstring changes and server commands!!!
@@ -169,8 +169,8 @@ CL_SetUserCmdValue
 =====================
 */
 void CL_SetUserCmdValue( int userCmdValue, float sensitivityScale ) {
-	cl.cgameUserCmdValue = userCmdValue;
-	cl.cgameSensitivity = sensitivityScale;
+	g_clientActive.cgameUserCmdValue = userCmdValue;
+	g_clientActive.cgameSensitivity = sensitivityScale;
 }
 
 /*
@@ -211,18 +211,18 @@ void CL_ConfigstringModified( void ) {
 	// get everything after "cs <num>"
 	s = Cmd_ArgsFrom(2);
 
-	old = cl.gameState.stringData + cl.gameState.stringOffsets[ index ];
+	old = g_clientActive.gameState.stringData + g_clientActive.gameState.stringOffsets[ index ];
 	if ( !strcmp( old, s ) ) {
 		return;		// unchanged
 	}
 
 	// build the new gameState_t
-	oldGs = cl.gameState;
+	oldGs = g_clientActive.gameState;
 
-	Com_Memset( &cl.gameState, 0, sizeof( cl.gameState ) );
+	Com_Memset( &g_clientActive.gameState, 0, sizeof( g_clientActive.gameState ) );
 
 	// leave the first 0 for uninitialized strings
-	cl.gameState.dataCount = 1;
+	g_clientActive.gameState.dataCount = 1;
 		
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
 		if ( i == index ) {
@@ -236,14 +236,14 @@ void CL_ConfigstringModified( void ) {
 
 		len = strlen( dup );
 
-		if ( len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
+		if ( len + 1 + g_clientActive.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
 			Com_Error( ERR_DROP, "MAX_GAMESTATE_CHARS exceeded" );
 		}
 
 		// append it to the gameState string buffer
-		cl.gameState.stringOffsets[ i ] = cl.gameState.dataCount;
-		Com_Memcpy( cl.gameState.stringData + cl.gameState.dataCount, dup, len + 1 );
-		cl.gameState.dataCount += len + 1;
+		g_clientActive.gameState.stringOffsets[ i ] = g_clientActive.gameState.dataCount;
+		Com_Memcpy( g_clientActive.gameState.stringData + g_clientActive.gameState.dataCount, dup, len + 1 );
+		g_clientActive.gameState.dataCount += len + 1;
 	}
 
 	if ( index == CS_SYSTEMINFO ) {
@@ -337,7 +337,7 @@ rescan:
 		// clear notify lines and outgoing commands before passing
 		// the restart to the cgame
 		Con_ClearNotify();
-		Com_Memset( cl.cmds, 0, sizeof( cl.cmds ) );
+		Com_Memset( g_clientActive.cmds, 0, sizeof( g_clientActive.cmds ) );
 		return true;
 	}
 
@@ -723,9 +723,9 @@ void CL_InitCGame( void ) {
 	Con_Close();
 
 	// find the current mapname
-	info = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
+	info = g_clientActive.gameState.stringData + g_clientActive.gameState.stringOffsets[ CS_SERVERINFO ];
 	mapname = Info_ValueForKey( info, "mapname" );
-	Com_sprintf( cl.mapname, sizeof( cl.mapname ), "maps/%s.bsp", mapname );
+	Com_sprintf( g_clientActive.mapname, sizeof( g_clientActive.mapname ), "maps/%s.bsp", mapname );
 
 	// load the dll
 	cgvm = VM_Create("cgame", CL_CgameSystemCalls);
@@ -784,7 +784,7 @@ CL_CGameRendering
 =====================
 */
 void CL_CGameRendering( stereoFrame_t stereo ) {
-	VM_Call( cgvm, CG_DRAW_ACTIVE_FRAME, cl.serverTime, stereo, clc.demoplaying );
+	VM_Call( cgvm, CG_DRAW_ACTIVE_FRAME, g_clientActive.serverTime, stereo, clc.demoplaying );
 	VM_Debug( 0 );
 }
 
@@ -816,7 +816,7 @@ void CL_AdjustTimeDelta( void ) {
 	int		newDelta;
 	int		deltaDelta;
 
-	cl.newSnapshots = false;
+	g_clientActive.newSnapshots = false;
 
 	// the delta never drifts when replaying a demo
 	if ( clc.demoplaying ) {
@@ -830,13 +830,13 @@ void CL_AdjustTimeDelta( void ) {
 		resetTime = RESET_TIME;
 	}
 
-	newDelta = cl.snap.serverTime - cls.realtime;
-	deltaDelta = abs( newDelta - cl.serverTimeDelta );
+	newDelta = g_clientActive.snap.serverTime - cls.realtime;
+	deltaDelta = abs( newDelta - g_clientActive.serverTimeDelta );
 
 	if ( deltaDelta > RESET_TIME ) {
-		cl.serverTimeDelta = newDelta;
-		cl.oldServerTime = cl.snap.serverTime;	// FIXME: is this a problem for cgame?
-		cl.serverTime = cl.snap.serverTime;
+		g_clientActive.serverTimeDelta = newDelta;
+		g_clientActive.oldServerTime = g_clientActive.snap.serverTime;	// FIXME: is this a problem for cgame?
+		g_clientActive.serverTime = g_clientActive.snap.serverTime;
 		if ( cl_showTimeDelta->integer ) {
 			Com_Printf( "<RESET> " );
 		}
@@ -845,7 +845,7 @@ void CL_AdjustTimeDelta( void ) {
 		if ( cl_showTimeDelta->integer ) {
 			Com_Printf( "<FAST> " );
 		}
-		cl.serverTimeDelta = ( cl.serverTimeDelta + newDelta ) >> 1;
+		g_clientActive.serverTimeDelta = ( g_clientActive.serverTimeDelta + newDelta ) >> 1;
 	} else {
 		// slow drift adjust, only move 1 or 2 msec
 
@@ -853,18 +853,18 @@ void CL_AdjustTimeDelta( void ) {
 		// had to be extrapolated, nudge our sense of time back a little
 		// the granularity of +1 / -2 is too high for timescale modified frametimes
 		if ( com_timescale->value == 0 || com_timescale->value == 1 ) {
-			if ( cl.extrapolatedSnapshot ) {
-				cl.extrapolatedSnapshot = false;
-				cl.serverTimeDelta -= 2;
+			if ( g_clientActive.extrapolatedSnapshot ) {
+				g_clientActive.extrapolatedSnapshot = false;
+				g_clientActive.serverTimeDelta -= 2;
 			} else {
 				// otherwise, move our sense of time forward to minimize total latency
-				cl.serverTimeDelta++;
+				g_clientActive.serverTimeDelta++;
 			}
 		}
 	}
 
 	if ( cl_showTimeDelta->integer ) {
-		Com_Printf( "%i ", cl.serverTimeDelta );
+		Com_Printf( "%i ", g_clientActive.serverTimeDelta );
 	}
 }
 
@@ -876,16 +876,16 @@ CL_FirstSnapshot
 */
 void CL_FirstSnapshot( void ) {
 	// ignore snapshots that don't have entities
-	if ( cl.snap.snapFlags & SNAPFLAG_NOT_ACTIVE ) {
+	if ( g_clientActive.snap.snapFlags & SNAPFLAG_NOT_ACTIVE ) {
 		return;
 	}
 	cls.state = CA_ACTIVE;
 
 	// set the timedelta so we are exactly on this first frame
-	cl.serverTimeDelta = cl.snap.serverTime - cls.realtime;
-	cl.oldServerTime = cl.snap.serverTime;
+	g_clientActive.serverTimeDelta = g_clientActive.snap.serverTime - cls.realtime;
+	g_clientActive.oldServerTime = g_clientActive.snap.serverTime;
 
-	clc.timeDemoBaseTime = cl.snap.serverTime;
+	clc.timeDemoBaseTime = g_clientActive.snap.serverTime;
 
 	// if this is the first frame of active play,
 	// execute the contents of activeAction now
@@ -917,8 +917,8 @@ void CL_SetCGameTime( void ) {
 			}
 			CL_ReadDemoMessage();
 		}
-		if ( cl.newSnapshots ) {
-			cl.newSnapshots = false;
+		if ( g_clientActive.newSnapshots ) {
+			g_clientActive.newSnapshots = false;
 			CL_FirstSnapshot();
 		}
 		if ( cls.state != CA_ACTIVE ) {
@@ -927,7 +927,7 @@ void CL_SetCGameTime( void ) {
 	}	
 
 	// if we have gotten to this point, cl.snap is guaranteed to be valid
-	if ( !cl.snap.valid ) {
+	if ( !g_clientActive.snap.valid ) {
 		Com_Error( ERR_DROP, "CL_SetCGameTime: !cl.snap.valid" );
 	}
 
@@ -937,10 +937,10 @@ void CL_SetCGameTime( void ) {
 		return;
 	}
 
-	if ( cl.snap.serverTime < cl.oldFrameServerTime ) {
+	if ( g_clientActive.snap.serverTime < g_clientActive.oldFrameServerTime ) {
 		Com_Error( ERR_DROP, "cl.snap.serverTime < cl.oldFrameServerTime" );
 	}
-	cl.oldFrameServerTime = cl.snap.serverTime;
+	g_clientActive.oldFrameServerTime = g_clientActive.snap.serverTime;
 
 
 	// get our current view of time
@@ -961,26 +961,26 @@ void CL_SetCGameTime( void ) {
 			tn = 30;
 		}
 
-		cl.serverTime = cls.realtime + cl.serverTimeDelta - tn;
+		g_clientActive.serverTime = cls.realtime + g_clientActive.serverTimeDelta - tn;
 
 		// guarantee that time will never flow backwards, even if
 		// serverTimeDelta made an adjustment or cl_timeNudge was changed
-		if ( cl.serverTime < cl.oldServerTime ) {
-			cl.serverTime = cl.oldServerTime;
+		if ( g_clientActive.serverTime < g_clientActive.oldServerTime ) {
+			g_clientActive.serverTime = g_clientActive.oldServerTime;
 		}
-		cl.oldServerTime = cl.serverTime;
+		g_clientActive.oldServerTime = g_clientActive.serverTime;
 
 		// note if we are almost past the latest frame (without timeNudge),
 		// so we will try and adjust back a bit when the next snapshot arrives
-		if ( cls.realtime + cl.serverTimeDelta >= cl.snap.serverTime - 5 ) {
-			cl.extrapolatedSnapshot = true;
+		if ( cls.realtime + g_clientActive.serverTimeDelta >= g_clientActive.snap.serverTime - 5 ) {
+			g_clientActive.extrapolatedSnapshot = true;
 		}
 	}
 
 	// if we have gotten new snapshots, drift serverTimeDelta
 	// don't do this every frame, or a period of packet loss would
 	// make a huge adjustment
-	if ( cl.newSnapshots ) {
+	if ( g_clientActive.newSnapshots ) {
 		CL_AdjustTimeDelta();
 	}
 
@@ -1001,10 +1001,10 @@ void CL_SetCGameTime( void ) {
 			clc.timeDemoStart = Sys_Milliseconds();
 		}
 		clc.timeDemoFrames++;
-		cl.serverTime = clc.timeDemoBaseTime + clc.timeDemoFrames * 50;
+		g_clientActive.serverTime = clc.timeDemoBaseTime + clc.timeDemoFrames * 50;
 	}
 
-	while ( cl.serverTime >= cl.snap.serverTime ) {
+	while ( g_clientActive.serverTime >= g_clientActive.snap.serverTime ) {
 		// feed another messag, which should change
 		// the contents of cl.snap
 		CL_ReadDemoMessage();

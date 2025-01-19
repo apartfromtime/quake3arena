@@ -64,7 +64,7 @@ void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t 
 
 	// save the parsed entity state into the big circular buffer so
 	// it can be used as the source for a later delta
-	state = &cl.parseEntities[cl.parseEntitiesNum & (MAX_PARSE_ENTITIES-1)];
+	state = &g_clientActive.parseEntities[g_clientActive.parseEntitiesNum & (MAX_PARSE_ENTITIES-1)];
 
 	if ( unchanged ) {
 		*state = *old;
@@ -75,7 +75,7 @@ void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t 
 	if ( state->number == (MAX_GENTITIES-1) ) {
 		return;		// entity was delta removed
 	}
-	cl.parseEntitiesNum++;
+	g_clientActive.parseEntitiesNum++;
 	frame->numEntities++;
 }
 
@@ -90,7 +90,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 	entityState_t	*oldstate;
 	int			oldindex, oldnum;
 
-	newframe->parseEntitiesNum = cl.parseEntitiesNum;
+	newframe->parseEntitiesNum = g_clientActive.parseEntitiesNum;
 	newframe->numEntities = 0;
 
 	// delta from the entities present in oldframe
@@ -102,7 +102,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 		if ( oldindex >= oldframe->numEntities ) {
 			oldnum = 99999;
 		} else {
-			oldstate = &cl.parseEntities[
+			oldstate = &g_clientActive.parseEntities[
 				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
 			oldnum = oldstate->number;
 		}
@@ -132,7 +132,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 			if ( oldindex >= oldframe->numEntities ) {
 				oldnum = 99999;
 			} else {
-				oldstate = &cl.parseEntities[
+				oldstate = &g_clientActive.parseEntities[
 					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
 				oldnum = oldstate->number;
 			}
@@ -149,7 +149,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 			if ( oldindex >= oldframe->numEntities ) {
 				oldnum = 99999;
 			} else {
-				oldstate = &cl.parseEntities[
+				oldstate = &g_clientActive.parseEntities[
 					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
 				oldnum = oldstate->number;
 			}
@@ -161,7 +161,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 			if ( cl_shownet->integer == 3 ) {
 				Com_Printf ("%3i:  baseline: %i\n", msg->readcount, newnum);
 			}
-			CL_DeltaEntity( msg, newframe, newnum, &cl.entityBaselines[newnum], false );
+			CL_DeltaEntity( msg, newframe, newnum, &g_clientActive.entityBaselines[newnum], false );
 			continue;
 		}
 
@@ -180,7 +180,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 		if ( oldindex >= oldframe->numEntities ) {
 			oldnum = 99999;
 		} else {
-			oldstate = &cl.parseEntities[
+			oldstate = &g_clientActive.parseEntities[
 				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
 			oldnum = oldstate->number;
 		}
@@ -238,7 +238,7 @@ void CL_ParseSnapshot( msg_t *msg ) {
 		old = NULL;
 		clc.demowaiting = false;	// we can start recording now
 	} else {
-		old = &cl.snapshots[newSnap.deltaNum & PACKET_MASK];
+		old = &g_clientActive.snapshots[newSnap.deltaNum & PACKET_MASK];
 		if ( !old->valid ) {
 			// should never happen
 			Com_Printf ("Delta from invalid frame (not supposed to happen!).\n");
@@ -246,7 +246,7 @@ void CL_ParseSnapshot( msg_t *msg ) {
 			// The frame that the server did the delta from
 			// is too old, so we can't reconstruct it properly.
 			Com_Printf ("Delta frame too old.\n");
-		} else if ( cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES-128 ) {
+		} else if ( g_clientActive.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES-128 ) {
 			Com_Printf ("Delta parseEntitiesNum too old.\n");
 		} else {
 			newSnap.valid = true;	// valid delta parse
@@ -279,35 +279,35 @@ void CL_ParseSnapshot( msg_t *msg ) {
 	// received and this one, so if there was a dropped packet
 	// it won't look like something valid to delta from next
 	// time we wrap around in the buffer
-	oldMessageNum = cl.snap.messageNum + 1;
+	oldMessageNum = g_clientActive.snap.messageNum + 1;
 
 	if ( newSnap.messageNum - oldMessageNum >= PACKET_BACKUP ) {
 		oldMessageNum = newSnap.messageNum - ( PACKET_BACKUP - 1 );
 	}
 	for ( ; oldMessageNum < newSnap.messageNum ; oldMessageNum++ ) {
-		cl.snapshots[oldMessageNum & PACKET_MASK].valid = false;
+		g_clientActive.snapshots[oldMessageNum & PACKET_MASK].valid = false;
 	}
 
 	// copy to the current good spot
-	cl.snap = newSnap;
-	cl.snap.ping = 999;
+	g_clientActive.snap = newSnap;
+	g_clientActive.snap.ping = 999;
 	// calculate ping time
 	for ( i = 0 ; i < PACKET_BACKUP ; i++ ) {
 		packetNum = ( clc.netchan.outgoingSequence - 1 - i ) & PACKET_MASK;
-		if ( cl.snap.ps.commandTime >= cl.outPackets[ packetNum ].p_serverTime ) {
-			cl.snap.ping = cls.realtime - cl.outPackets[ packetNum ].p_realtime;
+		if ( g_clientActive.snap.ps.commandTime >= g_clientActive.outPackets[ packetNum ].p_serverTime ) {
+			g_clientActive.snap.ping = cls.realtime - g_clientActive.outPackets[ packetNum ].p_realtime;
 			break;
 		}
 	}
 	// save the frame off in the backup array for later delta comparisons
-	cl.snapshots[cl.snap.messageNum & PACKET_MASK] = cl.snap;
+	g_clientActive.snapshots[g_clientActive.snap.messageNum & PACKET_MASK] = g_clientActive.snap;
 
 	if (cl_shownet->integer == 3) {
-		Com_Printf( "   snapshot:%i  delta:%i  ping:%i\n", cl.snap.messageNum,
-		cl.snap.deltaNum, cl.snap.ping );
+		Com_Printf( "   snapshot:%i  delta:%i  ping:%i\n", g_clientActive.snap.messageNum,
+		g_clientActive.snap.deltaNum, g_clientActive.snap.ping );
 	}
 
-	cl.newSnapshots = true;
+	g_clientActive.newSnapshots = true;
 }
 
 
@@ -331,12 +331,12 @@ void CL_SystemInfoChanged( void ) {
 	char			value[BIG_INFO_VALUE];
 	bool		gameSet;
 
-	systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SYSTEMINFO ];
+	systemInfo = g_clientActive.gameState.stringData + g_clientActive.gameState.stringOffsets[ CS_SYSTEMINFO ];
 	// NOTE TTimo:
 	// when the serverId changes, any further messages we send to the server will use this new serverId
 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=475
 	// in some cases, outdated cp commands might get sent with this news serverId
-	cl.serverId = atoi( Info_ValueForKey( systemInfo, "sv_serverid" ) );
+	g_clientActive.serverId = atoi( Info_ValueForKey( systemInfo, "sv_serverid" ) );
 
 	// don't set any vars when playing a demo
 	if ( clc.demoplaying ) {
@@ -403,7 +403,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 	clc.serverCommandSequence = MSG_ReadLong( msg );
 
 	// parse all the configstrings and baselines
-	cl.gameState.dataCount = 1;	// leave a 0 at the beginning for uninitialized configstrings
+	g_clientActive.gameState.dataCount = 1;	// leave a 0 at the beginning for uninitialized configstrings
 	while ( 1 ) {
 		cmd = MSG_ReadByte( msg );
 
@@ -421,21 +421,21 @@ void CL_ParseGamestate( msg_t *msg ) {
 			s = MSG_ReadBigString( msg );
 			len = strlen( s );
 
-			if ( len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
+			if ( len + 1 + g_clientActive.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
 				Com_Error( ERR_DROP, "MAX_GAMESTATE_CHARS exceeded" );
 			}
 
 			// append it to the gameState string buffer
-			cl.gameState.stringOffsets[ i ] = cl.gameState.dataCount;
-			Com_Memcpy( cl.gameState.stringData + cl.gameState.dataCount, s, len + 1 );
-			cl.gameState.dataCount += len + 1;
+			g_clientActive.gameState.stringOffsets[ i ] = g_clientActive.gameState.dataCount;
+			Com_Memcpy( g_clientActive.gameState.stringData + g_clientActive.gameState.dataCount, s, len + 1 );
+			g_clientActive.gameState.dataCount += len + 1;
 		} else if ( cmd == svc_baseline ) {
 			newnum = MSG_ReadBits( msg, GENTITYNUM_BITS );
 			if ( newnum < 0 || newnum >= MAX_GENTITIES ) {
 				Com_Error( ERR_DROP, "Baseline number out of range: %i", newnum );
 			}
 			Com_Memset (&nullstate, 0, sizeof(nullstate));
-			es = &cl.entityBaselines[ newnum ];
+			es = &g_clientActive.entityBaselines[ newnum ];
 			MSG_ReadDeltaEntity( msg, &nullstate, es, newnum );
 		} else {
 			Com_Error( ERR_DROP, "CL_ParseGamestate: bad command byte" );

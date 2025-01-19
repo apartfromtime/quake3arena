@@ -255,7 +255,7 @@ void IN_ButtonUp (void) {
 	IN_KeyUp(&in_buttons[1]);}
 
 void IN_CenterView (void) {
-	cl.viewangles[PITCH] = -SHORT2ANGLE(cl.snap.ps.delta_angles[PITCH]);
+	g_clientActive.viewangles[PITCH] = -SHORT2ANGLE(g_clientActive.snap.ps.delta_angles[PITCH]);
 }
 
 
@@ -290,12 +290,12 @@ void CL_AdjustAngles( void ) {
 	}
 
 	if ( !in_strafe.active ) {
-		cl.viewangles[YAW] -= speed*cl_yawspeed->value*CL_KeyState (&in_right);
-		cl.viewangles[YAW] += speed*cl_yawspeed->value*CL_KeyState (&in_left);
+		g_clientActive.viewangles[YAW] -= speed*cl_yawspeed->value*CL_KeyState (&in_right);
+		g_clientActive.viewangles[YAW] += speed*cl_yawspeed->value*CL_KeyState (&in_left);
 	}
 
-	cl.viewangles[PITCH] -= speed*cl_pitchspeed->value * CL_KeyState (&in_lookup);
-	cl.viewangles[PITCH] += speed*cl_pitchspeed->value * CL_KeyState (&in_lookdown);
+	g_clientActive.viewangles[PITCH] -= speed*cl_pitchspeed->value * CL_KeyState (&in_lookup);
+	g_clientActive.viewangles[PITCH] += speed*cl_pitchspeed->value * CL_KeyState (&in_lookdown);
 }
 
 /*
@@ -356,8 +356,8 @@ void CL_MouseEvent( int dx, int dy, int time ) {
 	} else if (cls.keyCatchers & KEYCATCH_CGAME) {
 		VM_Call(cgvm, CG_MOUSE_EVENT, dx, dy);
 	} else {
-		cl.mouseDx[cl.mouseIndex] += dx;
-		cl.mouseDy[cl.mouseIndex] += dy;
+		g_clientActive.mouseDx[g_clientActive.mouseIndex] += dx;
+		g_clientActive.mouseDy[g_clientActive.mouseIndex] += dy;
 	}
 }
 
@@ -372,7 +372,7 @@ void CL_JoystickEvent( int axis, int value, int time ) {
 	if ( axis < 0 || axis >= MAX_JOYSTICK_AXIS ) {
 		Com_Error( ERR_DROP, "CL_JoystickEvent: bad axis %i", axis );
 	}
-	cl.joystickAxis[axis] = value;
+	g_clientActive.joystickAxis[axis] = value;
 }
 
 /*
@@ -398,18 +398,18 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 	}
 
 	if ( !in_strafe.active ) {
-		cl.viewangles[YAW] += anglespeed * cl_yawspeed->value * cl.joystickAxis[AXIS_SIDE];
+		g_clientActive.viewangles[YAW] += anglespeed * cl_yawspeed->value * g_clientActive.joystickAxis[AXIS_SIDE];
 	} else {
-		cmd->rightmove = ClampChar( cmd->rightmove + cl.joystickAxis[AXIS_SIDE] );
+		cmd->rightmove = ClampChar( cmd->rightmove + g_clientActive.joystickAxis[AXIS_SIDE] );
 	}
 
 	if ( in_mlooking ) {
-		cl.viewangles[PITCH] += anglespeed * cl_pitchspeed->value * cl.joystickAxis[AXIS_FORWARD];
+		g_clientActive.viewangles[PITCH] += anglespeed * cl_pitchspeed->value * g_clientActive.joystickAxis[AXIS_FORWARD];
 	} else {
-		cmd->forwardmove = ClampChar( cmd->forwardmove + cl.joystickAxis[AXIS_FORWARD] );
+		cmd->forwardmove = ClampChar( cmd->forwardmove + g_clientActive.joystickAxis[AXIS_FORWARD] );
 	}
 
-	cmd->upmove = ClampChar( cmd->upmove + cl.joystickAxis[AXIS_UP] );
+	cmd->upmove = ClampChar( cmd->upmove + g_clientActive.joystickAxis[AXIS_UP] );
 }
 
 /*
@@ -424,21 +424,21 @@ void CL_MouseMove( usercmd_t *cmd ) {
 
 	// allow mouse smoothing
 	if ( m_filter->integer ) {
-		mx = ( cl.mouseDx[0] + cl.mouseDx[1] ) * 0.5;
-		my = ( cl.mouseDy[0] + cl.mouseDy[1] ) * 0.5;
+		mx = ( g_clientActive.mouseDx[0] + g_clientActive.mouseDx[1] ) * 0.5;
+		my = ( g_clientActive.mouseDy[0] + g_clientActive.mouseDy[1] ) * 0.5;
 	} else {
-		mx = cl.mouseDx[cl.mouseIndex];
-		my = cl.mouseDy[cl.mouseIndex];
+		mx = g_clientActive.mouseDx[g_clientActive.mouseIndex];
+		my = g_clientActive.mouseDy[g_clientActive.mouseIndex];
 	}
-	cl.mouseIndex ^= 1;
-	cl.mouseDx[cl.mouseIndex] = 0;
-	cl.mouseDy[cl.mouseIndex] = 0;
+	g_clientActive.mouseIndex ^= 1;
+	g_clientActive.mouseDx[g_clientActive.mouseIndex] = 0;
+	g_clientActive.mouseDy[g_clientActive.mouseIndex] = 0;
 
 	rate = sqrt( mx * mx + my * my ) / (float)frame_msec;
 	accelSensitivity = cl_sensitivity->value + rate * cl_mouseAccel->value;
 
 	// scale by FOV
-	accelSensitivity *= cl.cgameSensitivity;
+	accelSensitivity *= g_clientActive.cgameSensitivity;
 
 	if ( rate && cl_showMouseRate->integer ) {
 		Com_Printf( "%f : %f\n", rate, accelSensitivity );
@@ -455,11 +455,11 @@ void CL_MouseMove( usercmd_t *cmd ) {
 	if ( in_strafe.active ) {
 		cmd->rightmove = ClampChar( cmd->rightmove + m_side->value * mx );
 	} else {
-		cl.viewangles[YAW] -= m_yaw->value * mx;
+		g_clientActive.viewangles[YAW] -= m_yaw->value * mx;
 	}
 
 	if ( (in_mlooking || cl_freelook->integer) && !in_strafe.active ) {
-		cl.viewangles[PITCH] += m_pitch->value * my;
+		g_clientActive.viewangles[PITCH] += m_pitch->value * my;
 	} else {
 		cmd->forwardmove = ClampChar( cmd->forwardmove - m_forward->value * my );
 	}
@@ -507,14 +507,14 @@ void CL_FinishMove( usercmd_t *cmd ) {
 	int		i;
 
 	// copy the state that the cgame is currently sending
-	cmd->weapon = cl.cgameUserCmdValue;
+	cmd->weapon = g_clientActive.cgameUserCmdValue;
 
 	// send the current server time so the amount of movement
 	// can be determined without allowing cheating
-	cmd->serverTime = cl.serverTime;
+	cmd->serverTime = g_clientActive.serverTime;
 
 	for (i=0 ; i<3 ; i++) {
-		cmd->angles[i] = ANGLE2SHORT(cl.viewangles[i]);
+		cmd->angles[i] = ANGLE2SHORT(g_clientActive.viewangles[i]);
 	}
 }
 
@@ -528,7 +528,7 @@ usercmd_t CL_CreateCmd( void ) {
 	usercmd_t	cmd;
 	vec3_t		oldAngles;
 
-	VectorCopy( cl.viewangles, oldAngles );
+	VectorCopy( g_clientActive.viewangles, oldAngles );
 
 	// keyboard angle adjustment
 	CL_AdjustAngles ();
@@ -547,10 +547,10 @@ usercmd_t CL_CreateCmd( void ) {
 	CL_JoystickMove( &cmd );
 
 	// check to make sure the angles haven't wrapped
-	if ( cl.viewangles[PITCH] - oldAngles[PITCH] > 90 ) {
-		cl.viewangles[PITCH] = oldAngles[PITCH] + 90;
-	} else if ( oldAngles[PITCH] - cl.viewangles[PITCH] > 90 ) {
-		cl.viewangles[PITCH] = oldAngles[PITCH] - 90;
+	if ( g_clientActive.viewangles[PITCH] - oldAngles[PITCH] > 90 ) {
+		g_clientActive.viewangles[PITCH] = oldAngles[PITCH] + 90;
+	} else if ( oldAngles[PITCH] - g_clientActive.viewangles[PITCH] > 90 ) {
+		g_clientActive.viewangles[PITCH] = oldAngles[PITCH] - 90;
 	} 
 
 	// store out the final values
@@ -559,10 +559,10 @@ usercmd_t CL_CreateCmd( void ) {
 	// draw debug graphs of turning for mouse testing
 	if ( cl_debugMove->integer ) {
 		if ( cl_debugMove->integer == 1 ) {
-			SCR_DebugGraph( abs(cl.viewangles[YAW] - oldAngles[YAW]), 0 );
+			SCR_DebugGraph( abs(g_clientActive.viewangles[YAW] - oldAngles[YAW]), 0 );
 		}
 		if ( cl_debugMove->integer == 2 ) {
-			SCR_DebugGraph( abs(cl.viewangles[PITCH] - oldAngles[PITCH]), 0 );
+			SCR_DebugGraph( abs(g_clientActive.viewangles[PITCH] - oldAngles[PITCH]), 0 );
 		}
 	}
 
@@ -597,10 +597,10 @@ void CL_CreateNewCommands( void ) {
 
 
 	// generate a command for this frame
-	cl.cmdNumber++;
-	cmdNum = cl.cmdNumber & CMD_MASK;
-	cl.cmds[cmdNum] = CL_CreateCmd ();
-	cmd = &cl.cmds[cmdNum];
+	g_clientActive.cmdNumber++;
+	cmdNum = g_clientActive.cmdNumber & CMD_MASK;
+	g_clientActive.cmds[cmdNum] = CL_CreateCmd ();
+	cmd = &g_clientActive.cmds[cmdNum];
 }
 
 /*
@@ -655,7 +655,7 @@ bool CL_ReadyToSendPacket( void ) {
 		Cvar_Set( "cl_maxpackets", "125" );
 	}
 	oldPacketNum = (clc.netchan.outgoingSequence - 1) & PACKET_MASK;
-	delta = cls.realtime -  cl.outPackets[ oldPacketNum ].p_realtime;
+	delta = cls.realtime -  g_clientActive.outPackets[ oldPacketNum ].p_realtime;
 	if ( delta < 1000 / cl_maxpackets->integer ) {
 		// the accumulated commands will go out in the next packet
 		return false;
@@ -708,7 +708,7 @@ void CL_WritePacket( void ) {
 	MSG_Bitstream( &buf );
 	// write the current serverId so the server
 	// can tell if this is from the current gameState
-	MSG_WriteLong( &buf, cl.serverId );
+	MSG_WriteLong( &buf, g_clientActive.serverId );
 
 	// write the last message we received, which can
 	// be used for delta compression, and is also used
@@ -734,7 +734,7 @@ void CL_WritePacket( void ) {
 		Cvar_Set( "cl_packetdup", "5" );
 	}
 	oldPacketNum = (clc.netchan.outgoingSequence - 1 - cl_packetdup->integer) & PACKET_MASK;
-	count = cl.cmdNumber - cl.outPackets[ oldPacketNum ].p_cmdNumber;
+	count = g_clientActive.cmdNumber - g_clientActive.outPackets[ oldPacketNum ].p_cmdNumber;
 	if ( count > MAX_PACKET_USERCMDS ) {
 		count = MAX_PACKET_USERCMDS;
 		Com_Printf("MAX_PACKET_USERCMDS\n");
@@ -745,8 +745,8 @@ void CL_WritePacket( void ) {
 		}
 
 		// begin a client move command
-		if ( cl_nodelta->integer || !cl.snap.valid || clc.demowaiting
-			|| clc.serverMessageSequence != cl.snap.messageNum ) {
+		if ( cl_nodelta->integer || !g_clientActive.snap.valid || clc.demowaiting
+			|| clc.serverMessageSequence != g_clientActive.snap.messageNum ) {
 			MSG_WriteByte (&buf, clc_moveNoDelta);
 		} else {
 			MSG_WriteByte (&buf, clc_move);
@@ -764,8 +764,8 @@ void CL_WritePacket( void ) {
 
 		// write all the commands, including the predicted command
 		for ( i = 0 ; i < count ; i++ ) {
-			j = (cl.cmdNumber - count + i + 1) & CMD_MASK;
-			cmd = &cl.cmds[j];
+			j = (g_clientActive.cmdNumber - count + i + 1) & CMD_MASK;
+			cmd = &g_clientActive.cmds[j];
 			MSG_WriteDeltaUsercmdKey (&buf, key, oldcmd, cmd);
 			oldcmd = cmd;
 		}
@@ -775,9 +775,9 @@ void CL_WritePacket( void ) {
 	// deliver the message
 	//
 	packetNum = clc.netchan.outgoingSequence & PACKET_MASK;
-	cl.outPackets[ packetNum ].p_realtime = cls.realtime;
-	cl.outPackets[ packetNum ].p_serverTime = oldcmd->serverTime;
-	cl.outPackets[ packetNum ].p_cmdNumber = cl.cmdNumber;
+	g_clientActive.outPackets[ packetNum ].p_realtime = cls.realtime;
+	g_clientActive.outPackets[ packetNum ].p_serverTime = oldcmd->serverTime;
+	g_clientActive.outPackets[ packetNum ].p_cmdNumber = g_clientActive.cmdNumber;
 	clc.lastPacketSentTime = cls.realtime;
 
 	if ( cl_showSend->integer ) {

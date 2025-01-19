@@ -146,7 +146,7 @@ typedef struct {
 	entityState_t	parseEntities[MAX_PARSE_ENTITIES];
 } clientActive_t;
 
-extern	clientActive_t		cl;
+extern	clientActive_t		g_clientActive;
 
 /*
 =============================================================================
