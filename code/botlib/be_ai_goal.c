@@ -271,7 +271,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 		return NULL;
 	} //end if
 	//initialize item config
-	ic = (itemconfig_t *) GetClearedHunkMemory(sizeof(itemconfig_t) +
+	ic = (itemconfig_t *) GetHunkMemory(sizeof(itemconfig_t) +
 														max_iteminfo * sizeof(iteminfo_t));
 	ic->iteminfo = (iteminfo_t *) ((char *) ic + sizeof(itemconfig_t));
 	ic->numiteminfo = 0;
@@ -283,7 +283,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			if (ic->numiteminfo >= max_iteminfo)
 			{
 				SourceError(source, "more than %d item info defined\n", max_iteminfo);
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -291,7 +291,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			Com_Memset(ii, 0, sizeof(iteminfo_t));
 			if (!PC_ExpectTokenType(source, TT_STRING, 0, &token))
 			{
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeMemory(source);
 				return NULL;
 			} //end if
@@ -299,7 +299,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			strncpy(ii->classname, token.string, sizeof(ii->classname)-1);
 			if (!ReadStructure(source, &iteminfo_struct, (char *) ii))
 			{
-				FreeMemory(ic);
+				//FreeMemory(ic);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -309,7 +309,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 		else
 		{
 			SourceError(source, "unknown definition %s\n", token.string);
-			FreeMemory(ic);
+			//FreeMemory(ic);
 			FreeSource(source);
 			return NULL;
 		} //end else
@@ -339,7 +339,7 @@ int *ItemWeightIndex(weightconfig_t *iwc, itemconfig_t *ic)
 		index[i] = FindFuzzyWeight(iwc, ic->iteminfo[i].classname);
 		if (index[i] < 0)
 		{
-			Log_Write("item info %d \"%s\" has no fuzzy weight\r\n", i, ic->iteminfo[i].classname);
+			Bot_LogPrintf("item info %d \"%s\" has no fuzzy weight\r\n", i, ic->iteminfo[i].classname);
 		} //end if
 	} //end for
 	return index;
@@ -546,7 +546,7 @@ void BotInitLevelItems(void)
 		//ic->iteminfo[i].modelindex = AAS_IndexFromModel(ic->iteminfo[i].model);
 		if (!ic->iteminfo[i].modelindex)
 		{
-			Log_Write("item %s has modelindex 0", ic->iteminfo[i].classname);
+			Bot_LogPrintf("item %s has modelindex 0\r\n", ic->iteminfo[i].classname);
 		} //end if
 	} //end for
 
@@ -563,7 +563,7 @@ void BotInitLevelItems(void)
 		} //end for
 		if (i >= ic->numiteminfo)
 		{
-			Log_Write("entity %s unknown item\r\n", classname);
+			Bot_LogPrintf("entity %s unknown item\r\n", classname);
 			continue;
 		} //end if
 		//get the origin of the item
@@ -588,7 +588,7 @@ void BotInitLevelItems(void)
 				{
 					//if the item is not reachable from a jumppad
 					goalareanum = AAS_BestReachableFromJumpPadArea(origin, ic->iteminfo[i].mins, ic->iteminfo[i].maxs);
-					Log_Write("item %s reachable from jumppad area %d\r\n", ic->iteminfo[i].classname, goalareanum);
+					Bot_LogPrintf("item %s reachable from jumppad area %d\r\n", ic->iteminfo[i].classname, goalareanum);
 					//botimport.Print(PRT_MESSAGE, "item %s reachable from jumppad area %d\r\n", ic->iteminfo[i].classname, goalareanum);
 					if (!goalareanum) continue;
 				} //end if
@@ -710,7 +710,7 @@ void BotDumpAvoidGoals(int goalstate)
 		if (gs->avoidgoaltimes[i] >= AAS_Time())
 		{
 			BotGoalName(gs->avoidgoals[i], name, 32);
-			Log_Write("avoid goal %s, number %d for %f seconds", name,
+			Bot_LogPrintf("avoid goal %s, number %d for %f seconds\r\n", name,
 				gs->avoidgoals[i], gs->avoidgoaltimes[i] - AAS_Time());
 		} //end if
 	} //end for
@@ -1100,7 +1100,7 @@ void BotUpdateEntityItems(void)
 										li->goalorigin);
 					} //end if
 #ifdef DEBUG
-					Log_Write("linked item %s to an entity", ic->iteminfo[li->iteminfo].classname);
+					Bot_LogPrintf("linked item %s to an entity\r\n", ic->iteminfo[li->iteminfo].classname);
 #endif //DEBUG
 					break;
 				} //end if
@@ -1172,7 +1172,7 @@ void BotDumpGoalStack(int goalstate)
 	for (i = 1; i <= gs->goalstacktop; i++)
 	{
 		BotGoalName(gs->goalstack[i].number, name, 32);
-		Log_Write("%d: %s", i, name);
+		Bot_LogPrintf("%d: %s\r\n", i, name);
 	} //end for
 } //end of the function BotDumpGoalStack
 //===========================================================================
@@ -1787,7 +1787,7 @@ void BotShutdownGoalAI(void)
 {
 	int i;
 
-	if (itemconfig) FreeMemory(itemconfig);
+	if (itemconfig) //FreeMemory(itemconfig);
 	itemconfig = NULL;
 	if (levelitemheap) FreeMemory(levelitemheap);
 	levelitemheap = NULL;

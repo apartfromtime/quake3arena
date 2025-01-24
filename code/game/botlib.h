@@ -375,10 +375,18 @@ typedef struct botlib_import_s
 	// send a bot client command
 	void		(*BotClientCommand)(int client, char *command);
 	// memory allocation
-	void		*(*GetMemory)(int size);		// allocate from Zone
-	void		(*FreeMemory)(void *ptr);		// free memory from Zone
-	int			(*AvailableMemory)(void);		// available Zone memory
-	void		*(*HunkAlloc)(int size);		// allocate from hunk
+#ifdef ZONE_DEBUG
+	void*		(*Zone_AllocDebug)(int size, int tag, char* label, char* file, int line);
+#else
+	void		*(*Zone_Alloc)(int size, int tag);		// allocate from Zone
+#endif
+	void		(*Zone_Free)(void *ptr);		// free memory from Zone
+	int			(*Zone_AvailableMemory)(void);		// available Zone memory
+#ifdef HUNK_DEBUG
+	void* (*Hunk_AllocDebug)(int size, char* label, char* file, int line);
+#else
+	void* (*Hunk_Alloc)(int size);
+#endif
 
 	// cvar
 	cvar_t* (*Cvar_Get)(const char* name, const char* value, int flags);

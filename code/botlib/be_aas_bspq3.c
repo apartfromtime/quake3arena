@@ -49,13 +49,6 @@ extern botlib_import_t botimport;
 
 #define MAX_BSPENTITIES		2048
 
-typedef struct rgb_s
-{
-	int red;
-	int green;
-	int blue;
-} rgb_t;
-
 //bsp entity epair
 typedef struct bsp_epair_s
 {
@@ -182,7 +175,7 @@ bool AAS_EntityCollision(int entnum,
 	return false;
 } //end of the function AAS_EntityCollision
 //===========================================================================
-// returns true if in Potentially Hearable Set
+// returns true if in Potentially Visible Set
 //
 // Parameter:				-
 // Returns:					-
@@ -193,7 +186,7 @@ bool AAS_inPVS(vec3_t p1, vec3_t p2)
 	return botimport.inPVS(p1, p2);
 } //end of the function AAS_InPVS
 //===========================================================================
-// returns true if in Potentially Visible Set
+// returns true if in Potentially Hearable Set
 //
 // Parameter:				-
 // Returns:					-
@@ -352,6 +345,7 @@ int AAS_IntForBSPEpairKey(int ent, char *key, int *value)
 //===========================================================================
 void AAS_FreeBSPEntities(void)
 {
+	/*
 	int i;
 	bsp_entity_t *ent;
 	bsp_epair_t *epair, *nextepair;
@@ -359,17 +353,20 @@ void AAS_FreeBSPEntities(void)
 	for (i = 1; i < bspworld.numentities; i++)
 	{
 		ent = &bspworld.entities[i];
+
 		for (epair = ent->epairs; epair; epair = nextepair)
 		{
 			nextepair = epair->next;
-			//
 			if (epair->key) FreeMemory(epair->key);
 			if (epair->value) FreeMemory(epair->value);
 			FreeMemory(epair);
-		} //end for
-	} //end for
+		}
+		
+	}
+	*/
+
 	bspworld.numentities = 0;
-} //end of the function AAS_FreeBSPEntities
+}
 //===========================================================================
 //
 // Parameter:			-
@@ -408,7 +405,7 @@ void AAS_ParseBSPEntities(void)
 		while(PS_ReadToken(script, &token))
 		{
 			if (!strcmp(token.string, "}")) break;
-			epair = (bsp_epair_t *) GetClearedHunkMemory(sizeof(bsp_epair_t));
+			epair = (bsp_epair_t *) GetHunkMemory(sizeof(bsp_epair_t));
 			epair->next = ent->epairs;
 			ent->epairs = epair;
 			if (token.type != TT_STRING)
@@ -461,7 +458,7 @@ void AAS_DumpBSPData(void)
 {
 	AAS_FreeBSPEntities();
 
-	if (bspworld.dentdata) FreeMemory(bspworld.dentdata);
+	//if (bspworld.dentdata) FreeMemory(bspworld.dentdata);
 	bspworld.dentdata = NULL;
 	bspworld.entdatasize = 0;
 	//
@@ -479,7 +476,7 @@ int AAS_LoadBSPFile(void)
 {
 	AAS_DumpBSPData();
 	bspworld.entdatasize = strlen(botimport.BSPEntityData()) + 1;
-	bspworld.dentdata = (char *) GetClearedHunkMemory(bspworld.entdatasize);
+	bspworld.dentdata = (char *) GetHunkMemory(bspworld.entdatasize);
 	Com_Memcpy(bspworld.dentdata, botimport.BSPEntityData(), bspworld.entdatasize);
 	AAS_ParseBSPEntities();
 	bspworld.loaded = true;

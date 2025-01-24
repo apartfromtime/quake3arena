@@ -244,7 +244,7 @@ void InitConsoleMessageHeap(void)
 	if (consolemessageheap) FreeMemory(consolemessageheap);
 	//
 	max_messages = Botlib_CvarGet("max_messages", "1024")->integer;
-	consolemessageheap = (bot_consolemessage_t *) GetClearedHunkMemory(max_messages *
+	consolemessageheap = (bot_consolemessage_t *) GetHunkMemory(max_messages *
 												sizeof(bot_consolemessage_t));
 	consolemessageheap[0].prev = NULL;
 	consolemessageheap[0].next = &consolemessageheap[1];
@@ -569,23 +569,27 @@ void StringReplaceWords(char *string, char *synonym, char *replacement)
 //===========================================================================
 void BotDumpSynonymList(bot_synonymlist_t *synlist)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_synonymlist_t *syn;
 	bot_synonym_t *synonym;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+
 	for (syn = synlist; syn; syn = syn->next)
 	{
-	        fprintf(fp, "%ld : [", syn->context);
+		Bot_LogPrintf("%ld : [", syn->context);
+		
 		for (synonym = syn->firstsynonym; synonym; synonym = synonym->next)
 		{
-			fprintf(fp, "(\"%s\", %1.2f)", synonym->string, synonym->weight);
-			if (synonym->next) fprintf(fp, ", ");
-		} //end for
-		fprintf(fp, "]\n");
-	} //end for
-} //end of the function BotDumpSynonymList
+			Bot_LogPrintf("(\"%s\", %1.2f)", synonym->string, synonym->weight);
+			if (synonym->next) Bot_LogPrintf(", ");
+		}
+		
+		Bot_LogPrintf("]\r\n");
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -610,7 +614,7 @@ bot_synonymlist_t *BotLoadSynonyms(char *filename)
 	for (pass = 0; pass < 2; pass++)
 	{
 		//
-		if (pass && size) ptr = (char *) GetClearedHunkMemory(size);
+		if (pass && size) ptr = (char *) GetHunkMemory(size);
 		//
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
 		source = LoadSourceFile(filename);
@@ -920,23 +924,26 @@ int BotLoadChatMessage(source_t *source, char *chatmessagestring)
 //===========================================================================
 void BotDumpRandomStringList(bot_randomlist_t *randomlist)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_randomlist_t *random;
 	bot_randomstring_t *rs;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+	
 	for (random = randomlist; random; random = random->next)
 	{
-		fprintf(fp, "%s = {", random->string);
+		Bot_LogPrintf("%s = {", random->string);
+		
 		for (rs = random->firstrandomstring; rs; rs = rs->next)
 		{
-			fprintf(fp, "\"%s\"", rs->string);
-			if (rs->next) fprintf(fp, ", ");
-			else fprintf(fp, "}\n");
-		} //end for
-	} //end for
-} //end of the function BotDumpRandomStringList
+			Bot_LogPrintf("\"%s\"", rs->string);
+			if (rs->next) Bot_LogPrintf(", ");
+			else Bot_LogPrintf("}\r\n");
+		}
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -963,7 +970,7 @@ bot_randomlist_t *BotLoadRandomStrings(char *filename)
 	for (pass = 0; pass < 2; pass++)
 	{
 		//
-		if (pass && size) ptr = (char *) GetClearedHunkMemory(size);
+		if (pass && size) ptr = (char *) GetHunkMemory(size);
 		//
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
 		source = LoadSourceFile(filename);
@@ -1076,35 +1083,41 @@ char *RandomString(char *name)
 //===========================================================================
 void BotDumpMatchTemplates(bot_matchtemplate_t *matches)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_matchtemplate_t *mt;
 	bot_matchpiece_t *mp;
 	bot_matchstring_t *ms;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
+
 	for (mt = matches; mt; mt = mt->next)
 	{
-	        fprintf(fp, "{ " );
+		Bot_LogPrintf("{ " );
+
 		for (mp = mt->first; mp; mp = mp->next)
 		{
 			if (mp->type == MT_STRING)
 			{
 				for (ms = mp->firststring; ms; ms = ms->next)
 				{
-					fprintf(fp, "\"%s\"", ms->string);
-					if (ms->next) fprintf(fp, "|");
-				} //end for
-			} //end if
+					Bot_LogPrintf("\"%s\"", ms->string);
+
+					if (ms->next) Bot_LogPrintf("|");
+				}
+			}
 			else if (mp->type == MT_VARIABLE)
 			{
-				fprintf(fp, "%d", mp->variable);
-			} //end else if
-			if (mp->next) fprintf(fp, ", ");
-		} //end for
-		fprintf(fp, " = (%d, %d);}\n", mt->type, mt->subtype);
-	} //end for
-} //end of the function BotDumpMatchTemplates
+				Bot_LogPrintf("%d", mp->variable);
+			}
+
+			if (mp->next) Bot_LogPrintf(", ");
+		}
+
+		Bot_LogPrintf(" = (%d, %d);}\r\n", mt->type, mt->subtype);
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -1124,10 +1137,10 @@ void BotFreeMatchPieces(bot_matchpiece_t *matchpieces)
 			for (ms = mp->firststring; ms; ms = nextms)
 			{
 				nextms = ms->next;
-				FreeMemory(ms);
+				//FreeMemory(ms);
 			} //end for
 		} //end if
-		FreeMemory(mp);
+		//FreeMemory(mp);
 	} //end for
 } //end of the function BotFreeMatchPieces
 //===========================================================================
@@ -1168,7 +1181,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 			} //end if
 			lastwasvariable = true;
 			//
-			matchpiece = (bot_matchpiece_t *) GetClearedHunkMemory(sizeof(bot_matchpiece_t));
+			matchpiece = (bot_matchpiece_t *) GetHunkMemory(sizeof(bot_matchpiece_t));
 			matchpiece->type = MT_VARIABLE;
 			matchpiece->variable = token.intvalue;
 			matchpiece->next = NULL;
@@ -1179,7 +1192,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 		else if (token.type == TT_STRING)
 		{
 			//
-			matchpiece = (bot_matchpiece_t *) GetClearedHunkMemory(sizeof(bot_matchpiece_t));
+			matchpiece = (bot_matchpiece_t *) GetHunkMemory(sizeof(bot_matchpiece_t));
 			matchpiece->firststring = NULL;
 			matchpiece->type = MT_STRING;
 			matchpiece->variable = 0;
@@ -1203,7 +1216,7 @@ bot_matchpiece_t *BotLoadMatchPieces(source_t *source, char *endtoken)
 					} //end if
 				} //end if
 				StripDoubleQuotes(token.string);
-				matchstring = (bot_matchstring_t *) GetClearedHunkMemory(sizeof(bot_matchstring_t) + strlen(token.string) + 1);
+				matchstring = (bot_matchstring_t *) GetHunkMemory(sizeof(bot_matchstring_t) + strlen(token.string) + 1);
 				matchstring->string = (char *) matchstring + sizeof(bot_matchstring_t);
 				strcpy(matchstring->string, token.string);
 				if (!strlen(token.string)) emptystring = true;
@@ -1246,7 +1259,7 @@ void BotFreeMatchTemplates(bot_matchtemplate_t *mt)
 	{
 		nextmt = mt->next;
 		BotFreeMatchPieces(mt->first);
-		FreeMemory(mt);
+		//FreeMemory(mt);
 	} //end for
 } //end of the function BotFreeMatchTemplates
 //===========================================================================
@@ -1298,7 +1311,7 @@ bot_matchtemplate_t *BotLoadMatchTemplates(char *matchfile)
 			//
 			PC_UnreadLastToken(source);
 			//
-			matchtemplate = (bot_matchtemplate_t *) GetClearedHunkMemory(sizeof(bot_matchtemplate_t));
+			matchtemplate = (bot_matchtemplate_t *) GetHunkMemory(sizeof(bot_matchtemplate_t));
 			matchtemplate->context = context;
 			matchtemplate->next = NULL;
 			//add the match template to the list
@@ -1365,7 +1378,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 	lastvariable = -1;
 	//pointer to the string to compare the match string with
 	strptr = match->string;
-	//Log_Write("match: %s", strptr);
+	//Log_Write("match: %s\r\n", strptr);
 	//compare the string with the current match string
 	for (mp = pieces; mp; mp = mp->next)
 	{
@@ -1380,7 +1393,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 					newstrptr = strptr;
 					break;
 				} //end if
-				//Log_Write("MT_STRING: %s", mp->string);
+				//Log_Write("MT_STRING: %s\r\n", mp->string);
 				index = StringContains(strptr, ms->string, false);
 				if (index >= 0)
 				{
@@ -1406,7 +1419,7 @@ int StringsMatch(bot_matchpiece_t *pieces, bot_match_t *match)
 		//if it is a variable piece of string
 		else if (mp->type == MT_VARIABLE)
 		{
-			//Log_Write("MT_VARIABLE");
+			//Log_Write("MT_VARIABLE: %d\r\n", mp->variable);
 			match->variables[mp->variable].offset = strptr - match->string;
 			lastvariable = mp->variable;
 		} //end else if
@@ -1551,7 +1564,7 @@ bot_stringlist_t *BotCheckChatMessageIntegrety(char *message, bot_stringlist_t *
 					{
 						if (!BotFindStringInList(stringlist, temp))
 						{
-							Log_Write("%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp);
+							Bot_LogPrintf("%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp);
 							s = GetClearedMemory(sizeof(bot_stringlist_t) + strlen(temp) + 1);
 							s->string = (char *) s + sizeof(bot_stringlist_t);
 							strcpy(s->string, temp);
@@ -1635,53 +1648,63 @@ void BotCheckReplyChatIntegrety(bot_replychat_t *replychat)
 //===========================================================================
 void BotDumpReplyChat(bot_replychat_t *replychat)
 {
-	FILE *fp;
+	qhandle_t fp;
 	bot_replychat_t *rp;
 	bot_replychatkey_t *key;
 	bot_chatmessage_t *cm;
 	bot_matchpiece_t *mp;
 
-	fp = Log_FilePointer();
+	fp = Bot_LogFilePointer();
 	if (!fp) return;
-	fprintf(fp, "BotDumpReplyChat:\n");
+
+	Bot_LogPrintf("BotDumpReplyChat:\r\n");
+	
 	for (rp = replychat; rp; rp = rp->next)
 	{
-		fprintf(fp, "[");
+		Bot_LogPrintf("[");
+
 		for (key = rp->keys; key; key = key->next)
 		{
-			if (key->flags & RCKFL_AND) fprintf(fp, "&");
-			else if (key->flags & RCKFL_NOT) fprintf(fp, "!");
+			if (key->flags & RCKFL_AND) Bot_LogPrintf("&");
+			else if (key->flags & RCKFL_NOT) Bot_LogPrintf("!");
 			//
-			if (key->flags & RCKFL_NAME) fprintf(fp, "name");
-			else if (key->flags & RCKFL_GENDERFEMALE) fprintf(fp, "female");
-			else if (key->flags & RCKFL_GENDERMALE) fprintf(fp, "male");
-			else if (key->flags & RCKFL_GENDERLESS) fprintf(fp, "it");
+			if (key->flags & RCKFL_NAME) Bot_LogPrintf("name");
+			else if (key->flags & RCKFL_GENDERFEMALE) Bot_LogPrintf("female");
+			else if (key->flags & RCKFL_GENDERMALE) Bot_LogPrintf("male");
+			else if (key->flags & RCKFL_GENDERLESS) Bot_LogPrintf("it");
 			else if (key->flags & RCKFL_VARIABLES)
 			{
-				fprintf(fp, "(");
+				Bot_LogPrintf("(");
+
 				for (mp = key->match; mp; mp = mp->next)
 				{
-					if (mp->type == MT_STRING) fprintf(fp, "\"%s\"", mp->firststring->string);
-					else fprintf(fp, "%d", mp->variable);
-					if (mp->next) fprintf(fp, ", ");
-				} //end for
-				fprintf(fp, ")");
-			} //end if
+					if (mp->type == MT_STRING) Bot_LogPrintf("\"%s\"", mp->firststring->string);
+					else Bot_LogPrintf("%d", mp->variable);
+					if (mp->next) Bot_LogPrintf(", ");
+				}
+
+				Bot_LogPrintf(")");
+			}
 			else if (key->flags & RCKFL_STRING)
 			{
-				fprintf(fp, "\"%s\"", key->string);
-			} //end if
-			if (key->next) fprintf(fp, ", ");
-			else fprintf(fp, "] = %1.0f\n", rp->priority);
-		} //end for
-		fprintf(fp, "{\n");
+				Bot_LogPrintf("\"%s\"", key->string);
+			}
+
+			if (key->next) Bot_LogPrintf(", ");
+			else Bot_LogPrintf("] = %1.0f\r\n", rp->priority);
+		}
+		
+		Bot_LogPrintf("{\r\n");
+
 		for (cm = rp->firstchatmessage; cm; cm = cm->next)
 		{
-			fprintf(fp, "\t\"%s\";\n", cm->chatmessage);
-		} //end for
-		fprintf(fp, "}\n");
-	} //end for
-} //end of the function BotDumpReplyChat
+			Bot_LogPrintf("\t\"%s\";\r\n", cm->chatmessage);
+		}
+
+		Bot_LogPrintf("}\r\n");
+	}
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -1701,15 +1724,15 @@ void BotFreeReplyChat(bot_replychat_t *replychat)
 		{
 			nextkey = key->next;
 			if (key->match) BotFreeMatchPieces(key->match);
-			if (key->string) FreeMemory(key->string);
-			FreeMemory(key);
+			//if (key->string) FreeMemory(key->string);
+			//FreeMemory(key);
 		} //end for
 		for (cm = rp->firstchatmessage; cm; cm = nextcm)
 		{
 			nextcm = cm->next;
-			FreeMemory(cm);
+			//FreeMemory(cm);
 		} //end for
-		FreeMemory(rp);
+		//FreeMemory(rp);
 	} //end for
 } //end of the function BotFreeReplyChat
 //===========================================================================
@@ -1855,7 +1878,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 			return NULL;
 		} //end if
 		//
-		replychat = GetClearedHunkMemory(sizeof(bot_replychat_t));
+		replychat = GetHunkMemory(sizeof(bot_replychat_t));
 		replychat->keys = NULL;
 		replychat->next = replychatlist;
 		replychatlist = replychat;
@@ -1863,7 +1886,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 		do
 		{
 			//allocate a key
-			key = (bot_replychatkey_t *) GetClearedHunkMemory(sizeof(bot_replychatkey_t));
+			key = (bot_replychatkey_t *) GetHunkMemory(sizeof(bot_replychatkey_t));
 			key->flags = 0;
 			key->string = NULL;
 			key->match = NULL;
@@ -1909,7 +1932,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 					FreeSource(source);
 					return NULL;
 				} //end if
-				key->string = (char *) GetClearedHunkMemory(strlen(namebuffer) + 1);
+				key->string = (char *) GetHunkMemory(strlen(namebuffer) + 1);
 				strcpy(key->string, namebuffer);
 			} //end else if
 			else //normal string key
@@ -1922,7 +1945,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 					return NULL;
 				} //end if
 				StripDoubleQuotes(token.string);
-				key->string = (char *) GetClearedHunkMemory(strlen(token.string) + 1);
+				key->string = (char *) GetHunkMemory(strlen(token.string) + 1);
 				strcpy(key->string, token.string);
 			} //end else
 			//
@@ -1956,7 +1979,7 @@ bot_replychat_t *BotLoadReplyChat(char *filename)
 				FreeSource(source);
 				return NULL;
 			} //end if
-			chatmessage = (bot_chatmessage_t *) GetClearedHunkMemory(sizeof(bot_chatmessage_t) + strlen(chatmessagestring) + 1);
+			chatmessage = (bot_chatmessage_t *) GetHunkMemory(sizeof(bot_chatmessage_t) + strlen(chatmessagestring) + 1);
 			chatmessage->chatmessage = (char *) chatmessage + sizeof(bot_chatmessage_t);
 			strcpy(chatmessage->chatmessage, chatmessagestring);
 			chatmessage->time = -2*CHATMESSAGE_RECENTTIME;
@@ -1990,19 +2013,19 @@ void BotDumpInitialChat(bot_chat_t *chat)
 	bot_chattype_t *t;
 	bot_chatmessage_t *m;
 
-	Log_Write("{");
+	Bot_LogPrintf("{");
 	for (t = chat->types; t; t = t->next)
 	{
-		Log_Write(" type \"%s\"", t->name);
-		Log_Write(" {");
-		Log_Write("  numchatmessages = %d", t->numchatmessages);
+		Bot_LogPrintf(" type \"%s\"", t->name);
+		Bot_LogPrintf(" {");
+		Bot_LogPrintf("  numchatmessages = %d", t->numchatmessages);
 		for (m = t->firstchatmessage; m; m = m->next)
 		{
-			Log_Write("  \"%s\"", m->chatmessage);
+			Bot_LogPrintf("  \"%s\"", m->chatmessage);
 		} //end for
-		Log_Write(" }");
+		Bot_LogPrintf(" }");
 	} //end for
-	Log_Write("}");
+	Bot_LogPrintf("}\r\n");
 } //end of the function BotDumpInitialChat
 //===========================================================================
 //
@@ -3016,13 +3039,13 @@ void BotShutdownChatAI(void)
 			ichatdata[i] = NULL;
 		} //end if
 	} //end for
-	if (consolemessageheap) FreeMemory(consolemessageheap);
+	if (consolemessageheap) //FreeMemory(consolemessageheap);
 	consolemessageheap = NULL;
 	if (matchtemplates) BotFreeMatchTemplates(matchtemplates);
 	matchtemplates = NULL;
-	if (randomstrings) FreeMemory(randomstrings);
+	if (randomstrings) //FreeMemory(randomstrings);
 	randomstrings = NULL;
-	if (synonyms) FreeMemory(synonyms);
+	if (synonyms) //FreeMemory(synonyms);
 	synonyms = NULL;
 	if (replychats) BotFreeReplyChat(replychats);
 	replychats = NULL;

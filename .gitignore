@@ -2,6 +2,7 @@
 */missionpack
 */ipch
 */.vs
+*/*/.vs
 */*.opensdf
 */*.suo
 */*.sdf

@@ -72,8 +72,6 @@ typedef enum
 
 //=============================================================================
 
-void* Com_Allocate(int bytes);
-void Com_Dealloc(void* ptr);
 void Com_Memset(void* dest, const int val, const size_t count);
 void Com_Memcpy(void* dest, const void* src, const size_t count);
 

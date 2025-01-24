@@ -281,10 +281,10 @@ void BotImport_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t outmin
 BotImport_GetMemory
 ==================
 */
-void *BotImport_GetMemory(int size) {
-	void *ptr;
-
-	ptr = Z_TagMalloc( size, TAG_BOTLIB );
+void* BotImport_ZoneAlloc(int size)
+{
+	void* ptr;
+	ptr = Z_TagMalloc(size, TAG_BOTLIB);
 	return ptr;
 }
 
@@ -293,21 +293,42 @@ void *BotImport_GetMemory(int size) {
 BotImport_FreeMemory
 ==================
 */
-void BotImport_FreeMemory(void *ptr) {
+void BotImport_ZoneFree(void* ptr)
+{
 	Z_Free(ptr);
 }
 
+/*
+==================
+BotImport_Zone_AvailableMemory
+==================
+*/
+int BotImport_ZoneAvailableMemory(void)
+{
+	return Z_AvailableMemory();
+}
+
+#ifdef HUNK_DEBUG
+/*
+=================
+BotImport_HunkAllocDebug
+=================
+*/
+void* BotImport_HunkAllocDebug(int size, char* label, char* file, int line)
+{
+	return Hunk_AllocDebug(size, label, file, line);
+}
+#else
 /*
 =================
 BotImport_HunkAlloc
 =================
 */
 void *BotImport_HunkAlloc( int size ) {
-	if( Hunk_CheckMark() ) {
-		Com_Error( ERR_DROP, "SV_Bot_HunkAlloc: Alloc with marks already set\n" );
-	}
-	return Hunk_Alloc( size, h_high );
+
+	return Hunk_Alloc( size );
 }
+#endif // HUNK_DEBUG
 
 /*
 ==================
@@ -478,6 +499,7 @@ SV_BotInitCvars
 */
 void SV_BotInitCvars(void) {
 
+	Cvar_Get("bot_log", "0", 0);						// bot log file
 	Cvar_Get("bot_enable", "1", 0);						//enable the bot
 	Cvar_Get("bot_developer", "0", CVAR_CHEAT);			//bot developer mode
 	Cvar_Get("bot_debug", "0", CVAR_CHEAT);				//enable bot debugging
@@ -535,11 +557,19 @@ void SV_BotInitBotLib(void) {
 	botlib_import.BSPModelMinsMaxsOrigin = BotImport_BSPModelMinsMaxsOrigin;
 	botlib_import.BotClientCommand = BotClientCommand;
 
-	//memory management
-	botlib_import.GetMemory = BotImport_GetMemory;
-	botlib_import.FreeMemory = BotImport_FreeMemory;
-	botlib_import.AvailableMemory = Z_AvailableMemory;
-	botlib_import.HunkAlloc = BotImport_HunkAlloc;
+	// memory management
+#ifdef ZONE_DEBUG
+	botlib_import.Zone_AllocDebug = Z_TagMallocDebug;
+#else
+	botlib_import.Zone_Alloc = Z_TagMalloc;
+#endif // ZONE_DEBUG
+	botlib_import.Zone_Free = Z_Free;
+	botlib_import.Zone_AvailableMemory = BotImport_ZoneAvailableMemory;
+#ifdef HUNK_DEBUG
+	botlib_import.Hunk_AllocDebug = BotImport_HunkAllocDebug;
+#else
+	botlib_import.Hunk_Alloc = BotImport_HunkAlloc;
+#endif // HUNK_DEBUG
 
 	botlib_import.Cvar_Get = Cvar_Get;
 	botlib_import.Cvar_Set = Cvar_Set;

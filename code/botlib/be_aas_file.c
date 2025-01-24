@@ -183,46 +183,46 @@ void AAS_SwapAASData(void)
 void AAS_DumpAASData(void)
 {
 	aasworld.numbboxes = 0;
-	if (aasworld.bboxes) FreeMemory(aasworld.bboxes);
+	//if (aasworld.bboxes) FreeMemory(aasworld.bboxes);
 	aasworld.bboxes = NULL;
 	aasworld.numvertexes = 0;
-	if (aasworld.vertexes) FreeMemory(aasworld.vertexes);
+	//if (aasworld.vertexes) FreeMemory(aasworld.vertexes);
 	aasworld.vertexes = NULL;
 	aasworld.numplanes = 0;
-	if (aasworld.planes) FreeMemory(aasworld.planes);
+	//if (aasworld.planes) FreeMemory(aasworld.planes);
 	aasworld.planes = NULL;
 	aasworld.numedges = 0;
-	if (aasworld.edges) FreeMemory(aasworld.edges);
+	//if (aasworld.edges) FreeMemory(aasworld.edges);
 	aasworld.edges = NULL;
 	aasworld.edgeindexsize = 0;
-	if (aasworld.edgeindex) FreeMemory(aasworld.edgeindex);
+	//if (aasworld.edgeindex) FreeMemory(aasworld.edgeindex);
 	aasworld.edgeindex = NULL;
 	aasworld.numfaces = 0;
-	if (aasworld.faces) FreeMemory(aasworld.faces);
+	//if (aasworld.faces) FreeMemory(aasworld.faces);
 	aasworld.faces = NULL;
 	aasworld.faceindexsize = 0;
-	if (aasworld.faceindex) FreeMemory(aasworld.faceindex);
+	//if (aasworld.faceindex) FreeMemory(aasworld.faceindex);
 	aasworld.faceindex = NULL;
 	aasworld.numareas = 0;
-	if (aasworld.areas) FreeMemory(aasworld.areas);
+	//if (aasworld.areas) FreeMemory(aasworld.areas);
 	aasworld.areas = NULL;
 	aasworld.numareasettings = 0;
-	if (aasworld.areasettings) FreeMemory(aasworld.areasettings);
+	//if (aasworld.areasettings) FreeMemory(aasworld.areasettings);
 	aasworld.areasettings = NULL;
 	aasworld.reachabilitysize = 0;
-	if (aasworld.reachability) FreeMemory(aasworld.reachability);
+	//if (aasworld.reachability) FreeMemory(aasworld.reachability);
 	aasworld.reachability = NULL;
 	aasworld.numnodes = 0;
-	if (aasworld.nodes) FreeMemory(aasworld.nodes);
+	//if (aasworld.nodes) FreeMemory(aasworld.nodes);
 	aasworld.nodes = NULL;
 	aasworld.numportals = 0;
-	if (aasworld.portals) FreeMemory(aasworld.portals);
+	//if (aasworld.portals) FreeMemory(aasworld.portals);
 	aasworld.portals = NULL;
 	aasworld.numportals = 0;
-	if (aasworld.portalindex) FreeMemory(aasworld.portalindex);
+	//if (aasworld.portalindex) FreeMemory(aasworld.portalindex);
 	aasworld.portalindex = NULL;
 	aasworld.portalindexsize = 0;
-	if (aasworld.clusters) FreeMemory(aasworld.clusters);
+	//if (aasworld.clusters) FreeMemory(aasworld.clusters);
 	aasworld.clusters = NULL;
 	aasworld.numclusters = 0;
 	//
@@ -294,7 +294,7 @@ char *AAS_LoadAASLump(qhandle_t fp, int offset, int length, int *lastoffset, int
 	if (!length)
 	{
 		//just alloc a dummy
-		return (char *) GetClearedHunkMemory(size+1);
+		return (char *) GetHunkMemory(size+1);
 	} //end if
 	//seek to the data
 	if (offset != *lastoffset)
@@ -309,7 +309,7 @@ char *AAS_LoadAASLump(qhandle_t fp, int offset, int length, int *lastoffset, int
 		} //end if
 	} //end if
 	//allocate memory
-	buf = (char *) GetClearedHunkMemory(length+1);
+	buf = (char *) GetHunkMemory(length+1);
 	//read the data
 	if (length)
 	{

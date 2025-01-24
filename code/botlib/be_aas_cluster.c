@@ -151,7 +151,7 @@ int AAS_UpdatePortal(int areanum, int clusternum)
 	{
 		//remove the cluster portal flag contents
 		aasworld.areasettings[areanum].contents &= ~AREACONTENTS_CLUSTERPORTAL;
-		Log_Write("portal area %d is seperating more than two clusters\r\n", areanum);
+		Bot_LogPrintf("portal area %d is seperating more than two clusters\r\n", areanum);
 		return false;
 	} //end else
 	if (aasworld.portalindexsize >= AAS_MAX_PORTALINDEXSIZE)
@@ -906,7 +906,7 @@ int AAS_CheckAreaForPossiblePortals(int areanum)
 		aasworld.areasettings[areanums[i]].contents |= AREACONTENTS_CLUSTERPORTAL;
 		//this area can be used as a route portal
 		aasworld.areasettings[areanums[i]].contents |= AREACONTENTS_ROUTEPORTAL;
-		Log_Write("possible portal: %d\r\n", areanums[i]);
+		Bot_LogPrintf("possible portal: %d\r\n", areanums[i]);
 	} //end for
 	//
 	return numareas;
@@ -1380,13 +1380,13 @@ int AAS_TestPortals(void)
 		if (!portal->frontcluster)
 		{
 			aasworld.areasettings[portal->areanum].contents &= ~AREACONTENTS_CLUSTERPORTAL;
-			Log_Write("portal area %d has no front cluster\r\n", portal->areanum);
+			Bot_LogPrintf("portal area %d has no front cluster\r\n", portal->areanum);
 			return false;
 		} //end if
 		if (!portal->backcluster)
 		{
 			aasworld.areasettings[portal->areanum].contents &= ~AREACONTENTS_CLUSTERPORTAL;
-			Log_Write("portal area %d has no back cluster\r\n", portal->areanum);
+			Bot_LogPrintf("portal area %d has no back cluster\r\n", portal->areanum);
 			return false;
 		} //end if
 	} //end for
@@ -1407,7 +1407,7 @@ void AAS_CountForcedClusterPortals(void)
 	{
 		if (aasworld.areasettings[i].contents & AREACONTENTS_CLUSTERPORTAL)
 		{
-			Log_Write("area %d is a forced portal area\r\n", i);
+			Bot_LogPrintf("area %d is a forced portal area\r\n", i);
 			num++;
 		} //end if
 	} //end for
@@ -1520,7 +1520,7 @@ void AAS_InitClustering(void)
 	//write the portal areas to the log file
 	for (i = 1; i < aasworld.numportals; i++)
 	{
-		Log_Write("portal %d: area %d\r\n", i, aasworld.portals[i].areanum);
+		Bot_LogPrintf("portal %d: area %d\r\n", i, aasworld.portals[i].areanum);
 	} //end for
 	// report cluster info
 	botimport.Print(PRT_MESSAGE, "%6d portals created\n", aasworld.numportals);

@@ -180,12 +180,10 @@ void DumpWeaponConfig(weaponconfig_t *wc)
 	for (i = 0; i < wc->numprojectiles; i++)
 	{
 		WriteStructure(fp, &projectileinfo_struct, (char *) &wc->projectileinfo[i]);
-		Log_Flush();
 	} //end for
 	for (i = 0; i < wc->numweapons; i++)
 	{
 		WriteStructure(fp, &weaponinfo_struct, (char *) &wc->weaponinfo[i]);
-		Log_Flush();
 	} //end for
 } //end of the function DumpWeaponConfig
 #endif //DEBUG_AI_WEAP
@@ -228,7 +226,7 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 		return NULL;
 	} //end if
 	//initialize weapon config
-	wc = (weaponconfig_t *) GetClearedHunkMemory(sizeof(weaponconfig_t) +
+	wc = (weaponconfig_t *) GetHunkMemory(sizeof(weaponconfig_t) +
 										max_weaponinfo * sizeof(weaponinfo_t) +
 										max_projectileinfo * sizeof(projectileinfo_t));
 	wc->weaponinfo = (weaponinfo_t *) ((char *) wc + sizeof(weaponconfig_t));
@@ -244,14 +242,14 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 			Com_Memset(&weaponinfo, 0, sizeof(weaponinfo_t));
 			if (!ReadStructure(source, &weaponinfo_struct, (char *) &weaponinfo))
 			{
-				FreeMemory(wc);
+				//FreeMemory(wc);
 				FreeSource(source);
 				return NULL;
 			} //end if
 			if (weaponinfo.number < 0 || weaponinfo.number >= max_weaponinfo)
 			{
 				botimport.Print(PRT_ERROR, "weapon info number %d out of range in %s\n", weaponinfo.number, path);
-				FreeMemory(wc);
+				//FreeMemory(wc);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -263,14 +261,14 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 			if (wc->numprojectiles >= max_projectileinfo)
 			{
 				botimport.Print(PRT_ERROR, "more than %d projectiles defined in %s\n", max_projectileinfo, path);
-				FreeMemory(wc);
+				//FreeMemory(wc);
 				FreeSource(source);
 				return NULL;
 			} //end if
 			Com_Memset(&wc->projectileinfo[wc->numprojectiles], 0, sizeof(projectileinfo_t));
 			if (!ReadStructure(source, &projectileinfo_struct, (char *) &wc->projectileinfo[wc->numprojectiles]))
 			{
-				FreeMemory(wc);
+				//FreeMemory(wc);
 				FreeSource(source);
 				return NULL;
 			} //end if
@@ -279,7 +277,7 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 		else
 		{
 			botimport.Print(PRT_ERROR, "unknown definition %s in %s\n", token.string, path);
-			FreeMemory(wc);
+			//FreeMemory(wc);
 			FreeSource(source);
 			return NULL;
 		} //end else
@@ -292,13 +290,13 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 		if (!wc->weaponinfo[i].name[0])
 		{
 			botimport.Print(PRT_ERROR, "weapon %d has no name in %s\n", i, path);
-			FreeMemory(wc);
+			//FreeMemory(wc);
 			return NULL;
 		} //end if
 		if (!wc->weaponinfo[i].projectile[0])
 		{
 			botimport.Print(PRT_ERROR, "weapon %s has no projectile in %s\n", wc->weaponinfo[i].name, path);
-			FreeMemory(wc);
+			//FreeMemory(wc);
 			return NULL;
 		} //end if
 		//find the projectile info and copy it to the weapon info
@@ -313,7 +311,7 @@ weaponconfig_t *LoadWeaponConfig(char *filename)
 		if (j == wc->numprojectiles)
 		{
 			botimport.Print(PRT_ERROR, "weapon %s uses undefined projectile in %s\n", wc->weaponinfo[i].name, path);
-			FreeMemory(wc);
+			//FreeMemory(wc);
 			return NULL;
 		} //end if
 	} //end for
@@ -532,7 +530,7 @@ void BotShutdownWeaponAI(void)
 {
 	int i;
 
-	if (weaponconfig) FreeMemory(weaponconfig);
+	if (weaponconfig) //FreeMemory(weaponconfig);
 	weaponconfig = NULL;
 
 	for (i = 1; i <= MAX_CLIENTS; i++)

@@ -20,14 +20,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-/*****************************************************************************
- * name:		l_memory.h
- *
- * desc:		memory management
- *
- * $Archive: /source/code/botlib/l_memory.h $
- *
- *****************************************************************************/
+/*
+==============================================================================
+
+MEMORY
+
+==============================================================================
+*/
 
 //#define MEMDEBUG
 
@@ -56,9 +55,7 @@ void *GetClearedMemory(unsigned long size);
 #define GetClearedHunkMemory GetClearedMemory
 #else
 //allocate a memory block of the given size
-void *GetHunkMemory(unsigned long size);
-//allocate a memory block of the given size and clear it
-void *GetClearedHunkMemory(unsigned long size);
+void* GetHunkMemory(unsigned long size);
 #endif
 #endif
 

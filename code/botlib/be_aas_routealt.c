@@ -153,7 +153,7 @@ int AAS_AlternativeRouteGoals(vec3_t start, int startareanum, vec3_t goal, int g
 		midrangeareas[i].valid = true;
 		midrangeareas[i].starttime = starttime;
 		midrangeareas[i].goaltime = goaltime;
-		Log_Write("%d midrange area %d", nummidrangeareas, i);
+		Bot_LogPrintf("%d midrange area %d\r\n", nummidrangeareas, i);
 		nummidrangeareas++;
 	} //end for
 	//

@@ -69,7 +69,7 @@ cvar_t	*cl_inGameVideo;
 cvar_t	*cl_serverStatusResendTime;
 cvar_t	*cl_trn;
 
-clientActive_t		cl;
+clientActive_t		g_clientActive;
 clientConnection_t	clc;
 clientStatic_t		cls;
 vm_t				*cgvm;
@@ -337,10 +337,10 @@ void CL_Record_f( void ) {
 
 	// configstrings
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
-		if ( !cl.gameState.stringOffsets[i] ) {
+		if ( !g_clientActive.gameState.stringOffsets[i] ) {
 			continue;
 		}
-		s = cl.gameState.stringData + cl.gameState.stringOffsets[i];
+		s = g_clientActive.gameState.stringData + g_clientActive.gameState.stringOffsets[i];
 		MSG_WriteByte (&buf, svc_configstring);
 		MSG_WriteShort (&buf, i);
 		MSG_WriteBigString (&buf, s);
@@ -349,7 +349,7 @@ void CL_Record_f( void ) {
 	// baselines
 	Com_Memset (&nullstate, 0, sizeof(nullstate));
 	for ( i = 0; i < MAX_GENTITIES ; i++ ) {
-		ent = &cl.entityBaselines[i];
+		ent = &g_clientActive.entityBaselines[i];
 		if ( !ent->number ) {
 			continue;
 		}
@@ -676,7 +676,7 @@ void CL_MapLoading( void ) {
 		cls.state = CA_CONNECTED;		// so the connect screen is drawn
 		Com_Memset( cls.updateInfoString, 0, sizeof( cls.updateInfoString ) );
 		Com_Memset( clc.serverMessage, 0, sizeof( clc.serverMessage ) );
-		Com_Memset( &cl.gameState, 0, sizeof( cl.gameState ) );
+		Com_Memset( &g_clientActive.gameState, 0, sizeof( g_clientActive.gameState ) );
 		clc.lastPacketSentTime = -9999;
 		SCR_UpdateScreen();
 	} else {
@@ -706,7 +706,7 @@ void CL_ClearState (void) {
 
 //	S_StopAllSounds();
 
-	Com_Memset( &cl, 0, sizeof( cl ) );
+	Com_Memset( &g_clientActive, 0, sizeof( g_clientActive ) );
 }
 
 
@@ -1158,7 +1158,7 @@ void CL_SendPureChecksums( void ) {
 	// "cp"
 	// "Yf"
 	Com_sprintf(cMsg, sizeof(cMsg), "Yf ");
-	Q_strcat(cMsg, sizeof(cMsg), va("%d ", cl.serverId) );
+	Q_strcat(cMsg, sizeof(cMsg), va("%d ", g_clientActive.serverId) );
 	Q_strcat(cMsg, sizeof(cMsg), pChecksums);
 	for (i = 0; i < 2; i++) {
 		cMsg[i] += 10;
@@ -1285,11 +1285,11 @@ void CL_Configstrings_f( void ) {
 	}
 
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
-		ofs = cl.gameState.stringOffsets[ i ];
+		ofs = g_clientActive.gameState.stringOffsets[ i ];
 		if ( !ofs ) {
 			continue;
 		}
-		Com_Printf( "%4i: %s\n", i, cl.gameState.stringData + ofs );
+		Com_Printf( "%4i: %s\n", i, g_clientActive.gameState.stringData + ofs );
 	}
 }
 
@@ -1938,13 +1938,13 @@ void CL_CheckTimeout( void ) {
 	if ( ( !cl_paused->integer || !sv_paused->integer ) 
 		&& cls.state >= CA_CONNECTED && cls.state != CA_CINEMATIC
 	    && cls.realtime - clc.lastPacketTime > cl_timeout->value*1000) {
-		if (++cl.timeoutcount > 5) {	// timeoutcount saves debugger
+		if (++g_clientActive.timeoutcount > 5) {	// timeoutcount saves debugger
 			Com_Printf ("\nServer connection timed out.\n");
 			CL_Disconnect( true );
 			return;
 		}
 	} else {
-		cl.timeoutcount = 0;
+		g_clientActive.timeoutcount = 0;
 	}
 }
 

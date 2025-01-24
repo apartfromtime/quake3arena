@@ -400,7 +400,7 @@ int AAS_Setup(void)
 	saveroutingcache = Botlib_CvarGet("saveroutingcache", "0");
 	//allocate memory for the entities
 	if (aasworld.entities) FreeMemory(aasworld.entities);
-	aasworld.entities = (aas_entity_t *) GetClearedHunkMemory(aasworld.maxentities * sizeof(aas_entity_t));
+	aasworld.entities = (aas_entity_t *) GetHunkMemory(aasworld.maxentities * sizeof(aas_entity_t));
 	//invalidate all the entities
 	AAS_InvalidateEntities();
 	//force some recalculations
@@ -429,7 +429,7 @@ void AAS_Shutdown(void)
 	//free the aas data
 	AAS_DumpAASData();
 	//free the entities
-	if (aasworld.entities) FreeMemory(aasworld.entities);
+	//if (aasworld.entities) FreeMemory(aasworld.entities);
 	//clear the aasworld structure
 	Com_Memset(&aasworld, 0, sizeof(aas_t));
 	//aas has not been initialized

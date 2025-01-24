@@ -20,150 +20,144 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-/*****************************************************************************
- * name:		l_log.c
- *
- * desc:		log file
- *
- * $Archive: /MissionPack/CODE/botlib/l_log.c $
- *
- *****************************************************************************/
+/*
+=============================================================================
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+BOT LOG
+
+=============================================================================
+*/
 
 #include "../game/q_shared.h"
 #include "../game/botlib.h"
-#include "be_interface.h"			//for botimport.Print
-#include "l_libvar.h"
+#include "be_interface.h"
+#include "l_log.h"
 
 #define MAX_LOGFILENAMESIZE		1024
 
 typedef struct logfile_s
 {
 	char filename[MAX_LOGFILENAMESIZE];
-	FILE *fp;
-	int numwrites;
+	qhandle_t handle;
 } logfile_t;
 
-static logfile_t logfile;
+extern cvar_t* bot_logfile;
+static logfile_t logfile = { 0 };
 
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Log_Open(char *filename)
+/*
+=================
+Log_Open
+=================
+*/
+void Bot_LogOpen(char* filename)
 {
-	if (!Botlib_CvarGet("log", "0")->integer) return;
-	if (!filename || !strlen(filename))
+	if (bot_logfile && bot_logfile->integer)
 	{
-		botimport.Print(PRT_MESSAGE, "openlog <filename>\n");
-		return;
-	} //end if
-	if (logfile.fp)
-	{
-		botimport.Print(PRT_ERROR, "log file %s is already opened\n", logfile.filename);
-		return;
-	} //end if
-	logfile.fp = fopen(filename, "wb");
-	if (!logfile.fp)
-	{
-		botimport.Print(PRT_ERROR, "can't open the log file %s\n", filename);
-		return;
-	} //end if
-	strncpy(logfile.filename, filename, MAX_LOGFILENAMESIZE);
-	botimport.Print(PRT_MESSAGE, "Opened log %s\n", logfile.filename);
-} //end of the function Log_Create
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Log_Close(void)
-{
-	if (!logfile.fp) return;
-	if (fclose(logfile.fp))
-	{
-		botimport.Print(PRT_ERROR, "can't close log file %s\n", logfile.filename);
-		return;
-	} //end if
-	logfile.fp = NULL;
-	botimport.Print(PRT_MESSAGE, "Closed log %s\n", logfile.filename);
-} //end of the function Log_Close
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Log_Shutdown(void)
-{
-	if (logfile.fp) Log_Close();
-} //end of the function Log_Shutdown
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Q_CDECL Log_Write(char *fmt, ...)
-{
-	va_list ap;
+		if (!logfile.handle && filename[0])
+		{
+			botimport.FS_FOpenFile(filename, &logfile.handle, FS_WRITE);
+		}
 
-	if (!logfile.fp) return;
-	va_start(ap, fmt);
-	vfprintf(logfile.fp, fmt, ap);
-	va_end(ap);
-	//fprintf(logfile.fp, "\r\n");
-	fflush(logfile.fp);
-} //end of the function Log_Write
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Q_CDECL Log_WriteTimeStamped(char *fmt, ...)
-{
-	va_list ap;
+		if (!logfile.handle)
+		{
+			botimport.Print(PRT_WARNING, "Couldn't open logfile: %s\n", filename);
+			return;
+		}
+		else
+		{
+			struct tm* newtime;
+			time_t aclock;
 
-	if (!logfile.fp) return;
-	fprintf(logfile.fp, "%d   %02d:%02d:%02d:%02d   ",
-					logfile.numwrites,
-					(int) (botlibglobals.time / 60 / 60),
-					(int) (botlibglobals.time / 60),
-					(int) (botlibglobals.time),
-					(int) ((int) (botlibglobals.time * 100)) -
-							((int) botlibglobals.time) * 100);
-	va_start(ap, fmt);
-	vfprintf(logfile.fp, fmt, ap);
-	va_end(ap);
-	fprintf(logfile.fp, "\r\n");
-	logfile.numwrites++;
-	fflush(logfile.fp);
-} //end of the function Log_Write
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-FILE *Log_FilePointer(void)
-{
-	return logfile.fp;
-} //end of the function Log_FilePointer
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void Log_Flush(void)
-{
-	if (logfile.fp) fflush(logfile.fp);
-} //end of the function Log_Flush
+			time(&aclock);
+			newtime = localtime(&aclock);
 
+			Bot_LogPrintf("Logfile opened on %s\n", asctime(newtime));
+			Q_strncpyz(logfile.filename, filename, MAX_LOGFILENAMESIZE);
+		}
+	}
+	else
+	{
+		botimport.Print(PRT_MESSAGE, "Not logging to disk.\n");
+	}
+}
+
+/*
+=================
+Log_Shutdown
+=================
+*/
+void Bot_LogShutdown(void)
+{
+	if (logfile.handle)
+	{
+		botimport.FS_FCloseFile(logfile.handle);
+
+		logfile.handle = 0;
+
+		botimport.Print(PRT_MESSAGE, "Closed log %s\n", logfile.filename);
+	}
+}
+
+/*
+=================
+Log_Write
+=================
+*/
+void Q_CDECL Bot_LogPrintf(char* fmt, ...)
+{
+	va_list	argptr;
+	char	string[1024];
+
+	if (!logfile.handle)
+	{
+		return;
+	}
+
+	va_start(argptr, fmt);
+	vsprintf(string, fmt, argptr);
+	va_end(argptr);
+
+	botimport.FS_Write(string, strlen(string), logfile.handle);
+}
+
+/*
+=================
+Log_WriteTimeStamped
+=================
+*/
+void Q_CDECL Bot_LogPrintfTimeStamped(char* fmt, ...)
+{
+	va_list	argptr;
+	char	string[1024];
+	int		min, tens, sec;
+
+	if (!logfile.handle)
+	{
+		return;
+	}
+
+	sec = botlibglobals.time / 1000;
+
+	min = sec / 60;
+	sec -= min * 60;
+	tens = sec / 10;
+	sec -= tens * 10;
+
+	Com_sprintf(string, sizeof(string), "%3i:%i%i ", min, tens, sec);
+
+	va_start(argptr, fmt);
+	vsprintf(string + 7, fmt, argptr);
+	va_end(argptr);
+
+	botimport.FS_Write(string, strlen(string), logfile.handle);
+}
+
+/*
+=================
+Log_FilePointer
+=================
+*/
+qhandle_t Bot_LogFilePointer(void)
+{
+	return logfile.handle;
+}
