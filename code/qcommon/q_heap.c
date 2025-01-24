@@ -381,7 +381,7 @@ Hunk_SmallLog
 void Hunk_SmallLog(void)
 {
 	char		buf[4096];
-	int size, locsize, numBlocks;
+	int size, numBlocks;
 
 	if (!logfile || !FS_Initialized())
 	{

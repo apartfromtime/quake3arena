@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "../game/q_shared.h"
+#include "qcommon.h"
 #include "q_list.h"
 
 
@@ -37,7 +38,7 @@ void GrowList_Init(growList_t* list, int maxElements)
 {
     list->maxElements = maxElements;
     list->currentElements = 0;
-    list->elements = (void**)Com_Allocate(list->maxElements * sizeof(void*));
+    list->elements = (void**)Z_Malloc(list->maxElements * sizeof(void*));
 }
 
 int GrowList_AddTo(growList_t* list, void* data)
@@ -66,7 +67,7 @@ int GrowList_AddTo(growList_t* list, void* data)
 
     Com_DPrintf("Resizing growlist to %i maxElements\n", list->maxElements);
 
-    list->elements = (void**)Com_Allocate(list->maxElements * sizeof(void*));
+    list->elements = (void**)Z_Malloc(list->maxElements * sizeof(void*));
 
     if (!list->elements) {
         Com_Error(ERR_DROP, "Growlist alloc failed");
@@ -74,7 +75,7 @@ int GrowList_AddTo(growList_t* list, void* data)
 
     Com_Memcpy(list->elements, old, list->currentElements * sizeof(void*));
 
-    Com_Dealloc(old);
+    Z_Free(old);
 
     return GrowList_AddTo(list, data);
 }

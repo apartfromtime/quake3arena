@@ -23,34 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // q_shared.c -- stateless support routines that are included in each code dll
 #include "q_shared.h"
 
-// malloc / free all in one place for debugging
-
-/*
-=================
-Com_Allocate
-=================
-*/
-void* Com_Allocate(int bytes)
-{
-	return malloc(bytes);
-}
-
-/*
-=================
-Com_Dealloc
-=================
-*/
-void Com_Dealloc(void* ptr)
-{
-	free(ptr);
-}
-
 /*
 =================
 Com_Memcpy
 =================
 */
-void Com_Memcpy (void* dest, const void* src, const size_t count)
+void Com_Memcpy(void* dest, const void* src, const size_t count)
 {
 	memcpy(dest, src, count);
 }
@@ -60,7 +38,7 @@ void Com_Memcpy (void* dest, const void* src, const size_t count)
 Com_Memset
 =================
 */
-void Com_Memset (void* dest, const int val, const size_t count)
+void Com_Memset(void* dest, const int val, const size_t count)
 {
 	memset(dest, val, count);
 }

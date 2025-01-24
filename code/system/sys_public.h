@@ -104,12 +104,6 @@
 #include <ctype.h>
 #include <limits.h>
 
-#ifdef WIN32			// mac doesn't have malloc.h
-
-#include <malloc.h>			// for _alloca()
-
-#endif	// #ifdef WIN32
-
 typedef unsigned char 		byte;
 typedef int		qhandle_t;
 

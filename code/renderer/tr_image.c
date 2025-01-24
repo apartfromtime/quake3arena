@@ -1335,7 +1335,7 @@ static void LoadTGA ( const char *name, byte **pic, int *width, int *height)
   // bk0101024 - fix from Leonardo
   // bit 5 set => top-down
   if (targa_header.attributes & 0x20) {
-    unsigned char *flip = (unsigned char*)malloc (columns*4);
+    unsigned char *flip = (unsigned char*)ri.Malloc(columns*4);
     unsigned char *src, *dst;
 
     for (row = 0; row < rows/2; row++) {
@@ -1346,7 +1346,7 @@ static void LoadTGA ( const char *name, byte **pic, int *width, int *height)
       Com_Memcpy (src, dst, columns*4);
       Com_Memcpy (dst, flip, columns*4);
     }
-    free (flip);
+    ri.Free(flip);
   }
 #endif
   // instead we just print a warning

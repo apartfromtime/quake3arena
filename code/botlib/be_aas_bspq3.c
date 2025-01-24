@@ -345,6 +345,7 @@ int AAS_IntForBSPEpairKey(int ent, char *key, int *value)
 //===========================================================================
 void AAS_FreeBSPEntities(void)
 {
+	/*
 	int i;
 	bsp_entity_t *ent;
 	bsp_epair_t *epair, *nextepair;
@@ -352,18 +353,20 @@ void AAS_FreeBSPEntities(void)
 	for (i = 1; i < bspworld.numentities; i++)
 	{
 		ent = &bspworld.entities[i];
-		/*for (epair = ent->epairs; epair; epair = nextepair)
+
+		for (epair = ent->epairs; epair; epair = nextepair)
 		{
 			nextepair = epair->next;
-			//
 			if (epair->key) FreeMemory(epair->key);
 			if (epair->value) FreeMemory(epair->value);
 			FreeMemory(epair);
-		} //end for
-		*/
-	} //end for
+		}
+		
+	}
+	*/
+
 	bspworld.numentities = 0;
-} //end of the function AAS_FreeBSPEntities
+}
 //===========================================================================
 //
 // Parameter:			-
