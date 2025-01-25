@@ -1711,7 +1711,7 @@ static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso 
 			if (angles[YAW] > 360)
 				angles[YAW] -= 360;
 
-			//vectoangles( cent->currentState.pos.trDelta, tmpangles );
+			//VectorToAngles( cent->currentState.pos.trDelta, tmpangles );
 			//angles[YAW] = tmpangles[YAW] + 45 - cent->pe.torso.yawAngle;
 			// change the yaw angle
 			CG_SwingAngles( angles[YAW], 25, 90, 0.15f, &cent->pe.flag.yawAngle, &cent->pe.flag.yawing );
