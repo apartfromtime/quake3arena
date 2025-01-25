@@ -438,7 +438,8 @@ char* Com_ParseExt(const char* (*data_p), bool allowLineBreaks)
 		c == '\\'||
 		c == '*' ||
 		c == '-' ||
-		c == '$') {
+		c == '$' ||
+		c == '^') {
 
 		do {
 			if (len < MAX_TOKEN_CHARS - 1) {
@@ -459,7 +460,8 @@ char* Com_ParseExt(const char* (*data_p), bool allowLineBreaks)
 			c == '-' ||
 			c == '$' ||
 			c == ':' ||
-			c == '.');
+			c == '.' ||
+			c == '^');
 
 		if (len == MAX_TOKEN_CHARS) {
 			len = 0;
