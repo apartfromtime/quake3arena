@@ -64,7 +64,7 @@ void P_DamageFeedback( gentity_t *player ) {
 
 		client->damage_fromWorld = false;
 	} else {
-		vectoangles( client->damage_from, angles );
+		VectorToAngles( client->damage_from, angles );
 		client->ps.damagePitch = angles[PITCH]/360.0 * 256;
 		client->ps.damageYaw = angles[YAW]/360.0 * 256;
 	}

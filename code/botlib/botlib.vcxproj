@@ -606,7 +606,6 @@
     <ClInclude Include="l_precomp.h" />
     <ClInclude Include="l_script.h" />
     <ClInclude Include="l_struct.h" />
-    <ClInclude Include="l_utils.h" />
     <ClInclude Include="..\game\q_shared.h" />
     <ClInclude Include="..\qcommon\qcommon.h" />
     <ClInclude Include="..\qcommon\qfiles.h" />

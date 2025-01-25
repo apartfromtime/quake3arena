@@ -1429,7 +1429,7 @@ void BG_TouchJumpPad( playerState_t *ps, entityState_t *jumppad ) {
 	// then don't play the event sound again if we are in a fat trigger
 	if ( ps->jumppad_ent != jumppad->number ) {
 
-		vectoangles( jumppad->origin2, angles);
+		VectorToAngles( jumppad->origin2, angles);
 		p = fabs( AngleNormalize180( angles[PITCH] ) );
 		if( p < 45 ) {
 			effectNum = 0;

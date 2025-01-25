@@ -35,7 +35,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "l_script.h"
 #include "l_precomp.h"
 #include "l_struct.h"
-#include "l_utils.h"
 #include "be_interface.h"
 #endif //BOTLIB
 
@@ -145,8 +144,8 @@ bool ReadNumber(source_t *source, fielddef_t *fd, void *p)
 	{
 		if (fd->type & FT_BOUNDED)
 		{
-			intmin = Maximum(intmin, fd->floatmin);
-			intmax = Minimum(intmax, fd->floatmax);
+			intmin = Q_max(intmin, fd->floatmin);
+			intmax = Q_min(intmax, fd->floatmax);
 		} //end if
 		if (intval < intmin || intval > intmax)
 		{
