@@ -32,25 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 //Notes:			fix: PC_StringizeTokens
 
-//#define SCREWUP
 //#define BOTLIB
-//#define QUAKE
-//#define QUAKEC
-//#define MEQCC
-
-#ifdef SCREWUP
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <string.h>
-#include <stdarg.h>
-#include <time.h>
-#include "l_memory.h"
-#include "l_script.h"
-#include "l_precomp.h"
-
-typedef enum {false, true}	bool;
-#endif //SCREWUP
 
 #ifdef BOTLIB
 #include "../game/q_shared.h"
@@ -61,19 +43,6 @@ typedef enum {false, true}	bool;
 #include "l_precomp.h"
 #include "l_log.h"
 #endif //BOTLIB
-
-#ifdef MEQCC
-#include "qcc.h"
-#include "time.h"   //time & ctime
-#include "math.h"   //fabs
-#include "l_memory.h"
-#include "l_script.h"
-#include "l_precomp.h"
-#include "l_log.h"
-
-#define true	true
-#define false	false
-#endif //MEQCC
 
 #ifdef BSPC
 //include files for usage in the BSP Converter
@@ -87,10 +56,6 @@ typedef enum {false, true}	bool;
 #define Q_stricmp	stricmp
 
 #endif //BSPC
-
-#if defined(QUAKE) && !defined(BSPC)
-#include "l_utils.h"
-#endif //QUAKE
 
 //#define DEBUG_EVAL
 
@@ -136,9 +101,6 @@ void Q_CDECL SourceError(source_t *source, char *str, ...)
 #ifdef BOTLIB
 	botimport.Print(PRT_ERROR, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif	//BOTLIB
-#ifdef MEQCC
-	printf("error: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
-#endif //MEQCC
 #ifdef BSPC
 	Log_Print("error: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif //BSPC
@@ -160,9 +122,6 @@ void Q_CDECL SourceWarning(source_t *source, char *str, ...)
 #ifdef BOTLIB
 	botimport.Print(PRT_WARNING, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif //BOTLIB
-#ifdef MEQCC
-	printf("warning: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
-#endif //MEQCC
 #ifdef BSPC
 	Log_Print("warning: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif //BSPC
@@ -971,9 +930,6 @@ int PC_Directive_include(source_t *source)
 	script_t *script;
 	token_t token;
 	char path[MAX_PATH];
-#ifdef QUAKE
-	foundfile_t file;
-#endif //QUAKE
 
 	if (source->skip > 0) return true;
 	//
@@ -1029,23 +985,10 @@ int PC_Directive_include(source_t *source)
 		SourceError(source, "#include without file name");
 		return false;
 	} //end else
-#ifdef QUAKE
 	if (!script)
 	{
-		Com_Memset(&file, 0, sizeof(foundfile_t));
-		script = LoadScriptFile(path);
-		if (script) strncpy(script->filename, path, MAX_PATH);
-	} //end if
-#endif //QUAKE
-	if (!script)
-	{
-#ifdef SCREWUP
-		SourceWarning(source, "file %s not found", path);
-		return true;
-#else
 		SourceError(source, "file %s not found", path);
 		return false;
-#endif //SCREWUP
 	} //end if
 	PC_PushScript(source, script);
 	return true;
@@ -2642,59 +2585,6 @@ int PC_ReadDollarDirective(source_t *source)
 	return false;
 } //end of the function PC_ReadDirective
 
-#ifdef QUAKEC
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int BuiltinFunction(source_t *source)
-{
-	token_t token;
-
-	if (!PC_ReadSourceToken(source, &token)) return false;
-	if (token.type == TT_NUMBER)
-	{
-		PC_UnreadSourceToken(source, &token);
-		return true;
-	} //end if
-	else
-	{
-		PC_UnreadSourceToken(source, &token);
-		return false;
-	} //end else
-} //end of the function BuiltinFunction
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int QuakeCMacro(source_t *source)
-{
-	int i;
-	token_t token;
-
-	if (!PC_ReadSourceToken(source, &token)) return true;
-	if (token.type != TT_NAME)
-	{
-		PC_UnreadSourceToken(source, &token);
-		return true;
-	} //end if
-	//find the precompiler directive
-	for (i = 0; dollardirectives[i].name; i++)
-	{
-		if (!strcmp(dollardirectives[i].name, token.string))
-		{
-			PC_UnreadSourceToken(source, &token);
-			return false;
-		} //end if
-	} //end for
-	PC_UnreadSourceToken(source, &token);
-	return true;
-} //end of the function QuakeCMacro
-#endif //QUAKEC
 //============================================================================
 //
 // Parameter:				-
@@ -2711,25 +2601,15 @@ int PC_ReadToken(source_t *source, token_t *token)
 		//check for precompiler directives
 		if (token->type == TT_PUNCTUATION && *token->string == '#')
 		{
-#ifdef QUAKEC
-			if (!BuiltinFunction(source))
-#endif //QUAKC
-			{
-				//read the precompiler directive
-				if (!PC_ReadDirective(source)) return false;
-				continue;
-			} //end if
+			//read the precompiler directive
+			if (!PC_ReadDirective(source)) return false;
+			continue;
 		} //end if
 		if (token->type == TT_PUNCTUATION && *token->string == '$')
 		{
-#ifdef QUAKEC
-			if (!QuakeCMacro(source))
-#endif //QUAKEC
-			{
-				//read the precompiler directive
-				if (!PC_ReadDollarDirective(source)) return false;
-				continue;
-			} //end if
+			//read the precompiler directive
+			if (!PC_ReadDollarDirective(source)) return false;
+			continue;
 		} //end if
 		// recursively concatenate strings that are behind each other still resolving defines
 		if (token->type == TT_STRING)

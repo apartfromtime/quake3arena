@@ -2836,7 +2836,7 @@ float BotEntityVisible(int viewer, vec3_t eye, vec3_t viewangles, float fov, int
 	VectorAdd(entinfo.origin, middle, middle);
 	//check if entity is within field of vision
 	VectorSubtract(middle, eye, dir);
-	vectoangles(dir, entangles);
+	VectorToAngles(dir, entangles);
 	if (!InFieldOfVision(viewangles, fov, entangles)) return 0;
 	//
 	pc = trap_AAS_PointContents(eye);
@@ -3025,7 +3025,7 @@ int BotFindEnemy(bot_state_t *bs, int curenemy) {
 		{
 			//check if we can avoid this enemy
 			VectorSubtract(bs->origin, entinfo.origin, dir);
-			vectoangles(dir, angles);
+			VectorToAngles(dir, angles);
 			//if the bot isn't in the fov of the enemy
 			if (!InFieldOfVision(entinfo.angles, 90, angles)) {
 				//update some stuff for this enemy
@@ -3288,7 +3288,7 @@ void BotAimAtEnemy(bot_state_t *bs) {
 #endif
 		//aim at the obelisk
 		VectorSubtract(target, bs->eye, dir);
-		vectoangles(dir, bs->ideal_viewangles);
+		VectorToAngles(dir, bs->ideal_viewangles);
 		//set the aim target before trying to attack
 		VectorCopy(target, bs->aimtarget);
 		return;
@@ -3529,7 +3529,7 @@ void BotAimAtEnemy(bot_state_t *bs) {
 		for (i = 0; i < 3; i++) dir[i] += 0.3 * crandom() * (1 - aim_accuracy);
 	}
 	//set the ideal view angles
-	vectoangles(dir, bs->ideal_viewangles);
+	VectorToAngles(dir, bs->ideal_viewangles);
 	//take the weapon spread into account for lower skilled bots
 	bs->ideal_viewangles[PITCH] += 6 * wi.vspread * crandom() * (1 - aim_accuracy);
 	bs->ideal_viewangles[PITCH] = AngleMod(bs->ideal_viewangles[PITCH]);
@@ -3613,7 +3613,7 @@ void BotCheckAttack(bot_state_t *bs) {
 	else
 		fov = 50;
 	//
-	vectoangles(dir, angles);
+	VectorToAngles(dir, angles);
 	if (!InFieldOfVision(bs->viewangles, fov, angles))
 		return;
 	BotAI_Trace(&bsptrace, bs->eye, NULL, NULL, bs->aimtarget, bs->client, CONTENTS_SOLID|CONTENTS_PLAYERCLIP);
@@ -3728,7 +3728,7 @@ void BotMapScripts(bot_state_t *bs) {
 		if (shootbutton) {
 			bs->flags |= BFL_IDEALVIEWSET;
 			VectorSubtract(buttonorg, bs->eye, dir);
-			vectoangles(dir, bs->ideal_viewangles);
+			VectorToAngles(dir, bs->ideal_viewangles);
 			aim_accuracy = trap_Characteristic_BFloat(bs->character, CHARACTERISTIC_AIM_ACCURACY, 0, 1);
 			bs->ideal_viewangles[PITCH] += 8 * crandom() * (1 - aim_accuracy);
 			bs->ideal_viewangles[PITCH] = AngleMod(bs->ideal_viewangles[PITCH]);

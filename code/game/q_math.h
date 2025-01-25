@@ -295,7 +295,7 @@ vec_t VectorNormalize2(const vec3_t v, vec3_t out);
 void Vector4Scale(const vec4_t in, vec_t scale, vec4_t out);
 void VectorRotate(vec3_t in, vec3_t matrix[3], vec3_t out);
 
-void vectoangles(const vec3_t value1, vec3_t angles);
+void VectorToAngles(const vec3_t value1, vec3_t angles);
 void AnglesToAxis(const vec3_t angles, vec3_t axis[3]);
 
 void AxisClear(vec3_t axis[3]);

@@ -29,23 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *****************************************************************************/
 
-//#define SCREWUP
 //#define BOTLIB
-//#define MEQCC
 //#define BSPC
-
-#ifdef SCREWUP
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <string.h>
-#include <stdarg.h>
-#include "l_memory.h"
-#include "l_script.h"
-
-typedef enum {false, true}	bool;
-
-#endif //SCREWUP
 
 #ifdef BOTLIB
 //include files for usage in the bot library
@@ -57,17 +42,6 @@ typedef enum {false, true}	bool;
 #include "l_log.h"
 #include "l_libvar.h"
 #endif //BOTLIB
-
-#ifdef MEQCC
-//include files for usage in MrElusive's QuakeC Compiler
-#include "qcc.h"
-#include "l_script.h"
-#include "l_memory.h"
-#include "l_log.h"
-
-#define true	true
-#define false	false
-#endif //MEQCC
 
 #ifdef BSPC
 //include files for usage in the BSP Converter
@@ -241,9 +215,6 @@ void Q_CDECL ScriptError(script_t *script, char *str, ...)
 #ifdef BOTLIB
 	botimport.Print(PRT_ERROR, "file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BOTLIB
-#ifdef MEQCC
-	printf("error: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //MEQCC
 #ifdef BSPC
 	Log_Print("error: file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BSPC
@@ -267,9 +238,6 @@ void Q_CDECL ScriptWarning(script_t *script, char *str, ...)
 #ifdef BOTLIB
 	botimport.Print(PRT_WARNING, "file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BOTLIB
-#ifdef MEQCC
-	printf("warning: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //MEQCC
 #ifdef BSPC
 	Log_Print("warning: file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BSPC
