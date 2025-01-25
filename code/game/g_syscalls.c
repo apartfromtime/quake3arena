@@ -234,14 +234,6 @@ int trap_BotLibShutdown( void ) {
 	return syscall( BOTLIB_SHUTDOWN );
 }
 
-int trap_BotLibVarSet(char *var_name, char *value) {
-	return syscall( BOTLIB_LIBVAR_SET, var_name, value );
-}
-
-int trap_BotLibVarGet(char *var_name, char *value, int size) {
-	return syscall( BOTLIB_LIBVAR_GET, var_name, value, size );
-}
-
 int trap_BotLibDefine(char *string) {
 	return syscall( BOTLIB_PC_ADD_GLOBAL_DEFINE, string );
 }

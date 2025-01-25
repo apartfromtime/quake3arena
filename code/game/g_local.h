@@ -813,8 +813,6 @@ void	trap_DebugPolygonDelete(int id);
 
 int		trap_BotLibSetup( void );
 int		trap_BotLibShutdown( void );
-int		trap_BotLibVarSet(char *var_name, char *value);
-int		trap_BotLibVarGet(char *var_name, char *value, int size);
 int		trap_BotLibDefine(char *string);
 int		trap_BotLibStartFrame(float time);
 int		trap_BotLibLoadMap(const char *mapname);

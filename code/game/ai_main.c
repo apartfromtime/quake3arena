@@ -665,7 +665,7 @@ void BotInterbreeding(void) {
 		}
 	}
 	//make sure all item weight configs are reloaded and Not shared
-	trap_BotLibVarSet("bot_reloadcharacters", "1");
+	trap_Cvar_Set("bot_reloadcharacters", "1");
 	//add a number of bots using the desired bot character
 	for (i = 0; i < bot_interbreedbots.integer; i++) {
 		trap_SendConsoleCommand( EXEC_INSERT, va("addbot %s 4 free %i %s%d\n",
@@ -1223,7 +1223,7 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, bool restart) 
 	numbots++;
 
 	if (trap_Cvar_VariableIntegerValue("bot_testichat")) {
-		trap_BotLibVarSet("bot_testichat", "1");
+		trap_Cvar_Set("bot_testichat", "1");
 		BotChatTest(bs);
 	}
 	//NOTE: reschedule the bot thinking
@@ -1422,11 +1422,11 @@ int BotAIStartFrame(int time) {
 	}
 
 	if (bot_memorydump.integer) {
-		trap_BotLibVarSet("memorydump", "1");
+		trap_Cvar_Set("memorydump", "1");
 		trap_Cvar_Set("bot_memorydump", "0");
 	}
 	if (bot_saveroutingcache.integer) {
-		trap_BotLibVarSet("saveroutingcache", "1");
+		trap_Cvar_Set("saveroutingcache", "1");
 		trap_Cvar_Set("bot_saveroutingcache", "0");
 	}
 	//check if bot interbreeding is activated
@@ -1573,59 +1573,59 @@ int BotInitLibrary(void) {
 	//set the maxclients and maxentities library variables before calling BotSetupLibrary
 	trap_Cvar_VariableStringBuffer("sv_maxclients", buf, sizeof(buf));
 	if (!strlen(buf)) strcpy(buf, "8");
-	trap_BotLibVarSet("maxclients", buf);
+	trap_Cvar_Set("maxclients", buf);
 	Com_sprintf(buf, sizeof(buf), "%d", MAX_GENTITIES);
-	trap_BotLibVarSet("maxentities", buf);
+	trap_Cvar_Set("maxentities", buf);
 	//bsp checksum
 	trap_Cvar_VariableStringBuffer("sv_mapChecksum", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("sv_mapChecksum", buf);
+	if (strlen(buf)) trap_Cvar_Set("sv_mapChecksum", buf);
 	//maximum number of aas links
 	trap_Cvar_VariableStringBuffer("max_aaslinks", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("max_aaslinks", buf);
+	if (strlen(buf)) trap_Cvar_Set("max_aaslinks", buf);
 	//maximum number of items in a level
 	trap_Cvar_VariableStringBuffer("max_levelitems", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("max_levelitems", buf);
+	if (strlen(buf)) trap_Cvar_Set("max_levelitems", buf);
 	//game type
 	trap_Cvar_VariableStringBuffer("g_gametype", buf, sizeof(buf));
 	if (!strlen(buf)) strcpy(buf, "0");
-	trap_BotLibVarSet("g_gametype", buf);
+	trap_Cvar_Set("g_gametype", buf);
 	//bot developer mode and log file
-	trap_BotLibVarSet("bot_developer", bot_developer.string);
-	trap_BotLibVarSet("log", buf);
+	trap_Cvar_Set("bot_developer", bot_developer.string);
+	trap_Cvar_Set("log", buf);
 	//no chatting
 	trap_Cvar_VariableStringBuffer("bot_nochat", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("nochat", "0");
+	if (strlen(buf)) trap_Cvar_Set("nochat", "0");
 	//visualize jump pads
 	trap_Cvar_VariableStringBuffer("bot_visualizejumppads", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("bot_visualizejumppads", buf);
+	if (strlen(buf)) trap_Cvar_Set("bot_visualizejumppads", buf);
 	//forced clustering calculations
 	trap_Cvar_VariableStringBuffer("bot_forceclustering", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("forceclustering", buf);
+	if (strlen(buf)) trap_Cvar_Set("forceclustering", buf);
 	//forced reachability calculations
 	trap_Cvar_VariableStringBuffer("bot_forcereachability", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("forcereachability", buf);
+	if (strlen(buf)) trap_Cvar_Set("forcereachability", buf);
 	//force writing of AAS to file
 	trap_Cvar_VariableStringBuffer("bot_forcewrite", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("forcewrite", buf);
+	if (strlen(buf)) trap_Cvar_Set("forcewrite", buf);
 	//no AAS optimization
 	trap_Cvar_VariableStringBuffer("bot_aasoptimize", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("aasoptimize", buf);
+	if (strlen(buf)) trap_Cvar_Set("aasoptimize", buf);
 	//
 	trap_Cvar_VariableStringBuffer("bot_saveroutingcache", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("saveroutingcache", buf);
+	if (strlen(buf)) trap_Cvar_Set("saveroutingcache", buf);
 	//reload instead of cache bot character files
 	trap_Cvar_VariableStringBuffer("bot_reloadcharacters", buf, sizeof(buf));
 	if (!strlen(buf)) strcpy(buf, "0");
-	trap_BotLibVarSet("bot_reloadcharacters", buf);
+	trap_Cvar_Set("bot_reloadcharacters", buf);
 	//base directory
 	trap_Cvar_VariableStringBuffer("fs_basepath", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("basedir", buf);
+	if (strlen(buf)) trap_Cvar_Set("basedir", buf);
 	//game directory
 	trap_Cvar_VariableStringBuffer("fs_game", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("gamedir", buf);
+	if (strlen(buf)) trap_Cvar_Set("gamedir", buf);
 	//cd directory
 	trap_Cvar_VariableStringBuffer("fs_cdpath", buf, sizeof(buf));
-	if (strlen(buf)) trap_BotLibVarSet("cddir", buf);
+	if (strlen(buf)) trap_Cvar_Set("cddir", buf);
 	//
 #ifdef MISSIONPACK
 	trap_BotLibDefine("MISSIONPACK");
