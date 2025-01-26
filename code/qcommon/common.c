@@ -1726,3 +1726,76 @@ void Field_CompleteCommand( field_t *field ) {
 	Cmd_CommandCompletion( PrintMatches );
 	Cvar_CommandCompletion( PrintMatches );
 }
+
+/*
+===============
+Com_ParseInfos
+===============
+*/
+int
+Com_ParseInfo(const char* buf, int max, char* list[MAX_INFO_STRING])
+{
+	char        info[MAX_INFO_STRING];
+	char        key[MAX_TOKEN_CHARS];
+	const char* token;
+	int         count;
+
+	count = 0;
+
+	while (1)
+	{
+		token = Com_Parse(&buf);
+		if (!token[0])
+		{
+			break;
+		}
+
+		if (strcmp(token, "{"))
+		{
+			Com_Printf("Missing { in info file\n");
+			break;
+		}
+
+		if (count == max)
+		{
+			Com_Printf("Max infos exceeded\n");
+			break;
+		}
+
+		info[0] = '\0';
+
+		while (1)
+		{
+			token = Com_Parse(&buf);
+			if (!token[0])
+			{
+				Com_Printf("Unexpected end of info file\n");
+				break;
+			}
+
+			if (!strcmp(token, "}"))
+			{
+				break;
+			}
+
+			Q_strncpyz(key, token, sizeof(key));
+
+			token = Com_ParseOnLine(&buf);
+			if (!token[0]) {
+				token = "<NULL>";
+			}
+
+			Info_SetValueForKey(info, key, token);
+		}
+
+		list[count] = Hunk_Alloc(MAX_INFO_STRING);
+
+		if (list[count])
+		{
+			Q_strncpyz(list[count], info, sizeof(info));
+			count++;
+		}
+	}
+
+	return count;
+}

@@ -393,6 +393,12 @@ bool trap_VerifyCDKey( const char *key, const char *chksum) {
 	return syscall( UI_VERIFY_CDKEY, key, chksum);
 }
 
+int
+trap_ParseInfo(const char* buf, int max, char* list[MAX_INFO_STRING])
+{
+	return syscall(UI_PARSE_INFO, buf, max, list);
+}
+
 void trap_SetPbClStatus( int status ) {
 	syscall( UI_SET_PBCLSTATUS, status );
 }

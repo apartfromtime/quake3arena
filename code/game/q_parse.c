@@ -506,59 +506,7 @@ char* Com_ParseExt(const char* (*data_p), bool allowLineBreaks)
 	return pi->token;
 }
 
-#if 0
-/*
-===============
-Com_ParseInfos
-===============
-*/
-int Com_ParseInfos(const char* buf, int max, char infos[][MAX_INFO_STRING])
-{
-	const char* token;
-	int			count;
-	char		key[MAX_TOKEN_CHARS];
 
-	count = 0;
-
-	while (1) {
-		token = Com_Parse(&buf);
-		if (!token[0]) {
-			break;
-		}
-		if (strcmp(token, "{")) {
-			Com_Printf("Missing { in info file\n");
-			break;
-		}
-
-		if (count == max) {
-			Com_Printf("Max infos exceeded\n");
-			break;
-		}
-
-		infos[count][0] = 0;
-		while (1) {
-			token = Com_Parse(&buf);
-			if (!token[0]) {
-				Com_Printf("Unexpected end of info file\n");
-				break;
-			}
-			if (!strcmp(token, "}")) {
-				break;
-			}
-			Q_strncpyz(key, token, sizeof(key));
-
-			token = Com_ParseOnLine(&buf);
-			if (!token[0]) {
-				token = "<NULL>";
-			}
-			Info_SetValueForKey(infos[count], key, token);
-		}
-		count++;
-	}
-
-	return count;
-}
-#endif
 
 /*
 ===================

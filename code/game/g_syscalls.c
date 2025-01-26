@@ -225,6 +225,12 @@ void trap_SnapVector( float *v ) {
 	return;
 }
 
+int
+trap_ParseInfo(const char* buf, int max, char* list[MAX_INFO_STRING])
+{
+	return syscall(G_PARSE_INFO, buf, max, list);
+}
+
 // BotLib traps start here
 int trap_BotLibSetup( void ) {
 	return syscall( BOTLIB_SETUP );

@@ -974,6 +974,10 @@ int CL_UISystemCalls( int *args ) {
 		CLUI_SetCDKey( VMA(1) );
 		return 0;
 	
+	case UI_PARSE_INFO:
+	{
+		return Com_ParseInfo(VMA(1), args[2], VMA(3));
+	} break;
 	case UI_SET_PBCLSTATUS:
 		return 0;	
 

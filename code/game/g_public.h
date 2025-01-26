@@ -228,6 +228,7 @@ typedef enum {
 	
 	// 1.32
 	G_FS_SEEK,
+	G_PARSE_INFO,
 
 	BOTLIB_SETUP = 200,				// ( void );
 	BOTLIB_SHUTDOWN,				// ( void );

@@ -31,13 +31,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // arena and bot info
 //
 
+static char*    s_gameinfo_list[GAMEINFO_COUNT][MAX_GAMEINFO_LIST];
+static int      s_gameinfo_size[GAMEINFO_COUNT];
+
 #define POOLSIZE	128 * 1024
-
-int				ui_numBots;
-static char		*ui_botInfos[MAX_BOTS];
-
-static int		ui_numArenas;
-static char		*ui_arenaInfos[MAX_ARENAS];
 
 static int		ui_numSinglePlayerArenas;
 static int		ui_numSpecialSinglePlayerArenas;
@@ -78,89 +75,39 @@ void UI_InitMemory( void ) {
 
 /*
 ===============
-UI_ParseInfos
-===============
-*/
-int UI_ParseInfos( char *buf, int max, char *infos[] ) {
-	const char* token;
-	int		count;
-	char	key[MAX_TOKEN_CHARS];
-	char	info[MAX_INFO_STRING];
-
-	count = 0;
-
-	while ( 1 ) {
-		token = Com_Parse( &buf );
-		if ( !token[0] ) {
-			break;
-		}
-		if ( strcmp( token, "{" ) ) {
-			Com_Printf( "Missing { in info file\n" );
-			break;
-		}
-
-		if ( count == max ) {
-			Com_Printf( "Max infos exceeded\n" );
-			break;
-		}
-
-		info[0] = '\0';
-		while ( 1 ) {
-			token = Com_ParseExt( &buf, true );
-			if ( !token[0] ) {
-				Com_Printf( "Unexpected end of info file\n" );
-				break;
-			}
-			if ( !strcmp( token, "}" ) ) {
-				break;
-			}
-			Q_strncpyz( key, token, sizeof( key ) );
-
-			token = Com_ParseExt( &buf, false );
-			if ( !token[0] ) {
-				Info_SetValueForKey(info, key, "<NULL>");
-			}
-			else
-			{
-				Info_SetValueForKey(info, key, token);
-			}
-		}
-		//NOTE: extra space for arena number
-		infos[count] = UI_Alloc(strlen(info) + strlen("\\num\\") + strlen(va("%d", MAX_ARENAS)) + 1);
-		if (infos[count]) {
-			strcpy(infos[count], info);
-			count++;
-		}
-	}
-	return count;
-}
-
-/*
-===============
 UI_LoadArenasFromFile
 ===============
 */
-static void UI_LoadArenasFromFile( char *filename ) {
-	int				len;
-	qhandle_t	f;
-	char			buf[MAX_ARENAS_TEXT];
+static void
+UI_LoadArenasFromFile(char* arenaFile)
+{
+	char        buf[MAX_GAMEINFO_TEXT];
+	int         len;
+	qhandle_t   file;
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
-		return;
-	}
-	if ( len >= MAX_ARENAS_TEXT ) {
-		trap_Print( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_ARENAS_TEXT ) );
-		trap_FS_FCloseFile( f );
+	len = trap_FS_FOpenFile(arenaFile, &file, FS_READ);
+	if (!file)
+	{
+		trap_Print(va(S_COLOR_RED "arena file not found: %s\n", arenaFile));
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
+	if (len >= MAX_GAMEINFO_TEXT)
+	{
+		trap_Print(va(S_COLOR_RED "arena file too large: %s is %i, max allowed is %i",
+			arenaFile, len, MAX_GAMEINFO_TEXT));
+		trap_FS_FCloseFile(file);
+	
+		return;
+	}
+
+	trap_FS_Read(buf, len, file);
 	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	trap_FS_FCloseFile(file);
 
-	ui_numArenas += UI_ParseInfos( buf, MAX_ARENAS - ui_numArenas, &ui_arenaInfos[ui_numArenas] );
+	int count = s_gameinfo_size[GAMEINFO_ARENA];
+	s_gameinfo_size[GAMEINFO_ARENA] += trap_ParseInfo(buf, (MAX_GAMEINFO_LIST - count),
+		&s_gameinfo_list[GAMEINFO_ARENA][count]);
 }
 
 /*
@@ -180,7 +127,7 @@ static void UI_LoadArenas( void ) {
 	char		*tag;
 	int			singlePlayerNum, specialNum, otherNum;
 
-	ui_numArenas = 0;
+	s_gameinfo_size[GAMEINFO_ARENA] = 0;
 
 	trap_Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT|CVAR_ROM );
 	if( *arenasFile.string ) {
@@ -199,20 +146,20 @@ static void UI_LoadArenas( void ) {
 		strcat(filename, dirptr);
 		UI_LoadArenasFromFile(filename);
 	}
-	trap_Print( va( "%i arenas parsed\n", ui_numArenas ) );
-	if (outOfMemory) trap_Print(S_COLOR_YELLOW"WARNING: not anough memory in pool to load all arenas\n");
+
+	trap_Print( va( "%i arenas parsed\n", s_gameinfo_size[GAMEINFO_ARENA]) );
 
 	// set initial numbers
-	for( n = 0; n < ui_numArenas; n++ ) {
-		Info_SetValueForKey( ui_arenaInfos[n], "num", va( "%i", n ) );
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		Info_SetValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "num", va( "%i", n ) );
 	}
 
 	// go through and count single players levels
 	ui_numSinglePlayerArenas = 0;
 	ui_numSpecialSinglePlayerArenas = 0;
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
 		// determine type
-		type = Info_ValueForKey( ui_arenaInfos[n], "type" );
+		type = Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "type" );
 
 		// if no type specified, it will be treated as "ffa"
 		if( !*type ) {
@@ -221,7 +168,7 @@ static void UI_LoadArenas( void ) {
 
 		if( strstr( type, "single" ) ) {
 			// check for special single player arenas (training, final)
-			tag = Info_ValueForKey( ui_arenaInfos[n], "special" );
+			tag = Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "special" );
 			if( *tag ) {
 				ui_numSpecialSinglePlayerArenas++;
 				continue;
@@ -241,26 +188,26 @@ static void UI_LoadArenas( void ) {
 	singlePlayerNum = 0;
 	specialNum = singlePlayerNum + ui_numSinglePlayerArenas;
 	otherNum = specialNum + ui_numSpecialSinglePlayerArenas;
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
 		// determine type
-		type = Info_ValueForKey( ui_arenaInfos[n], "type" );
+		type = Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "type" );
 
 		// if no type specified, it will be treated as "ffa"
 		if( *type ) {
 			if( strstr( type, "single" ) ) {
 				// check for special single player arenas (training, final)
-				tag = Info_ValueForKey( ui_arenaInfos[n], "special" );
+				tag = Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "special" );
 				if( *tag ) {
-					Info_SetValueForKey( ui_arenaInfos[n], "num", va( "%i", specialNum++ ) );
+					Info_SetValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "num", va( "%i", specialNum++ ) );
 					continue;
 				}
 
-				Info_SetValueForKey( ui_arenaInfos[n], "num", va( "%i", singlePlayerNum++ ) );
+				Info_SetValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "num", va( "%i", singlePlayerNum++ ) );
 				continue;
 			}
 		}
 
-		Info_SetValueForKey( ui_arenaInfos[n], "num", va( "%i", otherNum++ ) );
+		Info_SetValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "num", va( "%i", otherNum++ ) );
 	}
 }
 
@@ -273,15 +220,15 @@ const char *UI_GetArenaInfoByNumber( int num ) {
 	int		n;
 	char	*value;
 
-	if( num < 0 || num >= ui_numArenas ) {
+	if( num < 0 || num >= s_gameinfo_size[GAMEINFO_ARENA]) {
 		trap_Print( va( S_COLOR_RED "Invalid arena number: %i\n", num ) );
 		return NULL;
 	}
 
-	for( n = 0; n < ui_numArenas; n++ ) {
-		value = Info_ValueForKey( ui_arenaInfos[n], "num" );
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		value = Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "num" );
 		if( *value && atoi(value) == num ) {
-			return ui_arenaInfos[n];
+			return s_gameinfo_list[GAMEINFO_ARENA][n];
 		}
 	}
 
@@ -297,9 +244,9 @@ UI_GetArenaInfoByNumber
 const char *UI_GetArenaInfoByMap( const char *map ) {
 	int			n;
 
-	for( n = 0; n < ui_numArenas; n++ ) {
-		if( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "map" ), map ) == 0 ) {
-			return ui_arenaInfos[n];
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		if( Q_stricmp( Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "map" ), map ) == 0 ) {
+			return s_gameinfo_list[GAMEINFO_ARENA][n];
 		}
 	}
 
@@ -315,9 +262,9 @@ UI_GetSpecialArenaInfo
 const char *UI_GetSpecialArenaInfo( const char *tag ) {
 	int			n;
 
-	for( n = 0; n < ui_numArenas; n++ ) {
-		if( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "special" ), tag ) == 0 ) {
-			return ui_arenaInfos[n];
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		if( Q_stricmp( Info_ValueForKey( s_gameinfo_list[GAMEINFO_ARENA][n], "special" ), tag ) == 0 ) {
+			return s_gameinfo_list[GAMEINFO_ARENA][n];
 		}
 	}
 
@@ -329,28 +276,36 @@ const char *UI_GetSpecialArenaInfo( const char *tag ) {
 UI_LoadBotsFromFile
 ===============
 */
-static void UI_LoadBotsFromFile( char *filename ) {
-	int				len;
-	qhandle_t	f;
-	char			buf[MAX_BOTS_TEXT];
+static void
+UI_LoadBotsFromFile(char* botFile)
+{
+	char        buf[MAX_GAMEINFO_TEXT];
+	int         len;
+	qhandle_t   file;
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
-		return;
-	}
-	if ( len >= MAX_BOTS_TEXT ) {
-		trap_Print( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_BOTS_TEXT ) );
-		trap_FS_FCloseFile( f );
+	len = trap_FS_FOpenFile(botFile, &file, FS_READ);
+	if (!file)
+	{
+		trap_Print(va(S_COLOR_RED "bot file not found: %s\n", botFile));
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
+	if (len >= MAX_GAMEINFO_TEXT)
+	{
+		trap_Print(va(S_COLOR_RED "bot file too large: %s is %i, max allowed is %i",
+			botFile, len, MAX_GAMEINFO_TEXT));
+		trap_FS_FCloseFile(file);
+		
+		return;
+	}
+
+	trap_FS_Read(buf, len, file);
 	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	trap_FS_FCloseFile(file);
 
-	ui_numBots += UI_ParseInfos( buf, MAX_BOTS - ui_numBots, &ui_botInfos[ui_numBots] );
-	if (outOfMemory) trap_Print(S_COLOR_YELLOW"WARNING: not anough memory in pool to load all bots\n");
+	int count = s_gameinfo_size[GAMEINFO_BOT];
+	s_gameinfo_size[GAMEINFO_BOT] += trap_ParseInfo(buf, (MAX_GAMEINFO_LIST - count),
+		&s_gameinfo_list[GAMEINFO_BOT][count]);
 }
 
 /*
@@ -367,7 +322,7 @@ static void UI_LoadBots( void ) {
 	int			i;
 	int			dirlen;
 
-	ui_numBots = 0;
+	s_gameinfo_size[GAMEINFO_BOT] = 0;
 
 	trap_Cvar_Register( &botsFile, "g_botsFile", "", CVAR_INIT|CVAR_ROM );
 	if( *botsFile.string ) {
@@ -386,7 +341,7 @@ static void UI_LoadBots( void ) {
 		strcat(filename, dirptr);
 		UI_LoadBotsFromFile(filename);
 	}
-	trap_Print( va( "%i bots parsed\n", ui_numBots ) );
+	trap_Print( va( "%i bots parsed\n", s_gameinfo_size[GAMEINFO_BOT]) );
 }
 
 
@@ -396,11 +351,11 @@ UI_GetBotInfoByNumber
 ===============
 */
 char *UI_GetBotInfoByNumber( int num ) {
-	if( num < 0 || num >= ui_numBots ) {
+	if( num < 0 || num >= s_gameinfo_size[GAMEINFO_BOT] ) {
 		trap_Print( va( S_COLOR_RED "Invalid bot number: %i\n", num ) );
 		return NULL;
 	}
-	return ui_botInfos[num];
+	return s_gameinfo_list[GAMEINFO_BOT][num];
 }
 
 
@@ -413,10 +368,10 @@ char *UI_GetBotInfoByName( const char *name ) {
 	int		n;
 	char	*value;
 
-	for ( n = 0; n < ui_numBots ; n++ ) {
-		value = Info_ValueForKey( ui_botInfos[n], "name" );
+	for ( n = 0; n < s_gameinfo_size[GAMEINFO_BOT]; n++ ) {
+		value = Info_ValueForKey( s_gameinfo_list[GAMEINFO_BOT][n], "name" );
 		if ( !Q_stricmp( value, name ) ) {
-			return ui_botInfos[n];
+			return s_gameinfo_list[GAMEINFO_BOT][n];
 		}
 	}
 
@@ -447,7 +402,7 @@ void UI_GetBestScore( int level, int *score, int *skill ) {
 		return;
 	}
 
-	if( level < 0 || level > ui_numArenas ) {
+	if( level < 0 || level > s_gameinfo_size[GAMEINFO_ARENA]) {
 		return;
 	}
 
@@ -714,7 +669,7 @@ UI_GetNumArenas
 ===============
 */
 int UI_GetNumArenas( void ) {
-	return ui_numArenas;
+	return s_gameinfo_size[GAMEINFO_ARENA];
 }
 
 
@@ -744,7 +699,7 @@ UI_GetNumBots
 ===============
 */
 int UI_GetNumBots( void ) {
-	return ui_numBots;
+	return s_gameinfo_size[GAMEINFO_BOT];
 }
 
 
