@@ -1542,7 +1542,7 @@ typedef struct {
 	int				modelpage;
 	int				numpages;
 	int				selectedmodel;
-	int				sortedBotNums[MAX_BOTS];
+	int				sortedBotNums[MAX_GAMEINFO_LIST];
 	char			boticons[MAX_MODELSPERPAGE][MAX_QPATH];
 	char			botnames[MAX_MODELSPERPAGE][16];
 } botSelectInfo_t;

@@ -72,7 +72,7 @@ typedef struct {
 	int				delay;
 	int				baseBotNum;
 	int				selectedBotNum;
-	int				sortedBotNums[MAX_BOTS];
+	int				sortedBotNums[MAX_GAMEINFO_LIST];
 	char			botnames[7][32];
 } addBotsMenuInfo_t;
 

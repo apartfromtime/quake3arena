@@ -959,11 +959,15 @@ bool	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
 
 #define ARENAS_PER_TIER		4
-#define MAX_ARENAS			1024
-#define	MAX_ARENAS_TEXT		8192
 
-#define MAX_BOTS			1024
-#define MAX_BOTS_TEXT		8192
+#define MAX_GAMEINFO_TEXT   8192
+#define MAX_GAMEINFO_LIST   1024
+typedef enum
+{
+	GAMEINFO_BOT = 0,
+	GAMEINFO_ARENA,
+	GAMEINFO_COUNT
+} gameinfo_t;
 
 
 // Kamikaze

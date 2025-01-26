@@ -73,7 +73,7 @@ typedef struct {
 	int				baseBotNum;
 	int				selectedBotNum;
 	char			botnames[7][32];
-	int				botClientNums[MAX_BOTS];
+	int				botClientNums[MAX_GAMEINFO_LIST];
 } removeBotsMenuInfo_t;
 
 static removeBotsMenuInfo_t	removeBotsMenuInfo;

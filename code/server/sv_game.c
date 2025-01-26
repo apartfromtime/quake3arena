@@ -453,6 +453,10 @@ int SV_GameSystemCalls( int *args ) {
 	case G_SNAPVECTOR:
 		Sys_SnapVector( VMA(1) );
 		return 0;
+	case G_PARSE_INFO:
+	{
+		return Com_ParseInfo(VMA(1), args[2], VMA(3));
+	} break;
 
 		//====================================
 

@@ -24,13 +24,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "g_local.h"
 
-
-static int		g_numBots;
-static char		*g_botInfos[MAX_BOTS];
-
-
-int				g_numArenas;
-static char		*g_arenaInfos[MAX_ARENAS];
+static char*    s_gameinfo_list[GAMEINFO_COUNT][MAX_GAMEINFO_LIST];
+static int      s_gameinfo_size[GAMEINFO_COUNT];
 
 
 #define BOT_BEGIN_DELAY_BASE		2000
@@ -59,93 +54,41 @@ float trap_Cvar_VariableValue( const char *var_name ) {
 	return atof(buf);
 }
 
-
-
-/*
-===============
-G_ParseInfos
-===============
-*/
-int G_ParseInfos( char *buf, int max, char *infos[] ) {
-	const char* token;
-	int		count;
-	char	key[MAX_TOKEN_CHARS];
-	char	info[MAX_INFO_STRING];
-
-	count = 0;
-
-	while ( 1 ) {
-		token = Com_Parse( &buf );
-		if ( !token[0] ) {
-			break;
-		}
-		if ( strcmp( token, "{" ) ) {
-			Com_Printf( "Missing { in info file\n" );
-			break;
-		}
-
-		if ( count == max ) {
-			Com_Printf( "Max infos exceeded\n" );
-			break;
-		}
-
-		info[0] = '\0';
-		while ( 1 ) {
-			token = Com_ParseExt( &buf, true );
-			if ( !token[0] ) {
-				Com_Printf( "Unexpected end of info file\n" );
-				break;
-			}
-			if ( !strcmp( token, "}" ) ) {
-				break;
-			}
-			Q_strncpyz( key, token, sizeof( key ) );
-
-			token = Com_ParseExt( &buf, false );
-			if ( !token[0] ) {
-				Info_SetValueForKey(info, key, "<NULL>");
-			}
-			else
-			{
-				Info_SetValueForKey(info, key, token);
-			}
-		}
-		//NOTE: extra space for arena number
-		infos[count] = G_Alloc(strlen(info) + strlen("\\num\\") + strlen(va("%d", MAX_ARENAS)) + 1);
-		if (infos[count]) {
-			strcpy(infos[count], info);
-			count++;
-		}
-	}
-	return count;
-}
-
 /*
 ===============
 G_LoadArenasFromFile
 ===============
 */
-static void G_LoadArenasFromFile( char *filename ) {
-	int				len;
-	qhandle_t	f;
-	char			buf[MAX_ARENAS_TEXT];
+static void
+G_LoadArenasFromFile(char* arenaFile)
+{
+	char        buf[MAX_GAMEINFO_TEXT];
+	int         len;
+	qhandle_t   file;
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		trap_Printf( va( S_COLOR_RED "file not found: %s\n", filename ) );
+	len = trap_FS_FOpenFile(arenaFile, &file, FS_READ);
+	if (!file)
+	{
+		trap_Printf(va(S_COLOR_RED "arena file not found: %s\n", arenaFile));
 		return;
 	}
-	if ( len >= MAX_ARENAS_TEXT ) {
-		trap_Printf( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_ARENAS_TEXT ) );
-		trap_FS_FCloseFile( f );
+
+	if (len >= MAX_GAMEINFO_TEXT)
+	{
+		trap_Printf(va(S_COLOR_RED "arena file too large: %s is %i, max allowed is %i",
+			arenaFile, len, MAX_GAMEINFO_TEXT));
+		trap_FS_FCloseFile(file);
+		
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
-	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	trap_FS_Read(buf, len, file);
+	buf[len] = '\0';
+	trap_FS_FCloseFile(file);
 
-	g_numArenas += G_ParseInfos( buf, MAX_ARENAS - g_numArenas, &g_arenaInfos[g_numArenas] );
+	int count = s_gameinfo_size[GAMEINFO_ARENA];
+	s_gameinfo_size[GAMEINFO_ARENA] += trap_ParseInfo(buf, (MAX_GAMEINFO_LIST - count),
+		&s_gameinfo_list[GAMEINFO_ARENA][count]);
 }
 
 /*
@@ -162,7 +105,7 @@ static void G_LoadArenas( void ) {
 	int			i, n;
 	int			dirlen;
 
-	g_numArenas = 0;
+	s_gameinfo_size[GAMEINFO_ARENA] = 0;
 
 	trap_Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT|CVAR_ROM );
 	if( *arenasFile.string ) {
@@ -181,10 +124,10 @@ static void G_LoadArenas( void ) {
 		strcat(filename, dirptr);
 		G_LoadArenasFromFile(filename);
 	}
-	trap_Printf( va( "%i arenas parsed\n", g_numArenas ) );
+	trap_Printf( va( "%i arenas parsed\n", s_gameinfo_size[GAMEINFO_ARENA]) );
 	
-	for( n = 0; n < g_numArenas; n++ ) {
-		Info_SetValueForKey( g_arenaInfos[n], "num", va( "%i", n ) );
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		Info_SetValueForKey(s_gameinfo_list[GAMEINFO_ARENA][n], "num", va("%i", n));
 	}
 }
 
@@ -197,9 +140,9 @@ G_GetArenaInfoByNumber
 const char *G_GetArenaInfoByMap( const char *map ) {
 	int			n;
 
-	for( n = 0; n < g_numArenas; n++ ) {
-		if( Q_stricmp( Info_ValueForKey( g_arenaInfos[n], "map" ), map ) == 0 ) {
-			return g_arenaInfos[n];
+	for( n = 0; n < s_gameinfo_size[GAMEINFO_ARENA]; n++ ) {
+		if( Q_stricmp( Info_ValueForKey(s_gameinfo_list[GAMEINFO_ARENA][n], "map" ), map ) == 0 ) {
+			return s_gameinfo_list[GAMEINFO_ARENA][n];
 		}
 	}
 
@@ -244,8 +187,8 @@ void G_AddRandomBot( int team ) {
 	gclient_t	*cl;
 
 	num = 0;
-	for ( n = 0; n < g_numBots ; n++ ) {
-		value = Info_ValueForKey( g_botInfos[n], "name" );
+	for ( n = 0; n < s_gameinfo_size[GAMEINFO_BOT] ; n++ ) {
+		value = Info_ValueForKey(s_gameinfo_list[GAMEINFO_BOT][n], "name" );
 		//
 		for ( i=0 ; i< g_maxclients.integer ; i++ ) {
 			cl = level.clients + i;
@@ -267,8 +210,8 @@ void G_AddRandomBot( int team ) {
 		}
 	}
 	num = random() * num;
-	for ( n = 0; n < g_numBots ; n++ ) {
-		value = Info_ValueForKey( g_botInfos[n], "name" );
+	for ( n = 0; n < s_gameinfo_size[GAMEINFO_BOT]; n++ ) {
+		value = Info_ValueForKey(s_gameinfo_list[GAMEINFO_BOT][n], "name" );
 		//
 		for ( i=0 ; i< g_maxclients.integer ; i++ ) {
 			cl = level.clients + i;
@@ -774,20 +717,20 @@ void Svcmd_BotList_f( void ) {
 	char aifile[MAX_TOKEN_CHARS];
 
 	trap_Printf("^1name             model            aifile              funname\n");
-	for (i = 0; i < g_numBots; i++) {
-		strcpy(name, Info_ValueForKey( g_botInfos[i], "name" ));
+	for (i = 0; i < s_gameinfo_size[GAMEINFO_BOT]; i++) {
+		strcpy(name, Info_ValueForKey( s_gameinfo_list[GAMEINFO_BOT][i], "name" ));
 		if ( !*name ) {
 			strcpy(name, "UnnamedPlayer");
 		}
-		strcpy(funname, Info_ValueForKey( g_botInfos[i], "funname" ));
+		strcpy(funname, Info_ValueForKey( s_gameinfo_list[GAMEINFO_BOT][i], "funname" ));
 		if ( !*funname ) {
 			strcpy(funname, "");
 		}
-		strcpy(model, Info_ValueForKey( g_botInfos[i], "model" ));
+		strcpy(model, Info_ValueForKey( s_gameinfo_list[GAMEINFO_BOT][i], "model" ));
 		if ( !*model ) {
 			strcpy(model, "visor/default");
 		}
-		strcpy(aifile, Info_ValueForKey( g_botInfos[i], "aifile"));
+		strcpy(aifile, Info_ValueForKey( s_gameinfo_list[GAMEINFO_BOT][i], "aifile"));
 		if (!*aifile ) {
 			strcpy(aifile, "bots/default_c.c");
 		}
@@ -859,27 +802,36 @@ static void G_SpawnBots( char *botList, int baseDelay ) {
 G_LoadBotsFromFile
 ===============
 */
-static void G_LoadBotsFromFile( char *filename ) {
-	int				len;
-	qhandle_t	f;
-	char			buf[MAX_BOTS_TEXT];
+static void
+G_LoadBotsFromFile(char* botFile)
+{
+	char        buf[MAX_GAMEINFO_TEXT];
+	int         len;
+	qhandle_t   file;
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
-	if ( !f ) {
-		trap_Printf( va( S_COLOR_RED "file not found: %s\n", filename ) );
-		return;
-	}
-	if ( len >= MAX_BOTS_TEXT ) {
-		trap_Printf( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_BOTS_TEXT ) );
-		trap_FS_FCloseFile( f );
+	len = trap_FS_FOpenFile(botFile, &file, FS_READ);
+	if (!file)
+	{
+		trap_Printf(va(S_COLOR_RED "bot file not found: %s\n", botFile));
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
+	if (len >= MAX_GAMEINFO_TEXT)
+	{
+		trap_Printf(va(S_COLOR_RED "bot file too large: %s is %i, max allowed is %i",
+			botFile, len, MAX_GAMEINFO_TEXT));
+		trap_FS_FCloseFile(file);
+		
+		return;
+	}
+
+	trap_FS_Read(buf, len, file);
 	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	trap_FS_FCloseFile(file);
 
-	g_numBots += G_ParseInfos( buf, MAX_BOTS - g_numBots, &g_botInfos[g_numBots] );
+	int count = s_gameinfo_size[GAMEINFO_BOT];
+	s_gameinfo_size[GAMEINFO_BOT] += trap_ParseInfo(buf, (MAX_GAMEINFO_LIST - count),
+		&s_gameinfo_list[GAMEINFO_BOT][count]);
 }
 
 /*
@@ -900,7 +852,7 @@ static void G_LoadBots( void ) {
 		return;
 	}
 
-	g_numBots = 0;
+	s_gameinfo_size[GAMEINFO_BOT] = 0;
 
 	trap_Cvar_Register( &botsFile, "g_botsFile", "", CVAR_INIT|CVAR_ROM );
 	if( *botsFile.string ) {
@@ -919,7 +871,7 @@ static void G_LoadBots( void ) {
 		strcat(filename, dirptr);
 		G_LoadBotsFromFile(filename);
 	}
-	trap_Printf( va( "%i bots parsed\n", g_numBots ) );
+	trap_Printf( va( "%i bots parsed\n", s_gameinfo_size[GAMEINFO_BOT]) );
 }
 
 
@@ -930,11 +882,11 @@ G_GetBotInfoByNumber
 ===============
 */
 char *G_GetBotInfoByNumber( int num ) {
-	if( num < 0 || num >= g_numBots ) {
+	if( num < 0 || num >= s_gameinfo_size[GAMEINFO_BOT]) {
 		trap_Printf( va( S_COLOR_RED "Invalid bot number: %i\n", num ) );
 		return NULL;
 	}
-	return g_botInfos[num];
+	return s_gameinfo_list[GAMEINFO_BOT][num];
 }
 
 
@@ -947,10 +899,10 @@ char *G_GetBotInfoByName( const char *name ) {
 	int		n;
 	char	*value;
 
-	for ( n = 0; n < g_numBots ; n++ ) {
-		value = Info_ValueForKey( g_botInfos[n], "name" );
+	for ( n = 0; n < s_gameinfo_size[GAMEINFO_BOT]; n++ ) {
+		value = Info_ValueForKey(s_gameinfo_list[GAMEINFO_BOT][n], "name" );
 		if ( !Q_stricmp( value, name ) ) {
-			return g_botInfos[n];
+			return s_gameinfo_list[GAMEINFO_BOT][n];
 		}
 	}
 

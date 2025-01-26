@@ -272,6 +272,9 @@ CLIENT / SERVER SYSTEMS
 #include "../client/client.h"
 #include "../server/server.h"
 
+int
+Com_ParseInfo(const char* buf, int max, char* list[MAX_INFO_STRING]);
+
 /*
 ==============================================================
 
