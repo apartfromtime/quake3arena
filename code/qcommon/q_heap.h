@@ -72,6 +72,8 @@ temp file loading
 #define HUNK_DEBUG
 #endif // #if defined(_DEBUG) && !defined(BSPC)
 
+void Mem_Initialize(void);
+void Mem_Shutdown(void);
 
 #ifdef ZONE_DEBUG
 #define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)

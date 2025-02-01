@@ -20,9 +20,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#include "..\..\libs\mimalloc\include\mimalloc.h"
+#include "..\..\libs\rpmalloc\rpmalloc\rpmalloc.h"
 #include "q_heap.h"
 #include "qcommon.h"
+
+void
+Mem_Initialize(void)
+{
+	rpmalloc_initialize();
+}
+
+void Mem_Shutdown(void)
+{
+	rpmalloc_finalize();
+}
 
 /*
 ==============================================================================
@@ -51,13 +62,9 @@ void* Z_TagMalloc(int size, int tag)
 	if (!tag) {
 		Com_Error(ERR_FATAL, "Z_TagMalloc: tried to use a 0 tag");
 	}
-
-	if (tag == TAG_SMALL && size <= MI_SMALL_SIZE_MAX) {
-		buf = mi_zalloc_small(size);
-	}
-	else {
-		buf = mi_zalloc_aligned(size, 4);
-	}
+	
+	buf = rpaligned_alloc(4, size);
+	memset(buf, 0, size);
 
 	return buf;
 }
@@ -104,22 +111,12 @@ Zone_Meminfo
 */
 void Zone_Meminfo(void)
 {
+	rpmalloc_global_statistics_t stat;
+	rpmalloc_global_statistics(&stat);
+
 	Com_Printf("----- Zone Info ------\n");
-}
-
-/*
-========================
-Z_Free
-========================
-*/
-void Z_Free(void* ptr)
-{
-	if (!ptr) {
-		Com_Error(ERR_DROP, "Z_Free: NULL pointer");
-	}
-
-	mi_free(ptr);
-	ptr = NULL;
+	Com_Printf("%8i bytes total\n", stat.mapped_total);
+	Com_Printf("----------------------\n");
 }
 
 /*
@@ -156,6 +153,24 @@ memstatic_t numberstring[] = {
 
 /*
 ========================
+Z_Free
+========================
+*/
+void Z_Free(void* ptr)
+{
+	if (!ptr) {
+		Com_Error(ERR_DROP, "Z_Free: NULL pointer");
+	}
+
+	if (ptr != (char*)&emptystring && ptr != (char*)&numberstring[((const char*)ptr)[0] - '0'])
+	{
+		rpfree(ptr);
+		ptr = NULL;
+	}
+}
+
+/*
+========================
 CopyString
 
  NOTE:	never write over the memory CopyString returns because
@@ -187,7 +202,7 @@ HUNK MEMORY ALLOCATION
 */
 
 static int			s_hunkTotal;
-static mi_heap_t*	s_hunk = NULL;
+static rpmalloc_heap_t*	s_hunk = NULL;
 
 /*
 =================
@@ -210,7 +225,9 @@ void* Hunk_Alloc(int size)
 		Com_Error(ERR_FATAL, "Hunk_Alloc: Hunk memory system not initialized");
 	}
 
-	buf = mi_heap_zalloc_aligned(s_hunk, size, 4);
+	buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
+	
+	memset(buf, 0, size);
 
 	return buf;
 }
@@ -224,7 +241,7 @@ bool Hunk_InitMemory(int hunkSize)
 {
 	s_hunkTotal = 1024 * 1024 * hunkSize;
 
-	s_hunk = mi_heap_new();
+	s_hunk = rpmalloc_heap_acquire();
 
 	if (!s_hunk)
 	{
@@ -239,20 +256,11 @@ bool Hunk_InitMemory(int hunkSize)
 Hunk_Meminfo
 =================
 */
-void
-Mem_Output_f(const char* msg, void* arg)
-{
-	Com_Printf(msg, arg);
-}
 
 void
 Hunk_Meminfo(void)
 {
 	Com_Printf("----- Hunk Info ------\n");
-
-	mi_stats_print_out(Mem_Output_f, NULL);
-
-	Com_Printf("----------------------\n");
 }
 
 /*
@@ -264,6 +272,7 @@ The server calls this before shutting down or loading a new map
 */
 void Hunk_Clear(void)
 {
+	rpmalloc_heap_free_all(s_hunk);
 	Com_Printf("Hunk_Clear: reset the hunk ok\n");
 }
 
@@ -273,10 +282,9 @@ Hunk_Free
 ==================
 */
 void
-Hunk_Free(void)
+Hunk_Free(void* buf)
 {
-	mi_heap_destroy(s_hunk);
-	s_hunk = NULL;
+	rpmalloc_heap_free(s_hunk, buf);
 }
 
 /*
@@ -301,9 +309,10 @@ void* Hunk_AllocateTempMemory(int size)
 		return Z_Malloc(size);
 	}
 
-	buf = mi_heap_malloc_aligned(s_hunk, size, 4);
+	buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
 
-	// don't bother clearing, because we are going to load a file over it
+	memset(buf, 0, size);
+
 	return buf;
 }
 
@@ -324,11 +333,8 @@ void Hunk_FreeTempMemory(void* buf)
 
 		return;
 	}
-
-	if (mi_heap_check_owned(s_hunk, buf))
-	{
-		mi_free(buf);
-	}
+	
+	rpmalloc_heap_free(s_hunk, buf);
 }
 
 /*

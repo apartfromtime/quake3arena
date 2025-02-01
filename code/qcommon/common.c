@@ -1083,6 +1083,7 @@ void Com_Init( char *commandLine ) {
 	Com_InitPushEvent();
 
 	// allocate the stack based hunk and zone allocator
+	Mem_Initialize();
 	Com_InitZoneMemory();
 	Com_InitHunkMemory();
 
@@ -1536,7 +1537,7 @@ void Com_Shutdown (void) {
 		FS_FCloseFile( com_journalFile );
 		com_journalFile = 0;
 	}
-	Hunk_Free();
+	Mem_Shutdown();
 }
 
 //------------------------------------------------------------------------
