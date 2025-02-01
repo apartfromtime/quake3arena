@@ -27,118 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*
 ==============================================================================
 
-MEMORY
-
-==============================================================================
-*/
-
-extern qhandle_t logfile;
-
-/*
-==============================================================================
-
 ZONE MEMORY ALLOCATION
 
 ==============================================================================
 */
 
 static int s_zoneTotal;
-static int s_smallZoneTotal;
-
-/*
-=================
-Zone_InitSmallZoneMemory
-=================
-*/
-bool Zone_InitSmallZoneMemory(int smallSize)
-{
-	s_smallZoneTotal = 1024 * smallSize;
-
-	return true;
-}
-
-/*
-========================
-Zone_InitMemory
-========================
-*/
-bool Zone_InitMemory(int zoneSize)
-{
-	s_zoneTotal = 1024 * 1024 * zoneSize;
-
-	return true;
-}
-
-/*
-========================
-Zone_TouchMemory
-========================
-*/
-void Zone_TouchMemory(void)
-{
-}
-
-void Zone_Meminfo(void)
-{
-	int			zoneBytes, zoneBlocks;
-	int			smallZoneBytes, smallZoneBlocks;
-	int			botlibBytes, rendererBytes;
-
-	zoneBytes = 0;
-	botlibBytes = 0;
-	rendererBytes = 0;
-	zoneBlocks = 0;
-
-	Com_Printf("----- Zone Info ------\n");
-
-	smallZoneBytes = 0;
-	smallZoneBlocks = 0;
-
-	Com_Printf("%8i bytes total zone\n", s_zoneTotal);
-	Com_Printf("\n");
-	Com_Printf("%8i bytes in %i zone blocks\n", zoneBytes, zoneBlocks);
-	Com_Printf("        %8i bytes in dynamic botlib\n", botlibBytes);
-	Com_Printf("        %8i bytes in dynamic renderer\n", rendererBytes);
-	Com_Printf("        %8i bytes in dynamic other\n", zoneBytes - (botlibBytes + rendererBytes));
-	Com_Printf("        %8i bytes in small Zone memory\n", smallZoneBytes);
-	Com_Printf("----------------------\n");
-}
-
-/*
-========================
-Z_AvailableMemory
-========================
-*/
-int Z_AvailableMemory(void)
-{
-	return s_zoneTotal;
-}
-
-/*
-========================
-Z_Free
-========================
-*/
-void Z_Free(void* ptr)
-{
-	if (!ptr) {
-		Com_Error(ERR_DROP, "Z_Free: NULL pointer");
-	}
-
-	mi_free(ptr);
-	ptr = NULL;
-}
-
-
-/*
-================
-Z_FreeTags
-================
-*/
-void Z_FreeTags(int tag)
-{
-
-}
 
 /*
 ================
@@ -193,47 +87,49 @@ void* Z_Malloc(int size)
 
 /*
 ========================
-Z_CheckHeap
+Zone_InitMemory
 ========================
 */
-void Z_CheckHeap(void)
+bool Zone_InitMemory(int zoneSize)
 {
+	s_zoneTotal = 1024 * 1024 * zoneSize;
+
+	return true;
 }
 
 /*
 ========================
-Z_LogZoneHeap
+Zone_Meminfo
 ========================
 */
-void Z_LogZoneHeap(char* name)
+void Zone_Meminfo(void)
 {
-	char		buf[4096];
-	int size, allocSize, numBlocks;
+	Com_Printf("----- Zone Info ------\n");
+}
 
-	if (!logfile || !FS_Initialized())
-	{
-		return;
+/*
+========================
+Z_Free
+========================
+*/
+void Z_Free(void* ptr)
+{
+	if (!ptr) {
+		Com_Error(ERR_DROP, "Z_Free: NULL pointer");
 	}
 
-	size = allocSize = numBlocks = 0;
-	Com_sprintf(buf, sizeof(buf), "\r\n================\r\n%s log\r\n================\r\n", name);
-	FS_Write(buf, strlen(buf), logfile);
-
-	Com_sprintf(buf, sizeof(buf), "%d %s memory in %d blocks\r\n", size, name, numBlocks);
-	FS_Write(buf, strlen(buf), logfile);
-	Com_sprintf(buf, sizeof(buf), "%d %s memory overhead\r\n", size - allocSize, name);
-	FS_Write(buf, strlen(buf), logfile);
+	mi_free(ptr);
+	ptr = NULL;
 }
 
 /*
 ========================
-Z_LogHeap
+Z_AvailableMemory
 ========================
 */
-void Z_LogHeap(void)
+int Z_AvailableMemory(void)
 {
-	Z_LogZoneHeap("MAIN");
-	Z_LogZoneHeap("SMALL");
+	return s_zoneTotal;
 }
 
 // static mem blocks to reduce a lot of small zone overhead
@@ -290,160 +186,8 @@ HUNK MEMORY ALLOCATION
 ==============================================================================
 */
 
-static mi_heap_t* s_hunk = NULL;
-
-static	int		s_hunkTotal;
-
-/*
-=================
-Com_InitHunkMemory
-=================
-*/
-bool Hunk_InitMemory(int hunkSize)
-{
-	s_hunkTotal = 1024 * 1024 * hunkSize;
-
-	s_hunk = mi_heap_new();
-
-	if (!s_hunk)
-	{
-		return false;
-	}
-
-	Hunk_Clear();
-
-	return true;
-}
-
-void Mem_Output_f(const char* msg, void* arg)
-{
-	Com_Printf(msg, arg);
-}
-
-void Hunk_Meminfo(void)
-{
-	int unused = 0;
-
-	Com_Printf("----- Hunk Info ------\n");
-
-	mi_stats_print_out(Mem_Output_f, NULL);
-
-	Com_Printf("----------------------\n");
-}
-
-void Hunk_TouchMemory(void)
-{
-}
-
-/*
-=================
-Hunk_Log
-=================
-*/
-void Hunk_Log(void)
-{
-	char		buf[4096];
-	int size, numBlocks;
-
-	if (!logfile || !FS_Initialized())
-	{
-		return;
-	}
-
-	size = 0;
-	numBlocks = 0;
-	Com_sprintf(buf, sizeof(buf), "\r\n================\r\nHunk log\r\n================\r\n");
-	FS_Write(buf, strlen(buf), logfile);
-
-	Com_sprintf(buf, sizeof(buf), "%d Hunk memory\r\n", size);
-	FS_Write(buf, strlen(buf), logfile);
-	Com_sprintf(buf, sizeof(buf), "%d hunk blocks\r\n", numBlocks);
-	FS_Write(buf, strlen(buf), logfile);
-}
-
-/*
-=================
-Hunk_SmallLog
-=================
-*/
-void Hunk_SmallLog(void)
-{
-	char		buf[4096];
-	int size, numBlocks;
-
-	if (!logfile || !FS_Initialized())
-	{
-		return;
-	}
-
-	size = 0;
-	numBlocks = 0;
-	Com_sprintf(buf, sizeof(buf), "\r\n================\r\nHunk Small log\r\n================\r\n");
-	FS_Write(buf, strlen(buf), logfile);
-
-	Com_sprintf(buf, sizeof(buf), "%d Hunk memory\r\n", size);
-	FS_Write(buf, strlen(buf), logfile);
-	Com_sprintf(buf, sizeof(buf), "%d hunk blocks\r\n", numBlocks);
-	FS_Write(buf, strlen(buf), logfile);
-}
-
-/*
-====================
-Hunk_MemoryRemaining
-====================
-*/
-int	Hunk_MemoryRemaining(void)
-{
-	return s_hunkTotal;
-}
-
-/*
-===================
-Hunk_SetMark
-
-The server calls this after the level and game VM have been loaded
-===================
-*/
-void Hunk_SetMark(void)
-{
-}
-
-/*
-=================
-Hunk_ClearToMark
-
-The client calls this before starting a vid_restart or snd_restart
-=================
-*/
-void Hunk_ClearToMark(void)
-{
-}
-
-/*
-=================
-Hunk_CheckMark
-=================
-*/
-bool Hunk_CheckMark(void)
-{
-	return true;
-}
-
-/*
-=================
-Hunk_Clear
-
-The server calls this before shutting down or loading a new map
-=================
-*/
-void Hunk_Clear(void)
-{
-	Com_Printf("Hunk_Clear: reset the hunk ok\n");
-}
-
-static void Hunk_SwapBanks(void)
-{
-}
+static int			s_hunkTotal;
+static mi_heap_t*	s_hunk = NULL;
 
 /*
 =================
@@ -469,6 +213,70 @@ void* Hunk_Alloc(int size)
 	buf = mi_heap_zalloc_aligned(s_hunk, size, 4);
 
 	return buf;
+}
+
+/*
+=================
+Hunk_InitMemory
+=================
+*/
+bool Hunk_InitMemory(int hunkSize)
+{
+	s_hunkTotal = 1024 * 1024 * hunkSize;
+
+	s_hunk = mi_heap_new();
+
+	if (!s_hunk)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+/*
+=================
+Hunk_Meminfo
+=================
+*/
+void
+Mem_Output_f(const char* msg, void* arg)
+{
+	Com_Printf(msg, arg);
+}
+
+void
+Hunk_Meminfo(void)
+{
+	Com_Printf("----- Hunk Info ------\n");
+
+	mi_stats_print_out(Mem_Output_f, NULL);
+
+	Com_Printf("----------------------\n");
+}
+
+/*
+=================
+Hunk_Clear
+
+The server calls this before shutting down or loading a new map
+=================
+*/
+void Hunk_Clear(void)
+{
+	Com_Printf("Hunk_Clear: reset the hunk ok\n");
+}
+
+/*
+==================
+Hunk_Free
+==================
+*/
+void
+Hunk_Free(void)
+{
+	mi_heap_destroy(s_hunk);
+	s_hunk = NULL;
 }
 
 /*
@@ -524,23 +332,11 @@ void Hunk_FreeTempMemory(void* buf)
 }
 
 /*
-=================
-Hunk_ClearTempMemory
-
-The temp space is no longer needed.  If we have left more
-touched but unused memory on this side, have future
-permanent allocs use this side.
-=================
+====================
+Hunk_MemoryRemaining
+====================
 */
-void Hunk_ClearTempMemory(void)
+int	Hunk_MemoryRemaining(void)
 {
-}
-
-/*
-=================
-Hunk_Trash
-=================
-*/
-void Hunk_Trash(void)
-{
+	return s_hunkTotal;
 }

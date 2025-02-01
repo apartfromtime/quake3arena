@@ -518,13 +518,7 @@ void Com_TouchMemory(void)
 {
 	int start = 0, end = 0;
 
-	Z_CheckHeap();
-
 	start = Sys_Milliseconds();
-
-	Hunk_TouchMemory();
-	Zone_TouchMemory();
-
 	end = Sys_Milliseconds();
 
 	Com_Printf("Com_TouchMemory: %i msec\n", end - start);
@@ -999,21 +993,6 @@ static void Com_WriteCDKey( const char *filename, const char *ikey ) {
 
 /*
 =================
-Com_InitSmallZoneMemory
-=================
-*/
-void Com_InitSmallZoneMemory(void)
-{
-	int memAlloc = 512;
-
-	if (Zone_InitSmallZoneMemory(memAlloc) == false) {
-		Com_Error(ERR_FATAL, "Small zone data failed to allocate %1.1f megs",
-			(float)memAlloc / 1024);
-	}
-}
-
-/*
-=================
 Com_InitZoneMemory
 =================
 */
@@ -1040,10 +1019,6 @@ void Com_InitZoneMemory(void)
 	if (Zone_InitMemory(memAlloc) == false) {
 		Com_Error(ERR_FATAL, "Zone data failed to allocate %i megs", memAlloc);
 	}
-
-#ifdef ZONE_DEBUG
-	Cmd_AddCommand("zonelog", Z_LogHeap);
-#endif
 }
 
 /*
@@ -1088,11 +1063,6 @@ void Com_InitHunkMemory(void)
 	if (Hunk_InitMemory(memAlloc) == false) {
 		Com_Error(ERR_FATAL, "Hunk data failed to allocate %i megs", memAlloc);
 	}
-
-#ifdef HUNK_DEBUG
-	Cmd_AddCommand("hunklog", Hunk_Log);
-	Cmd_AddCommand("hunksmalllog", Hunk_SmallLog);
-#endif
 }
 
 /*
@@ -1113,7 +1083,6 @@ void Com_Init( char *commandLine ) {
 	Com_InitPushEvent();
 
 	// allocate the stack based hunk and zone allocator
-	Com_InitSmallZoneMemory();
 	Com_InitZoneMemory();
 	Com_InitHunkMemory();
 
@@ -1567,7 +1536,7 @@ void Com_Shutdown (void) {
 		FS_FCloseFile( com_journalFile );
 		com_journalFile = 0;
 	}
-
+	Hunk_Free();
 }
 
 //------------------------------------------------------------------------

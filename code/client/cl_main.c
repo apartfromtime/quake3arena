@@ -648,7 +648,6 @@ void CL_FlushMemory( void ) {
 	}
 	else {
 		// clear all the client data on the hunk
-		Hunk_ClearToMark();
 	}
 
 	CL_StartHunkUsers();
@@ -1217,7 +1216,6 @@ void CL_Vid_Restart_f( void ) {
 	}
 	else {
 		// clear all the client data on the hunk
-		Hunk_ClearToMark();
 	}
 
 	// initialize the renderer interface
