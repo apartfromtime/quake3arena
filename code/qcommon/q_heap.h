@@ -73,14 +73,11 @@ temp file loading
 #ifdef ZONE_DEBUG
 #define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
 #define Z_Malloc(size)					Z_MallocDebug(size, #size, __FILE__, __LINE__)
-#define S_Malloc(size)					S_MallocDebug(size, #size, __FILE__, __LINE__)
-void* Z_TagMallocDebug(int size, int tag, char* label, char* file, int line);	// NOT 0 filled memory
-void* Z_MallocDebug(int size, char* label, char* file, int line);			// returns 0 filled memory
-void* S_MallocDebug(int size, char* label, char* file, int line);			// returns 0 filled memory
+void* Z_TagMallocDebug(int size, int tag, char* label, char* file, int line);
+void* Z_MallocDebug(int size, char* label, char* file, int line);
 #else
-void* Z_TagMalloc(int size, int tag);	// NOT 0 filled memory
-void* Z_Malloc(int size);			// returns 0 filled memory
-void* S_Malloc(int size);			// NOT 0 filled memory only for small allocations
+void* Z_TagMalloc(int size, int tag);
+void* Z_Malloc(int size);
 #endif
 bool Zone_InitSmallZoneMemory(int zoneSize);
 bool Zone_InitMemory(int zoneSize);
