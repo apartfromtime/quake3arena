@@ -68,7 +68,8 @@ temp file loading
 
 #if defined(_DEBUG) && !defined(BSPC)
 #define ZONE_DEBUG
-#endif
+#define HUNK_DEBUG
+#endif // #if defined(_DEBUG) && !defined(BSPC)
 
 #ifdef ZONE_DEBUG
 #define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
@@ -88,10 +89,6 @@ void Z_Free(void* ptr);
 void Z_FreeTags(int tag);
 int Z_AvailableMemory(void);
 void Z_LogHeap(void);
-
-#if defined(_DEBUG) && !defined(BSPC)
-#define HUNK_DEBUG
-#endif
 
 #ifdef HUNK_DEBUG
 #define Hunk_Alloc(size)			Hunk_AllocDebug(size, #size, __FILE__, __LINE__)

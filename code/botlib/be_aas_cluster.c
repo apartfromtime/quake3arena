@@ -1482,14 +1482,14 @@ void AAS_InitClustering(void)
 	//remove all portals that are not closing a cluster
 	//AAS_RemoveNotClusterClosingPortals();
 	//initialize portal memory
-	if (aasworld.portals) FreeMemory(aasworld.portals);
-	aasworld.portals = (aas_portal_t *) GetMemory(AAS_MAX_PORTALS * sizeof(aas_portal_t));
+	if (aasworld.portals) FreeZoneMemory(aasworld.portals);
+	aasworld.portals = (aas_portal_t *) GetZoneMemory(AAS_MAX_PORTALS * sizeof(aas_portal_t));
 	//initialize portal index memory
-	if (aasworld.portalindex) FreeMemory(aasworld.portalindex);
-	aasworld.portalindex = (aas_portalindex_t *) GetMemory(AAS_MAX_PORTALINDEXSIZE * sizeof(aas_portalindex_t));
+	if (aasworld.portalindex) FreeZoneMemory(aasworld.portalindex);
+	aasworld.portalindex = (aas_portalindex_t *) GetZoneMemory(AAS_MAX_PORTALINDEXSIZE * sizeof(aas_portalindex_t));
 	//initialize cluster memory
-	if (aasworld.clusters) FreeMemory(aasworld.clusters);
-	aasworld.clusters = (aas_cluster_t *) GetMemory(AAS_MAX_CLUSTERS * sizeof(aas_cluster_t));
+	if (aasworld.clusters) FreeZoneMemory(aasworld.clusters);
+	aasworld.clusters = (aas_cluster_t *) GetZoneMemory(AAS_MAX_CLUSTERS * sizeof(aas_cluster_t));
 	//
 	removedPortalAreas = 0;
 	botimport.Print(PRT_MESSAGE, "\r%6d removed portal areas", removedPortalAreas);

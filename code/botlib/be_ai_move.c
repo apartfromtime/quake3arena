@@ -131,7 +131,7 @@ int BotAllocMoveState(void)
 	{
 		if (!botmovestates[i])
 		{
-			botmovestates[i] = GetMemory(sizeof(bot_movestate_t));
+			botmovestates[i] = GetZoneMemory(sizeof(bot_movestate_t));
 			return i;
 		} //end if
 	} //end for
@@ -155,7 +155,7 @@ void BotFreeMoveState(int handle)
 		botimport.Print(PRT_FATAL, "invalid move state %d\n", handle);
 		return;
 	} //end if
-	FreeMemory(botmovestates[handle]);
+	FreeZoneMemory(botmovestates[handle]);
 	botmovestates[handle] = NULL;
 } //end of the function BotFreeMoveState
 //========================================================================
@@ -3600,7 +3600,7 @@ void BotShutdownMoveAI(void)
 	{
 		if (botmovestates[i])
 		{
-			FreeMemory(botmovestates[i]);
+			FreeZoneMemory(botmovestates[i]);
 			botmovestates[i] = NULL;
 		} //end if
 	} //end for

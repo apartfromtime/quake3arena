@@ -217,22 +217,22 @@ void AAS_OptimizeArea(optimized_t *optimized, int areanum)
 //===========================================================================
 void AAS_OptimizeAlloc(optimized_t *optimized)
 {
-	optimized->vertexes = (aas_vertex_t *) GetMemory(aasworld.numvertexes * sizeof(aas_vertex_t));
+	optimized->vertexes = (aas_vertex_t *) GetZoneMemory(aasworld.numvertexes * sizeof(aas_vertex_t));
 	optimized->numvertexes = 0;
-	optimized->edges = (aas_edge_t *) GetMemory(aasworld.numedges * sizeof(aas_edge_t));
+	optimized->edges = (aas_edge_t *) GetZoneMemory(aasworld.numedges * sizeof(aas_edge_t));
 	optimized->numedges = 1; //edge zero is a dummy
-	optimized->edgeindex = (aas_edgeindex_t *) GetMemory(aasworld.edgeindexsize * sizeof(aas_edgeindex_t));
+	optimized->edgeindex = (aas_edgeindex_t *) GetZoneMemory(aasworld.edgeindexsize * sizeof(aas_edgeindex_t));
 	optimized->edgeindexsize = 0;
-	optimized->faces = (aas_face_t *) GetMemory(aasworld.numfaces * sizeof(aas_face_t));
+	optimized->faces = (aas_face_t *) GetZoneMemory(aasworld.numfaces * sizeof(aas_face_t));
 	optimized->numfaces = 1; //face zero is a dummy
-	optimized->faceindex = (aas_faceindex_t *) GetMemory(aasworld.faceindexsize * sizeof(aas_faceindex_t));
+	optimized->faceindex = (aas_faceindex_t *) GetZoneMemory(aasworld.faceindexsize * sizeof(aas_faceindex_t));
 	optimized->faceindexsize = 0;
-	optimized->areas = (aas_area_t *) GetMemory(aasworld.numareas * sizeof(aas_area_t));
+	optimized->areas = (aas_area_t *) GetZoneMemory(aasworld.numareas * sizeof(aas_area_t));
 	optimized->numareas = aasworld.numareas;
 	//
-	optimized->vertexoptimizeindex = (int *) GetMemory(aasworld.numvertexes * sizeof(int));
-	optimized->edgeoptimizeindex = (int *) GetMemory(aasworld.numedges * sizeof(int));
-	optimized->faceoptimizeindex = (int *) GetMemory(aasworld.numfaces * sizeof(int));
+	optimized->vertexoptimizeindex = (int *) GetZoneMemory(aasworld.numvertexes * sizeof(int));
+	optimized->edgeoptimizeindex = (int *) GetZoneMemory(aasworld.numedges * sizeof(int));
+	optimized->faceoptimizeindex = (int *) GetZoneMemory(aasworld.numfaces * sizeof(int));
 } //end of the function AAS_OptimizeAlloc
 //===========================================================================
 //
@@ -243,33 +243,33 @@ void AAS_OptimizeAlloc(optimized_t *optimized)
 void AAS_OptimizeStore(optimized_t *optimized)
 {
 	//store the optimized vertexes
-	if (aasworld.vertexes) FreeMemory(aasworld.vertexes);
+	if (aasworld.vertexes) FreeZoneMemory(aasworld.vertexes);
 	aasworld.vertexes = optimized->vertexes;
 	aasworld.numvertexes = optimized->numvertexes;
 	//store the optimized edges
-	if (aasworld.edges) FreeMemory(aasworld.edges);
+	if (aasworld.edges) FreeZoneMemory(aasworld.edges);
 	aasworld.edges = optimized->edges;
 	aasworld.numedges = optimized->numedges;
 	//store the optimized edge index
-	if (aasworld.edgeindex) FreeMemory(aasworld.edgeindex);
+	if (aasworld.edgeindex) FreeZoneMemory(aasworld.edgeindex);
 	aasworld.edgeindex = optimized->edgeindex;
 	aasworld.edgeindexsize = optimized->edgeindexsize;
 	//store the optimized faces
-	if (aasworld.faces) FreeMemory(aasworld.faces);
+	if (aasworld.faces) FreeZoneMemory(aasworld.faces);
 	aasworld.faces = optimized->faces;
 	aasworld.numfaces = optimized->numfaces;
 	//store the optimized face index
-	if (aasworld.faceindex) FreeMemory(aasworld.faceindex);
+	if (aasworld.faceindex) FreeZoneMemory(aasworld.faceindex);
 	aasworld.faceindex = optimized->faceindex;
 	aasworld.faceindexsize = optimized->faceindexsize;
 	//store the optimized areas
-	if (aasworld.areas) FreeMemory(aasworld.areas);
+	if (aasworld.areas) FreeZoneMemory(aasworld.areas);
 	aasworld.areas = optimized->areas;
 	aasworld.numareas = optimized->numareas;
 	//free optimize indexes
-	FreeMemory(optimized->vertexoptimizeindex);
-	FreeMemory(optimized->edgeoptimizeindex);
-	FreeMemory(optimized->faceoptimizeindex);
+	FreeZoneMemory(optimized->vertexoptimizeindex);
+	FreeZoneMemory(optimized->edgeoptimizeindex);
+	FreeZoneMemory(optimized->faceoptimizeindex);
 } //end of the function AAS_OptimizeStore
 //===========================================================================
 //

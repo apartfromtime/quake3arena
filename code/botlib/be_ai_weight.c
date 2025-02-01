@@ -113,7 +113,7 @@ void FreeFuzzySeperators_r(fuzzyseperator_t *fs)
 	if (!fs) return;
 	if (fs->child) FreeFuzzySeperators_r(fs->child);
 	if (fs->next) FreeFuzzySeperators_r(fs->next);
-	FreeMemory(fs);
+	FreeZoneMemory(fs);
 } //end of the function FreeFuzzySeperators
 //===========================================================================
 //
@@ -128,9 +128,9 @@ void FreeWeightConfig2(weightconfig_t *config)
 	for (i = 0; i < config->numweights; i++)
 	{
 		FreeFuzzySeperators_r(config->weights[i].firstseperator);
-		if (config->weights[i].name) FreeMemory(config->weights[i].name);
+		if (config->weights[i].name) FreeZoneMemory(config->weights[i].name);
 	} //end for
-	FreeMemory(config);
+	FreeZoneMemory(config);
 } //end of the function FreeWeightConfig2
 //===========================================================================
 //
@@ -169,7 +169,7 @@ fuzzyseperator_t *ReadFuzzySeperators_r(source_t *source)
 		def = !strcmp(token.string, "default");
 		if (def || !strcmp(token.string, "case"))
 		{
-			fs = (fuzzyseperator_t *) GetMemory(sizeof(fuzzyseperator_t));
+			fs = (fuzzyseperator_t *) GetZoneMemory(sizeof(fuzzyseperator_t));
 			fs->index = index;
 			if (lastfs) lastfs->next = fs;
 			else firstfs = fs;
@@ -256,7 +256,7 @@ fuzzyseperator_t *ReadFuzzySeperators_r(source_t *source)
 	if (!founddefault)
 	{
 		SourceWarning(source, "switch without default\n");
-		fs = (fuzzyseperator_t *) GetMemory(sizeof(fuzzyseperator_t));
+		fs = (fuzzyseperator_t *) GetZoneMemory(sizeof(fuzzyseperator_t));
 		fs->index = index;
 		fs->value = MAX_INVENTORYVALUE;
 		fs->weight = 0;
@@ -324,7 +324,7 @@ weightconfig_t *ReadWeightConfig(char *filename)
 		return NULL;
 	} //end if
 	//
-	config = (weightconfig_t *) GetMemory(sizeof(weightconfig_t));
+	config = (weightconfig_t *) GetZoneMemory(sizeof(weightconfig_t));
 	config->numweights = 0;
 	Q_strncpyz( config->filename, filename, sizeof(config->filename) );
 	//parse the item config file
@@ -344,7 +344,7 @@ weightconfig_t *ReadWeightConfig(char *filename)
 				return NULL;
 			} //end if
 			StripDoubleQuotes(token.string);
-			config->weights[config->numweights].name = (char *) GetMemory(strlen(token.string) + 1);
+			config->weights[config->numweights].name = (char *) GetZoneMemory(strlen(token.string) + 1);
 			strcpy(config->weights[config->numweights].name, token.string);
 			if (!PC_ExpectAnyToken(source, &token))
 			{
@@ -376,14 +376,14 @@ weightconfig_t *ReadWeightConfig(char *filename)
 			} //end if
 			else if (!strcmp(token.string, "return"))
 			{
-				fs = (fuzzyseperator_t *) GetMemory(sizeof(fuzzyseperator_t));
+				fs = (fuzzyseperator_t *) GetZoneMemory(sizeof(fuzzyseperator_t));
 				fs->index = 0;
 				fs->value = MAX_INVENTORYVALUE;
 				fs->next = NULL;
 				fs->child = NULL;
 				if (!ReadFuzzyWeight(source, fs))
 				{
-					FreeMemory(fs);
+					FreeZoneMemory(fs);
 					FreeWeightConfig(config);
 					FreeSource(source);
 					return NULL;

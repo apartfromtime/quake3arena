@@ -236,7 +236,7 @@ void AAS_FreeRoutingCache(aas_routingcache_t *cache)
 {
 	AAS_UnlinkCache(cache);
 	routingcachesize -= cache->size;
-	FreeMemory(cache);
+	FreeZoneMemory(cache);
 } //end of the function AAS_FreeRoutingCache
 //===========================================================================
 //
@@ -402,8 +402,8 @@ void AAS_InitAreaContentsTravelFlags(void)
 {
 	int i;
 
-	if (aasworld.areacontentstravelflags) FreeMemory(aasworld.areacontentstravelflags);
-	aasworld.areacontentstravelflags = (int *) GetMemory(aasworld.numareas * sizeof(int));
+	if (aasworld.areacontentstravelflags) FreeZoneMemory(aasworld.areacontentstravelflags);
+	aasworld.areacontentstravelflags = (int *) GetZoneMemory(aasworld.numareas * sizeof(int));
 	//
 	for (i = 0; i < aasworld.numareas; i++) {
 		aasworld.areacontentstravelflags[i] = AAS_GetAreaContentsTravelFlags(i);
@@ -428,9 +428,9 @@ void AAS_CreateReversedReachability(void)
 	starttime = Sys_MilliSeconds();
 #endif
 	//free reversed links that have already been created
-	if (aasworld.reversedreachability) FreeMemory(aasworld.reversedreachability);
+	if (aasworld.reversedreachability) FreeZoneMemory(aasworld.reversedreachability);
 	//allocate memory for the reversed reachability links
-	ptr = (char *) GetMemory(aasworld.numareas * sizeof(aas_reversedreachability_t) +
+	ptr = (char *) GetZoneMemory(aasworld.numareas * sizeof(aas_reversedreachability_t) +
 							aasworld.reachabilitysize * sizeof(aas_reversedlink_t));
 	//
 	aasworld.reversedreachability = (aas_reversedreachability_t *) ptr;
@@ -509,7 +509,7 @@ void AAS_CalculateAreaTravelTimes(void)
 
 	starttime = Sys_MilliSeconds();
 	//if there are still area travel times, free the memory
-	if (aasworld.areatraveltimes) FreeMemory(aasworld.areatraveltimes);
+	if (aasworld.areatraveltimes) FreeZoneMemory(aasworld.areatraveltimes);
 	//get the total size of all the area travel times
 	size = aasworld.numareas * sizeof(unsigned short **);
 	for (i = 0; i < aasworld.numareas; i++)
@@ -523,7 +523,7 @@ void AAS_CalculateAreaTravelTimes(void)
 		size += settings->numreachableareas * revreach->numlinks * sizeof(unsigned short);
 	} //end for
 	//allocate memory for the area travel times
-	ptr = (char *) GetMemory(size);
+	ptr = (char *) GetZoneMemory(size);
 	aasworld.areatraveltimes = (unsigned short ***) ptr;
 	ptr += aasworld.numareas * sizeof(unsigned short **);
 	//calcluate the travel times for all the areas
@@ -600,9 +600,9 @@ void AAS_InitPortalMaxTravelTimes(void)
 {
 	int i;
 
-	if (aasworld.portalmaxtraveltimes) FreeMemory(aasworld.portalmaxtraveltimes);
+	if (aasworld.portalmaxtraveltimes) FreeZoneMemory(aasworld.portalmaxtraveltimes);
 
-	aasworld.portalmaxtraveltimes = (int *) GetMemory(aasworld.numportals * sizeof(int));
+	aasworld.portalmaxtraveltimes = (int *) GetZoneMemory(aasworld.numportals * sizeof(int));
 
 	for (i = 0; i < aasworld.numportals; i++)
 	{
@@ -742,7 +742,7 @@ aas_routingcache_t *AAS_AllocRoutingCache(int numtraveltimes)
 	//
 	routingcachesize += size;
 	//
-	cache = (aas_routingcache_t *) GetMemory(size);
+	cache = (aas_routingcache_t *) GetZoneMemory(size);
 	cache->reachabilities = (unsigned char *) cache + sizeof(aas_routingcache_t)
 								+ numtraveltimes * sizeof(unsigned short int);
 	cache->size = size;
@@ -777,7 +777,7 @@ void AAS_FreeAllClusterAreaCache(void)
 		} //end for
 	} //end for
 	//free the cluster cache array
-	FreeMemory(aasworld.clusterareacache);
+	FreeZoneMemory(aasworld.clusterareacache);
 	aasworld.clusterareacache = NULL;
 } //end of the function AAS_FreeAllClusterAreaCache
 //===========================================================================
@@ -798,7 +798,7 @@ void AAS_InitClusterAreaCache(void)
 	} //end for
 	//two dimensional array with pointers for every cluster to routing cache
 	//for every area in that cluster
-	ptr = (char *) GetMemory(
+	ptr = (char *) GetZoneMemory(
 				aasworld.numclusters * sizeof(aas_routingcache_t **) +
 				size * sizeof(aas_routingcache_t *));
 	aasworld.clusterareacache = (aas_routingcache_t ***) ptr;
@@ -832,7 +832,7 @@ void AAS_FreeAllPortalCache(void)
 		} //end for
 		aasworld.portalcache[i] = NULL;
 	} //end for
-	FreeMemory(aasworld.portalcache);
+	FreeZoneMemory(aasworld.portalcache);
 	aasworld.portalcache = NULL;
 } //end of the function AAS_FreeAllPortalCache
 //===========================================================================
@@ -844,7 +844,7 @@ void AAS_FreeAllPortalCache(void)
 void AAS_InitPortalCache(void)
 {
 	//
-	aasworld.portalcache = (aas_routingcache_t **) GetMemory(
+	aasworld.portalcache = (aas_routingcache_t **) GetZoneMemory(
 								aasworld.numareas * sizeof(aas_routingcache_t *));
 } //end of the function AAS_InitPortalCache
 //===========================================================================
@@ -858,7 +858,7 @@ void AAS_InitRoutingUpdate(void)
 	int i, maxreachabilityareas;
 
 	//free routing update fields if already existing
-	if (aasworld.areaupdate) FreeMemory(aasworld.areaupdate);
+	if (aasworld.areaupdate) FreeZoneMemory(aasworld.areaupdate);
 	//
 	maxreachabilityareas = 0;
 	for (i = 0; i < aasworld.numclusters; i++)
@@ -869,12 +869,12 @@ void AAS_InitRoutingUpdate(void)
 		} //end if
 	} //end for
 	//allocate memory for the routing update fields
-	aasworld.areaupdate = (aas_routingupdate_t *) GetMemory(
+	aasworld.areaupdate = (aas_routingupdate_t *) GetZoneMemory(
 									maxreachabilityareas * sizeof(aas_routingupdate_t));
 	//
-	if (aasworld.portalupdate) FreeMemory(aasworld.portalupdate);
+	if (aasworld.portalupdate) FreeZoneMemory(aasworld.portalupdate);
 	//allocate memory for the portal update fields
-	aasworld.portalupdate = (aas_routingupdate_t *) GetMemory(
+	aasworld.portalupdate = (aas_routingupdate_t *) GetZoneMemory(
 									(aasworld.numportals+1) * sizeof(aas_routingupdate_t));
 } //end of the function AAS_InitRoutingUpdate
 //===========================================================================
@@ -1033,7 +1033,7 @@ aas_routingcache_t *AAS_ReadCache(qhandle_t fp)
 	aas_routingcache_t *cache;
 
 	botimport.FS_Read(&size, sizeof(size), fp);
-	cache = (aas_routingcache_t *) GetMemory(size);
+	cache = (aas_routingcache_t *) GetZoneMemory(size);
 	cache->size = size;
 	botimport.FS_Read((unsigned char *)cache + sizeof(size), size - sizeof(size), fp);
 	cache->reachabilities = (unsigned char *) cache + sizeof(aas_routingcache_t) - sizeof(unsigned short) +
@@ -1147,14 +1147,14 @@ void AAS_InitReachabilityAreas(void)
 	vec3_t start, end;
 
 	if (aasworld.reachabilityareas)
-		FreeMemory(aasworld.reachabilityareas);
+		FreeZoneMemory(aasworld.reachabilityareas);
 	if (aasworld.reachabilityareaindex)
-		FreeMemory(aasworld.reachabilityareaindex);
+		FreeZoneMemory(aasworld.reachabilityareaindex);
 
 	aasworld.reachabilityareas = (aas_reachabilityareas_t *)
-				GetMemory(aasworld.reachabilitysize * sizeof(aas_reachabilityareas_t));
+				GetZoneMemory(aasworld.reachabilitysize * sizeof(aas_reachabilityareas_t));
 	aasworld.reachabilityareaindex = (int *)
-				GetMemory(aasworld.reachabilitysize * MAX_REACHABILITYPASSAREAS * sizeof(int));
+				GetZoneMemory(aasworld.reachabilitysize * MAX_REACHABILITYPASSAREAS * sizeof(int));
 	numreachareas = 0;
 	for (i = 0; i < aasworld.reachabilitysize; i++)
 	{
@@ -1257,27 +1257,27 @@ void AAS_FreeRoutingCaches(void)
 	// free all the existing portal cache
 	AAS_FreeAllPortalCache();
 	// free cached travel times within areas
-	if (aasworld.areatraveltimes) FreeMemory(aasworld.areatraveltimes);
+	if (aasworld.areatraveltimes) FreeZoneMemory(aasworld.areatraveltimes);
 	aasworld.areatraveltimes = NULL;
 	// free cached maximum travel time through cluster portals
-	if (aasworld.portalmaxtraveltimes) FreeMemory(aasworld.portalmaxtraveltimes);
+	if (aasworld.portalmaxtraveltimes) FreeZoneMemory(aasworld.portalmaxtraveltimes);
 	aasworld.portalmaxtraveltimes = NULL;
 	// free reversed reachability links
-	if (aasworld.reversedreachability) FreeMemory(aasworld.reversedreachability);
+	if (aasworld.reversedreachability) FreeZoneMemory(aasworld.reversedreachability);
 	aasworld.reversedreachability = NULL;
 	// free routing algorithm memory
-	if (aasworld.areaupdate) FreeMemory(aasworld.areaupdate);
+	if (aasworld.areaupdate) FreeZoneMemory(aasworld.areaupdate);
 	aasworld.areaupdate = NULL;
-	if (aasworld.portalupdate) FreeMemory(aasworld.portalupdate);
+	if (aasworld.portalupdate) FreeZoneMemory(aasworld.portalupdate);
 	aasworld.portalupdate = NULL;
 	// free lists with areas the reachabilities go through
-	if (aasworld.reachabilityareas) FreeMemory(aasworld.reachabilityareas);
+	if (aasworld.reachabilityareas) FreeZoneMemory(aasworld.reachabilityareas);
 	aasworld.reachabilityareas = NULL;
 	// free the reachability area index
-	if (aasworld.reachabilityareaindex) FreeMemory(aasworld.reachabilityareaindex);
+	if (aasworld.reachabilityareaindex) FreeZoneMemory(aasworld.reachabilityareaindex);
 	aasworld.reachabilityareaindex = NULL;
 	// free area contents travel flags look up table
-	if (aasworld.areacontentstravelflags) FreeMemory(aasworld.areacontentstravelflags);
+	if (aasworld.areacontentstravelflags) FreeZoneMemory(aasworld.areacontentstravelflags);
 	aasworld.areacontentstravelflags = NULL;
 } //end of the function AAS_FreeRoutingCaches
 //===========================================================================
@@ -2093,7 +2093,7 @@ int AAS_NearestHideArea(int srcnum, vec3_t origin, int areanum, int enemynum, ve
 	//
 	if (!hidetraveltimes)
 	{
-		hidetraveltimes = (unsigned short int *) GetMemory(aasworld.numareas * sizeof(unsigned short int));
+		hidetraveltimes = (unsigned short int *) GetZoneMemory(aasworld.numareas * sizeof(unsigned short int));
 	} //end if
 	else
 	{

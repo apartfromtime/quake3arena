@@ -240,7 +240,7 @@ void InitConsoleMessageHeap(void)
 {
 	int i, max_messages;
 
-	if (consolemessageheap) FreeMemory(consolemessageheap);
+	if (consolemessageheap) FreeZoneMemory(consolemessageheap);
 	//
 	max_messages = Botlib_CvarGet("max_messages", "1024")->integer;
 	consolemessageheap = (bot_consolemessage_t *) GetHunkMemory(max_messages *
@@ -1564,7 +1564,7 @@ bot_stringlist_t *BotCheckChatMessageIntegrety(char *message, bot_stringlist_t *
 						if (!BotFindStringInList(stringlist, temp))
 						{
 							Bot_LogPrintf("%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp);
-							s = GetMemory(sizeof(bot_stringlist_t) + strlen(temp) + 1);
+							s = GetZoneMemory(sizeof(bot_stringlist_t) + strlen(temp) + 1);
 							s->string = (char *) s + sizeof(bot_stringlist_t);
 							strcpy(s->string, temp);
 							s->next = stringlist;
@@ -1610,7 +1610,7 @@ void BotCheckInitialChatIntegrety(bot_chat_t *chat)
 	for (s = stringlist; s; s = nexts)
 	{
 		nexts = s->next;
-		FreeMemory(s);
+		FreeZoneMemory(s);
 	} //end for
 } //end of the function BotCheckInitialChatIntegrety
 //===========================================================================
@@ -1636,7 +1636,7 @@ void BotCheckReplyChatIntegrety(bot_replychat_t *replychat)
 	for (s = stringlist; s; s = nexts)
 	{
 		nexts = s->next;
-		FreeMemory(s);
+		FreeZoneMemory(s);
 	} //end for
 } //end of the function BotCheckReplyChatIntegrety
 //===========================================================================
@@ -2054,7 +2054,7 @@ bot_chat_t *BotLoadInitialChat(char *chatfile, char *chatname)
 	for (pass = 0; pass < 2; pass++)
 	{
 		//allocate memory
-		if (pass && size) ptr = (char *) GetMemory(size);
+		if (pass && size) ptr = (char *) GetZoneMemory(size);
 		//load the source file
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
 		source = LoadSourceFile(chatfile);
@@ -2210,7 +2210,7 @@ void BotFreeChatFile(int chatstate)
 
 	cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
-	if (cs->chat) FreeMemory(cs->chat);
+	if (cs->chat) FreeZoneMemory(cs->chat);
 	cs->chat = NULL;
 } //end of the function BotFreeChatFile
 //===========================================================================
@@ -2263,7 +2263,7 @@ int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
 	} //end if
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
-		ichatdata[avail] = GetMemory( sizeof(bot_ichatdata_t) );
+		ichatdata[avail] = GetZoneMemory( sizeof(bot_ichatdata_t) );
 		ichatdata[avail]->chat = cs->chat;
 		Q_strncpyz( ichatdata[avail]->chatname, chatname, sizeof(ichatdata[avail]->chatname) );
 		Q_strncpyz( ichatdata[avail]->filename, chatfile, sizeof(ichatdata[avail]->filename) );
@@ -2922,7 +2922,7 @@ int BotAllocChatState(void)
 	{
 		if (!botchatstates[i])
 		{
-			botchatstates[i] = GetMemory(sizeof(bot_chatstate_t));
+			botchatstates[i] = GetZoneMemory(sizeof(bot_chatstate_t));
 			return i;
 		} //end if
 	} //end for
@@ -2961,7 +2961,7 @@ void BotFreeChatState(int handle)
 		//remove the console message
 		BotRemoveConsoleMessage(handle, h);
 	} //end for
-	FreeMemory(botchatstates[handle]);
+	FreeZoneMemory(botchatstates[handle]);
 	botchatstates[handle] = NULL;
 } //end of the function BotFreeChatState
 //===========================================================================
@@ -3033,8 +3033,8 @@ void BotShutdownChatAI(void)
 	{
 		if (ichatdata[i])
 		{
-			FreeMemory(ichatdata[i]->chat);
-			FreeMemory(ichatdata[i]);
+			FreeZoneMemory(ichatdata[i]->chat);
+			FreeZoneMemory(ichatdata[i]);
 			ichatdata[i] = NULL;
 		} //end if
 	} //end for

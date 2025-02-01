@@ -31,6 +31,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	BOTLIB_API_VERSION		2
 
+#if defined(_DEBUG) && !defined(BSPC)
+#define ZONE_DEBUG
+#define HUNK_DEBUG
+#endif // #if defined(_DEBUG) && !defined(BSPC)
+
 struct aas_clientmove_s;
 struct aas_entityinfo_s;
 struct aas_areainfo_s;
@@ -376,9 +381,9 @@ typedef struct botlib_import_s
 	void		(*BotClientCommand)(int client, char *command);
 	// memory allocation
 #ifdef ZONE_DEBUG
-	void*		(*Zone_AllocDebug)(int size, int tag, char* label, char* file, int line);
+	void*		(*Zone_AllocDebug)(int size, char* label, char* file, int line);
 #else
-	void		*(*Zone_Alloc)(int size, int tag);		// allocate from Zone
+	void		*(*Zone_Alloc)(int size);		// allocate from Zone
 #endif
 	void		(*Zone_Free)(void *ptr);		// free memory from Zone
 	int			(*Zone_AvailableMemory)(void);		// available Zone memory

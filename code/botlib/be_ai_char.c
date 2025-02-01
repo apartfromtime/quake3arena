@@ -133,7 +133,7 @@ void BotFreeCharacterStrings(bot_character_t *ch)
 	{
 		if (ch->c[i].type == CT_STRING)
 		{
-			FreeMemory(ch->c[i].value.string);
+			FreeZoneMemory(ch->c[i].value.string);
 		} //end if
 	} //end for
 } //end of the function BotFreeCharacterStrings
@@ -156,7 +156,7 @@ void BotFreeCharacter2(int handle)
 		return;
 	} //end if
 	BotFreeCharacterStrings(botcharacters[handle]);
-	FreeMemory(botcharacters[handle]);
+	FreeZoneMemory(botcharacters[handle]);
 	botcharacters[handle] = NULL;
 } //end of the function BotFreeCharacter2
 //========================================================================
@@ -197,7 +197,7 @@ void BotDefaultCharacteristics(bot_character_t *ch, bot_character_t *defaultch)
 		else if (defaultch->c[i].type == CT_STRING)
 		{
 			ch->c[i].type = CT_STRING;
-			ch->c[i].value.string = (char *) GetMemory(strlen(defaultch->c[i].value.string)+1);
+			ch->c[i].value.string = (char *) GetZoneMemory(strlen(defaultch->c[i].value.string)+1);
 			strcpy(ch->c[i].value.string, defaultch->c[i].value.string);
 		} //end else if
 	} //end for
@@ -224,7 +224,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 		botimport.Print(PRT_ERROR, "counldn't load %s\n", charfile);
 		return NULL;
 	} //end if
-	ch = (bot_character_t *) GetMemory(sizeof(bot_character_t) +
+	ch = (bot_character_t *) GetZoneMemory(sizeof(bot_character_t) +
 					MAX_CHARACTERISTICS * sizeof(bot_characteristic_t));
 	strcpy(ch->filename, charfile);
 	while(PC_ReadToken(source, &token))
@@ -235,14 +235,14 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 			{
 				FreeSource(source);
 				BotFreeCharacterStrings(ch);
-				FreeMemory(ch);
+				FreeZoneMemory(ch);
 				return NULL;
 			} //end if
 			if (!PC_ExpectTokenString(source, "{"))
 			{
 				FreeSource(source);
 				BotFreeCharacterStrings(ch);
-				FreeMemory(ch);
+				FreeZoneMemory(ch);
 				return NULL;
 			} //end if
 			//if it's the correct skill
@@ -258,7 +258,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 						SourceError(source, "expected integer index, found %s\n", token.string);
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end if
 					index = token.intvalue;
@@ -267,7 +267,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 						SourceError(source, "characteristic index out of range [0, %d]\n", MAX_CHARACTERISTICS);
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end if
 					if (ch->c[index].type)
@@ -275,14 +275,14 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 						SourceError(source, "characteristic %d already initialized\n", index);
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end if
 					if (!PC_ExpectAnyToken(source, &token))
 					{
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end if
 					if (token.type == TT_NUMBER)
@@ -301,7 +301,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 					else if (token.type == TT_STRING)
 					{
 						StripDoubleQuotes(token.string);
-						ch->c[index].value.string = GetMemory(strlen(token.string)+1);
+						ch->c[index].value.string = GetZoneMemory(strlen(token.string)+1);
 						strcpy(ch->c[index].value.string, token.string);
 						ch->c[index].type = CT_STRING;
 					} //end else if
@@ -310,7 +310,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 						SourceError(source, "expected integer, float or string, found %s\n", token.string);
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end else
 				} //end if
@@ -325,7 +325,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 					{
 						FreeSource(source);
 						BotFreeCharacterStrings(ch);
-						FreeMemory(ch);
+						FreeZoneMemory(ch);
 						return NULL;
 					} //end if
 					if (!strcmp(token.string, "{")) indent++;
@@ -338,7 +338,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 			SourceError(source, "unknown definition %s\n", token.string);
 			FreeSource(source);
 			BotFreeCharacterStrings(ch);
-			FreeMemory(ch);
+			FreeZoneMemory(ch);
 			return NULL;
 		} //end else
 	} //end while
@@ -347,7 +347,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 	if (!foundcharacter)
 	{
 		BotFreeCharacterStrings(ch);
-		FreeMemory(ch);
+		FreeZoneMemory(ch);
 		return NULL;
 	} //end if
 	return ch;
@@ -528,7 +528,7 @@ int BotInterpolateCharacters(int handle1, int handle2, float desiredskill)
 		if (!botcharacters[handle]) break;
 	} //end for
 	if (handle > MAX_CLIENTS) return 0;
-	out = (bot_character_t *) GetMemory(sizeof(bot_character_t) +
+	out = (bot_character_t *) GetZoneMemory(sizeof(bot_character_t) +
 					MAX_CHARACTERISTICS * sizeof(bot_characteristic_t));
 	out->skill = desiredskill;
 	strcpy(out->filename, ch1->filename);
@@ -552,7 +552,7 @@ int BotInterpolateCharacters(int handle1, int handle2, float desiredskill)
 		else if (ch1->c[i].type == CT_STRING)
 		{
 			out->c[i].type = CT_STRING;
-			out->c[i].value.string = (char *) GetMemory(strlen(ch1->c[i].value.string)+1);
+			out->c[i].value.string = (char *) GetZoneMemory(strlen(ch1->c[i].value.string)+1);
 			strcpy(out->c[i].value.string, ch1->c[i].value.string);
 		} //end else if
 	} //end for

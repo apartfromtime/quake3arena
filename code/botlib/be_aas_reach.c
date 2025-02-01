@@ -460,7 +460,7 @@ void AAS_SetupReachabilityHeap(void)
 {
 	int i;
 
-	reachabilityheap = (aas_lreachability_t *) GetMemory(
+	reachabilityheap = (aas_lreachability_t *) GetZoneMemory(
 						AAS_MAX_REACHABILITYSIZE * sizeof(aas_lreachability_t));
 	for (i = 0; i < AAS_MAX_REACHABILITYSIZE-1; i++)
 	{
@@ -478,7 +478,7 @@ void AAS_SetupReachabilityHeap(void)
 //===========================================================================
 void AAS_ShutDownReachabilityHeap(void)
 {
-	FreeMemory(reachabilityheap);
+	FreeZoneMemory(reachabilityheap);
 	numlreachabilities = 0;
 } //end of the function AAS_ShutDownReachabilityHeap
 //===========================================================================
@@ -4319,8 +4319,8 @@ void AAS_StoreReachability(void)
 	aas_lreachability_t *lreach;
 	aas_reachability_t *reach;
 
-	if (aasworld.reachability) FreeMemory(aasworld.reachability);
-	aasworld.reachability = (aas_reachability_t *) GetMemory((numlreachabilities + 10) * sizeof(aas_reachability_t));
+	if (aasworld.reachability) FreeZoneMemory(aasworld.reachability);
+	aasworld.reachability = (aas_reachability_t *) GetZoneMemory((numlreachabilities + 10) * sizeof(aas_reachability_t));
 	aasworld.reachabilitysize = 1;
 	for (i = 0; i < aasworld.numareas; i++)
 	{
@@ -4496,7 +4496,7 @@ int AAS_ContinueInitReachability(float time)
 		//free the reachability link heap
 		AAS_ShutDownReachabilityHeap();
 		//
-		FreeMemory(areareachability);
+		FreeZoneMemory(areareachability);
 		//
 		aasworld.numreachabilityareas++;
 		//
@@ -4543,7 +4543,7 @@ void AAS_InitReachability(void)
 	//setup the heap with reachability links
 	AAS_SetupReachabilityHeap();
 	//allocate area reachability link array
-	areareachability = (aas_lreachability_t **) GetMemory(
+	areareachability = (aas_lreachability_t **) GetZoneMemory(
 									aasworld.numareas * sizeof(aas_lreachability_t *));
 	//
 	AAS_SetWeaponJumpAreaFlags();
