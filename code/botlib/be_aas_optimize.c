@@ -217,22 +217,22 @@ void AAS_OptimizeArea(optimized_t *optimized, int areanum)
 //===========================================================================
 void AAS_OptimizeAlloc(optimized_t *optimized)
 {
-	optimized->vertexes = (aas_vertex_t *) GetClearedMemory(aasworld.numvertexes * sizeof(aas_vertex_t));
+	optimized->vertexes = (aas_vertex_t *) GetMemory(aasworld.numvertexes * sizeof(aas_vertex_t));
 	optimized->numvertexes = 0;
-	optimized->edges = (aas_edge_t *) GetClearedMemory(aasworld.numedges * sizeof(aas_edge_t));
+	optimized->edges = (aas_edge_t *) GetMemory(aasworld.numedges * sizeof(aas_edge_t));
 	optimized->numedges = 1; //edge zero is a dummy
-	optimized->edgeindex = (aas_edgeindex_t *) GetClearedMemory(aasworld.edgeindexsize * sizeof(aas_edgeindex_t));
+	optimized->edgeindex = (aas_edgeindex_t *) GetMemory(aasworld.edgeindexsize * sizeof(aas_edgeindex_t));
 	optimized->edgeindexsize = 0;
-	optimized->faces = (aas_face_t *) GetClearedMemory(aasworld.numfaces * sizeof(aas_face_t));
+	optimized->faces = (aas_face_t *) GetMemory(aasworld.numfaces * sizeof(aas_face_t));
 	optimized->numfaces = 1; //face zero is a dummy
-	optimized->faceindex = (aas_faceindex_t *) GetClearedMemory(aasworld.faceindexsize * sizeof(aas_faceindex_t));
+	optimized->faceindex = (aas_faceindex_t *) GetMemory(aasworld.faceindexsize * sizeof(aas_faceindex_t));
 	optimized->faceindexsize = 0;
-	optimized->areas = (aas_area_t *) GetClearedMemory(aasworld.numareas * sizeof(aas_area_t));
+	optimized->areas = (aas_area_t *) GetMemory(aasworld.numareas * sizeof(aas_area_t));
 	optimized->numareas = aasworld.numareas;
 	//
-	optimized->vertexoptimizeindex = (int *) GetClearedMemory(aasworld.numvertexes * sizeof(int));
-	optimized->edgeoptimizeindex = (int *) GetClearedMemory(aasworld.numedges * sizeof(int));
-	optimized->faceoptimizeindex = (int *) GetClearedMemory(aasworld.numfaces * sizeof(int));
+	optimized->vertexoptimizeindex = (int *) GetMemory(aasworld.numvertexes * sizeof(int));
+	optimized->edgeoptimizeindex = (int *) GetMemory(aasworld.numedges * sizeof(int));
+	optimized->faceoptimizeindex = (int *) GetMemory(aasworld.numfaces * sizeof(int));
 } //end of the function AAS_OptimizeAlloc
 //===========================================================================
 //

@@ -63,27 +63,6 @@ void* GetMemory(unsigned long size)
 
 /*
 =================
-Bot_ZoneMalloc
-=================
-*/
-#ifdef ZONE_DEBUG
-void *GetClearedMemoryDebug(unsigned long size, char *label, char *file, int line)
-#else
-void* GetClearedMemory(unsigned long size)
-#endif // ZONE_DEBUG
-{
-	void* ptr;
-#ifdef ZONE_DEBUG
-	ptr = GetMemoryDebug(size, label, file, line);
-#else
-	ptr = GetMemory(size);
-#endif // ZONE_DEBUG
-
-	return ptr;
-}
-
-/*
-=================
 Bot_HunkAlloc
 =================
 */

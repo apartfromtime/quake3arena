@@ -45,9 +45,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../bspc/l_mem.h"
 #include "l_precomp.h"
 #include "l_struct.h"
-
-#define true	true
-#define false	false
 #endif //BSPC
 
 //===========================================================================

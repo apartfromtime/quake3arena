@@ -50,11 +50,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../bspc/l_log.h"
 #include "../bspc/l_mem.h"
 #include "l_precomp.h"
-
-#define true	true
-#define false	false
-#define Q_stricmp	stricmp
-
 #endif //BSPC
 
 //#define DEBUG_EVAL
@@ -1274,7 +1269,7 @@ define_t *PC_DefineFromString(char *string)
 	strncpy(src.filename, "*extern", MAX_PATH);
 	src.scriptstack = script;
 #if DEFINEHASHING
-	src.definehash = GetClearedMemory(DEFINEHASHSIZE * sizeof(define_t *));
+	src.definehash = GetMemory(DEFINEHASHSIZE * sizeof(define_t *));
 #endif //DEFINEHASHING
 	//create a define from the source
 	res = PC_Directive_define(&src);
@@ -1598,9 +1593,9 @@ int PC_OperatorPriority(int op)
 	return false;
 } //end of the function PC_OperatorPriority
 
-//#define AllocValue()			GetClearedMemory(sizeof(value_t));
+//#define AllocValue()			GetMemory(sizeof(value_t));
 //#define FreeValue(val)		FreeMemory(val)
-//#define AllocOperator(op)		op = (operator_t *) GetClearedMemory(sizeof(operator_t));
+//#define AllocOperator(op)		op = (operator_t *) GetMemory(sizeof(operator_t));
 //#define FreeOperator(op)		FreeMemory(op);
 
 #define MAX_VALUES		64
@@ -1680,7 +1675,7 @@ int PC_EvaluateTokens(source_t *source, token_t *tokens, signed long int *intval
 					error = 1;
 					break;
 				} //end if
-				//v = (value_t *) GetClearedMemory(sizeof(value_t));
+				//v = (value_t *) GetMemory(sizeof(value_t));
 				AllocValue(v);
 #if DEFINEHASHING
 				if (PC_FindHashedDefine(source->definehash, t->string))
@@ -1725,7 +1720,7 @@ int PC_EvaluateTokens(source_t *source, token_t *tokens, signed long int *intval
 					error = 1;
 					break;
 				} //end if
-				//v = (value_t *) GetClearedMemory(sizeof(value_t));
+				//v = (value_t *) GetMemory(sizeof(value_t));
 				AllocValue(v);
 				if (negativevalue)
 				{
@@ -1855,7 +1850,7 @@ int PC_EvaluateTokens(source_t *source, token_t *tokens, signed long int *intval
 				} //end switch
 				if (!error && !negativevalue)
 				{
-					//o = (operator_t *) GetClearedMemory(sizeof(operator_t));
+					//o = (operator_t *) GetMemory(sizeof(operator_t));
 					AllocOperator(o);
 					o->operator = t->subtype;
 					o->priority = PC_OperatorPriority(t->subtype);
@@ -2882,7 +2877,7 @@ source_t *LoadSourceFile(const char *filename)
 	source->skip = 0;
 
 #if DEFINEHASHING
-	source->definehash = GetClearedMemory(DEFINEHASHSIZE * sizeof(define_t *));
+	source->definehash = GetMemory(DEFINEHASHSIZE * sizeof(define_t *));
 #endif //DEFINEHASHING
 	PC_AddGlobalDefinesToSource(source);
 	return source;
@@ -2915,7 +2910,7 @@ source_t *LoadSourceMemory(char *ptr, int length, char *name)
 	source->skip = 0;
 
 #if DEFINEHASHING
-	source->definehash = GetClearedMemory(DEFINEHASHSIZE * sizeof(define_t *));
+	source->definehash = GetMemory(DEFINEHASHSIZE * sizeof(define_t *));
 #endif //DEFINEHASHING
 	PC_AddGlobalDefinesToSource(source);
 	return source;
