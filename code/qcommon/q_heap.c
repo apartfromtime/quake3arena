@@ -277,7 +277,7 @@ char* CopyString(const char* in) {
 			return ((char*)&numberstring[in[0] - '0']);
 		}
 	}
-	out = S_Malloc(strlen(in) + 1);
+	out = Z_TagAlloc(strlen(in) + 1, TAG_SMALL);
 	strcpy(out, in);
 	return out;
 }
