@@ -31,13 +31,6 @@ MEMORY
 #include "../game/q_shared.h"
 #include "../game/botlib.h"
 #include "be_interface.h"
-#include "l_log.h"
-
-#define TAG_BOTLIB		2
-
-int allocatedmemory;
-int totalmemorysize;
-int numblocks;
 
 /*
 =================
@@ -45,18 +38,18 @@ Bot_ZoneAlloc
 =================
 */
 #ifdef ZONE_DEBUG
-void *GetMemoryDebug(unsigned long size, char *label, char *file, int line)
+void* GetZoneMemoryDebug(unsigned long size, char *label, char *file, int line)
 #else
-void* GetMemory(unsigned long size)
-#endif // ZONE_DEBUG
+void* GetZoneMemory(unsigned long size)
+#endif // #ifdef ZONE_DEBUG
 {
 	void* ptr = NULL;
 
 #ifdef ZONE_DEBUG
-	ptr = botimport.Zone_AllocDebug(size, TAG_BOTLIB, label, __FILE__, __LINE__);
+	ptr = botimport.Zone_AllocDebug(size, label, file, line);
 #else
-	ptr = botimport.Zone_Alloc(size, TAG_BOTLIB);
-#endif
+	ptr = botimport.Zone_Alloc(size);
+#endif // #ifdef ZONE_DEBUG
 
 	return ptr;
 }
@@ -66,15 +59,19 @@ void* GetMemory(unsigned long size)
 Bot_HunkAlloc
 =================
 */
-#ifdef MEMDEBUG
+#ifdef HUNK_DEBUG
 void* GetHunkMemoryDebug(unsigned long size, char* label, char* file, int line)
 #else
 void* GetHunkMemory(unsigned long size)
-#endif //MEMDEBUG
+#endif // #ifdef HUNK_DEBUG
 {
 	void* ptr = NULL;
 
+#ifdef HUNK_DEBUG
+	ptr = botimport.Hunk_AllocDebug(size, label, file, line);
+#else
 	ptr = botimport.Hunk_Alloc(size);
+#endif // #ifdef HUNK_DEBUG
 
 	return ptr;
 }
@@ -84,21 +81,12 @@ void* GetHunkMemory(unsigned long size)
 Bot_ZoneFree
 =================
 */
-void FreeMemory(void* ptr)
+void FreeZoneMemory(void* ptr)
 {
 	if (ptr)
 	{
 		botimport.Zone_Free(ptr);
 	}
-}
-
-/*
-=================
-Bot_HunkFree
-=================
-*/
-void Bot_HunkFree(void* ptr)
-{
 }
 
 /*
@@ -109,26 +97,4 @@ Bot_ZoneAvailableMemory
 int AvailableMemory(void)
 {
 	return botimport.Zone_AvailableMemory();
-}
-
-/*
-=================
-Bot_ZoneAvailableMemory
-=================
-*/
-void PrintUsedMemorySize(void)
-{
-}
-
-/*
-=================
-Bot_ZoneAvailableMemory
-=================
-*/
-void PrintMemoryLabels(void)
-{
-	Bot_LogPrintf("============= Botlib memory log ==============\r\n");
-	Bot_LogPrintf("\r\n");
-
-	PrintUsedMemorySize();
 }

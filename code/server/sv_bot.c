@@ -276,21 +276,31 @@ void BotImport_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t outmin
 	if (origin) VectorClear(origin);
 }
 
+#ifdef ZONE_DEBUG
 /*
 ==================
-BotImport_GetMemory
+BotImport_ZoneAllocDebug
+==================
+*/
+void* BotImport_ZoneAllocDebug(int size, char* label, char* file, int line)
+{
+	return Z_TagMallocDebug(size, TAG_BOTLIB, label, file, line);
+}
+#else
+/*
+==================
+BotImport_ZoneAlloc
 ==================
 */
 void* BotImport_ZoneAlloc(int size)
 {
-	void* ptr;
-	ptr = Z_TagMalloc(size, TAG_BOTLIB);
-	return ptr;
+	return Z_TagMalloc(size, TAG_BOTLIB);
 }
+#endif // #ifdef ZONE_DEBUG
 
 /*
 ==================
-BotImport_FreeMemory
+BotImport_ZoneFree
 ==================
 */
 void BotImport_ZoneFree(void* ptr)
@@ -324,11 +334,11 @@ void* BotImport_HunkAllocDebug(int size, char* label, char* file, int line)
 BotImport_HunkAlloc
 =================
 */
-void *BotImport_HunkAlloc( int size ) {
-
-	return Hunk_Alloc( size );
+void* BotImport_HunkAlloc(int size)
+{
+	return Hunk_Alloc(size);
 }
-#endif // HUNK_DEBUG
+#endif // #ifdef HUNK_DEBUG
 
 /*
 ==================
@@ -559,17 +569,17 @@ void SV_BotInitBotLib(void) {
 
 	// memory management
 #ifdef ZONE_DEBUG
-	botlib_import.Zone_AllocDebug = Z_TagMallocDebug;
+	botlib_import.Zone_AllocDebug = BotImport_ZoneAllocDebug;
 #else
-	botlib_import.Zone_Alloc = Z_TagMalloc;
-#endif // ZONE_DEBUG
+	botlib_import.Zone_Alloc = BotImport_ZoneAlloc;
+#endif // #ifdef ZONE_DEBUG
 	botlib_import.Zone_Free = Z_Free;
 	botlib_import.Zone_AvailableMemory = BotImport_ZoneAvailableMemory;
 #ifdef HUNK_DEBUG
 	botlib_import.Hunk_AllocDebug = BotImport_HunkAllocDebug;
 #else
 	botlib_import.Hunk_Alloc = BotImport_HunkAlloc;
-#endif // HUNK_DEBUG
+#endif // #ifdef HUNK_DEBUG
 
 	botlib_import.Cvar_Get = Cvar_Get;
 	botlib_import.Cvar_Set = Cvar_Set;

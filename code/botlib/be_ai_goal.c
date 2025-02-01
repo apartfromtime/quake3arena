@@ -291,7 +291,7 @@ itemconfig_t *LoadItemConfig(char *filename)
 			if (!PC_ExpectTokenType(source, TT_STRING, 0, &token))
 			{
 				//FreeMemory(ic);
-				FreeMemory(source);
+				FreeZoneMemory(source);
 				return NULL;
 			} //end if
 			StripDoubleQuotes(token.string);
@@ -331,7 +331,7 @@ int *ItemWeightIndex(weightconfig_t *iwc, itemconfig_t *ic)
 	int *index, i;
 
 	//initialize item weight index
-	index = (int *) GetMemory(sizeof(int) * ic->numiteminfo);
+	index = (int *) GetZoneMemory(sizeof(int) * ic->numiteminfo);
 
 	for (i = 0; i < ic->numiteminfo; i++)
 	{
@@ -353,10 +353,10 @@ void InitLevelItemHeap(void)
 {
 	int i, max_levelitems;
 
-	if (levelitemheap) FreeMemory(levelitemheap);
+	if (levelitemheap) FreeZoneMemory(levelitemheap);
 
 	max_levelitems = Botlib_CvarGet("max_levelitems", "256")->integer;
-	levelitemheap = (levelitem_t *) GetMemory(max_levelitems * sizeof(levelitem_t));
+	levelitemheap = (levelitem_t *) GetZoneMemory(max_levelitems * sizeof(levelitem_t));
 
 	for (i = 0; i < max_levelitems-1; i++)
 	{
@@ -437,13 +437,13 @@ void BotFreeInfoEntities(void)
 	for (ml = maplocations; ml; ml = nextml)
 	{
 		nextml = ml->next;
-		FreeMemory(ml);
+		FreeZoneMemory(ml);
 	} //end for
 	maplocations = NULL;
 	for (cs = campspots; cs; cs = nextcs)
 	{
 		nextcs = cs->next;
-		FreeMemory(cs);
+		FreeZoneMemory(cs);
 	} //end for
 	campspots = NULL;
 } //end of the function BotFreeInfoEntities
@@ -471,7 +471,7 @@ void BotInitInfoEntities(void)
 		//map locations
 		if (!strcmp(classname, "target_location"))
 		{
-			ml = (maplocation_t *) GetMemory(sizeof(maplocation_t));
+			ml = (maplocation_t *) GetZoneMemory(sizeof(maplocation_t));
 			AAS_VectorForBSPEpairKey(ent, "origin", ml->origin);
 			AAS_ValueForBSPEpairKey(ent, "message", ml->name, sizeof(ml->name));
 			ml->areanum = AAS_PointAreaNum(ml->origin);
@@ -482,7 +482,7 @@ void BotInitInfoEntities(void)
 		//camp spots
 		else if (!strcmp(classname, "info_camp"))
 		{
-			cs = (campspot_t *) GetMemory(sizeof(campspot_t));
+			cs = (campspot_t *) GetZoneMemory(sizeof(campspot_t));
 			AAS_VectorForBSPEpairKey(ent, "origin", cs->origin);
 			//cs->origin[2] += 16;
 			AAS_ValueForBSPEpairKey(ent, "message", cs->name, sizeof(cs->name));
@@ -494,7 +494,7 @@ void BotInitInfoEntities(void)
 			if (!cs->areanum)
 			{
 				botimport.Print(PRT_MESSAGE, "camp spot at %1.1f %1.1f %1.1f in solid\n", cs->origin[0], cs->origin[1], cs->origin[2]);
-				FreeMemory(cs);
+				FreeZoneMemory(cs);
 				continue;
 			} //end if
 			cs->next = campspots;
@@ -1701,7 +1701,7 @@ void BotFreeItemWeights(int goalstate)
 	gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
 	if (gs->itemweightconfig) FreeWeightConfig(gs->itemweightconfig);
-	if (gs->itemweightindex) FreeMemory(gs->itemweightindex);
+	if (gs->itemweightindex) FreeZoneMemory(gs->itemweightindex);
 } //end of the function BotFreeItemWeights
 //===========================================================================
 //
@@ -1717,7 +1717,7 @@ int BotAllocGoalState(int client)
 	{
 		if (!botgoalstates[i])
 		{
-			botgoalstates[i] = GetMemory(sizeof(bot_goalstate_t));
+			botgoalstates[i] = GetZoneMemory(sizeof(bot_goalstate_t));
 			botgoalstates[i]->client = client;
 			return i;
 		} //end if
@@ -1743,7 +1743,7 @@ void BotFreeGoalState(int handle)
 		return;
 	} //end if
 	BotFreeItemWeights(handle);
-	FreeMemory(botgoalstates[handle]);
+	FreeZoneMemory(botgoalstates[handle]);
 	botgoalstates[handle] = NULL;
 } //end of the function BotFreeGoalState
 //===========================================================================
@@ -1788,7 +1788,7 @@ void BotShutdownGoalAI(void)
 
 	if (itemconfig) //FreeMemory(itemconfig);
 	itemconfig = NULL;
-	if (levelitemheap) FreeMemory(levelitemheap);
+	if (levelitemheap) FreeZoneMemory(levelitemheap);
 	levelitemheap = NULL;
 	freelevelitems = NULL;
 	levelitems = NULL;

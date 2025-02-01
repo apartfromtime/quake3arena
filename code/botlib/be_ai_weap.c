@@ -329,7 +329,7 @@ int *WeaponWeightIndex(weightconfig_t *wwc, weaponconfig_t *wc)
 	int *index, i;
 
 	//initialize item weight index
-	index = (int *) GetMemory(sizeof(int) * wc->numweapons);
+	index = (int *) GetZoneMemory(sizeof(int) * wc->numweapons);
 
 	for (i = 0; i < wc->numweapons; i++)
 	{
@@ -350,7 +350,7 @@ void BotFreeWeaponWeights(int weaponstate)
 	ws = BotWeaponStateFromHandle(weaponstate);
 	if (!ws) return;
 	if (ws->weaponweightconfig) FreeWeightConfig(ws->weaponweightconfig);
-	if (ws->weaponweightindex) FreeMemory(ws->weaponweightindex);
+	if (ws->weaponweightindex) FreeZoneMemory(ws->weaponweightindex);
 } //end of the function BotFreeWeaponWeights
 //===========================================================================
 //
@@ -464,7 +464,7 @@ int BotAllocWeaponState(void)
 	{
 		if (!botweaponstates[i])
 		{
-			botweaponstates[i] = GetMemory(sizeof(bot_weaponstate_t));
+			botweaponstates[i] = GetZoneMemory(sizeof(bot_weaponstate_t));
 			return i;
 		} //end if
 	} //end for
@@ -489,7 +489,7 @@ void BotFreeWeaponState(int handle)
 		return;
 	} //end if
 	BotFreeWeaponWeights(handle);
-	FreeMemory(botweaponstates[handle]);
+	FreeZoneMemory(botweaponstates[handle]);
 	botweaponstates[handle] = NULL;
 } //end of the function BotFreeWeaponState
 //===========================================================================

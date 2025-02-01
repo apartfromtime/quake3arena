@@ -147,7 +147,7 @@ void AAS_UpdateStringIndexes(int numconfigstrings, char *configstrings[])
 		if (configstrings[i])
 		{
 			//if (aasworld.configstrings[i]) FreeMemory(aasworld.configstrings[i]);
-			aasworld.configstrings[i] = (char *) GetMemory(strlen(configstrings[i]) + 1);
+			aasworld.configstrings[i] = (char *) GetZoneMemory(strlen(configstrings[i]) + 1);
 			strcpy(aasworld.configstrings[i], configstrings[i]);
 		} //end if
 	} //end for
@@ -258,16 +258,19 @@ int AAS_StartFrame(float time)
 			AAS_RoutingInfo();
 			Botlib_CvarSet("showcacheupdates", "0");
 		} //end if
+#if 0
 		if (Botlib_CvarGetValue("showmemoryusage"))
 		{
 			PrintUsedMemorySize();
 			Botlib_CvarSet("showmemoryusage", "0");
-		} //end if
+		}
+
 		if (Botlib_CvarGetValue("memorydump"))
 		{
 			PrintMemoryLabels();
 			Botlib_CvarSet("memorydump", "0");
-		} //end if
+		}
+#endif // #if 0
 	} //end if
 	//
 	if (saveroutingcache->value)
@@ -398,7 +401,7 @@ int AAS_Setup(void)
 	// as soon as it's set to 1 the routing cache will be saved
 	saveroutingcache = Botlib_CvarGet("saveroutingcache", "0");
 	//allocate memory for the entities
-	if (aasworld.entities) FreeMemory(aasworld.entities);
+	if (aasworld.entities) FreeZoneMemory(aasworld.entities);
 	aasworld.entities = (aas_entity_t *) GetHunkMemory(aasworld.maxentities * sizeof(aas_entity_t));
 	//invalidate all the entities
 	AAS_InvalidateEntities();

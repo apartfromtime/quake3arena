@@ -28,37 +28,31 @@ MEMORY
 ==============================================================================
 */
 
-//#define MEMDEBUG
+#if defined(_DEBUG) && !defined(BSPC)
+#define ZONE_DEBUG
+#define HUNK_DEBUG
+#endif // #if defined(_DEBUG) && !defined(BSPC)
 
-#ifdef MEMDEBUG
-#define GetMemory(size)				GetMemoryDebug(size, #size, __FILE__, __LINE__);
-//allocate a memory block of the given size
-void *GetMemoryDebug(unsigned long size, char *label, char *file, int line);
-//
+#ifdef ZONE_DEBUG
+#define GetZoneMemory(size)			GetZoneMemoryDebug(size, #size, __FILE__, __LINE__);
+// allocate a memory block of the given size
+void *GetZoneMemoryDebug(unsigned long size, char *label, char *file, int line);
+#else
+// allocate a memory block of the given size
+void* GetZoneMemory(unsigned long size);
+#endif // #ifdef ZONE_DEBUG
+
+// free the given memory block
+void FreeZoneMemory(void* ptr);
+
+#ifdef HUNK_DEBUG
 #define GetHunkMemory(size)			GetHunkMemoryDebug(size, #size, __FILE__, __LINE__);
-//allocate a memory block of the given size
-void *GetHunkMemoryDebug(unsigned long size, char *label, char *file, int line);
+// allocate a memory block of the given size
+void* GetHunkMemoryDebug(unsigned long size, char* label, char* file, int line);
 #else
-//allocate a memory block of the given size
-void *GetMemory(unsigned long size);
-//
-#ifdef BSPC
-#define GetHunkMemory GetMemory
-#else
-//allocate a memory block of the given size
+// allocate a memory block of the given size
 void* GetHunkMemory(unsigned long size);
-#endif
-#endif
+#endif // #ifdef HUNK_DEBUG
 
-//free the given memory block
-void FreeMemory(void *ptr);
-//returns the amount available memory
+// returns the amount available memory
 int AvailableMemory(void);
-//prints the total used memory size
-void PrintUsedMemorySize(void);
-//print all memory blocks with label
-void PrintMemoryLabels(void);
-//returns the size of the memory block in bytes
-int MemoryByteSize(void *ptr);
-//free all allocated memory
-void DumpMemory(void);

@@ -150,7 +150,7 @@ void PS_CreatePunctuationTable(script_t *script, punctuation_t *punctuations)
 
 	//get memory for the table
 	if (!script->punctuationtable) script->punctuationtable = (punctuation_t **)
-												GetMemory(256 * sizeof(punctuation_t *));
+												GetZoneMemory(256 * sizeof(punctuation_t *));
 	Com_Memset(script->punctuationtable, 0, 256 * sizeof(punctuation_t *));
 	//add the punctuations in the list to the punctuation table
 	for (i = 0; punctuations[i].p; i++)
@@ -1296,7 +1296,7 @@ script_t *LoadScriptFile(const char *filename)
 	length = FileLength(fp);
 #endif
 
-	buffer = GetMemory(sizeof(script_t) + length + 1);
+	buffer = GetZoneMemory(sizeof(script_t) + length + 1);
 	script = (script_t *) buffer;
 	Com_Memset(script, 0, sizeof(script_t));
 	strcpy(script->filename, filename);
@@ -1344,7 +1344,7 @@ script_t *LoadScriptMemory(char *ptr, int length, char *name)
 	void *buffer;
 	script_t *script;
 
-	buffer = GetMemory(sizeof(script_t) + length + 1);
+	buffer = GetZoneMemory(sizeof(script_t) + length + 1);
 	script = (script_t *) buffer;
 	Com_Memset(script, 0, sizeof(script_t));
 	strcpy(script->filename, name);
@@ -1378,9 +1378,9 @@ script_t *LoadScriptMemory(char *ptr, int length, char *name)
 void FreeScript(script_t *script)
 {
 #ifdef PUNCTABLE
-	if (script->punctuationtable) FreeMemory(script->punctuationtable);
+	if (script->punctuationtable) FreeZoneMemory(script->punctuationtable);
 #endif //PUNCTABLE
-	FreeMemory(script);
+	FreeZoneMemory(script);
 } //end of the function FreeScript
 //============================================================================
 //
