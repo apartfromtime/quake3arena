@@ -66,10 +66,12 @@ temp file loading
 
 */
 
+
 #if defined(_DEBUG) && !defined(BSPC)
 #define ZONE_DEBUG
 #define HUNK_DEBUG
 #endif // #if defined(_DEBUG) && !defined(BSPC)
+
 
 #ifdef ZONE_DEBUG
 #define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
@@ -80,15 +82,10 @@ void* Z_MallocDebug(int size, char* label, char* file, int line);
 void* Z_TagMalloc(int size, int tag);
 void* Z_Malloc(int size);
 #endif
-bool Zone_InitSmallZoneMemory(int zoneSize);
 bool Zone_InitMemory(int zoneSize);
 void Zone_Meminfo(void);
-void Zone_TouchMemory(void);
-void Z_CheckHeap(void);
 void Z_Free(void* ptr);
-void Z_FreeTags(int tag);
 int Z_AvailableMemory(void);
-void Z_LogHeap(void);
 
 #ifdef HUNK_DEBUG
 #define Hunk_Alloc(size)			Hunk_AllocDebug(size, #size, __FILE__, __LINE__)
@@ -96,22 +93,12 @@ void* Hunk_AllocDebug(int size, char* label, char* file, int line);
 #else
 void* Hunk_Alloc(int size);
 #endif
-
 bool Hunk_InitMemory(int hunkSize);
 void Hunk_Meminfo(void);
-void Hunk_TouchMemory(void);
+void Hunk_Free(void);
 void Hunk_Clear(void);
-void Hunk_ClearToMark(void);
-void Hunk_SetMark(void);
-bool Hunk_CheckMark(void);
-void Hunk_ClearTempMemory(void);
 void* Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void* buf);
 int	Hunk_MemoryRemaining(void);
-void Hunk_SmallLog(void);
-void Hunk_Log(void);
-void Hunk_Trash(void);
-
-void Com_InitHunkMemory(void);
 
 #endif	// Q_HEAP_H

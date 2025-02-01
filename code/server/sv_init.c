@@ -543,8 +543,6 @@ void SV_SpawnServer( char *server, bool killBots ) {
 	// send a heartbeat now so the master will get up to date info
 	SV_Heartbeat_f();
 
-	Hunk_SetMark();
-
 	Com_Printf ("-----------------------------------\n");
 }
 
