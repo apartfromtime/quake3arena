@@ -329,7 +329,7 @@ int *WeaponWeightIndex(weightconfig_t *wwc, weaponconfig_t *wc)
 	int *index, i;
 
 	//initialize item weight index
-	index = (int *) GetClearedMemory(sizeof(int) * wc->numweapons);
+	index = (int *) GetMemory(sizeof(int) * wc->numweapons);
 
 	for (i = 0; i < wc->numweapons; i++)
 	{
@@ -464,7 +464,7 @@ int BotAllocWeaponState(void)
 	{
 		if (!botweaponstates[i])
 		{
-			botweaponstates[i] = GetClearedMemory(sizeof(bot_weaponstate_t));
+			botweaponstates[i] = GetMemory(sizeof(bot_weaponstate_t));
 			return i;
 		} //end if
 	} //end for

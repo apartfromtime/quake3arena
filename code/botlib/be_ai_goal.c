@@ -331,7 +331,7 @@ int *ItemWeightIndex(weightconfig_t *iwc, itemconfig_t *ic)
 	int *index, i;
 
 	//initialize item weight index
-	index = (int *) GetClearedMemory(sizeof(int) * ic->numiteminfo);
+	index = (int *) GetMemory(sizeof(int) * ic->numiteminfo);
 
 	for (i = 0; i < ic->numiteminfo; i++)
 	{
@@ -356,7 +356,7 @@ void InitLevelItemHeap(void)
 	if (levelitemheap) FreeMemory(levelitemheap);
 
 	max_levelitems = Botlib_CvarGet("max_levelitems", "256")->integer;
-	levelitemheap = (levelitem_t *) GetClearedMemory(max_levelitems * sizeof(levelitem_t));
+	levelitemheap = (levelitem_t *) GetMemory(max_levelitems * sizeof(levelitem_t));
 
 	for (i = 0; i < max_levelitems-1; i++)
 	{
@@ -471,7 +471,7 @@ void BotInitInfoEntities(void)
 		//map locations
 		if (!strcmp(classname, "target_location"))
 		{
-			ml = (maplocation_t *) GetClearedMemory(sizeof(maplocation_t));
+			ml = (maplocation_t *) GetMemory(sizeof(maplocation_t));
 			AAS_VectorForBSPEpairKey(ent, "origin", ml->origin);
 			AAS_ValueForBSPEpairKey(ent, "message", ml->name, sizeof(ml->name));
 			ml->areanum = AAS_PointAreaNum(ml->origin);
@@ -482,7 +482,7 @@ void BotInitInfoEntities(void)
 		//camp spots
 		else if (!strcmp(classname, "info_camp"))
 		{
-			cs = (campspot_t *) GetClearedMemory(sizeof(campspot_t));
+			cs = (campspot_t *) GetMemory(sizeof(campspot_t));
 			AAS_VectorForBSPEpairKey(ent, "origin", cs->origin);
 			//cs->origin[2] += 16;
 			AAS_ValueForBSPEpairKey(ent, "message", cs->name, sizeof(cs->name));
@@ -1717,7 +1717,7 @@ int BotAllocGoalState(int client)
 	{
 		if (!botgoalstates[i])
 		{
-			botgoalstates[i] = GetClearedMemory(sizeof(bot_goalstate_t));
+			botgoalstates[i] = GetMemory(sizeof(bot_goalstate_t));
 			botgoalstates[i]->client = client;
 			return i;
 		} //end if

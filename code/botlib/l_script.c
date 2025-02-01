@@ -48,9 +48,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../bspc/qbsp.h"
 #include "../bspc/l_log.h"
 #include "../bspc/l_mem.h"
-
-#define true	true
-#define false	false
 #endif //BSPC
 
 
@@ -1299,7 +1296,7 @@ script_t *LoadScriptFile(const char *filename)
 	length = FileLength(fp);
 #endif
 
-	buffer = GetClearedMemory(sizeof(script_t) + length + 1);
+	buffer = GetMemory(sizeof(script_t) + length + 1);
 	script = (script_t *) buffer;
 	Com_Memset(script, 0, sizeof(script_t));
 	strcpy(script->filename, filename);
@@ -1347,7 +1344,7 @@ script_t *LoadScriptMemory(char *ptr, int length, char *name)
 	void *buffer;
 	script_t *script;
 
-	buffer = GetClearedMemory(sizeof(script_t) + length + 1);
+	buffer = GetMemory(sizeof(script_t) + length + 1);
 	script = (script_t *) buffer;
 	Com_Memset(script, 0, sizeof(script_t));
 	strcpy(script->filename, name);

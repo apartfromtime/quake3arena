@@ -770,7 +770,7 @@ void AAS_FloodAreas(vec3_t origin)
 {
 	int areanum, cluster, *done;
 
-	done = (int *) GetClearedMemory(aasworld.numareas * sizeof(int));
+	done = (int *) GetMemory(aasworld.numareas * sizeof(int));
 	areanum = AAS_PointAreaNum(origin);
 	cluster = AAS_AreaCluster(areanum);
 	AAS_FloodAreas_r(areanum, cluster, done);

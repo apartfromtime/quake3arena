@@ -131,7 +131,7 @@ int BotAllocMoveState(void)
 	{
 		if (!botmovestates[i])
 		{
-			botmovestates[i] = GetClearedMemory(sizeof(bot_movestate_t));
+			botmovestates[i] = GetMemory(sizeof(bot_movestate_t));
 			return i;
 		} //end if
 	} //end for

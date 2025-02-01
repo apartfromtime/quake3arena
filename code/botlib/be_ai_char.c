@@ -224,7 +224,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 		botimport.Print(PRT_ERROR, "counldn't load %s\n", charfile);
 		return NULL;
 	} //end if
-	ch = (bot_character_t *) GetClearedMemory(sizeof(bot_character_t) +
+	ch = (bot_character_t *) GetMemory(sizeof(bot_character_t) +
 					MAX_CHARACTERISTICS * sizeof(bot_characteristic_t));
 	strcpy(ch->filename, charfile);
 	while(PC_ReadToken(source, &token))
@@ -528,7 +528,7 @@ int BotInterpolateCharacters(int handle1, int handle2, float desiredskill)
 		if (!botcharacters[handle]) break;
 	} //end for
 	if (handle > MAX_CLIENTS) return 0;
-	out = (bot_character_t *) GetClearedMemory(sizeof(bot_character_t) +
+	out = (bot_character_t *) GetMemory(sizeof(bot_character_t) +
 					MAX_CHARACTERISTICS * sizeof(bot_characteristic_t));
 	out->skill = desiredskill;
 	strcpy(out->filename, ch1->filename);
