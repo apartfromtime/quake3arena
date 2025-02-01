@@ -191,18 +191,6 @@ void* Z_Malloc(int size)
 	return buf;
 }
 
-#ifdef ZONE_DEBUG
-void* S_MallocDebug(int size, char* label, char* file, int line)
-{
-	return Z_TagMallocDebug(size, TAG_SMALL, label, file, line);
-}
-#else
-void* S_Malloc(int size)
-{
-	return Z_TagMalloc(size, TAG_SMALL);
-}
-#endif
-
 /*
 ========================
 Z_CheckHeap
