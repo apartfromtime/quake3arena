@@ -357,9 +357,11 @@ This is called when the hunk is cleared and the sounds
 are no longer valid.
 ===================
 */
-void S_DisableSounds( void ) {
+void S_DisableSounds( void )
+{
 	S_StopAllSounds();
 	s_soundMuted = true;
+	s_numSfx = 0;
 }
 
 /*

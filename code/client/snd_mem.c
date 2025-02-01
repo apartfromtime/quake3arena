@@ -54,13 +54,15 @@ void SND_Shutdown(void)
 {
 }
 
-void	SND_free(sndBuffer *v) {
+void	SND_free(sndBuffer *v)
+{
 	*(sndBuffer **)v = freelist;
 	freelist = (sndBuffer*)v;
 	inUse += sizeof(sndBuffer);
 }
 
-sndBuffer*	SND_malloc() {
+sndBuffer*	SND_malloc()
+{
 	sndBuffer *v;
 redo:
 	if (freelist == NULL) {
@@ -97,7 +99,9 @@ void SND_setup(void)
     q = p + scs;
 
     while (--q > p)
-        *(sndBuffer**)q = q-1;
+	{
+		*(sndBuffer**)q = q-1;
+	}
 
     *(sndBuffer**)q = NULL;
     freelist = p + scs - 1;
