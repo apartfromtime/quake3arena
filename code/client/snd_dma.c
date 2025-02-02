@@ -370,15 +370,16 @@ S_BeginRegistration
 
 =====================
 */
-void S_BeginRegistration( void ) {
+void S_BeginRegistration(void)
+{
 	s_soundMuted = false;		// we can play again
 
-	if (s_numSfx == 0) {
+	if (s_numSfx == 0)
+	{
 		SND_setup();
 
-		s_numSfx = 0;
-		Com_Memset( s_knownSfx, 0, sizeof( s_knownSfx ) );
-		Com_Memset(sfxHash, 0, sizeof(sfx_t *)*LOOP_HASH);
+		Com_Memset(s_knownSfx, 0, sizeof(s_knownSfx));
+		Com_Memset(sfxHash, 0, sizeof(sfx_t*) * LOOP_HASH);
 
 		S_RegisterSound("sound/feedback/hit.wav", false);		// changed to a sound in baseq3
 	}
