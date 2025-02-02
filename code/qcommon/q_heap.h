@@ -84,6 +84,7 @@ void* Z_MallocDebug(int size, char* label, char* file, int line);
 void* Z_TagMalloc(int size, int tag);
 void* Z_Malloc(int size);
 #endif
+bool Zone_InitSmallZoneMemory(int zoneSize);
 bool Zone_InitMemory(int zoneSize);
 void Zone_Meminfo(void);
 void Z_Free(void* ptr);
@@ -97,7 +98,7 @@ void* Hunk_Alloc(int size);
 #endif
 bool Hunk_InitMemory(int hunkSize);
 void Hunk_Meminfo(void);
-void Hunk_Free(void);
+void Hunk_Free(void* buf);
 void Hunk_Clear(void);
 void* Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void* buf);
