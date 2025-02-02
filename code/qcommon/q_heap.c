@@ -43,6 +43,7 @@ ZONE MEMORY ALLOCATION
 ==============================================================================
 */
 
+static int s_zoneAlloc;
 static int s_zoneTotal;
 
 /*
@@ -63,8 +64,12 @@ void* Z_TagMalloc(int size, int tag)
 		Com_Error(ERR_FATAL, "Z_TagMalloc: tried to use a 0 tag");
 	}
 	
-	buf = rpaligned_alloc(4, size);
-	memset(buf, 0, size);
+	if ((s_zoneAlloc + size) < s_zoneTotal)
+	{
+		buf = rpaligned_alloc(4, size);
+		s_zoneAlloc += rpmalloc_usable_size(buf);
+		memset(buf, 0, size);
+	}
 
 	return buf;
 }
@@ -97,6 +102,18 @@ void* Z_Malloc(int size)
 Zone_InitMemory
 ========================
 */
+bool Zone_InitSmallZoneMemory(int zoneSize)
+{
+	s_zoneTotal = 1024 * zoneSize;
+
+	return true;
+}
+
+/*
+========================
+Zone_InitMemory
+========================
+*/
 bool Zone_InitMemory(int zoneSize)
 {
 	s_zoneTotal = 1024 * 1024 * zoneSize;
@@ -112,10 +129,20 @@ Zone_Meminfo
 void Zone_Meminfo(void)
 {
 	rpmalloc_global_statistics_t stat;
-	rpmalloc_global_statistics(&stat);
 
 	Com_Printf("----- Zone Info ------\n");
-	Com_Printf("%8i bytes total\n", stat.mapped_total);
+	Com_Printf("%8i bytes total\n", s_zoneTotal);
+	Com_Printf("%8i bytes alloc\n", s_zoneAlloc);
+	Com_Printf("----------------------\n");
+
+	rpmalloc_global_statistics(&stat);
+
+	Com_Printf("----- rpmalloc Info ------\n");
+	Com_Printf("%8i bytes total mapped\n", stat.mapped_total);
+	Com_Printf("%8i bytes total unmapped\n", stat.unmapped_total);
+	Com_Printf("%8i bytes mapped\n", stat.mapped);
+	Com_Printf("%8i bytes mapped peak\n", stat.mapped_peak);
+	Com_Printf("%8i bytes cached\n", stat.cached);
 	Com_Printf("----------------------\n");
 }
 
@@ -126,7 +153,7 @@ Z_AvailableMemory
 */
 int Z_AvailableMemory(void)
 {
-	return s_zoneTotal;
+	return (s_zoneTotal - s_zoneAlloc);
 }
 
 // static mem blocks to reduce a lot of small zone overhead
@@ -164,6 +191,7 @@ void Z_Free(void* ptr)
 
 	if (ptr != (char*)&emptystring && ptr != (char*)&numberstring[((const char*)ptr)[0] - '0'])
 	{
+		s_zoneAlloc -= rpmalloc_usable_size(ptr);
 		rpfree(ptr);
 		ptr = NULL;
 	}
@@ -201,7 +229,8 @@ HUNK MEMORY ALLOCATION
 ==============================================================================
 */
 
-static int			s_hunkTotal;
+static int s_hunkAlloc;
+static int s_hunkTotal;
 static rpmalloc_heap_t*	s_hunk = NULL;
 
 /*
@@ -225,9 +254,12 @@ void* Hunk_Alloc(int size)
 		Com_Error(ERR_FATAL, "Hunk_Alloc: Hunk memory system not initialized");
 	}
 
-	buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
-	
-	memset(buf, 0, size);
+	if ((s_hunkAlloc + size) < s_hunkTotal)
+	{
+		buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
+		s_hunkAlloc += rpmalloc_usable_size(buf);
+		memset(buf, 0, size);
+	}
 
 	return buf;
 }
@@ -240,7 +272,6 @@ Hunk_InitMemory
 bool Hunk_InitMemory(int hunkSize)
 {
 	s_hunkTotal = 1024 * 1024 * hunkSize;
-
 	s_hunk = rpmalloc_heap_acquire();
 
 	if (!s_hunk)
@@ -261,6 +292,9 @@ void
 Hunk_Meminfo(void)
 {
 	Com_Printf("----- Hunk Info ------\n");
+	Com_Printf("%8i bytes total\n", s_hunkTotal);
+	Com_Printf("%8i bytes alloc\n", s_hunkAlloc);
+	Com_Printf("----------------------\n");
 }
 
 /*
@@ -272,6 +306,7 @@ The server calls this before shutting down or loading a new map
 */
 void Hunk_Clear(void)
 {
+	s_hunkAlloc = 0;
 	rpmalloc_heap_free_all(s_hunk);
 	Com_Printf("Hunk_Clear: reset the hunk ok\n");
 }
@@ -310,7 +345,7 @@ void* Hunk_AllocateTempMemory(int size)
 	}
 
 	buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
-
+	s_hunkAlloc += rpmalloc_usable_size(buf);
 	memset(buf, 0, size);
 
 	return buf;
@@ -334,6 +369,7 @@ void Hunk_FreeTempMemory(void* buf)
 		return;
 	}
 	
+	s_hunkAlloc -= rpmalloc_usable_size(buf);
 	rpmalloc_heap_free(s_hunk, buf);
 }
 
@@ -344,5 +380,5 @@ Hunk_MemoryRemaining
 */
 int	Hunk_MemoryRemaining(void)
 {
-	return s_hunkTotal;
+	return (s_hunkTotal - s_hunkAlloc);
 }

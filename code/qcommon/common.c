@@ -993,6 +993,21 @@ static void Com_WriteCDKey( const char *filename, const char *ikey ) {
 
 /*
 =================
+Com_InitSmallZoneMemory
+=================
+*/
+void Com_InitSmallZoneMemory(void)
+{
+	int memAlloc = 512;
+
+	if (Zone_InitSmallZoneMemory(memAlloc) == false) {
+		Com_Error(ERR_FATAL, "Small zone data failed to allocate %1.1f megs",
+			(float)memAlloc / 1024);
+	}
+}
+
+/*
+=================
 Com_InitZoneMemory
 =================
 */
@@ -1084,6 +1099,7 @@ void Com_Init( char *commandLine ) {
 
 	// allocate the stack based hunk and zone allocator
 	Mem_Initialize();
+	Com_InitSmallZoneMemory();
 	Com_InitZoneMemory();
 	Com_InitHunkMemory();
 
