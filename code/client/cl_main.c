@@ -1187,7 +1187,7 @@ doesn't know what graphics to reload
 void CL_Vid_Restart_f( void ) {
 
 	// don't let them loop during the restart
-	S_StopAllSounds();
+	S_DisableSounds();
 	// shutdown the UI
 	CL_ShutdownUI();
 	// shutdown the CGame
