@@ -24,6 +24,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "client.h"
 #include <limits.h>
 
+int demo_protocols[] = { 66, 67, 68, 0 };
+
 cvar_t	*cl_nodelta;
 cvar_t	*cl_debugMove;
 
@@ -1187,7 +1189,7 @@ doesn't know what graphics to reload
 void CL_Vid_Restart_f( void ) {
 
 	// don't let them loop during the restart
-	S_StopAllSounds();
+	S_DisableSounds();
 	// shutdown the UI
 	CL_ShutdownUI();
 	// shutdown the CGame

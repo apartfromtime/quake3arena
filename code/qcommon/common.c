@@ -25,9 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "qcommon.h"
 #include <setjmp.h>
 
-int demo_protocols[] =
-{ 66, 67, 68, 0 };
-
 #define MAX_NUM_ARGVS	50
 
 int		com_argc;
@@ -1377,17 +1374,12 @@ void Com_Frame( void ) {
 
 	int		msec, minMsec;
 	static int	lastTime;
-	int key;
  
 	int		timeBeforeFirstEvents;
 	int           timeBeforeServer;
 	int           timeBeforeEvents;
 	int           timeBeforeClient;
 	int           timeAfter;
-  
-
-
-
 
 	if ( setjmp (abortframe) ) {
 		return;			// an ERR_DROP was thrown
@@ -1400,10 +1392,6 @@ void Com_Frame( void ) {
 	timeBeforeEvents =0;
 	timeBeforeClient = 0;
 	timeAfter = 0;
-
-
-	// old net chan encryption key
-	key = 0x87243987;
 
 	// write config file if anything changed
 	Com_WriteConfiguration(); 
@@ -1531,9 +1519,6 @@ void Com_Frame( void ) {
 		c_patch_traces = 0;
 		c_pointcontents = 0;
 	}
-
-	// old net chan encryption key
-	key = lastTime * 0x87243987;
 
 	com_frameNumber++;
 }
