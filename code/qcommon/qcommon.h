@@ -58,20 +58,14 @@ PROTOCOL
 // 1.31 - 67
 #define	PROTOCOL_VERSION	68
 
-#define	UPDATE_SERVER_NAME	"update.quake3arena.com"
 // override on command line, config files etc.
-#ifndef MASTER_SERVER_NAME
-#define MASTER_SERVER_NAME	"master.quake3arena.com"
-#endif
-#ifndef AUTHORIZE_SERVER_NAME
+#define	UPDATE_SERVER_NAME		"update.quake3arena.com"
+#define MASTER_SERVER_NAME		"master.quake3arena.com"
 #define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
-#endif
 
 #define	PORT_MASTER			27950
 #define	PORT_UPDATE			27951
-#ifndef PORT_AUTHORIZE
 #define	PORT_AUTHORIZE		27952
-#endif
 #define	PORT_SERVER			27960
 #define	NUM_SERVER_PORTS	4		// broadcast scan this many ports after
 									// PORT_SERVER so a single machine can
