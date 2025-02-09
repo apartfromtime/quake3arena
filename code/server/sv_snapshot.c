@@ -152,7 +152,7 @@ static void SV_WriteSnapshotToClient( client_t *client, msg_t *msg ) {
 		}
 	}
 
-	MSG_WriteByte (msg, svc_snapshot);
+	MSG_WriteByte (msg, CMD_SV_SNAPSHOT);
 
 	// NOTE, MRE: now sent at the start of every message from server to client
 	// let the client know which reliable clientCommands we have received
@@ -192,7 +192,7 @@ static void SV_WriteSnapshotToClient( client_t *client, msg_t *msg ) {
 	// padding for rate debugging
 	if ( sv_padPackets->integer ) {
 		for ( i = 0 ; i < sv_padPackets->integer ; i++ ) {
-			MSG_WriteByte (msg, svc_nop);
+			MSG_WriteByte (msg, CMD_NOP);
 		}
 	}
 }
@@ -210,7 +210,7 @@ void SV_UpdateServerCommandsToClient( client_t *client, msg_t *msg ) {
 
 	// write any unacknowledged serverCommands
 	for ( i = client->reliableAcknowledge + 1 ; i <= client->reliableSequence ; i++ ) {
-		MSG_WriteByte( msg, svc_serverCommand );
+		MSG_WriteByte( msg, CMD_SV_SERVERCOMMAND );
 		MSG_WriteLong( msg, i );
 		MSG_WriteString( msg, client->reliableCommands[ i & (MAX_RELIABLE_COMMANDS-1) ] );
 	}

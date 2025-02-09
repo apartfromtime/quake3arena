@@ -573,13 +573,13 @@ void SV_SendClientGameState( client_t *client ) {
 	SV_UpdateServerCommandsToClient( client, &msg );
 
 	// send the gamestate
-	MSG_WriteByte( &msg, svc_gamestate );
+	MSG_WriteByte( &msg, CMD_SV_GAMESTATE );
 	MSG_WriteLong( &msg, client->reliableSequence );
 
 	// write the configstrings
 	for ( start = 0 ; start < MAX_CONFIGSTRINGS ; start++ ) {
 		if (sv.configstrings[start][0]) {
-			MSG_WriteByte( &msg, svc_configstring );
+			MSG_WriteByte( &msg, CMD_SV_CONFIGSTRING );
 			MSG_WriteShort( &msg, start );
 			MSG_WriteBigString( &msg, sv.configstrings[start] );
 		}
@@ -592,11 +592,11 @@ void SV_SendClientGameState( client_t *client ) {
 		if ( !base->number ) {
 			continue;
 		}
-		MSG_WriteByte( &msg, svc_baseline );
+		MSG_WriteByte( &msg, CMD_SV_BASELINE );
 		MSG_WriteDeltaEntity( &msg, &nullstate, base, true );
 	}
 
-	MSG_WriteByte( &msg, svc_EOF );
+	MSG_WriteByte( &msg, CMD_EOF );
 
 	MSG_WriteLong( &msg, client - svs.clients);
 
@@ -800,7 +800,7 @@ void SV_WriteDownloadToClient( client_t *cl , msg_t *msg )
 				Com_Printf("clientDownload: %d : \"%s\" file not found on server\n", cl - svs.clients, cl->downloadName);
 				Com_sprintf(errorMessage, sizeof(errorMessage), "File \"%s\" not found on server for autodownloading.\n", cl->downloadName);
 			}
-			MSG_WriteByte( msg, svc_download );
+			MSG_WriteByte( msg, CMD_SV_DOWNLOAD );
 			MSG_WriteShort( msg, 0 ); // client is expecting block zero
 			MSG_WriteLong( msg, -1 ); // illegal file size
 			MSG_WriteString( msg, errorMessage );
@@ -896,7 +896,7 @@ void SV_WriteDownloadToClient( client_t *cl , msg_t *msg )
 		// Send current block
 		curindex = (cl->downloadXmitBlock % MAX_DOWNLOAD_WINDOW);
 
-		MSG_WriteByte( msg, svc_download );
+		MSG_WriteByte( msg, CMD_SV_DOWNLOAD );
 		MSG_WriteShort( msg, cl->downloadXmitBlock );
 
 		// block zero is special, contains file size
@@ -1503,10 +1503,10 @@ void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	// read optional clientCommand strings
 	do {
 		c = MSG_ReadByte( msg );
-		if ( c == clc_EOF ) {
+		if ( c == CMD_EOF ) {
 			break;
 		}
-		if ( c != clc_clientCommand ) {
+		if ( c != CMD_CL_COMMAND ) {
 			break;
 		}
 		if ( !SV_ClientCommand( cl, msg ) ) {
@@ -1518,11 +1518,11 @@ void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	} while ( 1 );
 
 	// read the usercmd_t
-	if ( c == clc_move ) {
+	if ( c == CMD_CL_MOVE ) {
 		SV_UserMove( cl, msg, true );
-	} else if ( c == clc_moveNoDelta ) {
+	} else if ( c == CMD_CL_MOVENODELTA ) {
 		SV_UserMove( cl, msg, false );
-	} else if ( c != clc_EOF ) {
+	} else if ( c != CMD_EOF ) {
 		Com_Printf( "WARNING: bad command byte for client %i\n", cl - svs.clients );
 	}
 //	if ( msg->readcount != msg->cursize ) {

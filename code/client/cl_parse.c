@@ -23,15 +23,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
-char *svc_strings[256] = {
-	"svc_bad",
-	"svc_nop",
-	"svc_gamestate",
-	"svc_configstring",
-	"svc_baseline",	
-	"svc_serverCommand",
-	"svc_download",
-	"svc_snapshot"
+char *cmd_strings[256] =
+{
+	"CMD_BAD",
+	"CMD_NOP",
+	"CMD_EOF",
+	// Client
+	"CMD_CL_MOVE",
+	"CMD_CL_MOVENODELTA",
+	"CMD_CL_COMMAND",
+	// Server
+	"CMD_SV_GAMESTATE",
+	"CMD_SV_CONFIGSTRING",
+	"CMD_SV_BASELINE",	
+	"CMD_SV_SERVERCOMMAND",
+	"CMD_SV_DOWNLOAD",
+	"CMD_SV_SNAPSHOT"
 };
 
 void SHOWNET( msg_t *msg, char *s) {
@@ -406,11 +413,11 @@ void CL_ParseGamestate( msg_t *msg ) {
 	while ( 1 ) {
 		cmd = MSG_ReadByte( msg );
 
-		if ( cmd == svc_EOF ) {
+		if ( cmd == CMD_EOF ) {
 			break;
 		}
 		
-		if ( cmd == svc_configstring ) {
+		if ( cmd == CMD_SV_CONFIGSTRING ) {
 			int		len;
 
 			i = MSG_ReadShort( msg );
@@ -428,7 +435,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 			g_clientActive.gameState.stringOffsets[ i ] = g_clientActive.gameState.dataCount;
 			Com_Memcpy( g_clientActive.gameState.stringData + g_clientActive.gameState.dataCount, s, len + 1 );
 			g_clientActive.gameState.dataCount += len + 1;
-		} else if ( cmd == svc_baseline ) {
+		} else if ( cmd == CMD_SV_BASELINE ) {
 			newnum = MSG_ReadBits( msg, GENTITYNUM_BITS );
 			if ( newnum < 0 || newnum >= MAX_GENTITIES ) {
 				Com_Error( ERR_DROP, "Baseline number out of range: %i", newnum );
@@ -615,16 +622,16 @@ void CL_ParseServerMessage( msg_t *msg ) {
 
 		cmd = MSG_ReadByte( msg );
 
-		if ( cmd == svc_EOF) {
+		if ( cmd == CMD_EOF) {
 			SHOWNET( msg, "END OF MESSAGE" );
 			break;
 		}
 
 		if ( cl_shownet->integer >= 2 ) {
-			if ( !svc_strings[cmd] ) {
+			if ( !cmd_strings[cmd] ) {
 				Com_Printf( "%3i:BAD CMD %i\n", msg->readcount-1, cmd );
 			} else {
-				SHOWNET( msg, svc_strings[cmd] );
+				SHOWNET( msg, cmd_strings[cmd] );
 			}
 		}
 	
@@ -633,18 +640,18 @@ void CL_ParseServerMessage( msg_t *msg ) {
 		default:
 			Com_Error (ERR_DROP,"CL_ParseServerMessage: Illegible server message\n");
 			break;			
-		case svc_nop:
+		case CMD_NOP:
 			break;
-		case svc_serverCommand:
+		case CMD_SV_SERVERCOMMAND:
 			CL_ParseCommandString( msg );
 			break;
-		case svc_gamestate:
+		case CMD_SV_GAMESTATE:
 			CL_ParseGamestate( msg );
 			break;
-		case svc_snapshot:
+		case CMD_SV_SNAPSHOT:
 			CL_ParseSnapshot( msg );
 			break;
-		case svc_download:
+		case CMD_SV_DOWNLOAD:
 			CL_ParseDownload( msg );
 			break;
 		}
