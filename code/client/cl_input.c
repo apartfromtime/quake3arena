@@ -720,7 +720,7 @@ void CL_WritePacket( void ) {
 
 	// write any unacknowledged clientCommands
 	for ( i = clc.reliableAcknowledge + 1 ; i <= clc.reliableSequence ; i++ ) {
-		MSG_WriteByte( &buf, clc_clientCommand );
+		MSG_WriteByte( &buf, CMD_CL_COMMAND );
 		MSG_WriteLong( &buf, i );
 		MSG_WriteString( &buf, clc.reliableCommands[ i & (MAX_RELIABLE_COMMANDS-1) ] );
 	}
@@ -747,9 +747,9 @@ void CL_WritePacket( void ) {
 		// begin a client move command
 		if ( cl_nodelta->integer || !g_clientActive.snap.valid || clc.demowaiting
 			|| clc.serverMessageSequence != g_clientActive.snap.messageNum ) {
-			MSG_WriteByte (&buf, clc_moveNoDelta);
+			MSG_WriteByte (&buf, CMD_CL_MOVENODELTA);
 		} else {
-			MSG_WriteByte (&buf, clc_move);
+			MSG_WriteByte (&buf, CMD_CL_MOVE);
 		}
 
 		// write the command count

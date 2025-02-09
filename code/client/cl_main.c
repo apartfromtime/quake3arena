@@ -334,7 +334,7 @@ void CL_Record_f( void ) {
 	// NOTE, MRE: all server->client messages now acknowledge
 	MSG_WriteLong( &buf, clc.reliableSequence );
 
-	MSG_WriteByte (&buf, svc_gamestate);
+	MSG_WriteByte (&buf, CMD_SV_GAMESTATE);
 	MSG_WriteLong (&buf, clc.serverCommandSequence );
 
 	// configstrings
@@ -343,7 +343,7 @@ void CL_Record_f( void ) {
 			continue;
 		}
 		s = g_clientActive.gameState.stringData + g_clientActive.gameState.stringOffsets[i];
-		MSG_WriteByte (&buf, svc_configstring);
+		MSG_WriteByte (&buf, CMD_SV_CONFIGSTRING);
 		MSG_WriteShort (&buf, i);
 		MSG_WriteBigString (&buf, s);
 	}
@@ -355,11 +355,11 @@ void CL_Record_f( void ) {
 		if ( !ent->number ) {
 			continue;
 		}
-		MSG_WriteByte (&buf, svc_baseline);		
+		MSG_WriteByte (&buf, CMD_SV_BASELINE);		
 		MSG_WriteDeltaEntity (&buf, &nullstate, ent, true );
 	}
 
-	MSG_WriteByte( &buf, svc_EOF );
+	MSG_WriteByte( &buf, CMD_EOF );
 	
 	// finished writing the gamestate stuff
 
@@ -369,7 +369,7 @@ void CL_Record_f( void ) {
 	MSG_WriteLong(&buf, clc.checksumFeed);
 
 	// finished writing the client packet
-	MSG_WriteByte( &buf, svc_EOF );
+	MSG_WriteByte( &buf, CMD_EOF );
 
 	// write it to the demo file
 	len = LittleLong( clc.serverMessageSequence - 1 );

@@ -48,62 +48,6 @@ NET
 #include "net.h"
 
 /*
-===============================================================================
-
-PROTOCOL
-
-===============================================================================
-*/
-
-// 1.31 - 67
-#define	PROTOCOL_VERSION	68
-
-// override on command line, config files etc.
-#define	UPDATE_SERVER_NAME		"update.quake3arena.com"
-#define MASTER_SERVER_NAME		"master.quake3arena.com"
-#define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
-
-#define	PORT_MASTER			27950
-#define	PORT_UPDATE			27951
-#define	PORT_AUTHORIZE		27952
-#define	PORT_SERVER			27960
-#define	NUM_SERVER_PORTS	4		// broadcast scan this many ports after
-									// PORT_SERVER so a single machine can
-									// run multiple servers
-
-
-// the svc_strings[] array in cl_parse.c should mirror this
-//
-// server to client
-//
-enum svc_ops_e
-{
-	svc_bad,
-	svc_nop,
-	svc_gamestate,
-	svc_configstring,			// [short] [string] only in gamestate messages
-	svc_baseline,				// only in gamestate messages
-	svc_serverCommand,			// [string] to be executed by client game module
-	svc_download,				// [short] size [size bytes]
-	svc_snapshot,
-	svc_EOF
-};
-
-
-//
-// client to server
-//
-enum clc_ops_e
-{
-	clc_bad,
-	clc_nop, 		
-	clc_move,				// [[usercmd_t]
-	clc_moveNoDelta,		// [[usercmd_t]
-	clc_clientCommand,		// [string] message
-	clc_EOF
-};
-
-/*
 ==============================================================
 
 VIRTUAL MACHINE
@@ -250,6 +194,52 @@ MEMORY
 
 void Com_TouchMemory(void);
 
+
+/*
+===============================================================================
+
+PROTOCOL
+
+===============================================================================
+*/
+
+// 1.31 - 67
+#define	PROTOCOL_VERSION	68
+
+// override on command line, config files etc.
+#define	UPDATE_SERVER_NAME		"update.quake3arena.com"
+#define MASTER_SERVER_NAME		"master.quake3arena.com"
+#define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
+
+#define	PORT_MASTER			27950
+#define	PORT_UPDATE			27951
+#define	PORT_AUTHORIZE		27952
+#define	PORT_SERVER			27960
+#define	NUM_SERVER_PORTS	4		// broadcast scan this many ports after
+									// PORT_SERVER so a single machine can
+									// run multiple servers
+
+// the cmd_strings[] array in cl_parse.c should mirror this
+//
+// client <-> server
+//
+typedef enum
+{
+	CMD_BAD,
+	CMD_NOP,
+	CMD_EOF,
+	// Client
+	CMD_CL_MOVE,            // [usercmd_t]
+	CMD_CL_MOVENODELTA,     // [usercmd_t]
+	CMD_CL_COMMAND,         // [string] message
+	// Server
+	CMD_SV_GAMESTATE,       // [short] [string] only in gamestate messages
+	CMD_SV_CONFIGSTRING,    // only in gamestate messages
+	CMD_SV_BASELINE,        // [string] to be executed by client game module
+	CMD_SV_SERVERCOMMAND,   // [short] size [size bytes]
+	CMD_SV_DOWNLOAD,
+	CMD_SV_SNAPSHOT
+} SVCL_CMD_OPS;
 
 /*
 ==============================================================
