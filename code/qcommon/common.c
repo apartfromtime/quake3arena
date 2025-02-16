@@ -394,8 +394,8 @@ Com_StartupVariable
 Searches for command line parameters that are set commands.
 If match is not NULL, only that cvar will be looked for.
 That is necessary because cddir and basedir need to be set
-before the filesystem is started, but all other sets shouls
-be after execing the config and default.
+before the filesystem is started, but all other sets should
+be after executing the config and default.
 ===============
 */
 void Com_StartupVariable( const char *match ) {
