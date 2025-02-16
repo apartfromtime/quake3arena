@@ -505,23 +505,6 @@ void Com_Meminfo_f(void)
 }
 
 /*
-===============
-Com_TouchMemory
-
-Touch all known used data to make sure it is paged in
-===============
-*/
-void Com_TouchMemory(void)
-{
-	int start = 0, end = 0;
-
-	start = Sys_Milliseconds();
-	end = Sys_Milliseconds();
-
-	Com_Printf("Com_TouchMemory: %i msec\n", end - start);
-}
-
-/*
 ===================================================================
 
 EVENTS AND JOURNALING
