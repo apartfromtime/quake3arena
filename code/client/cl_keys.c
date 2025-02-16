@@ -33,11 +33,10 @@ int			nextHistoryLine;		// the last line in the history buffer, not masked
 int			historyLine;	// the line being displayed from history buffer
 							// will be <= nextHistoryLine
 
-field_t		g_consoleField;
-field_t		chatField;
-bool	chat_team;
-
-int			chat_playerNum;
+field_t g_consoleField;
+field_t g_chatField;
+bool chat_team;
+int chat_playerNum;
 
 
 bool	key_overstrikeMode;
@@ -615,33 +614,33 @@ void Message_Key( int key ) {
 
 	if (key == K_ESCAPE) {
 		cls.keyCatchers &= ~KEYCATCH_MESSAGE;
-		Field_Clear( &chatField );
+		Field_Clear( &g_chatField );
 		return;
 	}
 
 	if ( key == K_ENTER || key == K_KP_ENTER )
 	{
-		if ( chatField.buffer[0] && cls.state == CA_ACTIVE ) {
+		if ( g_chatField.buffer[0] && cls.state == CA_ACTIVE ) {
 			if (chat_playerNum != -1 )
 
-				Com_sprintf( buffer, sizeof( buffer ), "tell %i \"%s\"\n", chat_playerNum, chatField.buffer );
+				Com_sprintf( buffer, sizeof( buffer ), "tell %i \"%s\"\n", chat_playerNum, g_chatField.buffer );
 
 			else if (chat_team)
 
-				Com_sprintf( buffer, sizeof( buffer ), "say_team \"%s\"\n", chatField.buffer );
+				Com_sprintf( buffer, sizeof( buffer ), "say_team \"%s\"\n", g_chatField.buffer );
 			else
-				Com_sprintf( buffer, sizeof( buffer ), "say \"%s\"\n", chatField.buffer );
+				Com_sprintf( buffer, sizeof( buffer ), "say \"%s\"\n", g_chatField.buffer );
 
 
 
 			CL_AddReliableCommand( buffer );
 		}
 		cls.keyCatchers &= ~KEYCATCH_MESSAGE;
-		Field_Clear( &chatField );
+		Field_Clear( &g_chatField );
 		return;
 	}
 
-	Field_KeyDownEvent( &chatField, key );
+	Field_KeyDownEvent( &g_chatField, key );
 }
 
 //============================================================================
@@ -1220,7 +1219,7 @@ void CL_CharEvent( int key ) {
 	}
 	else if ( cls.keyCatchers & KEYCATCH_MESSAGE ) 
 	{
-		Field_CharEvent( &chatField, key );
+		Field_CharEvent( &g_chatField, key );
 	}
 	else if ( cls.state == CA_DISCONNECTED )
 	{

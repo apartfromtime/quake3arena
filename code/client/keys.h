@@ -32,7 +32,24 @@ typedef struct {
 extern	bool	key_overstrikeMode;
 extern	qkey_t		keys[MAX_KEYS];
 
-// NOTE TTimo the declaration of field_t and Field_Clear is now in qcommon/qcommon.h
+/*
+==============================================================
+
+Edit fields and command line history/completion
+
+==============================================================
+*/
+
+#define	MAX_EDIT_LINE	256
+typedef struct {
+	int		cursor;
+	int		scroll;
+	int		widthInChars;
+	char	buffer[MAX_EDIT_LINE];
+} field_t;
+
+void Field_Clear(field_t* edit);
+void Field_CompleteCommand(field_t* edit);
 void Field_KeyDownEvent( field_t *edit, int key );
 void Field_CharEvent( field_t *edit, int ch );
 void Field_Draw( field_t *edit, int x, int y, int width, bool showCursor );
@@ -42,7 +59,7 @@ void Field_BigDraw( field_t *edit, int x, int y, int width, bool showCursor );
 extern	field_t	historyEditLines[COMMAND_HISTORY];
 
 extern	field_t	g_consoleField;
-extern	field_t	chatField;
+extern	field_t	g_chatField;
 extern	bool	anykeydown;
 extern	bool	chat_team;
 extern	int			chat_playerNum;

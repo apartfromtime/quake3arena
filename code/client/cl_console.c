@@ -92,8 +92,8 @@ Con_MessageMode_f
 void Con_MessageMode_f (void) {
 	chat_playerNum = -1;
 	chat_team = false;
-	Field_Clear( &chatField );
-	chatField.widthInChars = 30;
+	Field_Clear( &g_chatField );
+	g_chatField.widthInChars = 30;
 
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
 }
@@ -106,8 +106,8 @@ Con_MessageMode2_f
 void Con_MessageMode2_f (void) {
 	chat_playerNum = -1;
 	chat_team = true;
-	Field_Clear( &chatField );
-	chatField.widthInChars = 25;
+	Field_Clear( &g_chatField );
+	g_chatField.widthInChars = 25;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
 }
 
@@ -123,8 +123,8 @@ void Con_MessageMode3_f (void) {
 		return;
 	}
 	chat_team = false;
-	Field_Clear( &chatField );
-	chatField.widthInChars = 30;
+	Field_Clear( &g_chatField );
+	g_chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
 }
 
@@ -140,8 +140,8 @@ void Con_MessageMode4_f (void) {
 		return;
 	}
 	chat_team = false;
-	Field_Clear( &chatField );
-	chatField.widthInChars = 30;
+	Field_Clear( &g_chatField );
+	g_chatField.widthInChars = 30;
 	cls.keyCatchers ^= KEYCATCH_MESSAGE;
 }
 
@@ -562,7 +562,7 @@ void Con_DrawNotify (void)
 			skip = 5;
 		}
 
-		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
+		Field_BigDraw( &g_chatField, skip * BIGCHAR_WIDTH, v,
 			SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, true );
 
 		v += BIGCHAR_HEIGHT;
