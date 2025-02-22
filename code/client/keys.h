@@ -23,10 +23,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	MAX_KEYS		256
 
-typedef struct {
-	bool	down;
-	int			repeats;		// if > 1, it is autorepeating
-	char		*binding;
+typedef struct
+{
+	char    binding[MAX_STRING_CHARS];
+	int     repeats;			// if > 1, it is autorepeating
+	bool    down;
 } qkey_t;
 
 extern	bool	key_overstrikeMode;

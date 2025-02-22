@@ -67,7 +67,7 @@ typedef struct {
 	int				timeResidual;		// <= 1000 / sv_frame->value
 	int				nextFrameTime;		// when time > nextFrameTime, process world
 	struct cmodel_s	*models[MAX_MODELS];
-	char			*configstrings[MAX_CONFIGSTRINGS];
+	char			configstrings[MAX_CONFIGSTRINGS][MAX_STRING_CHARS];
 	svEntity_t		svEntities[MAX_GENTITIES];
 
 	char			*entityParsePoint;	// used during game VM init

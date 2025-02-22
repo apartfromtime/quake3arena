@@ -781,24 +781,24 @@ char *Key_KeynumToString( int keynum ) {
 Key_SetBinding
 ===================
 */
-void Key_SetBinding( int keynum, const char *binding ) {
-	if ( keynum == -1 ) {
+void Key_SetBinding(int keynum, const char* binding)
+{
+	if (keynum == -1) {
 		return;
 	}
 
 	// free old bindings
-	if ( keys[ keynum ].binding ) {
-		Z_Free( keys[ keynum ].binding );
+	if (keys[keynum].binding) {
+		Com_Memset(keys[keynum].binding, 0, MAX_STRING_CHARS);
 	}
-		
+
 	// allocate memory for new binding
-	keys[keynum].binding = CopyString( binding );
+	Q_strncpyz(keys[keynum].binding, binding, MAX_STRING_CHARS);
 
 	// consider this like modifying an archived cvar, so the
 	// file write will be triggered at the next oportunity
 	cvar_modifiedFlags |= CVAR_ARCHIVE;
 }
-
 
 /*
 ===================
@@ -880,7 +880,7 @@ Key_Bind_f
 void Key_Bind_f (void)
 {
 	int			i, c, b;
-	char		cmd[1024];
+	char		cmd[MAX_STRING_CHARS];
 	
 	c = Cmd_Argc();
 
