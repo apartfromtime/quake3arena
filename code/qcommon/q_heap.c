@@ -247,7 +247,7 @@ void* Hunk_AllocDebug(int size, char* label, char* file, int line)
 void* Hunk_Alloc(int size)
 {
 #endif
-	void* buf;
+	void* buf = NULL;
 
 	if (s_hunk == NULL)
 	{
@@ -319,6 +319,7 @@ Hunk_Free
 void
 Hunk_Free(void* buf)
 {
+	s_hunkAlloc -= rpmalloc_usable_size(buf);
 	rpmalloc_heap_free(s_hunk, buf);
 }
 
