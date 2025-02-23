@@ -108,8 +108,6 @@ extern char cl_cdkey[34];
 // the max string you can send to a Com_Printf / Com_DPrintf (above gets truncated)
 #define	MAXPRINTMSG	4096
 
-char		*CopyString( const char *in );
-
 void        Com_BeginRedirect (char *buffer, int buffersize, void (*flush)(char *));
 void        Com_EndRedirect( void );
 void        Q_CDECL Com_Printf( const char *fmt, ... );
