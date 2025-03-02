@@ -68,7 +68,7 @@ botlib_export_t be_botlib_export;
 botlib_import_t botimport;
 //
 cvar_t* bot_logfile;
-cvar_t* maxclients;			// maximum number of clients
+cvar_t* sv_maxclients;			// maximum number of clients
 cvar_t* maxentities;			// maximum number of entities
 bool s_initialized;			// true when the bot library has been setup
 int bot_developer;
@@ -84,11 +84,11 @@ int bot_developer;
 //===========================================================================
 bool ValidClientNumber(int num, char *str)
 {
-	if (num < 0 || num > maxclients->integer)
+	if (num < 0 || num > sv_maxclients->integer)
 	{
 		// weird: the disabled stuff results in a crash
 		botimport.Print(PRT_ERROR, "%s: invalid client number %d, [0, %d]\n",
-			str, num, maxclients->integer);
+			str, num, sv_maxclients->integer);
 
 		return false;
 	}
@@ -145,12 +145,12 @@ int Export_BotLibSetup(void)
 
 	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
 
-	maxclients = Botlib_CvarGet("maxclients", "128");
+	sv_maxclients = Botlib_CvarGet("sv_maxclients", "8");
 	maxentities = Botlib_CvarGet("maxentities", "1024");
 
 	errnum = AAS_Setup();           // be_aas_main.c
 	if (errnum != BLERR_NOERROR) return errnum;
-	errnum = EA_Setup(maxclients->integer);         // be_ea.c
+	errnum = EA_Setup(sv_maxclients->integer);          // be_ea.c
 	if (errnum != BLERR_NOERROR) return errnum;
 	errnum = BotSetupWeaponAI();            // be_ai_weap.c
 	if (errnum != BLERR_NOERROR)return errnum;

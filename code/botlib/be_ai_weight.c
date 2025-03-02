@@ -132,17 +132,16 @@ void FreeWeightConfig2(weightconfig_t *config)
 	} //end for
 	FreeZoneMemory(config);
 } //end of the function FreeWeightConfig2
+
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// FreeWeightConfig
 //===========================================================================
-void FreeWeightConfig(weightconfig_t *config)
+void FreeWeightConfig(weightconfig_t* config)
 {
 	if (!Botlib_CvarGetValue("bot_reloadcharacters")) return;
 	FreeWeightConfig2(config);
-} //end of the function FreeWeightConfig
+}
+
 //===========================================================================
 //
 // Parameter:			-

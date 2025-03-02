@@ -2239,15 +2239,13 @@ void BotFreeChatFile(int chatstate)
 	if (cs->chat) FreeZoneMemory(cs->chat);
 	cs->chat = NULL;
 } //end of the function BotFreeChatFile
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotLoadChatFile
 //===========================================================================
-int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
+int BotLoadChatFile(int chatstate, char* chatfile, char* chatname)
 {
-	bot_chatstate_t *cs;
+	bot_chatstate_t* cs;
 	int n, avail = 0;
 
 	cs = BotChatStateFromHandle(chatstate);
@@ -2257,46 +2255,58 @@ int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		avail = -1;
-		for( n = 0; n < MAX_CLIENTS; n++ ) {
-			if( !ichatdata[n] ) {
-				if( avail == -1 ) {
+
+		for (n = 0; n < MAX_CLIENTS; n++)
+		{
+			if (!ichatdata[n]) {
+				if (avail == -1) {
 					avail = n;
 				}
 				continue;
 			}
-			if( strcmp( chatfile, ichatdata[n]->filename ) != 0 ) { 
+
+			if (strcmp(chatfile, ichatdata[n]->filename) != 0) {
 				continue;
 			}
-			if( strcmp( chatname, ichatdata[n]->chatname ) != 0 ) { 
+
+			if (strcmp(chatname, ichatdata[n]->chatname) != 0) {
 				continue;
 			}
+
 			cs->chat = ichatdata[n]->chat;
-		//		botimport.Print( PRT_MESSAGE, "retained %s from %s\n", chatname, chatfile );
+			// botimport.Print(PRT_MESSAGE, "retained %s from %s\n",
+			//	chatname, chatfile);
+
 			return BLERR_NOERROR;
 		}
 
-		if( avail == -1 ) {
-			botimport.Print(PRT_FATAL, "ichatdata table full; couldn't load chat %s from %s\n", chatname, chatfile);
+		if (avail == -1) {
+			botimport.Print(PRT_FATAL,
+				"ichatdata table full; couldn't load chat %s from %s\n",
+				chatname, chatfile);
 			return BLERR_CANNOTLOADICHAT;
 		}
 	}
 
 	cs->chat = BotLoadInitialChat(chatfile, chatname);
-	if (!cs->chat)
-	{
-		botimport.Print(PRT_FATAL, "couldn't load chat %s from %s\n", chatname, chatfile);
+	if (!cs->chat) {
+		botimport.Print(PRT_FATAL, "couldn't load chat %s from %s\n",
+			chatname, chatfile);
 		return BLERR_CANNOTLOADICHAT;
-	} //end if
-	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
-	{
-		ichatdata[avail] = GetZoneMemory( sizeof(bot_ichatdata_t) );
+	}
+
+	if (!Botlib_CvarGetValue("bot_reloadcharacters")) {
+		ichatdata[avail] = GetZoneMemory(sizeof(bot_ichatdata_t));
 		ichatdata[avail]->chat = cs->chat;
-		Q_strncpyz( ichatdata[avail]->chatname, chatname, sizeof(ichatdata[avail]->chatname) );
-		Q_strncpyz( ichatdata[avail]->filename, chatfile, sizeof(ichatdata[avail]->filename) );
-	} //end if
+		Q_strncpyz(ichatdata[avail]->chatname, chatname,
+			sizeof(ichatdata[avail]->chatname));
+		Q_strncpyz(ichatdata[avail]->filename, chatfile,
+			sizeof(ichatdata[avail]->filename));
+	}
 
 	return BLERR_NOERROR;
-} //end of the function BotLoadChatFile
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -2954,15 +2964,13 @@ int BotAllocChatState(void)
 	} //end for
 	return 0;
 } //end of the function BotAllocChatState
+
 //========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotFreeChatState
 //========================================================================
 void BotFreeChatState(int handle)
 {
-	bot_chatstate_t *cs;
+	bot_chatstate_t* cs;
 	bot_consolemessage_t m;
 	int h;
 
@@ -2970,26 +2978,31 @@ void BotFreeChatState(int handle)
 	{
 		botimport.Print(PRT_FATAL, "chat state handle %d out of range\n", handle);
 		return;
-	} //end if
+	}
+
 	if (!botchatstates[handle])
 	{
 		botimport.Print(PRT_FATAL, "invalid chat state %d\n", handle);
 		return;
-	} //end if
+	}
+
 	cs = botchatstates[handle];
 	if (Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		BotFreeChatFile(handle);
-	} //end if
-	//free all the console messages left in the chat state
+	}
+
+	// free all the console messages left in the chat state
 	for (h = BotNextConsoleMessage(handle, &m); h; h = BotNextConsoleMessage(handle, &m))
 	{
-		//remove the console message
+		// remove the console message
 		BotRemoveConsoleMessage(handle, h);
-	} //end for
+
+	}
+
 	FreeZoneMemory(botchatstates[handle]);
 	botchatstates[handle] = NULL;
-} //end of the function BotFreeChatState
+}
 
 //===========================================================================
 // BotSetupChatAI

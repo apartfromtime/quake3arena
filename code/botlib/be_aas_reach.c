@@ -4518,10 +4518,7 @@ int AAS_ContinueInitReachability(float time)
 }
 
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// AAS_InitReachability
 //===========================================================================
 void AAS_InitReachability(void)
 {
@@ -4530,28 +4527,35 @@ void AAS_InitReachability(void)
 	if (aasworld.reachabilitysize)
 	{
 #ifndef BSPC
-		if (!((int)Botlib_CvarGetValue("forcereachability")))
+		if (!((int)Botlib_CvarGetValue("bot_forcereachability")))
 		{
 			aasworld.numreachabilityareas = aasworld.numareas + 2;
 			return;
-		} //end if
+		}
 #else
 		aasworld.numreachabilityareas = aasworld.numareas + 2;
+
 		return;
-#endif //BSPC
-	} //end if
+#endif // #ifndef BSPC
+	}
+
 #ifndef BSPC
 	calcgrapplereach = Botlib_CvarGetValue("grapplereach");
-#endif
+#endif // #ifndef BSPC
+
 	aasworld.savefile = true;
-	//start with area 1 because area zero is a dummy
+	// start with area 1 because area zero is a dummy
 	aasworld.numreachabilityareas = 1;
-	////aasworld.numreachabilityareas = aasworld.numareas + 1;		//only calculate entity reachabilities
-	//setup the heap with reachability links
+
+	// only calculate entity reachabilities
+	// aasworld.numreachabilityareas = aasworld.numareas + 1;
+	
+	// setup the heap with reachability links
 	AAS_SetupReachabilityHeap();
-	//allocate area reachability link array
-	areareachability = (aas_lreachability_t **) GetZoneMemory(
-									aasworld.numareas * sizeof(aas_lreachability_t *));
-	//
+
+	// allocate area reachability link array
+	areareachability = (aas_lreachability_t**)GetZoneMemory(aasworld.numareas *
+		sizeof(aas_lreachability_t*));
+
 	AAS_SetWeaponJumpAreaFlags();
-} //end of the function AAS_InitReachable
+}

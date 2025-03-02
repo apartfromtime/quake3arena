@@ -159,17 +159,16 @@ void BotFreeCharacter2(int handle)
 	FreeZoneMemory(botcharacters[handle]);
 	botcharacters[handle] = NULL;
 } //end of the function BotFreeCharacter2
+
 //========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// BotFreeCharacter
 //========================================================================
 void BotFreeCharacter(int handle)
 {
 	if (!Botlib_CvarGetValue("bot_reloadcharacters")) return;
 	BotFreeCharacter2(handle);
-} //end of the function BotFreeCharacter
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -498,25 +497,23 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 }
 
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// BotLoadCharacterSkill
 //===========================================================================
-int BotLoadCharacterSkill(char *charfile, float skill)
+int BotLoadCharacterSkill(char* charfile, float skill)
 {
 	int ch, defaultch;
 
 	defaultch = BotLoadCachedCharacter(DEFAULT_CHARACTER, skill, false);
-	ch = BotLoadCachedCharacter(charfile, skill, Botlib_CvarGetValue("bot_reloadcharacters"));
+	ch = BotLoadCachedCharacter(charfile, skill,
+		Botlib_CvarGetValue("bot_reloadcharacters"));
 
-	if (defaultch && ch)
-	{
+	if (defaultch && ch) {
 		BotDefaultCharacteristics(botcharacters[ch], botcharacters[defaultch]);
-	} //end if
+	}
 
 	return ch;
-} //end of the function BotLoadCharacterSkill
+}
+
 //===========================================================================
 //
 // Parameter:			-

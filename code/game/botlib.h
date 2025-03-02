@@ -463,8 +463,8 @@ name:						default:			module(s):			description:
 "gamedir"					""					l_utils.c			game directory
 "cddir"						""					l_utils.c			CD directory
 
-"log"						"0"					l_log.c				enable/disable creating a log file
-"maxclients"				"4"					be_interface.c		maximum number of clients
+"bot_log"                   "0"					l_log.c				enable/disable creating a log file
+"sv_maxclients"             "8"					be_interface.c		maximum number of clients
 "maxentities"				"1024"				be_interface.c		maximum number of entities
 "bot_developer"				"0"					be_interface.c		bot developer mode
 
@@ -506,10 +506,10 @@ name:						default:			module(s):			description:
 
 "max_aaslinks"				"4096"				be_aas_sample.c		maximum links in the AAS
 "max_routingcache"			"4096"				be_aas_route.c		maximum routing cache size in KB
-"forceclustering"			"0"					be_aas_main.c		force recalculation of clusters
-"forcereachability"			"0"					be_aas_main.c		force recalculation of reachabilities
-"forcewrite"				"0"					be_aas_main.c		force writing of aas file
-"aasoptimize"				"0"					be_aas_main.c		enable aas optimization
+"bot_forceclustering"       "0"					be_aas_main.c		force recalculation of clusters
+"bot_forcereachability"     "0"					be_aas_main.c		force recalculation of reachabilities
+"bot_forcewrite"            "0"					be_aas_main.c		force writing of aas file
+"bot_aasoptimize"           "0"					be_aas_main.c		enable aas optimization
 "sv_mapChecksum"			"0"					be_aas_main.c		BSP file checksum
 "bot_visualizejumppads"		"0"					be_aas_reach.c		visualize jump pads
 
