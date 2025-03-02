@@ -392,7 +392,7 @@ extern cvar_t* maxentities;
 
 int AAS_Setup(void)
 {
-	maxclients = Botlib_CvarGet("maxclients", "128");
+	maxclients = Botlib_CvarGet("maxclients", "8");
 	maxentities = Botlib_CvarGet("maxentities", "1024");
 
 	aasworld.maxclients = maxclients->integer;
