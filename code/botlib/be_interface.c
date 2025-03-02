@@ -69,7 +69,7 @@ botlib_import_t botimport;
 //
 cvar_t* bot_logfile;
 cvar_t* sv_maxclients;			// maximum number of clients
-cvar_t* maxentities;			// maximum number of entities
+cvar_t* sv_maxentities;			// maximum number of entities
 bool s_initialized;			// true when the bot library has been setup
 int bot_developer;
 
@@ -101,10 +101,10 @@ bool ValidClientNumber(int num, char *str)
 //===========================================================================
 bool ValidEntityNumber(int num, char* str)
 {
-	if (num < 0 || num > maxentities->integer)
+	if (num < 0 || num > sv_maxentities->integer)
 	{
 		botimport.Print(PRT_ERROR, "%s: invalid entity number %d, [0, %d]\n",
-			str, num, maxentities->integer);
+			str, num, sv_maxentities->integer);
 		return false;
 	}
 
@@ -146,7 +146,7 @@ int Export_BotLibSetup(void)
 	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
 
 	sv_maxclients = Botlib_CvarGet("sv_maxclients", "8");
-	maxentities = Botlib_CvarGet("maxentities", "1024");
+	sv_maxentities = Botlib_CvarGet("sv_maxentities", "1024");
 
 	errnum = AAS_Setup();           // be_aas_main.c
 	if (errnum != BLERR_NOERROR) return errnum;

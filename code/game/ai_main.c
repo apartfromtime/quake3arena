@@ -1569,12 +1569,10 @@ int BotAIStartFrame(int time) {
 BotInitLibrary
 ==============
 */
-int BotInitLibrary(void) {
+int BotInitLibrary(void)
+{
 	char buf[144];
 
-	//set the maxclients and maxentities library variables before calling BotSetupLibrary
-	Com_sprintf(buf, sizeof(buf), "%d", MAX_GENTITIES);
-	trap_Cvar_Set("maxentities", buf);
 	//bsp checksum
 	trap_Cvar_VariableStringBuffer("sv_mapChecksum", buf, sizeof(buf));
 	if (strlen(buf)) trap_Cvar_Set("sv_mapChecksum", buf);

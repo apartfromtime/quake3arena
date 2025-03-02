@@ -227,6 +227,7 @@ extern	cvar_t	*sv_rconPassword;
 extern	cvar_t	*sv_privatePassword;
 extern	cvar_t	*sv_allowDownload;
 extern	cvar_t	*sv_maxclients;
+extern	cvar_t* sv_maxentities;
 
 extern	cvar_t	*sv_privateClients;
 extern	cvar_t	*sv_hostname;

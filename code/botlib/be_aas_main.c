@@ -46,7 +46,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 aas_t aasworld;
 
 extern cvar_t* sv_maxclients;
-extern cvar_t* maxentities;
+extern cvar_t* sv_maxentities;
 cvar_t* aas_optimize;
 cvar_t* bot_saveroutingcache;
 
@@ -379,6 +379,7 @@ int AAS_LoadMap(const char *mapname)
 	//everything went ok
 	return 0;
 } //end of the function AAS_LoadMap
+
 //===========================================================================
 // AAS_Setup
 // called when the library is first loaded
@@ -386,21 +387,22 @@ int AAS_LoadMap(const char *mapname)
 int AAS_Setup(void)
 {
 	sv_maxclients = Botlib_CvarGet("sv_maxclients", "8");
-	maxentities = Botlib_CvarGet("maxentities", "1024");
+	sv_maxentities = Botlib_CvarGet("sv_maxentities", "1024");
 
 	aasworld.maxclients = sv_maxclients->integer;
-	aasworld.maxentities = maxentities->integer;
+	aasworld.maxentities = sv_maxentities->integer;
 
 	// as soon as it's set to 1 the routing cache will be saved
 	bot_saveroutingcache = Botlib_CvarGet("bot_saveroutingcache", "0");
-	
+
 	// allocate memory for the entities
 	if (aasworld.entities) FreeZoneMemory(aasworld.entities);
-	aasworld.entities = (aas_entity_t *) GetHunkMemory(aasworld.maxentities *
+	aasworld.entities = (aas_entity_t*)GetHunkMemory(aasworld.maxentities *
 		sizeof(aas_entity_t));
 
 	// invalidate all the entities
 	AAS_InvalidateEntities();
+	
 	// force clustering and reachability calculations
 	// Botlib_CvarSetValue("bot_forceclustering", "1");
 	// Botlib_CvarSetValue("bot_forcereachability", "1");
