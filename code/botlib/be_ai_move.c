@@ -1757,199 +1757,82 @@ bot_moveresult_t BotFinishTravel_WalkOffLedge(bot_movestate_t *ms, aas_reachabil
 	//
 	return result;
 } //end of the function BotFinishTravel_WalkOffLedge
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-/*
-bot_moveresult_t BotTravel_Jump(bot_movestate_t *ms, aas_reachability_t *reach)
-{
-	vec3_t hordir;
-	float dist, gapdist, speed, horspeed, sv_jumpvel;
-	bot_moveresult_t result;
 
-	BotClearMoveResult(&result);
-	//
-	sv_jumpvel = botlibglobals.sv_jumpvel->value;
-	//walk straight to the reachability start
-	hordir[0] = reach->start[0] - ms->origin[0];
-	hordir[1] = reach->start[1] - ms->origin[1];
-	hordir[2] = 0;
-	dist = VectorNormalize(hordir);
-	//
-	speed = 350;
-	//
-	gapdist = BotGapDistance(ms, hordir, ms->entitynum);
-	//if pretty close to the start focus on the reachability end
-	if (dist < 50 || (gapdist && gapdist < 50))
-	{
-		//NOTE: using max speed (400) works best
-		//if (AAS_HorizontalVelocityForJump(sv_jumpvel, ms->origin, reach->end, &horspeed))
-		//{
-		//	speed = horspeed * 400 / botlibglobals.sv_maxwalkvelocity->value;
-		//} //end if
-		hordir[0] = reach->end[0] - ms->origin[0];
-		hordir[1] = reach->end[1] - ms->origin[1];
-		VectorNormalize(hordir);
-		//elemantary action jump
-		EA_Jump(ms->client);
-		//
-		ms->jumpreach = ms->lastreachnum;
-		speed = 600;
-	} //end if
-	else
-	{
-		if (AAS_HorizontalVelocityForJump(sv_jumpvel, reach->start, reach->end, &horspeed))
-		{
-			speed = horspeed * 400 / botlibglobals.sv_maxwalkvelocity->value;
-		} //end if
-	} //end else
-	//elemantary action
-	EA_Move(ms->client, hordir, speed);
-	VectorCopy(hordir, result.movedir);
-	//
-	return result;
-} //end of the function BotTravel_Jump*/
-/*
-bot_moveresult_t BotTravel_Jump(bot_movestate_t *ms, aas_reachability_t *reach)
-{
-	vec3_t hordir, dir1, dir2, mins, maxs, start, end;
-	float dist1, dist2, speed;
-	bot_moveresult_t result;
-	bsp_trace_t trace;
-
-	BotClearMoveResult(&result);
-	//
-	hordir[0] = reach->start[0] - reach->end[0];
-	hordir[1] = reach->start[1] - reach->end[1];
-	hordir[2] = 0;
-	VectorNormalize(hordir);
-	//
-	VectorCopy(reach->start, start);
-	start[2] += 1;
-	//minus back the bouding box size plus 16
-	VectorMA(reach->start, 80, hordir, end);
-	//
-	AAS_PresenceTypeBoundingBox(PRESENCE_NORMAL, mins, maxs);
-	//check for solids
-	trace = AAS_Trace(start, mins, maxs, end, ms->entitynum, MASK_PLAYERSOLID);
-	if (trace.startsolid) VectorCopy(start, trace.endpos);
-	//check for a gap
-	for (dist1 = 0; dist1 < 80; dist1 += 10)
-	{
-		VectorMA(start, dist1+10, hordir, end);
-		end[2] += 1;
-		if (AAS_PointAreaNum(end) != ms->reachareanum) break;
-	} //end for
-	if (dist1 < 80) VectorMA(reach->start, dist1, hordir, trace.endpos);
-//	dist1 = BotGapDistance(start, hordir, ms->entitynum);
-//	if (dist1 && dist1 <= trace.fraction * 80) VectorMA(reach->start, dist1-20, hordir, trace.endpos);
-	//
-	VectorSubtract(ms->origin, reach->start, dir1);
-	dir1[2] = 0;
-	dist1 = VectorNormalize(dir1);
-	VectorSubtract(ms->origin, trace.endpos, dir2);
-	dir2[2] = 0;
-	dist2 = VectorNormalize(dir2);
-	//if just before the reachability start
-	if (DotProduct(dir1, dir2) < -0.8 || dist2 < 5)
-	{
-		//botimport.Print(PRT_MESSAGE, "between jump start and run to point\n");
-		hordir[0] = reach->end[0] - ms->origin[0];
-		hordir[1] = reach->end[1] - ms->origin[1];
-		hordir[2] = 0;
-		VectorNormalize(hordir);
-		//elemantary action jump
-		if (dist1 < 24) EA_Jump(ms->client);
-		else if (dist1 < 32) EA_DelayedJump(ms->client);
-		EA_Move(ms->client, hordir, 600);
-		//
-		ms->jumpreach = ms->lastreachnum;
-	} //end if
-	else
-	{
-		//botimport.Print(PRT_MESSAGE, "going towards run to point\n");
-		hordir[0] = trace.endpos[0] - ms->origin[0];
-		hordir[1] = trace.endpos[1] - ms->origin[1];
-		hordir[2] = 0;
-		VectorNormalize(hordir);
-		//
-		if (dist2 > 80) dist2 = 80;
-		speed = 400 - (400 - 5 * dist2);
-		EA_Move(ms->client, hordir, speed);
-	} //end else
-	VectorCopy(hordir, result.movedir);
-	//
-	return result;
-} //end of the function BotTravel_Jump*/
-//*
+//===========================================================================
+// BotTravel_Jump
+//===========================================================================
 bot_moveresult_t BotTravel_Jump(bot_movestate_t *ms, aas_reachability_t *reach)
 {
 	vec3_t hordir, dir1, dir2, start, end, runstart;
-//	vec3_t runstart, dir1, dir2, hordir;
 	float dist1, dist2, speed;
 	bot_moveresult_t result;
 
 	BotClearMoveResult(&result);
-	//
 	AAS_JumpReachRunStart(reach, runstart);
-	//*
+
 	hordir[0] = runstart[0] - reach->start[0];
 	hordir[1] = runstart[1] - reach->start[1];
 	hordir[2] = 0;
+
 	VectorNormalize(hordir);
-	//
 	VectorCopy(reach->start, start);
+	
 	start[2] += 1;
+	
 	VectorMA(reach->start, 80, hordir, runstart);
-	//check for a gap
+	
+	// check for a gap
 	for (dist1 = 0; dist1 < 80; dist1 += 10)
 	{
 		VectorMA(start, dist1+10, hordir, end);
 		end[2] += 1;
 		if (AAS_PointAreaNum(end) != ms->reachareanum) break;
-	} //end for
+	}
+
 	if (dist1 < 80) VectorMA(reach->start, dist1, hordir, runstart);
-	//
+
 	VectorSubtract(ms->origin, reach->start, dir1);
 	dir1[2] = 0;
 	dist1 = VectorNormalize(dir1);
 	VectorSubtract(ms->origin, runstart, dir2);
 	dir2[2] = 0;
 	dist2 = VectorNormalize(dir2);
-	//if just before the reachability start
+
+	// if just before the reachability start
 	if (DotProduct(dir1, dir2) < -0.8 || dist2 < 5)
 	{
-//		botimport.Print(PRT_MESSAGE, "between jump start and run start point\n");
+		// botimport.Print(PRT_MESSAGE, "between jump start and run start point\n");
 		hordir[0] = reach->end[0] - ms->origin[0];
 		hordir[1] = reach->end[1] - ms->origin[1];
 		hordir[2] = 0;
+
 		VectorNormalize(hordir);
-		//elemantary action jump
+		
+		// elemantary action jump
 		if (dist1 < 24) EA_Jump(ms->client);
 		else if (dist1 < 32) EA_DelayedJump(ms->client);
+
 		EA_Move(ms->client, hordir, 600);
-		//
 		ms->jumpreach = ms->lastreachnum;
-	} //end if
+	}
 	else
 	{
-//		botimport.Print(PRT_MESSAGE, "going towards run start point\n");
+		// botimport.Print(PRT_MESSAGE, "going towards run start point\n");
 		hordir[0] = runstart[0] - ms->origin[0];
 		hordir[1] = runstart[1] - ms->origin[1];
 		hordir[2] = 0;
 		VectorNormalize(hordir);
-		//
+
 		if (dist2 > 80) dist2 = 80;
 		speed = 400 - (400 - 5 * dist2);
 		EA_Move(ms->client, hordir, speed);
-	} //end else
+	}
+
 	VectorCopy(hordir, result.movedir);
-	//
+
 	return result;
-} //end of the function BotTravel_Jump*/
+}
+
 //===========================================================================
 //
 // Parameter:				-

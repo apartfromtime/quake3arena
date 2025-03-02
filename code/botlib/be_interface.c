@@ -52,15 +52,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../game/be_ai_char.h"
 #include "../game/be_ai_gen.h"
 
-//library globals in a structure
-botlib_globals_t botlibglobals;
+#ifdef _DEBUG
+// FIXME: get rid of this global structure
+typedef struct botlib_globals_s
+{
+	vec3_t goalorigin;
+	int goalareanum;
+	int runai;
+} botlib_debug_t;
+
+botlib_debug_t s_debug;
+#endif // #ifdef _DEBUG
 
 botlib_export_t be_botlib_export;
 botlib_import_t botimport;
 //
+cvar_t* bot_logfile;
+cvar_t* maxclients;			// maximum number of clients
+cvar_t* maxentities;			// maximum number of entities
+bool s_initialized;			// true when the bot library has been setup
 int bot_developer;
-//true if the library is setup
-int botlibsetup = false;
 
 //===========================================================================
 //
@@ -69,149 +80,125 @@ int botlibsetup = false;
 //===========================================================================
 
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-int Sys_MilliSeconds(void)
-{
-	return clock() * 1000 / CLOCKS_PER_SEC;
-} //end of the function Sys_MilliSeconds
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// ValidClientNumber
 //===========================================================================
 bool ValidClientNumber(int num, char *str)
 {
-	if (num < 0 || num > botlibglobals.maxclients)
+	if (num < 0 || num > maxclients->integer)
 	{
-		//weird: the disabled stuff results in a crash
+		// weird: the disabled stuff results in a crash
 		botimport.Print(PRT_ERROR, "%s: invalid client number %d, [0, %d]\n",
-										str, num, botlibglobals.maxclients);
+			str, num, maxclients->integer);
+
 		return false;
-	} //end if
+	}
+
 	return true;
-} //end of the function BotValidateClientNumber
+}
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// ValidEntityNumber
 //===========================================================================
-bool ValidEntityNumber(int num, char *str)
+bool ValidEntityNumber(int num, char* str)
 {
-	if (num < 0 || num > botlibglobals.maxentities)
+	if (num < 0 || num > maxentities->integer)
 	{
 		botimport.Print(PRT_ERROR, "%s: invalid entity number %d, [0, %d]\n",
-										str, num, botlibglobals.maxentities);
+			str, num, maxentities->integer);
 		return false;
-	} //end if
+	}
+
 	return true;
-} //end of the function BotValidateClientNumber
+}
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotLibSetup
 //===========================================================================
-bool BotLibSetup(char *str)
+bool BotLibSetup(char* str)
 {
-	if (!botlibglobals.botlibsetup)
+	if (!s_initialized)
 	{
 		botimport.Print(PRT_ERROR, "%s: bot library used before being setup\n", str);
 		return false;
-	} //end if
+	}
+
 	return true;
-} //end of the function BotLibSetup
+}
 
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// Export_BotLibSetup
 //===========================================================================
-cvar_t* bot_logfile;
-cvar_t* maxclients;
-cvar_t* maxentities;
-
 int Export_BotLibSetup(void)
 {
-	int		errnum;
-	
-	bot_developer = Botlib_CvarGetValue("bot_developer");
-	Com_Memset( &botlibglobals, 0, sizeof(botlibglobals) );
-	//initialize byte swapping (litte endian etc.)
-//	Swap_Init();
-	bot_logfile = Botlib_CvarGet("bot_log", "0");
+	int errnum = BLERR_NOERROR;
 
+	bot_developer = Botlib_CvarGetValue("bot_developer");
+
+#ifdef _DEBUG
+	Com_Memset(&s_debug, 0, sizeof(s_debug));
+#endif // #ifdef _DEBUG
+
+	// initialize byte swapping (litte endian etc.)
+	// Swap_Init();
+	bot_logfile = Botlib_CvarGet("bot_log", "0");
 	Bot_LogOpen("botlib.log");
-	//
+
 	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
-	//
+
 	maxclients = Botlib_CvarGet("maxclients", "128");
 	maxentities = Botlib_CvarGet("maxentities", "1024");
 
-	botlibglobals.maxclients = maxclients->integer;
-	botlibglobals.maxentities = maxentities->integer;
-
-	errnum = AAS_Setup();			//be_aas_main.c
+	errnum = AAS_Setup();           // be_aas_main.c
 	if (errnum != BLERR_NOERROR) return errnum;
-	errnum = EA_Setup();			//be_ea.c
+	errnum = EA_Setup(maxclients->integer);         // be_ea.c
 	if (errnum != BLERR_NOERROR) return errnum;
-	errnum = BotSetupWeaponAI();	//be_ai_weap.c
+	errnum = BotSetupWeaponAI();            // be_ai_weap.c
 	if (errnum != BLERR_NOERROR)return errnum;
-	errnum = BotSetupGoalAI();		//be_ai_goal.c
+	errnum = BotSetupGoalAI();          // be_ai_goal.c
 	if (errnum != BLERR_NOERROR) return errnum;
-	errnum = BotSetupChatAI();		//be_ai_chat.c
+	errnum = BotSetupChatAI();          // be_ai_chat.c
 	if (errnum != BLERR_NOERROR) return errnum;
-	errnum = BotSetupMoveAI();		//be_ai_move.c
+	errnum = BotSetupMoveAI();          // be_ai_move.c
 	if (errnum != BLERR_NOERROR) return errnum;
 
-	botlibsetup = true;
-	botlibglobals.botlibsetup = true;
+	s_initialized = true;
 
 	return BLERR_NOERROR;
-} //end of the function Export_BotLibSetup
+}
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// Export_BotLibShutdown
 //===========================================================================
 int Export_BotLibShutdown(void)
 {
 	if (!BotLibSetup("BotLibShutdown")) return BLERR_LIBRARYNOTSETUP;
-#ifndef DEMO
-	//DumpFileCRCs();
-#endif //DEMO
-	//
-	BotShutdownChatAI();		//be_ai_chat.c
-	BotShutdownMoveAI();		//be_ai_move.c
-	BotShutdownGoalAI();		//be_ai_goal.c
-	BotShutdownWeaponAI();		//be_ai_weap.c
-	BotShutdownWeights();		//be_ai_weight.c
-	BotShutdownCharacters();	//be_ai_char.c
-	//shud down aas
+
+	BotShutdownChatAI();
+	BotShutdownMoveAI();
+	BotShutdownGoalAI();
+	BotShutdownWeaponAI();
+	BotShutdownWeights();
+	BotShutdownCharacters();
+	
+	// shut down aas
 	AAS_Shutdown();
-	//shut down bot elemantary actions
+	// shut down bot elemantary actions
 	EA_Shutdown();
 
-	//remove all global defines from the pre compiler
+	// remove all global defines from the pre compiler
 	PC_RemoveAllGlobalDefines();
 
-	//shut down library log file
+	// shut down library log file
 	Bot_LogShutdown();
-	//
-	botlibsetup = false;
-	botlibglobals.botlibsetup = false;
+
+	s_initialized = false;
+
 	// print any files still open
 	PC_CheckOpenSourceHandles();
-	//
+
 	return BLERR_NOERROR;
-} //end of the function Export_BotLibShutdown
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -249,36 +236,38 @@ int Export_BotLibStartFrame(float time)
 	if (!BotLibSetup("BotStartFrame")) return BLERR_LIBRARYNOTSETUP;
 	return AAS_StartFrame(time);
 } //end of the function Export_BotLibStartFrame
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// Export_BotLibLoadMap
 //===========================================================================
-int Export_BotLibLoadMap(const char *mapname)
+int Export_BotLibLoadMap(const char* mapname)
 {
 #ifdef DEBUG
-	int starttime = Sys_MilliSeconds();
+	int starttime = botimport.Milliseconds();
 #endif
-	int errnum;
+	int errnum = BLERR_NOERROR;
 
 	if (!BotLibSetup("BotLoadMap")) return BLERR_LIBRARYNOTSETUP;
-	//
+
 	botimport.Print(PRT_MESSAGE, "------------ Map Loading ------------\n");
-	//startup AAS for the current map, model and sound index
+
+	// startup AAS for the current map, model and sound index
 	errnum = AAS_LoadMap(mapname);
 	if (errnum != BLERR_NOERROR) return errnum;
-	//initialize the items in the level
-	BotInitLevelItems();		//be_ai_goal.h
-	BotSetBrushModelTypes();	//be_ai_move.h
-	//
+	
+	// initialize the items in the level
+	BotInitLevelItems();
+	BotSetBrushModelTypes();
+
 	botimport.Print(PRT_MESSAGE, "-------------------------------------\n");
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "map loaded in %d msec\n", Sys_MilliSeconds() - starttime);
+	botimport.Print(PRT_MESSAGE, "map loaded in %d msec\n",
+		botimport.Milliseconds() - starttime);
 #endif
-	//
+
 	return BLERR_NOERROR;
-} //end of the function Export_BotLibLoadMap
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -377,8 +366,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		newarea = BotFuzzyPointReachabilityArea(origin);
 	} //end else
 
-	botimport.Print(PRT_MESSAGE, "\rtravel time to goal (%d) = %d  ", botlibglobals.goalareanum,
-		AAS_AreaTravelTimeToGoalArea(newarea, origin, botlibglobals.goalareanum, TFL_DEFAULT));
+	botimport.Print(PRT_MESSAGE, "\rtravel time to goal (%d) = %d  ", s_debug.goalareanum,
+		AAS_AreaTravelTimeToGoalArea(newarea, origin, s_debug.goalareanum, TFL_DEFAULT));
 	//newarea = BotReachabilityArea(origin, true);
 	if (newarea != area)
 	{
@@ -424,8 +413,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 			botimport.Print(PRT_MESSAGE, "empty");
 		} //end if
 		botimport.Print(PRT_MESSAGE, "\n");
-		botimport.Print(PRT_MESSAGE, "travel time to goal (%d) = %d\n", botlibglobals.goalareanum,
-					AAS_AreaTravelTimeToGoalArea(newarea, origin, botlibglobals.goalareanum, TFL_DEFAULT|TFL_ROCKETJUMP));
+		botimport.Print(PRT_MESSAGE, "travel time to goal (%d) = %d\n", s_debug.goalareanum,
+					AAS_AreaTravelTimeToGoalArea(newarea, origin, s_debug.goalareanum, TFL_DEFAULT|TFL_ROCKETJUMP));
 		/*
 		VectorCopy(origin, end);
 		end[2] += 5;
@@ -434,8 +423,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		botimport.Print(PRT_MESSAGE, "num areas = %d, area = %d\n", numareas, areas[0]);
 		*/
 		/*
-		botlibglobals.goalareanum = newarea;
-		VectorCopy(parm2, botlibglobals.goalorigin);
+		s_debug.goalareanum = newarea;
+		VectorCopy(parm2, s_debug.goalorigin);
 		botimport.Print(PRT_MESSAGE, "new goal %2.1f %2.1f %2.1f area %d\n",
 								origin[0], origin[1], origin[2], newarea);
 		*/
@@ -452,8 +441,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		}
 		else
 		{
-			botlibglobals.goalareanum = newarea;
-			VectorCopy(parm2, botlibglobals.goalorigin);
+			s_debug.goalareanum = newarea;
+			VectorCopy(parm2, s_debug.goalorigin);
 			botimport.Print(PRT_MESSAGE, "new goal %2.1f %2.1f %2.1f area %d\n",
 									origin[0], origin[1], origin[2], newarea);
 		}
@@ -462,12 +451,12 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		return 0;
 //	if (parm0 & BUTTON_USE)
 //	{
-//		botlibglobals.runai = !botlibglobals.runai;
-//		if (botlibglobals.runai) botimport.Print(PRT_MESSAGE, "started AI\n");
+//		s_debug.runai = !s_debug.runai;
+//		if (s_debug.runai) botimport.Print(PRT_MESSAGE, "started AI\n");
 //		else botimport.Print(PRT_MESSAGE, "stopped AI\n");
 		//* /
 		/*
-		goal.areanum = botlibglobals.goalareanum;
+		goal.areanum = s_debug.goalareanum;
 		reachnum = BotGetReachabilityToGoal(parm2, newarea, 1,
 										ms.avoidreach, ms.avoidreachtimes,
 										&goal, TFL_DEFAULT);
@@ -491,7 +480,7 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 			} //end if
 		} //end else*/
 //		botimport.Print(PRT_MESSAGE, "travel time to goal = %d\n",
-//					AAS_AreaTravelTimeToGoalArea(area, origin, botlibglobals.goalareanum, TFL_DEFAULT));
+//					AAS_AreaTravelTimeToGoalArea(area, origin, s_debug.goalareanum, TFL_DEFAULT));
 //		botimport.Print(PRT_MESSAGE, "test rj from 703 to 716\n");
 //		AAS_Reachability_WeaponJump(703, 716);
 //	} //end if*/
@@ -521,8 +510,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		aas_reachability_t reach;
 
 		/*
-		goal.areanum = botlibglobals.goalareanum;
-		VectorCopy(botlibglobals.goalorigin, goal.origin);
+		goal.areanum = s_debug.goalareanum;
+		VectorCopy(s_debug.goalorigin, goal.origin);
 		reachnum = BotGetReachabilityToGoal(origin, newarea,
 									  lastgoalareanum, lastareanum,
 									  avoidreach, avoidreachtimes, avoidreachtries,
@@ -534,8 +523,8 @@ int BotExportTest(int parm0, char *parm1, vec3_t parm2, vec3_t parm3)
 		int curarea;
 		vec3_t curorigin;
 
-		goal.areanum = botlibglobals.goalareanum;
-		VectorCopy(botlibglobals.goalorigin, goal.origin);
+		goal.areanum = s_debug.goalareanum;
+		VectorCopy(s_debug.goalorigin, goal.origin);
 		VectorCopy(origin, curorigin);
 		curarea = newarea;
 		for ( i = 0; i < 100; i++ ) {

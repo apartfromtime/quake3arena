@@ -482,19 +482,25 @@ void EA_ResetInput(int client)
 	bi->actionflags = 0;
 	if (jumped) bi->actionflags |= ACTION_JUMPEDLASTFRAME;
 } //end of the function EA_ResetInput
+
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// EA_Setup
 //===========================================================================
-int EA_Setup(void)
+int EA_Setup(int maxclients)
 {
-	//initialize the bot inputs
-	botinputs = (bot_input_t *) GetHunkMemory(
-									botlibglobals.maxclients * sizeof(bot_input_t));
-	return BLERR_NOERROR;
-} //end of the function EA_Setup
+	int err = BLERR_NOERROR;
+
+	// initialize the bot inputs
+	botinputs = (bot_input_t*)GetHunkMemory(maxclients * sizeof(bot_input_t));
+
+	if (botinputs == NULL)
+	{
+		err = BLERR_MALLOCFAILED;
+	}
+
+	return err;
+}
+
 //===========================================================================
 //
 // Parameter:			-

@@ -386,106 +386,117 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 #ifdef DEBUG
 	int starttime;
 
-	starttime = Sys_MilliSeconds();
-#endif //DEBUG
+	starttime = botimport.Milliseconds();
+#endif // #ifdef DEBUG
 
-	//find a free spot for a character
+	// find a free spot for a character
 	for (handle = 1; handle <= MAX_CLIENTS; handle++)
 	{
 		if (!botcharacters[handle]) break;
-	} //end for
+	}
+
 	if (handle > MAX_CLIENTS) return 0;
-	//try to load a cached character with the given skill
+	// try to load a cached character with the given skill
 	if (!reload)
 	{
 		cachedhandle = BotFindCachedCharacter(charfile, skill);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill, charfile);
+			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill,
+				charfile);
 			return cachedhandle;
-		} //end if
-	} //end else
-	//
+		}
+	}
+
 	intskill = (int) (skill + 0.5);
-	//try to load the character with the given skill
+	// try to load the character with the given skill
 	ch = BotLoadCharacterFromFile(charfile, intskill);
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		//
 		botimport.Print(PRT_MESSAGE, "loaded skill %d from %s\n", intskill, charfile);
 #ifdef DEBUG
 		if (bot_developer)
 		{
-			botimport.Print(PRT_MESSAGE, "skill %d loaded in %d msec from %s\n", intskill, Sys_MilliSeconds() - starttime, charfile);
-		} //end if
-#endif //DEBUG
+			botimport.Print(PRT_MESSAGE, "skill %d loaded in %d msec from %s\n", intskill,
+				botimport.Milliseconds() - starttime, charfile);
+		}
+#endif // #ifdef DEBUG
 		return handle;
-	} //end if
-	//
+	}
+
 	botimport.Print(PRT_WARNING, "couldn't find skill %d in %s\n", intskill, charfile);
-	//
+
 	if (!reload)
 	{
-		//try to load a cached default character with the given skill
+		// try to load a cached default character with the given skill
 		cachedhandle = BotFindCachedCharacter(DEFAULT_CHARACTER, skill);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached default skill %d from %s\n", intskill, charfile);
+			botimport.Print(PRT_MESSAGE, "loaded cached default skill %d from %s\n",
+				intskill, charfile);
 			return cachedhandle;
-		} //end if
-	} //end if
-	//try to load the default character with the given skill
+		}
+	}
+
+	// try to load the default character with the given skill
 	ch = BotLoadCharacterFromFile(DEFAULT_CHARACTER, intskill);
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded default skill %d from %s\n", intskill, charfile);
+		botimport.Print(PRT_MESSAGE, "loaded default skill %d from %s\n",
+			intskill, charfile);
 		return handle;
-	} //end if
-	//
+	}
+
 	if (!reload)
 	{
-		//try to load a cached character with any skill
+		// try to load a cached character with any skill
 		cachedhandle = BotFindCachedCharacter(charfile, -1);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", botcharacters[cachedhandle]->skill, charfile);
+			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n",
+				botcharacters[cachedhandle]->skill, charfile);
 			return cachedhandle;
-		} //end if
-	} //end if
-	//try to load a character with any skill
+		}
+	}
+
+	// try to load a character with any skill
 	ch = BotLoadCharacterFromFile(charfile, -1);
 	if (ch)
 	{
 		botcharacters[handle] = ch;
 		botimport.Print(PRT_MESSAGE, "loaded skill %f from %s\n", ch->skill, charfile);
 		return handle;
-	} //end if
-	//
+	}
+
 	if (!reload)
 	{
-		//try to load a cached character with any skill
+		// try to load a cached character with any skill
 		cachedhandle = BotFindCachedCharacter(DEFAULT_CHARACTER, -1);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached default skill %f from %s\n", botcharacters[cachedhandle]->skill, charfile);
+			botimport.Print(PRT_MESSAGE, "loaded cached default skill %f from %s\n",
+				botcharacters[cachedhandle]->skill, charfile);
 			return cachedhandle;
-		} //end if
-	} //end if
-	//try to load a character with any skill
+		}
+	}
+
+	// try to load a character with any skill
 	ch = BotLoadCharacterFromFile(DEFAULT_CHARACTER, -1);
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded default skill %f from %s\n", ch->skill, charfile);
+		botimport.Print(PRT_MESSAGE, "loaded default skill %f from %s\n",
+			ch->skill, charfile);
 		return handle;
-	} //end if
-	//
+	}
+
 	botimport.Print(PRT_WARNING, "couldn't load any skill from %s\n", charfile);
-	//couldn't load any character
-	return 0;
-} //end of the function BotLoadCachedCharacter
+	
+	return 0;			// couldn't load any character
+}
+
 //===========================================================================
 //
 // Parameter:			-

@@ -82,6 +82,7 @@ struct weaponinfo_s;
 #define BLERR_CANNOTLOADITEMCONFIG		10	//cannot load item config
 #define BLERR_CANNOTLOADWEAPONWEIGHTS	11	//cannot load weapon weights
 #define BLERR_CANNOTLOADWEAPONCONFIG	12	//cannot load weapon config
+#define BLERR_MALLOCFAILED				13
 
 //action flags
 #define ACTION_ATTACK			0x0000001
@@ -365,6 +366,12 @@ typedef struct botlib_import_s
 {
 	// print messages from the bot library
 	void		(Q_CDECL *Print)(int type, char *fmt, ...);
+
+	// get current time for profiling reasons
+	// this should NOT be used for any game related tasks,
+	// because it is not journaled
+	int			(*Milliseconds)(void);
+
 	// trace a bbox through the world
 	void		(*Trace)(bsp_trace_t *trace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask);
 	// trace a bbox against a specific entity
@@ -521,7 +528,7 @@ name:						default:			module(s):			description:
 "synfile"					"syn.c"				be_ai_chat.c		file with synonyms
 "rndfile"					"rnd.c"				be_ai_chat.c		file with random strings
 "matchfile"					"match.c"			be_ai_chat.c		file with match strings
-"nochat"					"0"					be_ai_chat.c		disable chats
+"bot_nochat"				"0"					be_ai_chat.c		disable chats
 "max_messages"				"1024"				be_ai_chat.c		console message heap size
 "max_weaponinfo"			"32"				be_ai_weap.c		maximum number of weapon info
 "max_projectileinfo"		"32"				be_ai_weap.c		maximum number of projectile info

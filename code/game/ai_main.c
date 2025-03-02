@@ -1592,9 +1592,6 @@ int BotInitLibrary(void) {
 	//bot developer mode and log file
 	trap_Cvar_Set("bot_developer", bot_developer.string);
 	trap_Cvar_Set("log", buf);
-	//no chatting
-	trap_Cvar_VariableStringBuffer("bot_nochat", buf, sizeof(buf));
-	if (strlen(buf)) trap_Cvar_Set("nochat", "0");
 	//visualize jump pads
 	trap_Cvar_VariableStringBuffer("bot_visualizejumppads", buf, sizeof(buf));
 	if (strlen(buf)) trap_Cvar_Set("bot_visualizejumppads", buf);
