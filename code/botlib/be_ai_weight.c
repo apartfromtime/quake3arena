@@ -132,17 +132,16 @@ void FreeWeightConfig2(weightconfig_t *config)
 	} //end for
 	FreeZoneMemory(config);
 } //end of the function FreeWeightConfig2
+
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// FreeWeightConfig
 //===========================================================================
-void FreeWeightConfig(weightconfig_t *config)
+void FreeWeightConfig(weightconfig_t* config)
 {
 	if (!Botlib_CvarGetValue("bot_reloadcharacters")) return;
 	FreeWeightConfig2(config);
-} //end of the function FreeWeightConfig
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -269,66 +268,69 @@ fuzzyseperator_t *ReadFuzzySeperators_r(source_t *source)
 	//
 	return firstfs;
 } //end of the function ReadFuzzySeperators_r
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// ReadWeightConfig
 //===========================================================================
-weightconfig_t *ReadWeightConfig(char *filename)
+weightconfig_t* ReadWeightConfig(char* filename)
 {
 	int newindent, avail = 0, n;
 	token_t token;
-	source_t *source;
-	fuzzyseperator_t *fs;
-	weightconfig_t *config = NULL;
+	source_t* source;
+	fuzzyseperator_t* fs;
+	weightconfig_t* config = NULL;
 #ifdef DEBUG
 	int starttime;
 
-	starttime = Sys_MilliSeconds();
-#endif //DEBUG
+	starttime = botimport.Milliseconds();
+#endif // #ifdef DEBUG
 
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		avail = -1;
-		for( n = 0; n < MAX_WEIGHT_FILES; n++ )
+		for (n = 0; n < MAX_WEIGHT_FILES; n++)
 		{
 			config = weightFileList[n];
-			if( !config )
+			if (!config)
 			{
-				if( avail == -1 )
+				if (avail == -1)
 				{
 					avail = n;
-				} //end if
-				continue;
-			} //end if
-			if( strcmp( filename, config->filename ) == 0 )
-			{
-				//botimport.Print( PRT_MESSAGE, "retained %s\n", filename );
-				return config;
-			} //end if
-		} //end for
+				}
 
-		if( avail == -1 )
+				continue;
+			}
+
+			if (strcmp(filename, config->filename) == 0)
+			{
+				// botimport.Print( PRT_MESSAGE, "retained %s\n", filename );
+				return config;
+			}
+		}
+
+		if (avail == -1)
 		{
-			botimport.Print( PRT_ERROR, "weightFileList was full trying to load %s\n", filename );
+			botimport.Print(PRT_ERROR, "weightFileList was full trying to load %s\n",
+				filename);
 			return NULL;
-		} //end if
-	} //end if
+		}
+	}
 
 	PC_SetBaseFolder(BOTFILESBASEFOLDER);
 	source = LoadSourceFile(filename);
+
 	if (!source)
 	{
 		botimport.Print(PRT_ERROR, "counldn't load %s\n", filename);
 		return NULL;
-	} //end if
-	//
-	config = (weightconfig_t *) GetZoneMemory(sizeof(weightconfig_t));
+	}
+
+	config = (weightconfig_t*)GetZoneMemory(sizeof(weightconfig_t));
 	config->numweights = 0;
-	Q_strncpyz( config->filename, filename, sizeof(config->filename) );
-	//parse the item config file
-	while(PC_ReadToken(source, &token))
+	Q_strncpyz(config->filename, filename, sizeof(config->filename));
+
+	// parse the item config file
+	while (PC_ReadToken(source, &token))
 	{
 		if (!strcmp(token.string, "weight"))
 		{
@@ -336,23 +338,29 @@ weightconfig_t *ReadWeightConfig(char *filename)
 			{
 				SourceWarning(source, "too many fuzzy weights\n");
 				break;
-			} //end if
+			}
+
 			if (!PC_ExpectTokenType(source, TT_STRING, 0, &token))
 			{
 				FreeWeightConfig(config);
 				FreeSource(source);
 				return NULL;
-			} //end if
+			}
+
 			StripDoubleQuotes(token.string);
-			config->weights[config->numweights].name = (char *) GetZoneMemory(strlen(token.string) + 1);
+			config->weights[config->numweights].name =
+				(char*)GetZoneMemory(strlen(token.string) + 1);
 			strcpy(config->weights[config->numweights].name, token.string);
+
 			if (!PC_ExpectAnyToken(source, &token))
 			{
 				FreeWeightConfig(config);
 				FreeSource(source);
 				return NULL;
-			} //end if
+			}
+
 			newindent = false;
+
 			if (!strcmp(token.string, "{"))
 			{
 				newindent = true;
@@ -361,8 +369,9 @@ weightconfig_t *ReadWeightConfig(char *filename)
 					FreeWeightConfig(config);
 					FreeSource(source);
 					return NULL;
-				} //end if
-			} //end if
+				}
+			}
+
 			if (!strcmp(token.string, "switch"))
 			{
 				fs = ReadFuzzySeperators_r(source);
@@ -371,12 +380,13 @@ weightconfig_t *ReadWeightConfig(char *filename)
 					FreeWeightConfig(config);
 					FreeSource(source);
 					return NULL;
-				} //end if
+				}
+
 				config->weights[config->numweights].firstseperator = fs;
-			} //end if
+			}
 			else if (!strcmp(token.string, "return"))
 			{
-				fs = (fuzzyseperator_t *) GetZoneMemory(sizeof(fuzzyseperator_t));
+				fs = (fuzzyseperator_t*)GetZoneMemory(sizeof(fuzzyseperator_t));
 				fs->index = 0;
 				fs->value = MAX_INVENTORYVALUE;
 				fs->next = NULL;
@@ -387,16 +397,18 @@ weightconfig_t *ReadWeightConfig(char *filename)
 					FreeWeightConfig(config);
 					FreeSource(source);
 					return NULL;
-				} //end if
+				}
+
 				config->weights[config->numweights].firstseperator = fs;
-			} //end else if
+			}
 			else
 			{
 				SourceError(source, "invalid name %s\n", token.string);
 				FreeWeightConfig(config);
 				FreeSource(source);
 				return NULL;
-			} //end else
+			}
+
 			if (newindent)
 			{
 				if (!PC_ExpectTokenString(source, "}"))
@@ -404,36 +416,41 @@ weightconfig_t *ReadWeightConfig(char *filename)
 					FreeWeightConfig(config);
 					FreeSource(source);
 					return NULL;
-				} //end if
-			} //end if
+				}
+			}
+
 			config->numweights++;
-		} //end if
+		}
 		else
 		{
 			SourceError(source, "invalid name %s\n", token.string);
 			FreeWeightConfig(config);
 			FreeSource(source);
 			return NULL;
-		} //end else
-	} //end while
-	//free the source at the end of a pass
+		}
+	}
+
+	// free the source at the end of a pass
 	FreeSource(source);
-	//if the file was located in a pak file
+	// if the file was located in a pak file
 	botimport.Print(PRT_MESSAGE, "loaded %s\n", filename);
+
 #ifdef DEBUG
 	if (bot_developer)
 	{
-		botimport.Print(PRT_MESSAGE, "weights loaded in %d msec\n", Sys_MilliSeconds() - starttime);
-	} //end if
-#endif //DEBUG
-	//
+		botimport.Print(PRT_MESSAGE, "weights loaded in %d msec\n",
+			botimport.Milliseconds() - starttime);
+	}
+#endif // #ifdef DEBUG
+
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		weightFileList[avail] = config;
-	} //end if
-	//
+	}
+
 	return config;
-} //end of the function ReadWeightConfig
+}
+
 #if 0
 //===========================================================================
 //

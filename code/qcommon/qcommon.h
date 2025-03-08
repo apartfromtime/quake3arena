@@ -92,24 +92,7 @@ issues.
 
 #include "filesystem.h"
 
-/*
-==============================================================
 
-Edit fields and command line history/completion
-
-==============================================================
-*/
-
-#define	MAX_EDIT_LINE	256
-typedef struct {
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-	char	buffer[MAX_EDIT_LINE];
-} field_t;
-
-void Field_Clear( field_t *edit );
-void Field_CompleteCommand( field_t *edit );
 
 /*
 ==============================================================
@@ -125,25 +108,19 @@ extern char cl_cdkey[34];
 // the max string you can send to a Com_Printf / Com_DPrintf (above gets truncated)
 #define	MAXPRINTMSG	4096
 
-char		*CopyString( const char *in );
-
-void		Com_BeginRedirect (char *buffer, int buffersize, void (*flush)(char *));
-void		Com_EndRedirect( void );
-void 		Q_CDECL Com_Printf( const char *fmt, ... );
-void 		Q_CDECL Com_DPrintf( const char *fmt, ... );
-void 		Q_CDECL Com_Error( int code, const char *fmt, ... );
-void 		Com_Quit_f( void );
-int			Com_EventLoop( void );
-int			Com_Milliseconds( void );	// will be journaled properly
-unsigned	Com_BlockChecksum( const void *buffer, int length );
-unsigned	Com_BlockChecksumKey (void *buffer, int length, int key);
-int			Com_RealTime(qtime_t *qtime);
-bool	Com_SafeMode( void );
-
-void		Com_StartupVariable( const char *match );
-// checks for and removes command line "+set var arg" constructs
-// if match is NULL, all set commands will be executed, otherwise
-// only a set with the exact name.  Only used during startup.
+void        Com_BeginRedirect (char *buffer, int buffersize, void (*flush)(char *));
+void        Com_EndRedirect( void );
+void        Q_CDECL Com_Printf( const char *fmt, ... );
+void        Q_CDECL Com_DPrintf( const char *fmt, ... );
+void        Q_CDECL Com_Error( int code, const char *fmt, ... );
+void        Com_Quit_f( void );
+int         Com_EventLoop( void );
+int         Com_Milliseconds( void );
+unsigned    Com_BlockChecksum( const void *buffer, int length );
+unsigned    Com_BlockChecksumKey (void *buffer, int length, int key);
+int         Com_RealTime(qtime_t *qtime);
+bool        Com_SafeMode( void );
+void        Com_StartupVariable( const char *match );
 
 
 extern	cvar_t	*com_developer;
@@ -192,8 +169,51 @@ MEMORY
 
 #include "q_heap.h"
 
-void Com_TouchMemory(void);
+/*
+===============================================================================
 
+PROTOCOL
+
+===============================================================================
+*/
+
+// 1.31 - 67
+#define	PROTOCOL_VERSION    68
+
+// override on command line, config files etc.
+#define	UPDATE_SERVER_NAME      "update.quake3arena.com"
+#define MASTER_SERVER_NAME      "master.quake3arena.com"
+#define	AUTHORIZE_SERVER_NAME   "authorize.quake3arena.com"
+
+#define	PORT_MASTER         27950
+#define	PORT_UPDATE         27951
+#define	PORT_AUTHORIZE      27952
+#define	PORT_SERVER         27960
+#define	NUM_SERVER_PORTS    4       // broadcast scan this many ports after
+                                    // PORT_SERVER so a single machine can
+                                    // run multiple servers
+
+// the cmd_strings[] array in cl_parse.c should mirror this
+//
+// client <-> server
+//
+typedef enum
+{
+	CMD_BAD,
+	CMD_NOP,
+	CMD_EOF,
+	// Client
+	CMD_CL_MOVE,            // [usercmd_t]
+	CMD_CL_MOVENODELTA,     // [usercmd_t]
+	CMD_CL_COMMAND,         // [string] message
+	// Server
+	CMD_SV_GAMESTATE,       // [short] [string] only in gamestate messages
+	CMD_SV_CONFIGSTRING,    // only in gamestate messages
+	CMD_SV_BASELINE,        // [string] to be executed by client game module
+	CMD_SV_SERVERCOMMAND,   // [short] size [size bytes]
+	CMD_SV_DOWNLOAD,
+	CMD_SV_SNAPSHOT
+} SVCL_CMD_OPS;
 
 /*
 ===============================================================================

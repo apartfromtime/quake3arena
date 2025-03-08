@@ -944,107 +944,114 @@ void BotDumpRandomStringList(bot_randomlist_t *randomlist)
 }
 
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotLoadRandomStrings
 //===========================================================================
-bot_randomlist_t *BotLoadRandomStrings(char *filename)
+bot_randomlist_t* BotLoadRandomStrings(char* filename)
 {
 	int pass, size;
-	char *ptr = NULL, chatmessagestring[MAX_MESSAGE_SIZE];
-	source_t *source;
+	char* ptr = NULL, chatmessagestring[MAX_MESSAGE_SIZE];
+	source_t* source;
 	token_t token;
-	bot_randomlist_t *randomlist, *lastrandom, *random;
-	bot_randomstring_t *randomstring;
+	bot_randomlist_t* randomlist, * lastrandom, * random;
+	bot_randomstring_t* randomstring;
 
 #ifdef DEBUG
-	int starttime = Sys_MilliSeconds();
-#endif //DEBUG
+	int starttime = botimport.Milliseconds();
+#endif // #ifdef DEBUG
 
 	size = 0;
 	randomlist = NULL;
 	random = NULL;
-	//the synonyms are parsed in two phases
+
+	// the synonyms are parsed in two phases
 	for (pass = 0; pass < 2; pass++)
 	{
-		//
-		if (pass && size) ptr = (char *) GetHunkMemory(size);
-		//
+		if (pass && size) ptr = (char*)GetHunkMemory(size);
+
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
+		
 		source = LoadSourceFile(filename);
 		if (!source)
 		{
 			botimport.Print(PRT_ERROR, "counldn't load %s\n", filename);
 			return NULL;
-		} //end if
-		//
-		randomlist = NULL; //list
-		lastrandom = NULL; //last
-		//
-		while(PC_ReadToken(source, &token))
+		}
+
+		randomlist = NULL;			// list
+		lastrandom = NULL;			// last
+
+		while (PC_ReadToken(source, &token))
 		{
 			if (token.type != TT_NAME)
 			{
 				SourceError(source, "unknown random %s", token.string);
 				FreeSource(source);
 				return NULL;
-			} //end if
+			}
+
 			size += sizeof(bot_randomlist_t) + strlen(token.string) + 1;
+			
 			if (pass)
 			{
-				random = (bot_randomlist_t *) ptr;
+				random = (bot_randomlist_t*)ptr;
 				ptr += sizeof(bot_randomlist_t);
 				random->string = ptr;
 				ptr += strlen(token.string) + 1;
 				strcpy(random->string, token.string);
 				random->firstrandomstring = NULL;
 				random->numstrings = 0;
-				//
+
 				if (lastrandom) lastrandom->next = random;
 				else randomlist = random;
 				lastrandom = random;
-			} //end if
+			}
+
 			if (!PC_ExpectTokenString(source, "=") ||
 				!PC_ExpectTokenString(source, "{"))
 			{
 				FreeSource(source);
 				return NULL;
-			} //end if
-			while(!PC_CheckTokenString(source, "}"))
+			}
+
+			while (!PC_CheckTokenString(source, "}"))
 			{
 				if (!BotLoadChatMessage(source, chatmessagestring))
 				{
 					FreeSource(source);
 					return NULL;
-				} //end if
+				}
+
 				size += sizeof(bot_randomstring_t) + strlen(chatmessagestring) + 1;
+				
 				if (pass)
 				{
-					randomstring = (bot_randomstring_t *) ptr;
+					randomstring = (bot_randomstring_t*)ptr;
 					ptr += sizeof(bot_randomstring_t);
 					randomstring->string = ptr;
 					ptr += strlen(chatmessagestring) + 1;
 					strcpy(randomstring->string, chatmessagestring);
-					//
 					random->numstrings++;
 					randomstring->next = random->firstrandomstring;
 					random->firstrandomstring = randomstring;
-				} //end if
-			} //end while
-		} //end while
-		//free the source after one pass
+				}
+			}
+		}
+
+		// free the source after one pass
 		FreeSource(source);
-	} //end for
+	}
+
 	botimport.Print(PRT_MESSAGE, "loaded %s\n", filename);
-	//
+
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "random strings %d msec\n", Sys_MilliSeconds() - starttime);
-	//BotDumpRandomStringList(randomlist);
-#endif //DEBUG
-	//
+	botimport.Print(PRT_MESSAGE, "random strings %d msec\n",
+		botimport.Milliseconds() - starttime);
+	// BotDumpRandomStringList(randomlist);
+#endif // #ifdef DEBUG
+
 	return randomlist;
-} //end of the function BotLoadRandomStrings
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -2026,52 +2033,54 @@ void BotDumpInitialChat(bot_chat_t *chat)
 	} //end for
 	Bot_LogPrintf("}\r\n");
 } //end of the function BotDumpInitialChat
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotLoadInitialChat
 //===========================================================================
-bot_chat_t *BotLoadInitialChat(char *chatfile, char *chatname)
+bot_chat_t* BotLoadInitialChat(char* chatfile, char* chatname)
 {
 	int pass, foundchat, indent, size;
-	char *ptr = NULL;
+	char* ptr = NULL;
 	char chatmessagestring[MAX_MESSAGE_SIZE];
-	source_t *source;
+	source_t* source;
 	token_t token;
-	bot_chat_t *chat = NULL;
-	bot_chattype_t *chattype = NULL;
-	bot_chatmessage_t *chatmessage = NULL;
+	bot_chat_t* chat = NULL;
+	bot_chattype_t* chattype = NULL;
+	bot_chatmessage_t* chatmessage = NULL;
 #ifdef DEBUG
 	int starttime;
 
-	starttime = Sys_MilliSeconds();
-#endif //DEBUG
-	//
+	starttime = botimport.Milliseconds();
+#endif // #ifdef DEBUG
+
 	size = 0;
 	foundchat = false;
-	//a bot chat is parsed in two phases
+	
+	// a bot chat is parsed in two phases
 	for (pass = 0; pass < 2; pass++)
 	{
-		//allocate memory
-		if (pass && size) ptr = (char *) GetZoneMemory(size);
-		//load the source file
+		// allocate memory
+		if (pass && size) ptr = (char*)GetZoneMemory(size);
+		// load the source file
 		PC_SetBaseFolder(BOTFILESBASEFOLDER);
+		
 		source = LoadSourceFile(chatfile);
 		if (!source)
 		{
 			botimport.Print(PRT_ERROR, "counldn't load %s\n", chatfile);
 			return NULL;
-		} //end if
-		//chat structure
+		}
+
+		// chat structure
 		if (pass)
 		{
-			chat = (bot_chat_t *) ptr;
+			chat = (bot_chat_t*)ptr;
 			ptr += sizeof(bot_chat_t);
-		} //end if
+		}
+
 		size = sizeof(bot_chat_t);
-		//
-		while(PC_ReadToken(source, &token))
+
+		while (PC_ReadToken(source, &token))
 		{
 			if (!strcmp(token.string, "chat"))
 			{
@@ -2079,125 +2088,142 @@ bot_chat_t *BotLoadInitialChat(char *chatfile, char *chatname)
 				{
 					FreeSource(source);
 					return NULL;
-				} //end if
+				}
+
 				StripDoubleQuotes(token.string);
-				//after the chat name we expect a opening brace
+				
+				// after the chat name we expect a opening brace
 				if (!PC_ExpectTokenString(source, "{"))
 				{
 					FreeSource(source);
 					return NULL;
-				} //end if
-				//if the chat name is found
+				}
+
+				// if the chat name is found
 				if (!Q_stricmp(token.string, chatname))
 				{
 					foundchat = true;
-					//read the chat types
-					while(1)
+					// read the chat types
+					while (1)
 					{
 						if (!PC_ExpectAnyToken(source, &token))
 						{
 							FreeSource(source);
 							return NULL;
-						} //end if
+						}
+
 						if (!strcmp(token.string, "}")) break;
 						if (strcmp(token.string, "type"))
 						{
 							SourceError(source, "expected type found %s\n", token.string);
 							FreeSource(source);
 							return NULL;
-						} //end if
-						//expect the chat type name
+						}
+
+						// expect the chat type name
 						if (!PC_ExpectTokenType(source, TT_STRING, 0, &token) ||
 							!PC_ExpectTokenString(source, "{"))
 						{
 							FreeSource(source);
 							return NULL;
-						} //end if
+						}
+
 						StripDoubleQuotes(token.string);
 						if (pass)
 						{
-							chattype = (bot_chattype_t *) ptr;
+							chattype = (bot_chattype_t*)ptr;
 							strncpy(chattype->name, token.string, MAX_CHATTYPE_NAME);
 							chattype->firstchatmessage = NULL;
-							//add the chat type to the chat
+							// add the chat type to the chat
 							chattype->next = chat->types;
 							chat->types = chattype;
-							//
 							ptr += sizeof(bot_chattype_t);
-						} //end if
+						}
+
 						size += sizeof(bot_chattype_t);
-						//read the chat messages
-						while(!PC_CheckTokenString(source, "}"))
+						
+						// read the chat messages
+						while (!PC_CheckTokenString(source, "}"))
 						{
 							if (!BotLoadChatMessage(source, chatmessagestring))
 							{
 								FreeSource(source);
 								return NULL;
-							} //end if
+							}
+
 							if (pass)
 							{
-								chatmessage = (bot_chatmessage_t *) ptr;
-								chatmessage->time = -2*CHATMESSAGE_RECENTTIME;
-								//put the chat message in the list
+								chatmessage = (bot_chatmessage_t*)ptr;
+								chatmessage->time = -2 * CHATMESSAGE_RECENTTIME;
+								// put the chat message in the list
 								chatmessage->next = chattype->firstchatmessage;
 								chattype->firstchatmessage = chatmessage;
-								//store the chat message
+								// store the chat message
 								ptr += sizeof(bot_chatmessage_t);
 								chatmessage->chatmessage = ptr;
 								strcpy(chatmessage->chatmessage, chatmessagestring);
 								ptr += strlen(chatmessagestring) + 1;
-								//the number of chat messages increased
+								// the number of chat messages increased
 								chattype->numchatmessages++;
-							} //end if
+							}
+
 							size += sizeof(bot_chatmessage_t) + strlen(chatmessagestring) + 1;
-						} //end if
-					} //end while
-				} //end if
-				else //skip the bot chat
+						}
+
+					}
+				}
+				else			// skip the bot chat
 				{
 					indent = 1;
-					while(indent)
+					while (indent)
 					{
 						if (!PC_ExpectAnyToken(source, &token))
 						{
 							FreeSource(source);
 							return NULL;
-						} //end if
+						}
+
 						if (!strcmp(token.string, "{")) indent++;
 						else if (!strcmp(token.string, "}")) indent--;
-					} //end while
-				} //end else
-			} //end if
+					}
+				}
+			}
 			else
 			{
 				SourceError(source, "unknown definition %s\n", token.string);
 				FreeSource(source);
 				return NULL;
-			} //end else
-		} //end while
-		//free the source
+			}
+		}
+
+		// free the source
 		FreeSource(source);
-		//if the requested character is not found
+		
+		// if the requested character is not found
 		if (!foundchat)
 		{
-			botimport.Print(PRT_ERROR, "couldn't find chat %s in %s\n", chatname, chatfile);
+			botimport.Print(PRT_ERROR, "couldn't find chat %s in %s\n", chatname,
+				chatfile);
 			return NULL;
-		} //end if
-	} //end for
-	//
+		}
+	}
+
 	botimport.Print(PRT_MESSAGE, "loaded %s from %s\n", chatname, chatfile);
-	//
-	//BotDumpInitialChat(chat);
+
+	// BotDumpInitialChat(chat);
+	
 	if (bot_developer)
 	{
 		BotCheckInitialChatIntegrety(chat);
-	} //end if
+	}
+
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "initial chats loaded in %d msec\n", Sys_MilliSeconds() - starttime);
-#endif //DEBUG
-	//character was read succesfully
-	return chat;
-} //end of the function BotLoadInitialChat
+	botimport.Print(PRT_MESSAGE, "initial chats loaded in %d msec\n", botimport.Milliseconds() - starttime);
+#endif // #ifndef DEBUG
+
+	return chat;			// character was read succesfully
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -2213,15 +2239,13 @@ void BotFreeChatFile(int chatstate)
 	if (cs->chat) FreeZoneMemory(cs->chat);
 	cs->chat = NULL;
 } //end of the function BotFreeChatFile
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotLoadChatFile
 //===========================================================================
-int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
+int BotLoadChatFile(int chatstate, char* chatfile, char* chatname)
 {
-	bot_chatstate_t *cs;
+	bot_chatstate_t* cs;
 	int n, avail = 0;
 
 	cs = BotChatStateFromHandle(chatstate);
@@ -2231,46 +2255,58 @@ int BotLoadChatFile(int chatstate, char *chatfile, char *chatname)
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		avail = -1;
-		for( n = 0; n < MAX_CLIENTS; n++ ) {
-			if( !ichatdata[n] ) {
-				if( avail == -1 ) {
+
+		for (n = 0; n < MAX_CLIENTS; n++)
+		{
+			if (!ichatdata[n]) {
+				if (avail == -1) {
 					avail = n;
 				}
 				continue;
 			}
-			if( strcmp( chatfile, ichatdata[n]->filename ) != 0 ) { 
+
+			if (strcmp(chatfile, ichatdata[n]->filename) != 0) {
 				continue;
 			}
-			if( strcmp( chatname, ichatdata[n]->chatname ) != 0 ) { 
+
+			if (strcmp(chatname, ichatdata[n]->chatname) != 0) {
 				continue;
 			}
+
 			cs->chat = ichatdata[n]->chat;
-		//		botimport.Print( PRT_MESSAGE, "retained %s from %s\n", chatname, chatfile );
+			// botimport.Print(PRT_MESSAGE, "retained %s from %s\n",
+			//	chatname, chatfile);
+
 			return BLERR_NOERROR;
 		}
 
-		if( avail == -1 ) {
-			botimport.Print(PRT_FATAL, "ichatdata table full; couldn't load chat %s from %s\n", chatname, chatfile);
+		if (avail == -1) {
+			botimport.Print(PRT_FATAL,
+				"ichatdata table full; couldn't load chat %s from %s\n",
+				chatname, chatfile);
 			return BLERR_CANNOTLOADICHAT;
 		}
 	}
 
 	cs->chat = BotLoadInitialChat(chatfile, chatname);
-	if (!cs->chat)
-	{
-		botimport.Print(PRT_FATAL, "couldn't load chat %s from %s\n", chatname, chatfile);
+	if (!cs->chat) {
+		botimport.Print(PRT_FATAL, "couldn't load chat %s from %s\n",
+			chatname, chatfile);
 		return BLERR_CANNOTLOADICHAT;
-	} //end if
-	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
-	{
-		ichatdata[avail] = GetZoneMemory( sizeof(bot_ichatdata_t) );
+	}
+
+	if (!Botlib_CvarGetValue("bot_reloadcharacters")) {
+		ichatdata[avail] = GetZoneMemory(sizeof(bot_ichatdata_t));
 		ichatdata[avail]->chat = cs->chat;
-		Q_strncpyz( ichatdata[avail]->chatname, chatname, sizeof(ichatdata[avail]->chatname) );
-		Q_strncpyz( ichatdata[avail]->filename, chatfile, sizeof(ichatdata[avail]->filename) );
-	} //end if
+		Q_strncpyz(ichatdata[avail]->chatname, chatname,
+			sizeof(ichatdata[avail]->chatname));
+		Q_strncpyz(ichatdata[avail]->filename, chatfile,
+			sizeof(ichatdata[avail]->filename));
+	}
 
 	return BLERR_NOERROR;
-} //end of the function BotLoadChatFile
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -2928,15 +2964,13 @@ int BotAllocChatState(void)
 	} //end for
 	return 0;
 } //end of the function BotAllocChatState
+
 //========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotFreeChatState
 //========================================================================
 void BotFreeChatState(int handle)
 {
-	bot_chatstate_t *cs;
+	bot_chatstate_t* cs;
 	bot_consolemessage_t m;
 	int h;
 
@@ -2944,44 +2978,48 @@ void BotFreeChatState(int handle)
 	{
 		botimport.Print(PRT_FATAL, "chat state handle %d out of range\n", handle);
 		return;
-	} //end if
+	}
+
 	if (!botchatstates[handle])
 	{
 		botimport.Print(PRT_FATAL, "invalid chat state %d\n", handle);
 		return;
-	} //end if
+	}
+
 	cs = botchatstates[handle];
 	if (Botlib_CvarGetValue("bot_reloadcharacters"))
 	{
 		BotFreeChatFile(handle);
-	} //end if
-	//free all the console messages left in the chat state
+	}
+
+	// free all the console messages left in the chat state
 	for (h = BotNextConsoleMessage(handle, &m); h; h = BotNextConsoleMessage(handle, &m))
 	{
-		//remove the console message
+		// remove the console message
 		BotRemoveConsoleMessage(handle, h);
-	} //end for
+
+	}
+
 	FreeZoneMemory(botchatstates[handle]);
 	botchatstates[handle] = NULL;
-} //end of the function BotFreeChatState
+}
+
 //===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
+// BotSetupChatAI
 //===========================================================================
 cvar_t* bot_synfile;
 cvar_t* bot_rndfile;
 cvar_t* bot_matchfile;
 cvar_t* bot_rchatfile;
+cvar_t* bot_nochat;
 
 int BotSetupChatAI(void)
 {
-	char *file;
+	char* file;
 
 #ifdef DEBUG
-	int starttime = Sys_MilliSeconds();
-#endif //DEBUG
+	int starttime = botimport.Milliseconds();
+#endif // #ifdef DEBUG
 
 	bot_synfile = Botlib_CvarGet("synfile", "syn.c");
 	bot_rndfile = Botlib_CvarGet("rndfile", "rnd.c");
@@ -2996,20 +3034,25 @@ int BotSetupChatAI(void)
 
 	file = bot_matchfile->string;
 	matchtemplates = BotLoadMatchTemplates(file);
-	//
-	if (!Botlib_CvarGet("nochat", "0")->integer)
+
+	bot_nochat = Botlib_CvarGet("bot_nochat", "0");
+
+	if (!bot_nochat->integer)
 	{
 		file = bot_rchatfile->string;
 		replychats = BotLoadReplyChat(file);
-	} //end if
+	}
 
 	InitConsoleMessageHeap();
 
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "setup chat AI %d msec\n", Sys_MilliSeconds() - starttime);
-#endif //DEBUG
+	botimport.Print(PRT_MESSAGE, "setup chat AI %d msec\n",
+		botimport.Milliseconds() - starttime);
+#endif // #ifdef DEBUG
+
 	return BLERR_NOERROR;
-} //end of the function BotSetupChatAI
+}
+
 //===========================================================================
 //
 // Parameter:				-

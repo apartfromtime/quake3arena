@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "../game/q_shared.h"
 #include "qcommon.h"
-#include "unzip.h"
+#include "../../libs/minizip/unzip.h"
 
 /*
 =============================================================================
@@ -294,13 +294,13 @@ static bool fs_reordered;
 // never load anything from pk3 files that are not present at the server when pure
 static int		fs_numServerPaks;
 static int		fs_serverPaks[MAX_SEARCH_PATHS];				// checksums
-static char		*fs_serverPakNames[MAX_SEARCH_PATHS];			// pk3 names
+static char		fs_serverPakNames[MAX_SEARCH_PATHS][MAX_STRING_CHARS];			// pk3 names
 
 // only used for autodownload, to make sure the client has at least
 // all the pk3 files that are referenced at the server side
 static int		fs_numServerReferencedPaks;
 static int		fs_serverReferencedPaks[MAX_SEARCH_PATHS];			// checksums
-static char		*fs_serverReferencedPakNames[MAX_SEARCH_PATHS];		// pk3 names
+static char		fs_serverReferencedPakNames[MAX_SEARCH_PATHS][MAX_STRING_CHARS];		// pk3 names
 
 // last valid game folder used
 char lastValidBase[MAX_OSPATH];
@@ -1817,7 +1817,8 @@ static int FS_AddFileToList( char *name, char *list[MAX_FOUND_FILES], int nfiles
 			return nfiles;		// allready in list
 		}
 	}
-	list[nfiles] = CopyString( name );
+	list[nfiles] = Z_TagMalloc(strlen(name) + 1, TAG_SMALL);
+	Q_strncpyz(list[nfiles], name, strlen(name) + 1);
 	nfiles++;
 
 	return nfiles;
@@ -3161,9 +3162,9 @@ void FS_PureServerSetLoadedPaks( const char *pakSums, const char *pakNames ) {
 
 	for ( i = 0 ; i < c ; i++ ) {
 		if (fs_serverPakNames[i]) {
-			Z_Free(fs_serverPakNames[i]);
+			Com_Memset(fs_serverPakNames[i], 0, MAX_STRING_CHARS);
 		}
-		fs_serverPakNames[i] = NULL;
+		fs_serverPakNames[i][0] = '\0';
 	}
 	if ( pakNames && *pakNames ) {
 		Cmd_TokenizeString( pakNames );
@@ -3174,7 +3175,7 @@ void FS_PureServerSetLoadedPaks( const char *pakSums, const char *pakNames ) {
 		}
 
 		for ( i = 0 ; i < d ; i++ ) {
-			fs_serverPakNames[i] = CopyString( Cmd_Argv( i ) );
+			Q_strncpyz(fs_serverPakNames[i], Cmd_Argv( i ), MAX_STRING_CHARS);
 		}
 	}
 }
@@ -3206,9 +3207,9 @@ void FS_PureServerSetReferencedPaks( const char *pakSums, const char *pakNames )
 
 	for ( i = 0 ; i < c ; i++ ) {
 		if (fs_serverReferencedPakNames[i]) {
-			Z_Free(fs_serverReferencedPakNames[i]);
+			Com_Memset(fs_serverReferencedPakNames[i], 0, MAX_STRING_CHARS);
 		}
-		fs_serverReferencedPakNames[i] = NULL;
+		fs_serverReferencedPakNames[i][0] = '\0';
 	}
 	if ( pakNames && *pakNames ) {
 		Cmd_TokenizeString( pakNames );
@@ -3219,7 +3220,7 @@ void FS_PureServerSetReferencedPaks( const char *pakSums, const char *pakNames )
 		}
 
 		for ( i = 0 ; i < d ; i++ ) {
-			fs_serverReferencedPakNames[i] = CopyString( Cmd_Argv( i ) );
+			Q_strncpyz(fs_serverReferencedPakNames[i], Cmd_Argv( i ), MAX_STRING_CHARS);
 		}
 	}
 }

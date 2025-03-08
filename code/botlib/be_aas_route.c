@@ -410,10 +410,7 @@ void AAS_InitAreaContentsTravelFlags(void)
 	}
 } //end of the function AAS_InitAreaContentsTravelFlags
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// AAS_CreateReversedReachability
 //===========================================================================
 void AAS_CreateReversedReachability(void)
 {
@@ -425,45 +422,50 @@ void AAS_CreateReversedReachability(void)
 #ifdef DEBUG
 	int starttime;
 
-	starttime = Sys_MilliSeconds();
+	starttime = botimport.Milliseconds();
 #endif
-	//free reversed links that have already been created
+
+	// free reversed links that have already been created
 	if (aasworld.reversedreachability) FreeZoneMemory(aasworld.reversedreachability);
-	//allocate memory for the reversed reachability links
-	ptr = (char *) GetZoneMemory(aasworld.numareas * sizeof(aas_reversedreachability_t) +
-							aasworld.reachabilitysize * sizeof(aas_reversedlink_t));
-	//
+	// allocate memory for the reversed reachability links
+	ptr = (char*)GetZoneMemory(aasworld.numareas * sizeof(aas_reversedreachability_t) +
+		aasworld.reachabilitysize * sizeof(aas_reversedlink_t));
 	aasworld.reversedreachability = (aas_reversedreachability_t *) ptr;
-	//pointer to the memory for the reversed links
+	// pointer to the memory for the reversed links
 	ptr += aasworld.numareas * sizeof(aas_reversedreachability_t);
-	//check all reachabilities of all areas
+	
+	// check all reachabilities of all areas
 	for (i = 1; i < aasworld.numareas; i++)
 	{
-		//settings of the area
+		// settings of the area
 		settings = &aasworld.areasettings[i];
-		//
+
 		if (settings->numreachableareas >= 128)
-			botimport.Print(PRT_WARNING, "area %d has more than 128 reachabilities\n", i);
-		//create reversed links for the reachabilities
+		{
+			botimport.Print(PRT_WARNING, "area %d has more than 128 reachabilities\n",
+				i);
+		}
+
+		// create reversed links for the reachabilities
 		for (n = 0; n < settings->numreachableareas && n < 128; n++)
 		{
-			//reachability link
+			// reachability link
 			reach = &aasworld.reachability[settings->firstreachablearea + n];
-			//
 			revlink = (aas_reversedlink_t *) ptr;
 			ptr += sizeof(aas_reversedlink_t);
-			//
 			revlink->areanum = i;
 			revlink->linknum = settings->firstreachablearea + n;
 			revlink->next = aasworld.reversedreachability[reach->areanum].first;
 			aasworld.reversedreachability[reach->areanum].first = revlink;
 			aasworld.reversedreachability[reach->areanum].numlinks++;
-		} //end for
-	} //end for
+		}
+	}
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "reversed reachability %d msec\n", Sys_MilliSeconds() - starttime);
+	botimport.Print(PRT_MESSAGE, "reversed reachability %d msec\n",
+		botimport.Milliseconds() - starttime);
 #endif
-} //end of the function AAS_CreateReversedReachability
+}
+
 //===========================================================================
 //
 // Parameter:			-
@@ -490,72 +492,74 @@ unsigned short int AAS_AreaTravelTime(int areanum, vec3_t start, vec3_t end)
 	if (intdist <= 0) intdist = 1;
 	return intdist;
 } //end of the function AAS_AreaTravelTime
+
 //===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
+// AAS_CalculateAreaTravelTimes
 //===========================================================================
 void AAS_CalculateAreaTravelTimes(void)
 {
 	int i, l, n, size;
-	char *ptr;
+	char* ptr;
 	vec3_t end;
-	aas_reversedreachability_t *revreach;
-	aas_reversedlink_t *revlink;
-	aas_reachability_t *reach;
-	aas_areasettings_t *settings;
+	aas_reversedreachability_t* revreach;
+	aas_reversedlink_t* revlink;
+	aas_reachability_t* reach;
+	aas_areasettings_t* settings;
 	int starttime;
 
-	starttime = Sys_MilliSeconds();
-	//if there are still area travel times, free the memory
+	starttime = botimport.Milliseconds();
+	// if there are still area travel times, free the memory
 	if (aasworld.areatraveltimes) FreeZoneMemory(aasworld.areatraveltimes);
-	//get the total size of all the area travel times
-	size = aasworld.numareas * sizeof(unsigned short **);
+	
+	// get the total size of all the area travel times
+	size = aasworld.numareas * sizeof(unsigned short**);
+	
 	for (i = 0; i < aasworld.numareas; i++)
 	{
 		revreach = &aasworld.reversedreachability[i];
-		//settings of the area
+		// settings of the area
 		settings = &aasworld.areasettings[i];
-		//
-		size += settings->numreachableareas * sizeof(unsigned short *);
-		//
+		size += settings->numreachableareas * sizeof(unsigned short*);
 		size += settings->numreachableareas * revreach->numlinks * sizeof(unsigned short);
-	} //end for
-	//allocate memory for the area travel times
-	ptr = (char *) GetZoneMemory(size);
-	aasworld.areatraveltimes = (unsigned short ***) ptr;
-	ptr += aasworld.numareas * sizeof(unsigned short **);
-	//calcluate the travel times for all the areas
+	}
+
+	// allocate memory for the area travel times
+	ptr = (char*)GetZoneMemory(size);
+	aasworld.areatraveltimes = (unsigned short***)ptr;
+	ptr += aasworld.numareas * sizeof(unsigned short**);
+	
+	// calcluate the travel times for all the areas
 	for (i = 0; i < aasworld.numareas; i++)
 	{
-		//reversed reachabilities of this area
+		// reversed reachabilities of this area
 		revreach = &aasworld.reversedreachability[i];
-		//settings of the area
+		// settings of the area
 		settings = &aasworld.areasettings[i];
-		//
-		aasworld.areatraveltimes[i] = (unsigned short **) ptr;
-		ptr += settings->numreachableareas * sizeof(unsigned short *);
-		//
+		aasworld.areatraveltimes[i] = (unsigned short**)ptr;
+		ptr += settings->numreachableareas * sizeof(unsigned short*);
+
 		for (l = 0; l < settings->numreachableareas; l++)
 		{
-			aasworld.areatraveltimes[i][l] = (unsigned short *) ptr;
+			aasworld.areatraveltimes[i][l] = (unsigned short*)ptr;
 			ptr += revreach->numlinks * sizeof(unsigned short);
-			//reachability link
+			// reachability link
 			reach = &aasworld.reachability[settings->firstreachablearea + l];
-			//
+
 			for (n = 0, revlink = revreach->first; revlink; revlink = revlink->next, n++)
 			{
 				VectorCopy(aasworld.reachability[revlink->linknum].end, end);
-				//
-				aasworld.areatraveltimes[i][l][n] = AAS_AreaTravelTime(i, end, reach->start);
-			} //end for
-		} //end for
-	} //end for
+				aasworld.areatraveltimes[i][l][n] = AAS_AreaTravelTime(i, end,
+					reach->start);
+			}
+		}
+	}
+
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "area travel times %d msec\n", Sys_MilliSeconds() - starttime);
+	botimport.Print(PRT_MESSAGE, "area travel times %d msec\n",
+		botimport.Milliseconds() - starttime);
 #endif
-} //end of the function AAS_CalculateAreaTravelTimes
+}
+
 //===========================================================================
 //
 // Parameter:			-

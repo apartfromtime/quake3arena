@@ -1218,6 +1218,7 @@ void CL_Vid_Restart_f( void ) {
 	}
 	else {
 		// clear all the client data on the hunk
+		SND_Shutdown();			// HACK: workaround to fix sound on restart
 	}
 
 	// initialize the renderer interface

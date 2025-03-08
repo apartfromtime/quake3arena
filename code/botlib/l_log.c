@@ -136,7 +136,7 @@ void Q_CDECL Bot_LogPrintfTimeStamped(char* fmt, ...)
 		return;
 	}
 
-	sec = botlibglobals.time / 1000;
+	sec = botimport.Milliseconds() / 1000;
 
 	min = sec / 60;
 	sec -= min * 60;

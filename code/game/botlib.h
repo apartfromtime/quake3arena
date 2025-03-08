@@ -82,6 +82,7 @@ struct weaponinfo_s;
 #define BLERR_CANNOTLOADITEMCONFIG		10	//cannot load item config
 #define BLERR_CANNOTLOADWEAPONWEIGHTS	11	//cannot load weapon weights
 #define BLERR_CANNOTLOADWEAPONCONFIG	12	//cannot load weapon config
+#define BLERR_MALLOCFAILED				13
 
 //action flags
 #define ACTION_ATTACK			0x0000001
@@ -365,6 +366,12 @@ typedef struct botlib_import_s
 {
 	// print messages from the bot library
 	void		(Q_CDECL *Print)(int type, char *fmt, ...);
+
+	// get current time for profiling reasons
+	// this should NOT be used for any game related tasks,
+	// because it is not journaled
+	int			(*Milliseconds)(void);
+
 	// trace a bbox through the world
 	void		(*Trace)(bsp_trace_t *trace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask);
 	// trace a bbox against a specific entity
@@ -456,9 +463,9 @@ name:						default:			module(s):			description:
 "gamedir"					""					l_utils.c			game directory
 "cddir"						""					l_utils.c			CD directory
 
-"log"						"0"					l_log.c				enable/disable creating a log file
-"maxclients"				"4"					be_interface.c		maximum number of clients
-"maxentities"				"1024"				be_interface.c		maximum number of entities
+"bot_log"                   "0"					l_log.c				enable/disable creating a log file
+"sv_maxclients"             "8"					be_interface.c		maximum number of clients
+"sv_maxentities"            "1024"				be_interface.c		maximum number of entities
 "bot_developer"				"0"					be_interface.c		bot developer mode
 
 "phys_friction"				"6"					be_aas_move.c		ground friction
@@ -499,10 +506,10 @@ name:						default:			module(s):			description:
 
 "max_aaslinks"				"4096"				be_aas_sample.c		maximum links in the AAS
 "max_routingcache"			"4096"				be_aas_route.c		maximum routing cache size in KB
-"forceclustering"			"0"					be_aas_main.c		force recalculation of clusters
-"forcereachability"			"0"					be_aas_main.c		force recalculation of reachabilities
-"forcewrite"				"0"					be_aas_main.c		force writing of aas file
-"aasoptimize"				"0"					be_aas_main.c		enable aas optimization
+"bot_forceclustering"       "0"					be_aas_main.c		force recalculation of clusters
+"bot_forcereachability"     "0"					be_aas_main.c		force recalculation of reachabilities
+"bot_forcewrite"            "0"					be_aas_main.c		force writing of aas file
+"bot_aasoptimize"           "0"					be_aas_main.c		enable aas optimization
 "sv_mapChecksum"			"0"					be_aas_main.c		BSP file checksum
 "bot_visualizejumppads"		"0"					be_aas_reach.c		visualize jump pads
 
@@ -521,7 +528,7 @@ name:						default:			module(s):			description:
 "synfile"					"syn.c"				be_ai_chat.c		file with synonyms
 "rndfile"					"rnd.c"				be_ai_chat.c		file with random strings
 "matchfile"					"match.c"			be_ai_chat.c		file with match strings
-"nochat"					"0"					be_ai_chat.c		disable chats
+"bot_nochat"				"0"					be_ai_chat.c		disable chats
 "max_messages"				"1024"				be_ai_chat.c		console message heap size
 "max_weaponinfo"			"32"				be_ai_weap.c		maximum number of weapon info
 "max_projectileinfo"		"32"				be_ai_weap.c		maximum number of projectile info

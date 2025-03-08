@@ -68,6 +68,7 @@ void S_DisplayFreeMemory(void);
 // call before filesystem access
 void S_ClearSoundBuffer( void );
 
+void SND_Shutdown(void);
 void SNDDMA_Activate( void );
 
 void S_UpdateBackgroundTrack( void );

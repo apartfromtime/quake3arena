@@ -156,28 +156,6 @@ int Z_AvailableMemory(void)
 	return (s_zoneTotal - s_zoneAlloc);
 }
 
-// static mem blocks to reduce a lot of small zone overhead
-typedef struct memstatic_s
-{
-	byte mem[2];
-} memstatic_t;
-
-// bk001204 - initializer brackets
-memstatic_t emptystring =
-	{ {'\0', '\0'} };
-memstatic_t numberstring[] = {
-	{ {'0', '\0'} },
-	{ {'1', '\0'} },
-	{ {'2', '\0'} },
-	{ {'3', '\0'} },
-	{ {'4', '\0'} },
-	{ {'5', '\0'} },
-	{ {'6', '\0'} },
-	{ {'7', '\0'} },
-	{ {'8', '\0'} },
-	{ {'9', '\0'} }
-};
-
 /*
 ========================
 Z_Free
@@ -189,36 +167,9 @@ void Z_Free(void* ptr)
 		Com_Error(ERR_DROP, "Z_Free: NULL pointer");
 	}
 
-	if (ptr != (char*)&emptystring && ptr != (char*)&numberstring[((const char*)ptr)[0] - '0'])
-	{
-		s_zoneAlloc -= rpmalloc_usable_size(ptr);
-		rpfree(ptr);
-		ptr = NULL;
-	}
-}
-
-/*
-========================
-CopyString
-
- NOTE:	never write over the memory CopyString returns because
-		memory from a memstatic_t might be returned
-========================
-*/
-char* CopyString(const char* in) {
-	char* out;
-
-	if (!in[0]) {
-		return ((char*)&emptystring);
-	}
-	else if (!in[1]) {
-		if (in[0] >= '0' && in[0] <= '9') {
-			return ((char*)&numberstring[in[0] - '0']);
-		}
-	}
-	out = Z_TagMalloc(strlen(in) + 1, TAG_SMALL);
-	strcpy(out, in);
-	return out;
+	s_zoneAlloc -= rpmalloc_usable_size(ptr);
+	rpfree(ptr);
+	ptr = NULL;
 }
 
 /*
@@ -247,7 +198,7 @@ void* Hunk_AllocDebug(int size, char* label, char* file, int line)
 void* Hunk_Alloc(int size)
 {
 #endif
-	void* buf;
+	void* buf = NULL;
 
 	if (s_hunk == NULL)
 	{
@@ -319,6 +270,7 @@ Hunk_Free
 void
 Hunk_Free(void* buf)
 {
+	s_hunkAlloc -= rpmalloc_usable_size(buf);
 	rpmalloc_heap_free(s_hunk, buf);
 }
 

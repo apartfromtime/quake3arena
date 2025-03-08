@@ -394,8 +394,8 @@ Com_StartupVariable
 Searches for command line parameters that are set commands.
 If match is not NULL, only that cvar will be looked for.
 That is necessary because cddir and basedir need to be set
-before the filesystem is started, but all other sets shouls
-be after execing the config and default.
+before the filesystem is started, but all other sets should
+be after executing the config and default.
 ===============
 */
 void Com_StartupVariable( const char *match ) {
@@ -502,23 +502,6 @@ void Com_Meminfo_f(void)
 {
 	Hunk_Meminfo();
 	Zone_Meminfo();
-}
-
-/*
-===============
-Com_TouchMemory
-
-Touch all known used data to make sure it is paged in
-===============
-*/
-void Com_TouchMemory(void)
-{
-	int start = 0, end = 0;
-
-	start = Sys_Milliseconds();
-	end = Sys_Milliseconds();
-
-	Com_Printf("Com_TouchMemory: %i msec\n", end - start);
 }
 
 /*

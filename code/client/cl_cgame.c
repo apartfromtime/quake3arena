@@ -751,11 +751,6 @@ void CL_InitCGame( void ) {
 	// on the card even if the driver does deferred loading
 	re.EndRegistration();
 
-	// make sure everything is paged in
-	if (!Sys_LowPhysicalMemory()) {
-		Com_TouchMemory();
-	}
-
 	// clear anything that got printed
 	Con_ClearNotify ();
 }

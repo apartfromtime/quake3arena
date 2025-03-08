@@ -52,6 +52,12 @@ int	   sfxScratchIndex = 0;
 
 void SND_Shutdown(void)
 {
+	// free the sound buffer here so we don't exceed hunk memory limits
+	if (buffer != NULL)
+	{
+		Hunk_Free(buffer);
+		buffer = NULL;
+	}
 }
 
 void	SND_free(sndBuffer *v)

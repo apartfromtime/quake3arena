@@ -206,7 +206,8 @@ void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, ch
 		Com_sprintf( filename, sizeof(filename), "%s\\%s", subdirs, findinfo.name );
 		if (!Com_FilterPath( filter, filename, false ))
 			continue;
-		list[ *numfiles ] = CopyString( filename );
+		list[*numfiles] = Z_TagMalloc(strlen(filename) + 1, TAG_SMALL);
+		Q_strncpyz(list[*numfiles], filename, strlen(filename) + 1);
 		(*numfiles)++;
 	} while ( _findnext (findhandle, &findinfo) != -1 );
 
@@ -271,7 +272,8 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 			if ( nfiles == MAX_FOUND_FILES - 1 ) {
 				break;
 			}
-			list[ nfiles ] = CopyString( findinfo.name );
+			list[nfiles] = Z_TagMalloc(strlen(findinfo.name) + 1, TAG_SMALL);
+			Q_strncpyz(list[nfiles], findinfo.name, strlen(findinfo.name) + 1);
 			nfiles++;
 		}
 	} while ( _findnext (findhandle, &findinfo) != -1 );

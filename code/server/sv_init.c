@@ -42,13 +42,13 @@ void SV_SetConfigstring (int index, const char *val) {
 	}
 
 	// don't bother broadcasting an update if no change
-	if ( !strcmp( val, sv.configstrings[ index ] ) ) {
+	if ( !strcmp( val, &sv.configstrings[ index ][0] )) {
 		return;
 	}
 
 	// change the string in sv
-	Z_Free( sv.configstrings[index] );
-	sv.configstrings[index] = CopyString( val );
+	Com_Memset(sv.configstrings[index], 0, MAX_STRING_CHARS);
+	Q_strncpyz(sv.configstrings[index], val, MAX_STRING_CHARS);
 
 	// send it to all the clients if we aren't
 	// spawning a new server
@@ -111,7 +111,7 @@ void SV_GetConfigstring( int index, char *buffer, int bufferSize ) {
 	if ( index < 0 || index >= MAX_CONFIGSTRINGS ) {
 		Com_Error (ERR_DROP, "SV_GetConfigstring: bad index %i\n", index);
 	}
-	if ( !sv.configstrings[index] ) {
+	if ( !sv.configstrings[index][0] ) {
 		buffer[0] = 0;
 		return;
 	}
@@ -311,7 +311,7 @@ void SV_ClearServer(void) {
 
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
 		if ( sv.configstrings[i] ) {
-			Z_Free( sv.configstrings[i] );
+			Com_Memset(sv.configstrings[i], 0, MAX_STRING_CHARS);
 		}
 	}
 	Com_Memset (&sv, 0, sizeof(sv));
@@ -399,7 +399,7 @@ void SV_SpawnServer( char *server, bool killBots ) {
 	// wipe the entire per-level structure
 	SV_ClearServer();
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
-		sv.configstrings[i] = CopyString("");
+		sv.configstrings[i][0] = '\0';
 	}
 
 	// make sure we are not paused
@@ -569,6 +569,7 @@ void SV_Init (void) {
 	sv_privateClients = Cvar_Get ("sv_privateClients", "0", CVAR_SERVERINFO);
 	sv_hostname = Cvar_Get ("sv_hostname", "noname", CVAR_SERVERINFO | CVAR_ARCHIVE );
 	sv_maxclients = Cvar_Get ("sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH);
+	sv_maxentities = Cvar_Get("sv_maxentities", "1024", CVAR_SERVERINFO | CVAR_ROM);
 
 	sv_maxRate = Cvar_Get ("sv_maxRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 	sv_minPing = Cvar_Get ("sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
