@@ -151,11 +151,12 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>.\Debug\renderer.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalDependencies>..\..\libs\jpeg9d.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\..\libs\sdl3.lib;..\..\libs\jpeg9d.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\libs</AdditionalLibraryDirectories>
     </Lib>
     <ResourceCompile>
