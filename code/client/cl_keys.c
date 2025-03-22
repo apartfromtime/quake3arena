@@ -321,61 +321,73 @@ in-game talk, and menu fields
 Key events are used for non-printable characters, others are gotten from char events.
 =================
 */
-void Field_KeyDownEvent( field_t *edit, int key ) {
+void Field_KeyDownEvent(field_t* edit, int key)
+{
 	int		len;
 
 	// shift-insert is paste
-	if ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && keys[K_SHIFT].down ) {
-		Field_Paste( edit );
+	if (((key == K_INS) || (key == K_KP_INS)) && keys[K_SHIFT].down) {
+		
+		Field_Paste(edit);
+		
 		return;
 	}
 
-	len = strlen( edit->buffer );
+	len = strlen(edit->buffer);
 
-	if ( key == K_DEL ) {
-		if ( edit->cursor < len ) {
-			memmove( edit->buffer + edit->cursor, 
-				edit->buffer + edit->cursor + 1, len - edit->cursor );
+	if (key == K_BACKSPACE) {
+		if (edit->cursor <= len && len != 0) {
+			memmove(edit->buffer + (edit->cursor - 1),
+				edit->buffer + edit->cursor, len - (edit->cursor - 1));
+			edit->cursor--;
 		}
+
 		return;
 	}
 
-	if ( key == K_RIGHTARROW ) 
-	{
-		if ( edit->cursor < len ) {
+	if (key == K_DEL) {
+		if (edit->cursor < len) {
+			memmove(edit->buffer + edit->cursor,
+				edit->buffer + edit->cursor + 1, len - edit->cursor);
+		}
+
+		return;
+	}
+
+	if (key == K_RIGHTARROW || key == K_KP_RIGHTARROW) {		
+		if (edit->cursor < len) {
 			edit->cursor++;
 		}
 
-		if ( edit->cursor >= edit->scroll + edit->widthInChars && edit->cursor <= len )
-		{
+		if (edit->cursor >= edit->scroll + edit->widthInChars && edit->cursor <= len) {
 			edit->scroll++;
 		}
+
 		return;
 	}
 
-	if ( key == K_LEFTARROW ) 
-	{
-		if ( edit->cursor > 0 ) {
+	if (key == K_LEFTARROW || key == K_KP_LEFTARROW) {
+		if (edit->cursor > 0) {
 			edit->cursor--;
 		}
-		if ( edit->cursor < edit->scroll )
-		{
+
+		if (edit->cursor < edit->scroll) {
 			edit->scroll--;
 		}
 		return;
 	}
 
-	if ( key == K_HOME || ( tolower(key) == 'a' && keys[K_CTRL].down ) ) {
+	if (key == K_HOME || (tolower(key) == 'a' && keys[K_CTRL].down)) {
 		edit->cursor = 0;
 		return;
 	}
 
-	if ( key == K_END || ( tolower(key) == 'e' && keys[K_CTRL].down ) ) {
+	if (key == K_END || (tolower(key) == 'e' && keys[K_CTRL].down)) {
 		edit->cursor = len;
 		return;
 	}
 
-	if ( key == K_INS ) {
+	if (key == K_INS) {
 		key_overstrikeMode = !key_overstrikeMode;
 		return;
 	}
@@ -473,39 +485,41 @@ Console_Key
 Handles history and console scrollback
 ====================
 */
-void Console_Key (int key) {
+void Console_Key(int key) {
 	// ctrl-L clears screen
-	if ( key == 'l' && keys[K_CTRL].down ) {
-		Cbuf_AddText ("clear\n");
+	if (key == 'l' && keys[K_CTRL].down) {
+		Cbuf_AddText("clear\n");
 		return;
 	}
 
 	// enter finishes the line
-	if ( key == K_ENTER || key == K_KP_ENTER ) {
+	if (key == K_ENTER || key == K_KP_ENTER) {
 		// if not in the game explicitly prepent a slash if needed
-		if ( cls.state != CA_ACTIVE && g_consoleField.buffer[0] != '\\' 
-			&& g_consoleField.buffer[0] != '/' ) {
+		if (cls.state != CA_ACTIVE && g_consoleField.buffer[0] != '\\'
+			&& g_consoleField.buffer[0] != '/') {
 			char	temp[MAX_STRING_CHARS];
 
-			Q_strncpyz( temp, g_consoleField.buffer, sizeof( temp ) );
-			Com_sprintf( g_consoleField.buffer, sizeof( g_consoleField.buffer ), "\\%s", temp );
+			Q_strncpyz(temp, g_consoleField.buffer, sizeof(temp));
+			Com_sprintf(g_consoleField.buffer, sizeof(g_consoleField.buffer), "\\%s", temp);
 			g_consoleField.cursor++;
 		}
 
-		Com_Printf ( "]%s\n", g_consoleField.buffer );
+		Com_Printf("]%s\n", g_consoleField.buffer);
 
 		// leading slash is an explicit command
-		if ( g_consoleField.buffer[0] == '\\' || g_consoleField.buffer[0] == '/' ) {
-			Cbuf_AddText( g_consoleField.buffer+1 );	// valid command
-			Cbuf_AddText ("\n");
-		} else {
+		if (g_consoleField.buffer[0] == '\\' || g_consoleField.buffer[0] == '/') {
+			Cbuf_AddText(g_consoleField.buffer + 1);	// valid command
+			Cbuf_AddText("\n");
+		}
+		else {
 			// other text will be chat messages
-			if ( !g_consoleField.buffer[0] ) {
+			if (!g_consoleField.buffer[0]) {
 				return;	// empty lines just scroll the console without adding to history
-			} else {
-				Cbuf_AddText ("cmd say ");
-				Cbuf_AddText( g_consoleField.buffer );
-				Cbuf_AddText ("\n");
+			}
+			else {
+				Cbuf_AddText("cmd say ");
+				Cbuf_AddText(g_consoleField.buffer);
+				Cbuf_AddText("\n");
 			}
 		}
 
@@ -514,12 +528,12 @@ void Console_Key (int key) {
 		nextHistoryLine++;
 		historyLine = nextHistoryLine;
 
-		Field_Clear( &g_consoleField );
+		Field_Clear(&g_consoleField);
 
 		g_consoleField.widthInChars = g_console_field_width;
 
-		if ( cls.state == CA_DISCONNECTED ) {
-			SCR_UpdateScreen ();	// force an update, because the command
+		if (cls.state == CA_DISCONNECTED) {
+			SCR_UpdateScreen();	// force an update, because the command
 		}							// may take some time
 		return;
 	}
@@ -533,48 +547,48 @@ void Console_Key (int key) {
 
 	// command history (ctrl-p ctrl-n for unix style)
 
-	if ( (key == K_MWHEELUP && keys[K_SHIFT].down) || ( key == K_UPARROW ) || ( key == K_KP_UPARROW ) ||
-		 ( ( tolower(key) == 'p' ) && keys[K_CTRL].down ) ) {
-		if ( nextHistoryLine - historyLine < COMMAND_HISTORY 
-			&& historyLine > 0 ) {
+	if ((key == K_MWHEELUP && keys[K_SHIFT].down) || (key == K_UPARROW) || (key == K_KP_UPARROW) ||
+		((tolower(key) == 'p') && keys[K_CTRL].down)) {
+		if (nextHistoryLine - historyLine < COMMAND_HISTORY
+			&& historyLine > 0) {
 			historyLine--;
 		}
-		g_consoleField = historyEditLines[ historyLine % COMMAND_HISTORY ];
+		g_consoleField = historyEditLines[historyLine % COMMAND_HISTORY];
 		return;
 	}
 
-	if ( (key == K_MWHEELDOWN && keys[K_SHIFT].down) || ( key == K_DOWNARROW ) || ( key == K_KP_DOWNARROW ) ||
-		 ( ( tolower(key) == 'n' ) && keys[K_CTRL].down ) ) {
+	if ((key == K_MWHEELDOWN && keys[K_SHIFT].down) || (key == K_DOWNARROW) || (key == K_KP_DOWNARROW) ||
+		((tolower(key) == 'n') && keys[K_CTRL].down)) {
 		if (historyLine == nextHistoryLine)
 			return;
 		historyLine++;
-		g_consoleField = historyEditLines[ historyLine % COMMAND_HISTORY ];
+		g_consoleField = historyEditLines[historyLine % COMMAND_HISTORY];
 		return;
 	}
 
 	// console scrolling
-	if ( key == K_PGUP ) {
+	if (key == K_PGUP || key == K_KP_PGUP) {
 		Con_PageUp();
 		return;
 	}
 
-	if ( key == K_PGDN) {
+	if (key == K_PGDN || key == K_KP_PGDN) {
 		Con_PageDown();
 		return;
 	}
 
-	if ( key == K_MWHEELUP) {	//----(SA)	added some mousewheel functionality to the console
+	if (key == K_MWHEELUP) {	//----(SA)	added some mousewheel functionality to the console
 		Con_PageUp();
-		if(keys[K_CTRL].down) {	// hold <ctrl> to accelerate scrolling
+		if (keys[K_CTRL].down) {	// hold <ctrl> to accelerate scrolling
 			Con_PageUp();
 			Con_PageUp();
 		}
 		return;
 	}
 
-	if ( key == K_MWHEELDOWN) {	//----(SA)	added some mousewheel functionality to the console
+	if (key == K_MWHEELDOWN) {	//----(SA)	added some mousewheel functionality to the console
 		Con_PageDown();
-		if(keys[K_CTRL].down) {	// hold <ctrl> to accelerate scrolling
+		if (keys[K_CTRL].down) {	// hold <ctrl> to accelerate scrolling
 			Con_PageDown();
 			Con_PageDown();
 		}
@@ -582,19 +596,19 @@ void Console_Key (int key) {
 	}
 
 	// ctrl-home = top of console
-	if ( key == K_HOME && keys[K_CTRL].down ) {
+	if ((key == K_HOME || key == K_KP_HOME) && keys[K_CTRL].down) {
 		Con_Top();
 		return;
 	}
 
 	// ctrl-end = bottom of console
-	if ( key == K_END && keys[K_CTRL].down ) {
+	if ((key == K_END || key == K_KP_END) && keys[K_CTRL].down) {
 		Con_Bottom();
 		return;
 	}
 
 	// pass to the normal editline routine
-	Field_KeyDownEvent( &g_consoleField, key );
+	Field_KeyDownEvent(&g_consoleField, key);
 }
 
 //============================================================================

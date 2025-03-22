@@ -133,9 +133,6 @@ void Q_CDECL Com_Printf(const char* fmt, ...)
 			*rd_buffer = 0;
 		}
 		Q_strcat(rd_buffer, rd_buffersize, msg);
-		// TTimo nooo .. that would defeat the purpose
-			//rd_flush(rd_buffer);			
-			//*rd_buffer = 0;
 		return;
 	}
 

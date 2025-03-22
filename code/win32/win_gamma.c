@@ -19,75 +19,58 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
 /*
 ** WIN_GAMMA.C
 */
+
 #include <assert.h>
 #include "../renderer/tr_local.h"
 #include "../qcommon/qcommon.h"
-#include "glw_win.h"
 #include "win_local.h"
 
 static unsigned short s_oldHardwareGamma[3][256];
+HDC s_hDC;			// handle to device context
 
 /*
 ** WG_CheckHardwareGamma
 **
 ** Determines if the underlying hardware supports the Win32 gamma correction API.
 */
-void WG_CheckHardwareGamma( void )
+void WG_CheckHardwareGamma(void)
 {
-	HDC			hDC;
+	HDC hDC;
 
 	glConfig.deviceSupportsGamma = false;
 
-	if ( qwglSetDeviceGammaRamp3DFX )
-	{
-		glConfig.deviceSupportsGamma = true;
-
-		hDC = GetDC( GetDesktopWindow() );
-		glConfig.deviceSupportsGamma = qwglGetDeviceGammaRamp3DFX( hDC, s_oldHardwareGamma );
-		ReleaseDC( GetDesktopWindow(), hDC );
-
-		return;
-	}
-
 	// non-3Dfx standalone drivers don't support gamma changes, period
-	if ( glConfig.driverType == GLDRV_STANDALONE )
-	{
+	if (glConfig.driverType == GLDRV_STANDALONE) {
 		return;
 	}
 
-	if ( !r_ignorehwgamma->integer )
-	{
-		hDC = GetDC( GetDesktopWindow() );
-		glConfig.deviceSupportsGamma = GetDeviceGammaRamp( hDC, s_oldHardwareGamma );
-		ReleaseDC( GetDesktopWindow(), hDC );
+	if (!r_ignorehwgamma->integer) {
+		hDC = GetDC(GetDesktopWindow());
+		glConfig.deviceSupportsGamma = GetDeviceGammaRamp(hDC, s_oldHardwareGamma);
+		ReleaseDC(GetDesktopWindow(), hDC);
 
-		if ( glConfig.deviceSupportsGamma )
-		{
-			//
+		if (glConfig.deviceSupportsGamma) {
 			// do a sanity check on the gamma values
-			//
-			if ( ( HIBYTE( s_oldHardwareGamma[0][255] ) <= HIBYTE( s_oldHardwareGamma[0][0] ) ) ||
-				 ( HIBYTE( s_oldHardwareGamma[1][255] ) <= HIBYTE( s_oldHardwareGamma[1][0] ) ) ||
-				 ( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) )
-			{
+			if ((HIBYTE(s_oldHardwareGamma[0][255]) <= HIBYTE(s_oldHardwareGamma[0][0])) ||
+				(HIBYTE(s_oldHardwareGamma[1][255]) <= HIBYTE(s_oldHardwareGamma[1][0])) ||
+				(HIBYTE(s_oldHardwareGamma[2][255]) <= HIBYTE(s_oldHardwareGamma[2][0]))) {
 				glConfig.deviceSupportsGamma = false;
-				ri.Printf( PRINT_WARNING, "WARNING: device has broken gamma support, generated gamma.dat\n" );
+				ri.Printf(PRINT_WARNING, "WARNING: device has broken gamma support, generated gamma.dat\n");
 			}
 
-			//
 			// make sure that we didn't have a prior crash in the game, and if so we need to
 			// restore the gamma values to at least a linear value
-			//
-			if ( ( HIBYTE( s_oldHardwareGamma[0][181] ) == 255 ) )
-			{
+			if ((HIBYTE(s_oldHardwareGamma[0][181]) == 255)) {
+
 				int g;
 
-				ri.Printf( PRINT_WARNING, "WARNING: suspicious gamma tables, using linear ramp for restoration\n" );
+				ri.Printf(PRINT_WARNING, "WARNING: suspicious gamma tables, using linear ramp for restoration\n");
 
-				for ( g = 0; g < 255; g++ )
+				for (g = 0; g < 255; g++)
 				{
 					s_oldHardwareGamma[0][g] = g << 8;
 					s_oldHardwareGamma[1][g] = g << 8;
@@ -115,7 +98,7 @@ void mapGammaMax( void ) {
 	for ( i = 0 ; i < 128 ; i++ ) {
 		for ( j = i*2 ; j < 255 ; j++ ) {
 			table[0][i] = table[1][i] = table[2][i] = j<<8;
-			if ( !SetDeviceGammaRamp( glw_state.hDC, table ) ) {
+			if ( !SetDeviceGammaRamp( s_hDC, table ) ) {
 				break;
 			}
 		}
@@ -130,85 +113,90 @@ void mapGammaMax( void ) {
 **
 ** This routine should only be called if glConfig.deviceSupportsGamma is TRUE
 */
-void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned char blue[256] ) {
+void GLimp_SetGamma(unsigned char red[256], unsigned char green[256], unsigned char blue[256])
+{
 	unsigned short table[3][256];
 	int		i, j;
 	int		ret;
 	OSVERSIONINFO	vinfo;
 
-	if ( !glConfig.deviceSupportsGamma || r_ignorehwgamma->integer || !glw_state.hDC ) {
+	// get a DC for our window if we don't already have one allocated
+	if (s_hDC == NULL) {
+
+		ri.Printf(PRINT_ALL, "...getting DC: ");
+
+		SDL_PropertiesID properties = SDL_GetWindowProperties(g_wv.hWnd);
+
+		if (properties) {
+			if ((s_hDC = SDL_GetPointerProperty(properties, SDL_PROP_WINDOW_WIN32_HDC_POINTER,
+				NULL)) == NULL) {
+				ri.Printf(PRINT_ALL, "failed\n");
+				return;
+			}
+		}
+
+		ri.Printf(PRINT_ALL, "succeeded\n");
+	}
+
+	if (!glConfig.deviceSupportsGamma || r_ignorehwgamma->integer || !s_hDC) {
 		return;
 	}
 
-//mapGammaMax();
+	//mapGammaMax();
 
-	for ( i = 0; i < 256; i++ ) {
-		table[0][i] = ( ( ( unsigned short ) red[i] ) << 8 ) | red[i];
-		table[1][i] = ( ( ( unsigned short ) green[i] ) << 8 ) | green[i];
-		table[2][i] = ( ( ( unsigned short ) blue[i] ) << 8 ) | blue[i];
+	for (i = 0; i < 256; i++)
+	{
+		table[0][i] = (((unsigned short)red[i]) << 8) | red[i];
+		table[1][i] = (((unsigned short)green[i]) << 8) | green[i];
+		table[2][i] = (((unsigned short)blue[i]) << 8) | blue[i];
 	}
 
 	// Win2K puts this odd restriction on gamma ramps...
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-	GetVersionEx( &vinfo );
-	if ( vinfo.dwMajorVersion == 5 && vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT ) {
-		Com_DPrintf( "performing W2K gamma clamp.\n" );
-		for ( j = 0 ; j < 3 ; j++ ) {
-			for ( i = 0 ; i < 128 ; i++ ) {
-				if ( table[j][i] > ( (128+i) << 8 ) ) {
-					table[j][i] = (128+i) << 8;
+	GetVersionEx(&vinfo);
+	if (vinfo.dwMajorVersion == 5 && vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+		Com_DPrintf("performing W2K gamma clamp.\n");
+		for (j = 0; j < 3; j++)
+		{
+			for (i = 0; i < 128; i++)
+			{
+				if (table[j][i] > ((128 + i) << 8)) {
+					table[j][i] = (128 + i) << 8;
 				}
 			}
-			if ( table[j][127] > 254<<8 ) {
-				table[j][127] = 254<<8;
+			if (table[j][127] > 254 << 8) {
+				table[j][127] = 254 << 8;
 			}
 		}
 	} else {
-		Com_DPrintf( "skipping W2K gamma clamp.\n" );
+		Com_DPrintf("skipping W2K gamma clamp.\n");
 	}
 
 	// enforce constantly increasing
-	for ( j = 0 ; j < 3 ; j++ ) {
-		for ( i = 1 ; i < 256 ; i++ ) {
-			if ( table[j][i] < table[j][i-1] ) {
-				table[j][i] = table[j][i-1];
+	for (j = 0; j < 3; j++)
+	{
+		for (i = 1; i < 256; i++)
+		{
+			if (table[j][i] < table[j][i - 1]) {
+				table[j][i] = table[j][i - 1];
 			}
 		}
 	}
 
-
-	if ( qwglSetDeviceGammaRamp3DFX )
-	{
-		qwglSetDeviceGammaRamp3DFX( glw_state.hDC, table );
-	}
-	else
-	{
-		ret = SetDeviceGammaRamp( glw_state.hDC, table );
-		if ( !ret ) {
-			Com_Printf( "SetDeviceGammaRamp failed.\n" );
-		}
+	ret = SetDeviceGammaRamp(s_hDC, table);
+	if (!ret) {
+		Com_Printf("SetDeviceGammaRamp failed.\n");
 	}
 }
 
 /*
 ** WG_RestoreGamma
 */
-void WG_RestoreGamma( void )
+void WG_RestoreGamma(void)
 {
-	if ( glConfig.deviceSupportsGamma )
-	{
-		if ( qwglSetDeviceGammaRamp3DFX )
-		{
-			qwglSetDeviceGammaRamp3DFX( glw_state.hDC, s_oldHardwareGamma );
-		}
-		else
-		{
-			HDC hDC;
-			
-			hDC = GetDC( GetDesktopWindow() );
-			SetDeviceGammaRamp( hDC, s_oldHardwareGamma );
-			ReleaseDC( GetDesktopWindow(), hDC );
-		}
+	if (glConfig.deviceSupportsGamma) {
+		HDC hDC = GetDC(GetDesktopWindow());
+		SetDeviceGammaRamp(hDC, s_oldHardwareGamma);
+		ReleaseDC(GetDesktopWindow(), hDC);
 	}
 }
-

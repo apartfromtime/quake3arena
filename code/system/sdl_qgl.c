@@ -19,6 +19,7 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
 /*
 ** QGL_WIN.C
 **
@@ -29,44 +30,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ** QGL_Init() - loads libraries, assigns function pointers, etc.
 ** QGL_Shutdown() - unloads libraries, NULLs function pointers
 */
-#include <float.h>
+
 #include "../renderer/tr_local.h"
-#include "glw_win.h"
+#include "../win32/win_local.h"
 
 void QGL_EnableLogging( bool enable );
-
-int ( WINAPI * qwglSwapIntervalEXT)( int interval );
-BOOL  ( WINAPI * qwglGetDeviceGammaRamp3DFX)( HDC, LPVOID );
-BOOL  ( WINAPI * qwglSetDeviceGammaRamp3DFX)( HDC, LPVOID );
-
-int   ( WINAPI * qwglChoosePixelFormat )(HDC, CONST PIXELFORMATDESCRIPTOR *);
-int   ( WINAPI * qwglDescribePixelFormat) (HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
-int   ( WINAPI * qwglGetPixelFormat)(HDC);
-BOOL  ( WINAPI * qwglSetPixelFormat)(HDC, int, CONST PIXELFORMATDESCRIPTOR *);
-BOOL  ( WINAPI * qwglSwapBuffers)(HDC);
-
-BOOL  ( WINAPI * qwglCopyContext)(HGLRC, HGLRC, UINT);
-HGLRC ( WINAPI * qwglCreateContext)(HDC);
-HGLRC ( WINAPI * qwglCreateLayerContext)(HDC, int);
-BOOL  ( WINAPI * qwglDeleteContext)(HGLRC);
-HGLRC ( WINAPI * qwglGetCurrentContext)(VOID);
-HDC   ( WINAPI * qwglGetCurrentDC)(VOID);
-PROC  ( WINAPI * qwglGetProcAddress)(LPCSTR);
-BOOL  ( WINAPI * qwglMakeCurrent)(HDC, HGLRC);
-BOOL  ( WINAPI * qwglShareLists)(HGLRC, HGLRC);
-BOOL  ( WINAPI * qwglUseFontBitmaps)(HDC, DWORD, DWORD, DWORD);
-
-BOOL  ( WINAPI * qwglUseFontOutlines)(HDC, DWORD, DWORD, DWORD, FLOAT,
-                                           FLOAT, int, LPGLYPHMETRICSFLOAT);
-
-BOOL ( WINAPI * qwglDescribeLayerPlane)(HDC, int, int, UINT,
-                                            LPLAYERPLANEDESCRIPTOR);
-int  ( WINAPI * qwglSetLayerPaletteEntries)(HDC, int, int, int,
-                                                CONST COLORREF *);
-int  ( WINAPI * qwglGetLayerPaletteEntries)(HDC, int, int, int,
-                                                COLORREF *);
-BOOL ( WINAPI * qwglRealizeLayerPalette)(HDC, int, BOOL);
-BOOL ( WINAPI * qwglSwapLayerBuffers)(HDC, UINT);
 
 void ( APIENTRY * qglAccum )(GLenum op, GLfloat value);
 void ( APIENTRY * qglAlphaFunc )(GLenum func, GLclampf ref);
@@ -406,7 +374,6 @@ void ( APIENTRY * qglVertexPointer )(GLint size, GLenum type, GLsizei stride, co
 void ( APIENTRY * qglViewport )(GLint x, GLint y, GLsizei width, GLsizei height);
 
 
-
 static void ( APIENTRY * dllAccum )(GLenum op, GLfloat value);
 static void ( APIENTRY * dllAlphaFunc )(GLenum func, GLclampf ref);
 GLboolean ( APIENTRY * dllAreTexturesResident )(GLsizei n, const GLuint *textures, GLboolean *residences);
@@ -744,19 +711,19 @@ static void ( APIENTRY * dllVertex4sv )(const GLshort *v);
 static void ( APIENTRY * dllVertexPointer )(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
 static void ( APIENTRY * dllViewport )(GLint x, GLint y, GLsizei width, GLsizei height);
 
-static const char * BooleanToString( GLboolean b )
+static const char* BooleanToString(GLboolean b)
 {
-	if ( b == GL_FALSE )
+	if (b == GL_FALSE)
 		return "GL_FALSE";
-	else if ( b == GL_TRUE )
+	else if (b == GL_TRUE)
 		return "GL_TRUE";
 	else
 		return "OUT OF RANGE FOR BOOLEAN";
 }
 
-static const char * FuncToString( GLenum f )
+static const char* FuncToString(GLenum f)
 {
-	switch ( f )
+	switch (f)
 	{
 	case GL_ALWAYS:
 		return "GL_ALWAYS";
@@ -779,41 +746,41 @@ static const char * FuncToString( GLenum f )
 	}
 }
 
-static const char * PrimToString( GLenum mode )
+static const char* PrimToString(GLenum mode)
 {
 	static char prim[1024];
 
-	if ( mode == GL_TRIANGLES )
-		strcpy( prim, "GL_TRIANGLES" );
-	else if ( mode == GL_TRIANGLE_STRIP )
-		strcpy( prim, "GL_TRIANGLE_STRIP" );
-	else if ( mode == GL_TRIANGLE_FAN )
-		strcpy( prim, "GL_TRIANGLE_FAN" );
-	else if ( mode == GL_QUADS )
-		strcpy( prim, "GL_QUADS" );
-	else if ( mode == GL_QUAD_STRIP )
-		strcpy( prim, "GL_QUAD_STRIP" );
-	else if ( mode == GL_POLYGON )
-		strcpy( prim, "GL_POLYGON" );
-	else if ( mode == GL_POINTS )
-		strcpy( prim, "GL_POINTS" );
-	else if ( mode == GL_LINES )
-		strcpy( prim, "GL_LINES" );
-	else if ( mode == GL_LINE_STRIP )
-		strcpy( prim, "GL_LINE_STRIP" );
-	else if ( mode == GL_LINE_LOOP )
-		strcpy( prim, "GL_LINE_LOOP" );
+	if (mode == GL_TRIANGLES)
+		strcpy(prim, "GL_TRIANGLES");
+	else if (mode == GL_TRIANGLE_STRIP)
+		strcpy(prim, "GL_TRIANGLE_STRIP");
+	else if (mode == GL_TRIANGLE_FAN)
+		strcpy(prim, "GL_TRIANGLE_FAN");
+	else if (mode == GL_QUADS)
+		strcpy(prim, "GL_QUADS");
+	else if (mode == GL_QUAD_STRIP)
+		strcpy(prim, "GL_QUAD_STRIP");
+	else if (mode == GL_POLYGON)
+		strcpy(prim, "GL_POLYGON");
+	else if (mode == GL_POINTS)
+		strcpy(prim, "GL_POINTS");
+	else if (mode == GL_LINES)
+		strcpy(prim, "GL_LINES");
+	else if (mode == GL_LINE_STRIP)
+		strcpy(prim, "GL_LINE_STRIP");
+	else if (mode == GL_LINE_LOOP)
+		strcpy(prim, "GL_LINE_LOOP");
 	else
-		sprintf( prim, "0x%x", mode );
+		sprintf(prim, "0x%x", mode);
 
 	return prim;
 }
 
-static const char * CapToString( GLenum cap )
+static const char* CapToString(GLenum cap)
 {
 	static char buffer[1024];
 
-	switch ( cap )
+	switch (cap)
 	{
 	case GL_TEXTURE_2D:
 		return "GL_TEXTURE_2D";
@@ -836,15 +803,15 @@ static const char * CapToString( GLenum cap )
 	case GL_STENCIL_TEST:
 		return "GL_STENCIL_TEST";
 	default:
-		sprintf( buffer, "0x%x", cap );
+		sprintf(buffer, "0x%x", cap);
 	}
 
 	return buffer;
 }
 
-static const char * TypeToString( GLenum t )
+static const char* TypeToString(GLenum t)
 {
-	switch ( t )
+	switch (t)
 	{
 	case GL_BYTE:
 		return "GL_BYTE";
@@ -2805,14 +2772,13 @@ static void APIENTRY logViewport(GLint x, GLint y, GLsizei width, GLsizei height
 ** Unloads the specified DLL then nulls out all the proc pointers.  This
 ** is only called during a hard shutdown of the OGL subsystem (e.g. vid_restart).
 */
-void QGL_Shutdown( void )
+void QGL_Shutdown(void)
 {
-	ri.Printf( PRINT_ALL, "...shutting down QGL\n" );
+	ri.Printf(PRINT_ALL, "...shutting down QGL\n");
 
-	if ( glw_state.hinstOpenGL )
-	{
-		ri.Printf( PRINT_ALL, "...unloading OpenGL DLL\n" );
-		FreeLibrary( glw_state.hinstOpenGL );
+	if (glw_state.hinstOpenGL) {
+		ri.Printf(PRINT_ALL, "...unloading OpenGL DLL\n");
+		SDL_UnloadObject(glw_state.hinstOpenGL);
 	}
 
 	glw_state.hinstOpenGL = NULL;
@@ -3153,76 +3119,14 @@ void QGL_Shutdown( void )
 	qglVertex4sv                 = NULL;
 	qglVertexPointer             = NULL;
 	qglViewport                  = NULL;
-
-	qwglCopyContext              = NULL;
-	qwglCreateContext            = NULL;
-	qwglCreateLayerContext       = NULL;
-	qwglDeleteContext            = NULL;
-	qwglDescribeLayerPlane       = NULL;
-	qwglGetCurrentContext        = NULL;
-	qwglGetCurrentDC             = NULL;
-	qwglGetLayerPaletteEntries   = NULL;
-	qwglGetProcAddress           = NULL;
-	qwglMakeCurrent              = NULL;
-	qwglRealizeLayerPalette      = NULL;
-	qwglSetLayerPaletteEntries   = NULL;
-	qwglShareLists               = NULL;
-	qwglSwapLayerBuffers         = NULL;
-	qwglUseFontBitmaps           = NULL;
-	qwglUseFontOutlines          = NULL;
-
-	qwglChoosePixelFormat        = NULL;
-	qwglDescribePixelFormat      = NULL;
-	qwglGetPixelFormat           = NULL;
-	qwglSetPixelFormat           = NULL;
-	qwglSwapBuffers              = NULL;
 }
 
-#define GR_NUM_BOARDS 0x0f
-
-static bool GlideIsValid( void )
-{
-	HMODULE hGlide;
-//	int numBoards;
-//	void (__stdcall *grGet)(unsigned int, unsigned int, int*);
-
-    if ( ( hGlide = LoadLibrary("Glide3X") ) != 0 ) 
-	{
-		// FIXME: 3Dfx needs to fix this shit
-		return true;
-
-#if 0
-        grGet = (void *)GetProcAddress( hGlide, "_grGet@12");
-
-		if ( grGet )
-		{
-	        grGet( GR_NUM_BOARDS, sizeof(int), &numBoards);
-		}
-		else
-		{
-			// if we've reached this point, something is seriously wrong
-			ri.Printf( PRINT_WARNING, "WARNING: could not find grGet in GLIDE3X.DLL\n" );
-			numBoards = 0;
-		}
-
-		FreeLibrary( hGlide );
-		hGlide = NULL;
-
-		if ( numBoards > 0 )
-		{
-			return true;
-		}
-
-		ri.Printf( PRINT_WARNING, "WARNING: invalid Glide installation!\n" );
-#endif
-    }
-
-	return false;
-} 
-
 #	pragma warning (disable : 4113 4133 4047 )
+#ifdef _WIN32
 #	define GPA( a ) GetProcAddress( glw_state.hinstOpenGL, a )
-
+#else
+#	define GPA( a ) SDL_LoadFunction(glw_state.hinstOpenGL, a)
+#endif
 /*
 ** QGL_Init
 **
@@ -3237,452 +3141,407 @@ bool QGL_Init( const char *dllname )
 	char systemDir[1024];
 	char libName[1024];
 
-	GetSystemDirectory( systemDir, sizeof( systemDir ) );
+	Sys_GetSystemDirectory(systemDir, MAX_STRING_CHARS);
 
-	assert( glw_state.hinstOpenGL == 0 );
+	assert(glw_state.hinstOpenGL == 0);
 
-	ri.Printf( PRINT_ALL, "...initializing QGL\n" );
+	ri.Printf(PRINT_ALL, "...initializing QGL\n");
 
-	// NOTE: this assumes that 'dllname' is lower case (and it should be)!
-	if ( strstr( dllname, _3DFX_DRIVER_NAME ) )
-	{
-		if ( !GlideIsValid() )
-		{
-			ri.Printf( PRINT_ALL, "...WARNING: missing Glide installation, assuming no 3Dfx available\n" );
-			return false;
-		}
+	if (dllname[0] != '!') {
+		Com_sprintf(libName, sizeof(libName), "%s\\%s", systemDir, dllname);
+	} else {
+		Q_strncpyz(libName, dllname, sizeof(libName));
 	}
 
-	if ( dllname[0] != '!' )
-	{
-		Com_sprintf( libName, sizeof( libName ), "%s\\%s", systemDir, dllname );
-	}
-	else
-	{
-		Q_strncpyz( libName, dllname, sizeof( libName ) );
-	}
+	ri.Printf(PRINT_ALL, "...calling SDL_LoadObject( '%s.dll' ): ", libName);
 
-	ri.Printf( PRINT_ALL, "...calling LoadLibrary( '%s.dll' ): ", libName );
-
-	if ( ( glw_state.hinstOpenGL = LoadLibrary( dllname ) ) == 0 )
-	{
-		ri.Printf( PRINT_ALL, "failed\n" );
+	if ((glw_state.hinstOpenGL = SDL_LoadObject(dllname)) == 0) {
+		ri.Printf(PRINT_ALL, "failed\n");
 		return false;
 	}
+
 	ri.Printf( PRINT_ALL, "succeeded\n" );
 
-	qglAccum                     = dllAccum = GPA( "glAccum" );
-	qglAlphaFunc                 = dllAlphaFunc = GPA( "glAlphaFunc" );
-	qglAreTexturesResident       = dllAreTexturesResident = GPA( "glAreTexturesResident" );
-	qglArrayElement              = dllArrayElement = GPA( "glArrayElement" );
-	qglBegin                     = dllBegin = GPA( "glBegin" );
-	qglBindTexture               = dllBindTexture = GPA( "glBindTexture" );
-	qglBitmap                    = dllBitmap = GPA( "glBitmap" );
-	qglBlendFunc                 = dllBlendFunc = GPA( "glBlendFunc" );
-	qglCallList                  = dllCallList = GPA( "glCallList" );
-	qglCallLists                 = dllCallLists = GPA( "glCallLists" );
-	qglClear                     = dllClear = GPA( "glClear" );
-	qglClearAccum                = dllClearAccum = GPA( "glClearAccum" );
-	qglClearColor                = dllClearColor = GPA( "glClearColor" );
-	qglClearDepth                = dllClearDepth = GPA( "glClearDepth" );
-	qglClearIndex                = dllClearIndex = GPA( "glClearIndex" );
-	qglClearStencil              = dllClearStencil = GPA( "glClearStencil" );
-	qglClipPlane                 = dllClipPlane = GPA( "glClipPlane" );
-	qglColor3b                   = dllColor3b = GPA( "glColor3b" );
-	qglColor3bv                  = dllColor3bv = GPA( "glColor3bv" );
-	qglColor3d                   = dllColor3d = GPA( "glColor3d" );
-	qglColor3dv                  = dllColor3dv = GPA( "glColor3dv" );
-	qglColor3f                   = dllColor3f = GPA( "glColor3f" );
-	qglColor3fv                  = dllColor3fv = GPA( "glColor3fv" );
-	qglColor3i                   = dllColor3i = GPA( "glColor3i" );
-	qglColor3iv                  = dllColor3iv = GPA( "glColor3iv" );
-	qglColor3s                   = dllColor3s = GPA( "glColor3s" );
-	qglColor3sv                  = dllColor3sv = GPA( "glColor3sv" );
-	qglColor3ub                  = dllColor3ub = GPA( "glColor3ub" );
-	qglColor3ubv                 = dllColor3ubv = GPA( "glColor3ubv" );
-	qglColor3ui                  = dllColor3ui = GPA( "glColor3ui" );
-	qglColor3uiv                 = dllColor3uiv = GPA( "glColor3uiv" );
-	qglColor3us                  = dllColor3us = GPA( "glColor3us" );
-	qglColor3usv                 = dllColor3usv = GPA( "glColor3usv" );
-	qglColor4b                   = dllColor4b = GPA( "glColor4b" );
-	qglColor4bv                  = dllColor4bv = GPA( "glColor4bv" );
-	qglColor4d                   = dllColor4d = GPA( "glColor4d" );
-	qglColor4dv                  = dllColor4dv = GPA( "glColor4dv" );
-	qglColor4f                   = dllColor4f = GPA( "glColor4f" );
-	qglColor4fv                  = dllColor4fv = GPA( "glColor4fv" );
-	qglColor4i                   = dllColor4i = GPA( "glColor4i" );
-	qglColor4iv                  = dllColor4iv = GPA( "glColor4iv" );
-	qglColor4s                   = dllColor4s = GPA( "glColor4s" );
-	qglColor4sv                  = dllColor4sv = GPA( "glColor4sv" );
-	qglColor4ub                  = dllColor4ub = GPA( "glColor4ub" );
-	qglColor4ubv                 = dllColor4ubv = GPA( "glColor4ubv" );
-	qglColor4ui                  = dllColor4ui = GPA( "glColor4ui" );
-	qglColor4uiv                 = dllColor4uiv = GPA( "glColor4uiv" );
-	qglColor4us                  = dllColor4us = GPA( "glColor4us" );
-	qglColor4usv                 = dllColor4usv = GPA( "glColor4usv" );
-	qglColorMask                 = dllColorMask = GPA( "glColorMask" );
-	qglColorMaterial             = dllColorMaterial = GPA( "glColorMaterial" );
-	qglColorPointer              = dllColorPointer = GPA( "glColorPointer" );
-	qglCopyPixels                = dllCopyPixels = GPA( "glCopyPixels" );
-	qglCopyTexImage1D            = dllCopyTexImage1D = GPA( "glCopyTexImage1D" );
-	qglCopyTexImage2D            = dllCopyTexImage2D = GPA( "glCopyTexImage2D" );
-	qglCopyTexSubImage1D         = dllCopyTexSubImage1D = GPA( "glCopyTexSubImage1D" );
-	qglCopyTexSubImage2D         = dllCopyTexSubImage2D = GPA( "glCopyTexSubImage2D" );
-	qglCullFace                  = dllCullFace = GPA( "glCullFace" );
-	qglDeleteLists               = dllDeleteLists = GPA( "glDeleteLists" );
-	qglDeleteTextures            = dllDeleteTextures = GPA( "glDeleteTextures" );
-	qglDepthFunc                 = dllDepthFunc = GPA( "glDepthFunc" );
-	qglDepthMask                 = dllDepthMask = GPA( "glDepthMask" );
-	qglDepthRange                = dllDepthRange = GPA( "glDepthRange" );
-	qglDisable                   = dllDisable = GPA( "glDisable" );
-	qglDisableClientState        = dllDisableClientState = GPA( "glDisableClientState" );
-	qglDrawArrays                = dllDrawArrays = GPA( "glDrawArrays" );
-	qglDrawBuffer                = dllDrawBuffer = GPA( "glDrawBuffer" );
-	qglDrawElements              = dllDrawElements = GPA( "glDrawElements" );
-	qglDrawPixels                = dllDrawPixels = GPA( "glDrawPixels" );
-	qglEdgeFlag                  = dllEdgeFlag = GPA( "glEdgeFlag" );
-	qglEdgeFlagPointer           = dllEdgeFlagPointer = GPA( "glEdgeFlagPointer" );
-	qglEdgeFlagv                 = dllEdgeFlagv = GPA( "glEdgeFlagv" );
-	qglEnable                    = 	dllEnable                    = GPA( "glEnable" );
-	qglEnableClientState         = 	dllEnableClientState         = GPA( "glEnableClientState" );
-	qglEnd                       = 	dllEnd                       = GPA( "glEnd" );
-	qglEndList                   = 	dllEndList                   = GPA( "glEndList" );
-	qglEvalCoord1d				 = 	dllEvalCoord1d				 = GPA( "glEvalCoord1d" );
-	qglEvalCoord1dv              = 	dllEvalCoord1dv              = GPA( "glEvalCoord1dv" );
-	qglEvalCoord1f               = 	dllEvalCoord1f               = GPA( "glEvalCoord1f" );
-	qglEvalCoord1fv              = 	dllEvalCoord1fv              = GPA( "glEvalCoord1fv" );
-	qglEvalCoord2d               = 	dllEvalCoord2d               = GPA( "glEvalCoord2d" );
-	qglEvalCoord2dv              = 	dllEvalCoord2dv              = GPA( "glEvalCoord2dv" );
-	qglEvalCoord2f               = 	dllEvalCoord2f               = GPA( "glEvalCoord2f" );
-	qglEvalCoord2fv              = 	dllEvalCoord2fv              = GPA( "glEvalCoord2fv" );
-	qglEvalMesh1                 = 	dllEvalMesh1                 = GPA( "glEvalMesh1" );
-	qglEvalMesh2                 = 	dllEvalMesh2                 = GPA( "glEvalMesh2" );
-	qglEvalPoint1                = 	dllEvalPoint1                = GPA( "glEvalPoint1" );
-	qglEvalPoint2                = 	dllEvalPoint2                = GPA( "glEvalPoint2" );
-	qglFeedbackBuffer            = 	dllFeedbackBuffer            = GPA( "glFeedbackBuffer" );
-	qglFinish                    = 	dllFinish                    = GPA( "glFinish" );
-	qglFlush                     = 	dllFlush                     = GPA( "glFlush" );
-	qglFogf                      = 	dllFogf                      = GPA( "glFogf" );
-	qglFogfv                     = 	dllFogfv                     = GPA( "glFogfv" );
-	qglFogi                      = 	dllFogi                      = GPA( "glFogi" );
-	qglFogiv                     = 	dllFogiv                     = GPA( "glFogiv" );
-	qglFrontFace                 = 	dllFrontFace                 = GPA( "glFrontFace" );
-	qglFrustum                   = 	dllFrustum                   = GPA( "glFrustum" );
-	qglGenLists                  = 	dllGenLists                  = ( GLuint (__stdcall * )(int) ) GPA( "glGenLists" );
-	qglGenTextures               = 	dllGenTextures               = GPA( "glGenTextures" );
-	qglGetBooleanv               = 	dllGetBooleanv               = GPA( "glGetBooleanv" );
-	qglGetClipPlane              = 	dllGetClipPlane              = GPA( "glGetClipPlane" );
-	qglGetDoublev                = 	dllGetDoublev                = GPA( "glGetDoublev" );
-	qglGetError                  = 	dllGetError                  = ( GLenum (__stdcall * )(void) ) GPA( "glGetError" );
-	qglGetFloatv                 = 	dllGetFloatv                 = GPA( "glGetFloatv" );
-	qglGetIntegerv               = 	dllGetIntegerv               = GPA( "glGetIntegerv" );
-	qglGetLightfv                = 	dllGetLightfv                = GPA( "glGetLightfv" );
-	qglGetLightiv                = 	dllGetLightiv                = GPA( "glGetLightiv" );
-	qglGetMapdv                  = 	dllGetMapdv                  = GPA( "glGetMapdv" );
-	qglGetMapfv                  = 	dllGetMapfv                  = GPA( "glGetMapfv" );
-	qglGetMapiv                  = 	dllGetMapiv                  = GPA( "glGetMapiv" );
-	qglGetMaterialfv             = 	dllGetMaterialfv             = GPA( "glGetMaterialfv" );
-	qglGetMaterialiv             = 	dllGetMaterialiv             = GPA( "glGetMaterialiv" );
-	qglGetPixelMapfv             = 	dllGetPixelMapfv             = GPA( "glGetPixelMapfv" );
-	qglGetPixelMapuiv            = 	dllGetPixelMapuiv            = GPA( "glGetPixelMapuiv" );
-	qglGetPixelMapusv            = 	dllGetPixelMapusv            = GPA( "glGetPixelMapusv" );
-	qglGetPointerv               = 	dllGetPointerv               = GPA( "glGetPointerv" );
-	qglGetPolygonStipple         = 	dllGetPolygonStipple         = GPA( "glGetPolygonStipple" );
-	qglGetString                 = 	dllGetString                 = GPA( "glGetString" );
-	qglGetTexEnvfv               = 	dllGetTexEnvfv               = GPA( "glGetTexEnvfv" );
-	qglGetTexEnviv               = 	dllGetTexEnviv               = GPA( "glGetTexEnviv" );
-	qglGetTexGendv               = 	dllGetTexGendv               = GPA( "glGetTexGendv" );
-	qglGetTexGenfv               = 	dllGetTexGenfv               = GPA( "glGetTexGenfv" );
-	qglGetTexGeniv               = 	dllGetTexGeniv               = GPA( "glGetTexGeniv" );
-	qglGetTexImage               = 	dllGetTexImage               = GPA( "glGetTexImage" );
-	qglGetTexParameterfv         = 	dllGetTexParameterfv         = GPA( "glGetTexParameterfv" );
-	qglGetTexParameteriv         = 	dllGetTexParameteriv         = GPA( "glGetTexParameteriv" );
-	qglHint                      = 	dllHint                      = GPA( "glHint" );
-	qglIndexMask                 = 	dllIndexMask                 = GPA( "glIndexMask" );
-	qglIndexPointer              = 	dllIndexPointer              = GPA( "glIndexPointer" );
-	qglIndexd                    = 	dllIndexd                    = GPA( "glIndexd" );
-	qglIndexdv                   = 	dllIndexdv                   = GPA( "glIndexdv" );
-	qglIndexf                    = 	dllIndexf                    = GPA( "glIndexf" );
-	qglIndexfv                   = 	dllIndexfv                   = GPA( "glIndexfv" );
-	qglIndexi                    = 	dllIndexi                    = GPA( "glIndexi" );
-	qglIndexiv                   = 	dllIndexiv                   = GPA( "glIndexiv" );
-	qglIndexs                    = 	dllIndexs                    = GPA( "glIndexs" );
-	qglIndexsv                   = 	dllIndexsv                   = GPA( "glIndexsv" );
-	qglIndexub                   = 	dllIndexub                   = GPA( "glIndexub" );
-	qglIndexubv                  = 	dllIndexubv                  = GPA( "glIndexubv" );
-	qglInitNames                 = 	dllInitNames                 = GPA( "glInitNames" );
-	qglInterleavedArrays         = 	dllInterleavedArrays         = GPA( "glInterleavedArrays" );
-	qglIsEnabled                 = 	dllIsEnabled                 = GPA( "glIsEnabled" );
-	qglIsList                    = 	dllIsList                    = GPA( "glIsList" );
-	qglIsTexture                 = 	dllIsTexture                 = GPA( "glIsTexture" );
-	qglLightModelf               = 	dllLightModelf               = GPA( "glLightModelf" );
-	qglLightModelfv              = 	dllLightModelfv              = GPA( "glLightModelfv" );
-	qglLightModeli               = 	dllLightModeli               = GPA( "glLightModeli" );
-	qglLightModeliv              = 	dllLightModeliv              = GPA( "glLightModeliv" );
-	qglLightf                    = 	dllLightf                    = GPA( "glLightf" );
-	qglLightfv                   = 	dllLightfv                   = GPA( "glLightfv" );
-	qglLighti                    = 	dllLighti                    = GPA( "glLighti" );
-	qglLightiv                   = 	dllLightiv                   = GPA( "glLightiv" );
-	qglLineStipple               = 	dllLineStipple               = GPA( "glLineStipple" );
-	qglLineWidth                 = 	dllLineWidth                 = GPA( "glLineWidth" );
-	qglListBase                  = 	dllListBase                  = GPA( "glListBase" );
-	qglLoadIdentity              = 	dllLoadIdentity              = GPA( "glLoadIdentity" );
-	qglLoadMatrixd               = 	dllLoadMatrixd               = GPA( "glLoadMatrixd" );
-	qglLoadMatrixf               = 	dllLoadMatrixf               = GPA( "glLoadMatrixf" );
-	qglLoadName                  = 	dllLoadName                  = GPA( "glLoadName" );
-	qglLogicOp                   = 	dllLogicOp                   = GPA( "glLogicOp" );
-	qglMap1d                     = 	dllMap1d                     = GPA( "glMap1d" );
-	qglMap1f                     = 	dllMap1f                     = GPA( "glMap1f" );
-	qglMap2d                     = 	dllMap2d                     = GPA( "glMap2d" );
-	qglMap2f                     = 	dllMap2f                     = GPA( "glMap2f" );
-	qglMapGrid1d                 = 	dllMapGrid1d                 = GPA( "glMapGrid1d" );
-	qglMapGrid1f                 = 	dllMapGrid1f                 = GPA( "glMapGrid1f" );
-	qglMapGrid2d                 = 	dllMapGrid2d                 = GPA( "glMapGrid2d" );
-	qglMapGrid2f                 = 	dllMapGrid2f                 = GPA( "glMapGrid2f" );
-	qglMaterialf                 = 	dllMaterialf                 = GPA( "glMaterialf" );
-	qglMaterialfv                = 	dllMaterialfv                = GPA( "glMaterialfv" );
-	qglMateriali                 = 	dllMateriali                 = GPA( "glMateriali" );
-	qglMaterialiv                = 	dllMaterialiv                = GPA( "glMaterialiv" );
-	qglMatrixMode                = 	dllMatrixMode                = GPA( "glMatrixMode" );
-	qglMultMatrixd               = 	dllMultMatrixd               = GPA( "glMultMatrixd" );
-	qglMultMatrixf               = 	dllMultMatrixf               = GPA( "glMultMatrixf" );
-	qglNewList                   = 	dllNewList                   = GPA( "glNewList" );
-	qglNormal3b                  = 	dllNormal3b                  = GPA( "glNormal3b" );
-	qglNormal3bv                 = 	dllNormal3bv                 = GPA( "glNormal3bv" );
-	qglNormal3d                  = 	dllNormal3d                  = GPA( "glNormal3d" );
-	qglNormal3dv                 = 	dllNormal3dv                 = GPA( "glNormal3dv" );
-	qglNormal3f                  = 	dllNormal3f                  = GPA( "glNormal3f" );
-	qglNormal3fv                 = 	dllNormal3fv                 = GPA( "glNormal3fv" );
-	qglNormal3i                  = 	dllNormal3i                  = GPA( "glNormal3i" );
-	qglNormal3iv                 = 	dllNormal3iv                 = GPA( "glNormal3iv" );
-	qglNormal3s                  = 	dllNormal3s                  = GPA( "glNormal3s" );
-	qglNormal3sv                 = 	dllNormal3sv                 = GPA( "glNormal3sv" );
-	qglNormalPointer             = 	dllNormalPointer             = GPA( "glNormalPointer" );
-	qglOrtho                     = 	dllOrtho                     = GPA( "glOrtho" );
-	qglPassThrough               = 	dllPassThrough               = GPA( "glPassThrough" );
-	qglPixelMapfv                = 	dllPixelMapfv                = GPA( "glPixelMapfv" );
-	qglPixelMapuiv               = 	dllPixelMapuiv               = GPA( "glPixelMapuiv" );
-	qglPixelMapusv               = 	dllPixelMapusv               = GPA( "glPixelMapusv" );
-	qglPixelStoref               = 	dllPixelStoref               = GPA( "glPixelStoref" );
-	qglPixelStorei               = 	dllPixelStorei               = GPA( "glPixelStorei" );
-	qglPixelTransferf            = 	dllPixelTransferf            = GPA( "glPixelTransferf" );
-	qglPixelTransferi            = 	dllPixelTransferi            = GPA( "glPixelTransferi" );
-	qglPixelZoom                 = 	dllPixelZoom                 = GPA( "glPixelZoom" );
-	qglPointSize                 = 	dllPointSize                 = GPA( "glPointSize" );
-	qglPolygonMode               = 	dllPolygonMode               = GPA( "glPolygonMode" );
-	qglPolygonOffset             = 	dllPolygonOffset             = GPA( "glPolygonOffset" );
-	qglPolygonStipple            = 	dllPolygonStipple            = GPA( "glPolygonStipple" );
-	qglPopAttrib                 = 	dllPopAttrib                 = GPA( "glPopAttrib" );
-	qglPopClientAttrib           = 	dllPopClientAttrib           = GPA( "glPopClientAttrib" );
-	qglPopMatrix                 = 	dllPopMatrix                 = GPA( "glPopMatrix" );
-	qglPopName                   = 	dllPopName                   = GPA( "glPopName" );
-	qglPrioritizeTextures        = 	dllPrioritizeTextures        = GPA( "glPrioritizeTextures" );
-	qglPushAttrib                = 	dllPushAttrib                = GPA( "glPushAttrib" );
-	qglPushClientAttrib          = 	dllPushClientAttrib          = GPA( "glPushClientAttrib" );
-	qglPushMatrix                = 	dllPushMatrix                = GPA( "glPushMatrix" );
-	qglPushName                  = 	dllPushName                  = GPA( "glPushName" );
-	qglRasterPos2d               = 	dllRasterPos2d               = GPA( "glRasterPos2d" );
-	qglRasterPos2dv              = 	dllRasterPos2dv              = GPA( "glRasterPos2dv" );
-	qglRasterPos2f               = 	dllRasterPos2f               = GPA( "glRasterPos2f" );
-	qglRasterPos2fv              = 	dllRasterPos2fv              = GPA( "glRasterPos2fv" );
-	qglRasterPos2i               = 	dllRasterPos2i               = GPA( "glRasterPos2i" );
-	qglRasterPos2iv              = 	dllRasterPos2iv              = GPA( "glRasterPos2iv" );
-	qglRasterPos2s               = 	dllRasterPos2s               = GPA( "glRasterPos2s" );
-	qglRasterPos2sv              = 	dllRasterPos2sv              = GPA( "glRasterPos2sv" );
-	qglRasterPos3d               = 	dllRasterPos3d               = GPA( "glRasterPos3d" );
-	qglRasterPos3dv              = 	dllRasterPos3dv              = GPA( "glRasterPos3dv" );
-	qglRasterPos3f               = 	dllRasterPos3f               = GPA( "glRasterPos3f" );
-	qglRasterPos3fv              = 	dllRasterPos3fv              = GPA( "glRasterPos3fv" );
-	qglRasterPos3i               = 	dllRasterPos3i               = GPA( "glRasterPos3i" );
-	qglRasterPos3iv              = 	dllRasterPos3iv              = GPA( "glRasterPos3iv" );
-	qglRasterPos3s               = 	dllRasterPos3s               = GPA( "glRasterPos3s" );
-	qglRasterPos3sv              = 	dllRasterPos3sv              = GPA( "glRasterPos3sv" );
-	qglRasterPos4d               = 	dllRasterPos4d               = GPA( "glRasterPos4d" );
-	qglRasterPos4dv              = 	dllRasterPos4dv              = GPA( "glRasterPos4dv" );
-	qglRasterPos4f               = 	dllRasterPos4f               = GPA( "glRasterPos4f" );
-	qglRasterPos4fv              = 	dllRasterPos4fv              = GPA( "glRasterPos4fv" );
-	qglRasterPos4i               = 	dllRasterPos4i               = GPA( "glRasterPos4i" );
-	qglRasterPos4iv              = 	dllRasterPos4iv              = GPA( "glRasterPos4iv" );
-	qglRasterPos4s               = 	dllRasterPos4s               = GPA( "glRasterPos4s" );
-	qglRasterPos4sv              = 	dllRasterPos4sv              = GPA( "glRasterPos4sv" );
-	qglReadBuffer                = 	dllReadBuffer                = GPA( "glReadBuffer" );
-	qglReadPixels                = 	dllReadPixels                = GPA( "glReadPixels" );
-	qglRectd                     = 	dllRectd                     = GPA( "glRectd" );
-	qglRectdv                    = 	dllRectdv                    = GPA( "glRectdv" );
-	qglRectf                     = 	dllRectf                     = GPA( "glRectf" );
-	qglRectfv                    = 	dllRectfv                    = GPA( "glRectfv" );
-	qglRecti                     = 	dllRecti                     = GPA( "glRecti" );
-	qglRectiv                    = 	dllRectiv                    = GPA( "glRectiv" );
-	qglRects                     = 	dllRects                     = GPA( "glRects" );
-	qglRectsv                    = 	dllRectsv                    = GPA( "glRectsv" );
-	qglRenderMode                = 	dllRenderMode                = GPA( "glRenderMode" );
-	qglRotated                   = 	dllRotated                   = GPA( "glRotated" );
-	qglRotatef                   = 	dllRotatef                   = GPA( "glRotatef" );
-	qglScaled                    = 	dllScaled                    = GPA( "glScaled" );
-	qglScalef                    = 	dllScalef                    = GPA( "glScalef" );
-	qglScissor                   = 	dllScissor                   = GPA( "glScissor" );
-	qglSelectBuffer              = 	dllSelectBuffer              = GPA( "glSelectBuffer" );
-	qglShadeModel                = 	dllShadeModel                = GPA( "glShadeModel" );
-	qglStencilFunc               = 	dllStencilFunc               = GPA( "glStencilFunc" );
-	qglStencilMask               = 	dllStencilMask               = GPA( "glStencilMask" );
-	qglStencilOp                 = 	dllStencilOp                 = GPA( "glStencilOp" );
-	qglTexCoord1d                = 	dllTexCoord1d                = GPA( "glTexCoord1d" );
-	qglTexCoord1dv               = 	dllTexCoord1dv               = GPA( "glTexCoord1dv" );
-	qglTexCoord1f                = 	dllTexCoord1f                = GPA( "glTexCoord1f" );
-	qglTexCoord1fv               = 	dllTexCoord1fv               = GPA( "glTexCoord1fv" );
-	qglTexCoord1i                = 	dllTexCoord1i                = GPA( "glTexCoord1i" );
-	qglTexCoord1iv               = 	dllTexCoord1iv               = GPA( "glTexCoord1iv" );
-	qglTexCoord1s                = 	dllTexCoord1s                = GPA( "glTexCoord1s" );
-	qglTexCoord1sv               = 	dllTexCoord1sv               = GPA( "glTexCoord1sv" );
-	qglTexCoord2d                = 	dllTexCoord2d                = GPA( "glTexCoord2d" );
-	qglTexCoord2dv               = 	dllTexCoord2dv               = GPA( "glTexCoord2dv" );
-	qglTexCoord2f                = 	dllTexCoord2f                = GPA( "glTexCoord2f" );
-	qglTexCoord2fv               = 	dllTexCoord2fv               = GPA( "glTexCoord2fv" );
-	qglTexCoord2i                = 	dllTexCoord2i                = GPA( "glTexCoord2i" );
-	qglTexCoord2iv               = 	dllTexCoord2iv               = GPA( "glTexCoord2iv" );
-	qglTexCoord2s                = 	dllTexCoord2s                = GPA( "glTexCoord2s" );
-	qglTexCoord2sv               = 	dllTexCoord2sv               = GPA( "glTexCoord2sv" );
-	qglTexCoord3d                = 	dllTexCoord3d                = GPA( "glTexCoord3d" );
-	qglTexCoord3dv               = 	dllTexCoord3dv               = GPA( "glTexCoord3dv" );
-	qglTexCoord3f                = 	dllTexCoord3f                = GPA( "glTexCoord3f" );
-	qglTexCoord3fv               = 	dllTexCoord3fv               = GPA( "glTexCoord3fv" );
-	qglTexCoord3i                = 	dllTexCoord3i                = GPA( "glTexCoord3i" );
-	qglTexCoord3iv               = 	dllTexCoord3iv               = GPA( "glTexCoord3iv" );
-	qglTexCoord3s                = 	dllTexCoord3s                = GPA( "glTexCoord3s" );
-	qglTexCoord3sv               = 	dllTexCoord3sv               = GPA( "glTexCoord3sv" );
-	qglTexCoord4d                = 	dllTexCoord4d                = GPA( "glTexCoord4d" );
-	qglTexCoord4dv               = 	dllTexCoord4dv               = GPA( "glTexCoord4dv" );
-	qglTexCoord4f                = 	dllTexCoord4f                = GPA( "glTexCoord4f" );
-	qglTexCoord4fv               = 	dllTexCoord4fv               = GPA( "glTexCoord4fv" );
-	qglTexCoord4i                = 	dllTexCoord4i                = GPA( "glTexCoord4i" );
-	qglTexCoord4iv               = 	dllTexCoord4iv               = GPA( "glTexCoord4iv" );
-	qglTexCoord4s                = 	dllTexCoord4s                = GPA( "glTexCoord4s" );
-	qglTexCoord4sv               = 	dllTexCoord4sv               = GPA( "glTexCoord4sv" );
-	qglTexCoordPointer           = 	dllTexCoordPointer           = GPA( "glTexCoordPointer" );
-	qglTexEnvf                   = 	dllTexEnvf                   = GPA( "glTexEnvf" );
-	qglTexEnvfv                  = 	dllTexEnvfv                  = GPA( "glTexEnvfv" );
-	qglTexEnvi                   = 	dllTexEnvi                   = GPA( "glTexEnvi" );
-	qglTexEnviv                  = 	dllTexEnviv                  = GPA( "glTexEnviv" );
-	qglTexGend                   = 	dllTexGend                   = GPA( "glTexGend" );
-	qglTexGendv                  = 	dllTexGendv                  = GPA( "glTexGendv" );
-	qglTexGenf                   = 	dllTexGenf                   = GPA( "glTexGenf" );
-	qglTexGenfv                  = 	dllTexGenfv                  = GPA( "glTexGenfv" );
-	qglTexGeni                   = 	dllTexGeni                   = GPA( "glTexGeni" );
-	qglTexGeniv                  = 	dllTexGeniv                  = GPA( "glTexGeniv" );
-	qglTexImage1D                = 	dllTexImage1D                = GPA( "glTexImage1D" );
-	qglTexImage2D                = 	dllTexImage2D                = GPA( "glTexImage2D" );
-	qglTexParameterf             = 	dllTexParameterf             = GPA( "glTexParameterf" );
-	qglTexParameterfv            = 	dllTexParameterfv            = GPA( "glTexParameterfv" );
-	qglTexParameteri             = 	dllTexParameteri             = GPA( "glTexParameteri" );
-	qglTexParameteriv            = 	dllTexParameteriv            = GPA( "glTexParameteriv" );
-	qglTexSubImage1D             = 	dllTexSubImage1D             = GPA( "glTexSubImage1D" );
-	qglTexSubImage2D             = 	dllTexSubImage2D             = GPA( "glTexSubImage2D" );
-	qglTranslated                = 	dllTranslated                = GPA( "glTranslated" );
-	qglTranslatef                = 	dllTranslatef                = GPA( "glTranslatef" );
-	qglVertex2d                  = 	dllVertex2d                  = GPA( "glVertex2d" );
-	qglVertex2dv                 = 	dllVertex2dv                 = GPA( "glVertex2dv" );
-	qglVertex2f                  = 	dllVertex2f                  = GPA( "glVertex2f" );
-	qglVertex2fv                 = 	dllVertex2fv                 = GPA( "glVertex2fv" );
-	qglVertex2i                  = 	dllVertex2i                  = GPA( "glVertex2i" );
-	qglVertex2iv                 = 	dllVertex2iv                 = GPA( "glVertex2iv" );
-	qglVertex2s                  = 	dllVertex2s                  = GPA( "glVertex2s" );
-	qglVertex2sv                 = 	dllVertex2sv                 = GPA( "glVertex2sv" );
-	qglVertex3d                  = 	dllVertex3d                  = GPA( "glVertex3d" );
-	qglVertex3dv                 = 	dllVertex3dv                 = GPA( "glVertex3dv" );
-	qglVertex3f                  = 	dllVertex3f                  = GPA( "glVertex3f" );
-	qglVertex3fv                 = 	dllVertex3fv                 = GPA( "glVertex3fv" );
-	qglVertex3i                  = 	dllVertex3i                  = GPA( "glVertex3i" );
-	qglVertex3iv                 = 	dllVertex3iv                 = GPA( "glVertex3iv" );
-	qglVertex3s                  = 	dllVertex3s                  = GPA( "glVertex3s" );
-	qglVertex3sv                 = 	dllVertex3sv                 = GPA( "glVertex3sv" );
-	qglVertex4d                  = 	dllVertex4d                  = GPA( "glVertex4d" );
-	qglVertex4dv                 = 	dllVertex4dv                 = GPA( "glVertex4dv" );
-	qglVertex4f                  = 	dllVertex4f                  = GPA( "glVertex4f" );
-	qglVertex4fv                 = 	dllVertex4fv                 = GPA( "glVertex4fv" );
-	qglVertex4i                  = 	dllVertex4i                  = GPA( "glVertex4i" );
-	qglVertex4iv                 = 	dllVertex4iv                 = GPA( "glVertex4iv" );
-	qglVertex4s                  = 	dllVertex4s                  = GPA( "glVertex4s" );
-	qglVertex4sv                 = 	dllVertex4sv                 = GPA( "glVertex4sv" );
-	qglVertexPointer             = 	dllVertexPointer             = GPA( "glVertexPointer" );
-	qglViewport                  = 	dllViewport                  = GPA( "glViewport" );
-
-	qwglCopyContext              = GPA( "wglCopyContext" );
-	qwglCreateContext            = GPA( "wglCreateContext" );
-	qwglCreateLayerContext       = GPA( "wglCreateLayerContext" );
-	qwglDeleteContext            = GPA( "wglDeleteContext" );
-	qwglDescribeLayerPlane       = GPA( "wglDescribeLayerPlane" );
-	qwglGetCurrentContext        = GPA( "wglGetCurrentContext" );
-	qwglGetCurrentDC             = GPA( "wglGetCurrentDC" );
-	qwglGetLayerPaletteEntries   = GPA( "wglGetLayerPaletteEntries" );
-	qwglGetProcAddress           = GPA( "wglGetProcAddress" );
-	qwglMakeCurrent              = GPA( "wglMakeCurrent" );
-	qwglRealizeLayerPalette      = GPA( "wglRealizeLayerPalette" );
-	qwglSetLayerPaletteEntries   = GPA( "wglSetLayerPaletteEntries" );
-	qwglShareLists               = GPA( "wglShareLists" );
-	qwglSwapLayerBuffers         = GPA( "wglSwapLayerBuffers" );
-	qwglUseFontBitmaps           = GPA( "wglUseFontBitmapsA" );
-	qwglUseFontOutlines          = GPA( "wglUseFontOutlinesA" );
-
-	qwglChoosePixelFormat        = GPA( "wglChoosePixelFormat" );
-	qwglDescribePixelFormat      = GPA( "wglDescribePixelFormat" );
-	qwglGetPixelFormat           = GPA( "wglGetPixelFormat" );
-	qwglSetPixelFormat           = GPA( "wglSetPixelFormat" );
-	qwglSwapBuffers              = GPA( "wglSwapBuffers" );
-
-	qwglSwapIntervalEXT = 0;
-	qglActiveTextureARB = 0;
-	qglClientActiveTextureARB = 0;
-	qglMultiTexCoord2fARB = 0;
-	qglLockArraysEXT = 0;
-	qglUnlockArraysEXT = 0;
-	qwglGetDeviceGammaRamp3DFX = NULL;
-	qwglSetDeviceGammaRamp3DFX = NULL;
+	qglAccum                     = dllAccum						= GPA( "glAccum" );
+	qglAlphaFunc                 = dllAlphaFunc					= GPA( "glAlphaFunc" );
+	qglAreTexturesResident       = dllAreTexturesResident		= GPA( "glAreTexturesResident" );
+	qglArrayElement              = dllArrayElement				= GPA( "glArrayElement" );
+	qglBegin                     = dllBegin						= GPA( "glBegin" );
+	qglBindTexture               = dllBindTexture				= GPA( "glBindTexture" );
+	qglBitmap                    = dllBitmap					= GPA( "glBitmap" );
+	qglBlendFunc                 = dllBlendFunc					= GPA( "glBlendFunc" );
+	qglCallList                  = dllCallList					= GPA( "glCallList" );
+	qglCallLists                 = dllCallLists					= GPA( "glCallLists" );
+	qglClear                     = dllClear						= GPA( "glClear" );
+	qglClearAccum                = dllClearAccum				= GPA( "glClearAccum" );
+	qglClearColor                = dllClearColor				= GPA( "glClearColor" );
+	qglClearDepth                = dllClearDepth				= GPA( "glClearDepth" );
+	qglClearIndex                = dllClearIndex				= GPA( "glClearIndex" );
+	qglClearStencil              = dllClearStencil				= GPA( "glClearStencil" );
+	qglClipPlane                 = dllClipPlane					= GPA( "glClipPlane" );
+	qglColor3b                   = dllColor3b					= GPA( "glColor3b" );
+	qglColor3bv                  = dllColor3bv					= GPA( "glColor3bv" );
+	qglColor3d                   = dllColor3d					= GPA( "glColor3d" );
+	qglColor3dv                  = dllColor3dv					= GPA( "glColor3dv" );
+	qglColor3f                   = dllColor3f					= GPA( "glColor3f" );
+	qglColor3fv                  = dllColor3fv					= GPA( "glColor3fv" );
+	qglColor3i                   = dllColor3i					= GPA( "glColor3i" );
+	qglColor3iv                  = dllColor3iv					= GPA( "glColor3iv" );
+	qglColor3s                   = dllColor3s					= GPA( "glColor3s" );
+	qglColor3sv                  = dllColor3sv					= GPA( "glColor3sv" );
+	qglColor3ub                  = dllColor3ub					= GPA( "glColor3ub" );
+	qglColor3ubv                 = dllColor3ubv					= GPA( "glColor3ubv" );
+	qglColor3ui                  = dllColor3ui					= GPA( "glColor3ui" );
+	qglColor3uiv                 = dllColor3uiv					= GPA( "glColor3uiv" );
+	qglColor3us                  = dllColor3us					= GPA( "glColor3us" );
+	qglColor3usv                 = dllColor3usv					= GPA( "glColor3usv" );
+	qglColor4b                   = dllColor4b					= GPA( "glColor4b" );
+	qglColor4bv                  = dllColor4bv					= GPA( "glColor4bv" );
+	qglColor4d                   = dllColor4d					= GPA( "glColor4d" );
+	qglColor4dv                  = dllColor4dv					= GPA( "glColor4dv" );
+	qglColor4f                   = dllColor4f					= GPA( "glColor4f" );
+	qglColor4fv                  = dllColor4fv					= GPA( "glColor4fv" );
+	qglColor4i                   = dllColor4i					= GPA( "glColor4i" );
+	qglColor4iv                  = dllColor4iv					= GPA( "glColor4iv" );
+	qglColor4s                   = dllColor4s					= GPA( "glColor4s" );
+	qglColor4sv                  = dllColor4sv					= GPA( "glColor4sv" );
+	qglColor4ub                  = dllColor4ub					= GPA( "glColor4ub" );
+	qglColor4ubv                 = dllColor4ubv					= GPA( "glColor4ubv" );
+	qglColor4ui                  = dllColor4ui					= GPA( "glColor4ui" );
+	qglColor4uiv                 = dllColor4uiv					= GPA( "glColor4uiv" );
+	qglColor4us                  = dllColor4us					= GPA( "glColor4us" );
+	qglColor4usv                 = dllColor4usv					= GPA( "glColor4usv" );
+	qglColorMask                 = dllColorMask					= GPA( "glColorMask" );
+	qglColorMaterial             = dllColorMaterial				= GPA( "glColorMaterial" );
+	qglColorPointer              = dllColorPointer				= GPA( "glColorPointer" );
+	qglCopyPixels                = dllCopyPixels				= GPA( "glCopyPixels" );
+	qglCopyTexImage1D            = dllCopyTexImage1D			= GPA( "glCopyTexImage1D" );
+	qglCopyTexImage2D            = dllCopyTexImage2D			= GPA( "glCopyTexImage2D" );
+	qglCopyTexSubImage1D         = dllCopyTexSubImage1D			= GPA( "glCopyTexSubImage1D" );
+	qglCopyTexSubImage2D         = dllCopyTexSubImage2D			= GPA( "glCopyTexSubImage2D" );
+	qglCullFace                  = dllCullFace					= GPA( "glCullFace" );
+	qglDeleteLists               = dllDeleteLists				= GPA( "glDeleteLists" );
+	qglDeleteTextures            = dllDeleteTextures			= GPA( "glDeleteTextures" );
+	qglDepthFunc                 = dllDepthFunc					= GPA( "glDepthFunc" );
+	qglDepthMask                 = dllDepthMask					= GPA( "glDepthMask" );
+	qglDepthRange                = dllDepthRange				= GPA( "glDepthRange" );
+	qglDisable                   = dllDisable					= GPA( "glDisable" );
+	qglDisableClientState        = dllDisableClientState		= GPA( "glDisableClientState" );
+	qglDrawArrays                = dllDrawArrays				= GPA( "glDrawArrays" );
+	qglDrawBuffer                = dllDrawBuffer				= GPA( "glDrawBuffer" );
+	qglDrawElements              = dllDrawElements				= GPA( "glDrawElements" );
+	qglDrawPixels                = dllDrawPixels				= GPA( "glDrawPixels" );
+	qglEdgeFlag                  = dllEdgeFlag					= GPA( "glEdgeFlag" );
+	qglEdgeFlagPointer           = dllEdgeFlagPointer			= GPA( "glEdgeFlagPointer" );
+	qglEdgeFlagv                 = dllEdgeFlagv					= GPA( "glEdgeFlagv" );
+	qglEnable                    = dllEnable                    = GPA( "glEnable" );
+	qglEnableClientState         = dllEnableClientState         = GPA( "glEnableClientState" );
+	qglEnd                       = dllEnd                       = GPA( "glEnd" );
+	qglEndList                   = dllEndList                   = GPA( "glEndList" );
+	qglEvalCoord1d				 = dllEvalCoord1d				= GPA( "glEvalCoord1d" );
+	qglEvalCoord1dv              = dllEvalCoord1dv              = GPA( "glEvalCoord1dv" );
+	qglEvalCoord1f               = dllEvalCoord1f               = GPA( "glEvalCoord1f" );
+	qglEvalCoord1fv              = dllEvalCoord1fv              = GPA( "glEvalCoord1fv" );
+	qglEvalCoord2d               = dllEvalCoord2d               = GPA( "glEvalCoord2d" );
+	qglEvalCoord2dv              = dllEvalCoord2dv              = GPA( "glEvalCoord2dv" );
+	qglEvalCoord2f               = dllEvalCoord2f               = GPA( "glEvalCoord2f" );
+	qglEvalCoord2fv              = dllEvalCoord2fv              = GPA( "glEvalCoord2fv" );
+	qglEvalMesh1                 = dllEvalMesh1                 = GPA( "glEvalMesh1" );
+	qglEvalMesh2                 = dllEvalMesh2                 = GPA( "glEvalMesh2" );
+	qglEvalPoint1                = dllEvalPoint1                = GPA( "glEvalPoint1" );
+	qglEvalPoint2                = dllEvalPoint2                = GPA( "glEvalPoint2" );
+	qglFeedbackBuffer            = dllFeedbackBuffer            = GPA( "glFeedbackBuffer" );
+	qglFinish                    = dllFinish                    = GPA( "glFinish" );
+	qglFlush                     = dllFlush                     = GPA( "glFlush" );
+	qglFogf                      = dllFogf                      = GPA( "glFogf" );
+	qglFogfv                     = dllFogfv                     = GPA( "glFogfv" );
+	qglFogi                      = dllFogi                      = GPA( "glFogi" );
+	qglFogiv                     = dllFogiv                     = GPA( "glFogiv" );
+	qglFrontFace                 = dllFrontFace                 = GPA( "glFrontFace" );
+	qglFrustum                   = dllFrustum                   = GPA( "glFrustum" );
+	qglGenLists                  = dllGenLists                  = ( GLuint (__stdcall * )(int) ) GPA( "glGenLists" );
+	qglGenTextures               = dllGenTextures               = GPA( "glGenTextures" );
+	qglGetBooleanv               = dllGetBooleanv               = GPA( "glGetBooleanv" );
+	qglGetClipPlane              = dllGetClipPlane              = GPA( "glGetClipPlane" );
+	qglGetDoublev                = dllGetDoublev                = GPA( "glGetDoublev" );
+	qglGetError                  = dllGetError                  = ( GLenum (__stdcall * )(void) ) GPA( "glGetError" );
+	qglGetFloatv                 = dllGetFloatv                 = GPA( "glGetFloatv" );
+	qglGetIntegerv               = dllGetIntegerv               = GPA( "glGetIntegerv" );
+	qglGetLightfv                = dllGetLightfv                = GPA( "glGetLightfv" );
+	qglGetLightiv                = dllGetLightiv                = GPA( "glGetLightiv" );
+	qglGetMapdv                  = dllGetMapdv                  = GPA( "glGetMapdv" );
+	qglGetMapfv                  = dllGetMapfv                  = GPA( "glGetMapfv" );
+	qglGetMapiv                  = dllGetMapiv                  = GPA( "glGetMapiv" );
+	qglGetMaterialfv             = dllGetMaterialfv             = GPA( "glGetMaterialfv" );
+	qglGetMaterialiv             = dllGetMaterialiv             = GPA( "glGetMaterialiv" );
+	qglGetPixelMapfv             = dllGetPixelMapfv             = GPA( "glGetPixelMapfv" );
+	qglGetPixelMapuiv            = dllGetPixelMapuiv            = GPA( "glGetPixelMapuiv" );
+	qglGetPixelMapusv            = dllGetPixelMapusv            = GPA( "glGetPixelMapusv" );
+	qglGetPointerv               = dllGetPointerv               = GPA( "glGetPointerv" );
+	qglGetPolygonStipple         = dllGetPolygonStipple         = GPA( "glGetPolygonStipple" );
+	qglGetString                 = dllGetString                 = GPA( "glGetString" );
+	qglGetTexEnvfv               = dllGetTexEnvfv               = GPA( "glGetTexEnvfv" );
+	qglGetTexEnviv               = dllGetTexEnviv               = GPA( "glGetTexEnviv" );
+	qglGetTexGendv               = dllGetTexGendv               = GPA( "glGetTexGendv" );
+	qglGetTexGenfv               = dllGetTexGenfv               = GPA( "glGetTexGenfv" );
+	qglGetTexGeniv               = dllGetTexGeniv               = GPA( "glGetTexGeniv" );
+	qglGetTexImage               = dllGetTexImage               = GPA( "glGetTexImage" );
+	qglGetTexParameterfv         = dllGetTexParameterfv         = GPA( "glGetTexParameterfv" );
+	qglGetTexParameteriv         = dllGetTexParameteriv         = GPA( "glGetTexParameteriv" );
+	qglHint                      = dllHint                      = GPA( "glHint" );
+	qglIndexMask                 = dllIndexMask                 = GPA( "glIndexMask" );
+	qglIndexPointer              = dllIndexPointer              = GPA( "glIndexPointer" );
+	qglIndexd                    = dllIndexd                    = GPA( "glIndexd" );
+	qglIndexdv                   = dllIndexdv                   = GPA( "glIndexdv" );
+	qglIndexf                    = dllIndexf                    = GPA( "glIndexf" );
+	qglIndexfv                   = dllIndexfv                   = GPA( "glIndexfv" );
+	qglIndexi                    = dllIndexi                    = GPA( "glIndexi" );
+	qglIndexiv                   = dllIndexiv                   = GPA( "glIndexiv" );
+	qglIndexs                    = dllIndexs                    = GPA( "glIndexs" );
+	qglIndexsv                   = dllIndexsv                   = GPA( "glIndexsv" );
+	qglIndexub                   = dllIndexub                   = GPA( "glIndexub" );
+	qglIndexubv                  = dllIndexubv                  = GPA( "glIndexubv" );
+	qglInitNames                 = dllInitNames                 = GPA( "glInitNames" );
+	qglInterleavedArrays         = dllInterleavedArrays         = GPA( "glInterleavedArrays" );
+	qglIsEnabled                 = dllIsEnabled                 = GPA( "glIsEnabled" );
+	qglIsList                    = dllIsList                    = GPA( "glIsList" );
+	qglIsTexture                 = dllIsTexture                 = GPA( "glIsTexture" );
+	qglLightModelf               = dllLightModelf               = GPA( "glLightModelf" );
+	qglLightModelfv              = dllLightModelfv              = GPA( "glLightModelfv" );
+	qglLightModeli               = dllLightModeli               = GPA( "glLightModeli" );
+	qglLightModeliv              = dllLightModeliv              = GPA( "glLightModeliv" );
+	qglLightf                    = dllLightf                    = GPA( "glLightf" );
+	qglLightfv                   = dllLightfv                   = GPA( "glLightfv" );
+	qglLighti                    = dllLighti                    = GPA( "glLighti" );
+	qglLightiv                   = dllLightiv                   = GPA( "glLightiv" );
+	qglLineStipple               = dllLineStipple               = GPA( "glLineStipple" );
+	qglLineWidth                 = dllLineWidth                 = GPA( "glLineWidth" );
+	qglListBase                  = dllListBase                  = GPA( "glListBase" );
+	qglLoadIdentity              = dllLoadIdentity              = GPA( "glLoadIdentity" );
+	qglLoadMatrixd               = dllLoadMatrixd               = GPA( "glLoadMatrixd" );
+	qglLoadMatrixf               = dllLoadMatrixf               = GPA( "glLoadMatrixf" );
+	qglLoadName                  = dllLoadName                  = GPA( "glLoadName" );
+	qglLogicOp                   = dllLogicOp                   = GPA( "glLogicOp" );
+	qglMap1d                     = dllMap1d                     = GPA( "glMap1d" );
+	qglMap1f                     = dllMap1f                     = GPA( "glMap1f" );
+	qglMap2d                     = dllMap2d                     = GPA( "glMap2d" );
+	qglMap2f                     = dllMap2f                     = GPA( "glMap2f" );
+	qglMapGrid1d                 = dllMapGrid1d                 = GPA( "glMapGrid1d" );
+	qglMapGrid1f                 = dllMapGrid1f                 = GPA( "glMapGrid1f" );
+	qglMapGrid2d                 = dllMapGrid2d                 = GPA( "glMapGrid2d" );
+	qglMapGrid2f                 = dllMapGrid2f                 = GPA( "glMapGrid2f" );
+	qglMaterialf                 = dllMaterialf                 = GPA( "glMaterialf" );
+	qglMaterialfv                = dllMaterialfv                = GPA( "glMaterialfv" );
+	qglMateriali                 = dllMateriali                 = GPA( "glMateriali" );
+	qglMaterialiv                = dllMaterialiv                = GPA( "glMaterialiv" );
+	qglMatrixMode                = dllMatrixMode                = GPA( "glMatrixMode" );
+	qglMultMatrixd               = dllMultMatrixd               = GPA( "glMultMatrixd" );
+	qglMultMatrixf               = dllMultMatrixf               = GPA( "glMultMatrixf" );
+	qglNewList                   = dllNewList                   = GPA( "glNewList" );
+	qglNormal3b                  = dllNormal3b                  = GPA( "glNormal3b" );
+	qglNormal3bv                 = dllNormal3bv                 = GPA( "glNormal3bv" );
+	qglNormal3d                  = dllNormal3d                  = GPA( "glNormal3d" );
+	qglNormal3dv                 = dllNormal3dv                 = GPA( "glNormal3dv" );
+	qglNormal3f                  = dllNormal3f                  = GPA( "glNormal3f" );
+	qglNormal3fv                 = dllNormal3fv                 = GPA( "glNormal3fv" );
+	qglNormal3i                  = dllNormal3i                  = GPA( "glNormal3i" );
+	qglNormal3iv                 = dllNormal3iv                 = GPA( "glNormal3iv" );
+	qglNormal3s                  = dllNormal3s                  = GPA( "glNormal3s" );
+	qglNormal3sv                 = dllNormal3sv                 = GPA( "glNormal3sv" );
+	qglNormalPointer             = dllNormalPointer             = GPA( "glNormalPointer" );
+	qglOrtho                     = dllOrtho                     = GPA( "glOrtho" );
+	qglPassThrough               = dllPassThrough               = GPA( "glPassThrough" );
+	qglPixelMapfv                = dllPixelMapfv                = GPA( "glPixelMapfv" );
+	qglPixelMapuiv               = dllPixelMapuiv               = GPA( "glPixelMapuiv" );
+	qglPixelMapusv               = dllPixelMapusv               = GPA( "glPixelMapusv" );
+	qglPixelStoref               = dllPixelStoref               = GPA( "glPixelStoref" );
+	qglPixelStorei               = dllPixelStorei               = GPA( "glPixelStorei" );
+	qglPixelTransferf            = dllPixelTransferf            = GPA( "glPixelTransferf" );
+	qglPixelTransferi            = dllPixelTransferi            = GPA( "glPixelTransferi" );
+	qglPixelZoom                 = dllPixelZoom                 = GPA( "glPixelZoom" );
+	qglPointSize                 = dllPointSize                 = GPA( "glPointSize" );
+	qglPolygonMode               = dllPolygonMode               = GPA( "glPolygonMode" );
+	qglPolygonOffset             = dllPolygonOffset             = GPA( "glPolygonOffset" );
+	qglPolygonStipple            = dllPolygonStipple            = GPA( "glPolygonStipple" );
+	qglPopAttrib                 = dllPopAttrib                 = GPA( "glPopAttrib" );
+	qglPopClientAttrib           = dllPopClientAttrib           = GPA( "glPopClientAttrib" );
+	qglPopMatrix                 = dllPopMatrix                 = GPA( "glPopMatrix" );
+	qglPopName                   = dllPopName                   = GPA( "glPopName" );
+	qglPrioritizeTextures        = dllPrioritizeTextures        = GPA( "glPrioritizeTextures" );
+	qglPushAttrib                = dllPushAttrib                = GPA( "glPushAttrib" );
+	qglPushClientAttrib          = dllPushClientAttrib          = GPA( "glPushClientAttrib" );
+	qglPushMatrix                = dllPushMatrix                = GPA( "glPushMatrix" );
+	qglPushName                  = dllPushName                  = GPA( "glPushName" );
+	qglRasterPos2d               = dllRasterPos2d               = GPA( "glRasterPos2d" );
+	qglRasterPos2dv              = dllRasterPos2dv              = GPA( "glRasterPos2dv" );
+	qglRasterPos2f               = dllRasterPos2f               = GPA( "glRasterPos2f" );
+	qglRasterPos2fv              = dllRasterPos2fv              = GPA( "glRasterPos2fv" );
+	qglRasterPos2i               = dllRasterPos2i               = GPA( "glRasterPos2i" );
+	qglRasterPos2iv              = dllRasterPos2iv              = GPA( "glRasterPos2iv" );
+	qglRasterPos2s               = dllRasterPos2s               = GPA( "glRasterPos2s" );
+	qglRasterPos2sv              = dllRasterPos2sv              = GPA( "glRasterPos2sv" );
+	qglRasterPos3d               = dllRasterPos3d               = GPA( "glRasterPos3d" );
+	qglRasterPos3dv              = dllRasterPos3dv              = GPA( "glRasterPos3dv" );
+	qglRasterPos3f               = dllRasterPos3f               = GPA( "glRasterPos3f" );
+	qglRasterPos3fv              = dllRasterPos3fv              = GPA( "glRasterPos3fv" );
+	qglRasterPos3i               = dllRasterPos3i               = GPA( "glRasterPos3i" );
+	qglRasterPos3iv              = dllRasterPos3iv              = GPA( "glRasterPos3iv" );
+	qglRasterPos3s               = dllRasterPos3s               = GPA( "glRasterPos3s" );
+	qglRasterPos3sv              = dllRasterPos3sv              = GPA( "glRasterPos3sv" );
+	qglRasterPos4d               = dllRasterPos4d               = GPA( "glRasterPos4d" );
+	qglRasterPos4dv              = dllRasterPos4dv              = GPA( "glRasterPos4dv" );
+	qglRasterPos4f               = dllRasterPos4f               = GPA( "glRasterPos4f" );
+	qglRasterPos4fv              = dllRasterPos4fv              = GPA( "glRasterPos4fv" );
+	qglRasterPos4i               = dllRasterPos4i               = GPA( "glRasterPos4i" );
+	qglRasterPos4iv              = dllRasterPos4iv              = GPA( "glRasterPos4iv" );
+	qglRasterPos4s               = dllRasterPos4s               = GPA( "glRasterPos4s" );
+	qglRasterPos4sv              = dllRasterPos4sv              = GPA( "glRasterPos4sv" );
+	qglReadBuffer                = dllReadBuffer                = GPA( "glReadBuffer" );
+	qglReadPixels                = dllReadPixels                = GPA( "glReadPixels" );
+	qglRectd                     = dllRectd                     = GPA( "glRectd" );
+	qglRectdv                    = dllRectdv                    = GPA( "glRectdv" );
+	qglRectf                     = dllRectf                     = GPA( "glRectf" );
+	qglRectfv                    = dllRectfv                    = GPA( "glRectfv" );
+	qglRecti                     = dllRecti                     = GPA( "glRecti" );
+	qglRectiv                    = dllRectiv                    = GPA( "glRectiv" );
+	qglRects                     = dllRects                     = GPA( "glRects" );
+	qglRectsv                    = dllRectsv                    = GPA( "glRectsv" );
+	qglRenderMode                = dllRenderMode                = GPA( "glRenderMode" );
+	qglRotated                   = dllRotated                   = GPA( "glRotated" );
+	qglRotatef                   = dllRotatef                   = GPA( "glRotatef" );
+	qglScaled                    = dllScaled                    = GPA( "glScaled" );
+	qglScalef                    = dllScalef                    = GPA( "glScalef" );
+	qglScissor                   = dllScissor                   = GPA( "glScissor" );
+	qglSelectBuffer              = dllSelectBuffer              = GPA( "glSelectBuffer" );
+	qglShadeModel                = dllShadeModel                = GPA( "glShadeModel" );
+	qglStencilFunc               = dllStencilFunc               = GPA( "glStencilFunc" );
+	qglStencilMask               = dllStencilMask               = GPA( "glStencilMask" );
+	qglStencilOp                 = dllStencilOp                 = GPA( "glStencilOp" );
+	qglTexCoord1d                = dllTexCoord1d                = GPA( "glTexCoord1d" );
+	qglTexCoord1dv               = dllTexCoord1dv               = GPA( "glTexCoord1dv" );
+	qglTexCoord1f                = dllTexCoord1f                = GPA( "glTexCoord1f" );
+	qglTexCoord1fv               = dllTexCoord1fv               = GPA( "glTexCoord1fv" );
+	qglTexCoord1i                = dllTexCoord1i                = GPA( "glTexCoord1i" );
+	qglTexCoord1iv               = dllTexCoord1iv               = GPA( "glTexCoord1iv" );
+	qglTexCoord1s                = dllTexCoord1s                = GPA( "glTexCoord1s" );
+	qglTexCoord1sv               = dllTexCoord1sv               = GPA( "glTexCoord1sv" );
+	qglTexCoord2d                = dllTexCoord2d                = GPA( "glTexCoord2d" );
+	qglTexCoord2dv               = dllTexCoord2dv               = GPA( "glTexCoord2dv" );
+	qglTexCoord2f                = dllTexCoord2f                = GPA( "glTexCoord2f" );
+	qglTexCoord2fv               = dllTexCoord2fv               = GPA( "glTexCoord2fv" );
+	qglTexCoord2i                = dllTexCoord2i                = GPA( "glTexCoord2i" );
+	qglTexCoord2iv               = dllTexCoord2iv               = GPA( "glTexCoord2iv" );
+	qglTexCoord2s                = dllTexCoord2s                = GPA( "glTexCoord2s" );
+	qglTexCoord2sv               = dllTexCoord2sv               = GPA( "glTexCoord2sv" );
+	qglTexCoord3d                = dllTexCoord3d                = GPA( "glTexCoord3d" );
+	qglTexCoord3dv               = dllTexCoord3dv               = GPA( "glTexCoord3dv" );
+	qglTexCoord3f                = dllTexCoord3f                = GPA( "glTexCoord3f" );
+	qglTexCoord3fv               = dllTexCoord3fv               = GPA( "glTexCoord3fv" );
+	qglTexCoord3i                = dllTexCoord3i                = GPA( "glTexCoord3i" );
+	qglTexCoord3iv               = dllTexCoord3iv               = GPA( "glTexCoord3iv" );
+	qglTexCoord3s                = dllTexCoord3s                = GPA( "glTexCoord3s" );
+	qglTexCoord3sv               = dllTexCoord3sv               = GPA( "glTexCoord3sv" );
+	qglTexCoord4d                = dllTexCoord4d                = GPA( "glTexCoord4d" );
+	qglTexCoord4dv               = dllTexCoord4dv               = GPA( "glTexCoord4dv" );
+	qglTexCoord4f                = dllTexCoord4f                = GPA( "glTexCoord4f" );
+	qglTexCoord4fv               = dllTexCoord4fv               = GPA( "glTexCoord4fv" );
+	qglTexCoord4i                = dllTexCoord4i                = GPA( "glTexCoord4i" );
+	qglTexCoord4iv               = dllTexCoord4iv               = GPA( "glTexCoord4iv" );
+	qglTexCoord4s                = dllTexCoord4s                = GPA( "glTexCoord4s" );
+	qglTexCoord4sv               = dllTexCoord4sv               = GPA( "glTexCoord4sv" );
+	qglTexCoordPointer           = dllTexCoordPointer           = GPA( "glTexCoordPointer" );
+	qglTexEnvf                   = dllTexEnvf                   = GPA( "glTexEnvf" );
+	qglTexEnvfv                  = dllTexEnvfv                  = GPA( "glTexEnvfv" );
+	qglTexEnvi                   = dllTexEnvi                   = GPA( "glTexEnvi" );
+	qglTexEnviv                  = dllTexEnviv                  = GPA( "glTexEnviv" );
+	qglTexGend                   = dllTexGend                   = GPA( "glTexGend" );
+	qglTexGendv                  = dllTexGendv                  = GPA( "glTexGendv" );
+	qglTexGenf                   = dllTexGenf                   = GPA( "glTexGenf" );
+	qglTexGenfv                  = dllTexGenfv                  = GPA( "glTexGenfv" );
+	qglTexGeni                   = dllTexGeni                   = GPA( "glTexGeni" );
+	qglTexGeniv                  = dllTexGeniv                  = GPA( "glTexGeniv" );
+	qglTexImage1D                = dllTexImage1D                = GPA( "glTexImage1D" );
+	qglTexImage2D                = dllTexImage2D                = GPA( "glTexImage2D" );
+	qglTexParameterf             = dllTexParameterf             = GPA( "glTexParameterf" );
+	qglTexParameterfv            = dllTexParameterfv            = GPA( "glTexParameterfv" );
+	qglTexParameteri             = dllTexParameteri             = GPA( "glTexParameteri" );
+	qglTexParameteriv            = dllTexParameteriv            = GPA( "glTexParameteriv" );
+	qglTexSubImage1D             = dllTexSubImage1D             = GPA( "glTexSubImage1D" );
+	qglTexSubImage2D             = dllTexSubImage2D             = GPA( "glTexSubImage2D" );
+	qglTranslated                = dllTranslated                = GPA( "glTranslated" );
+	qglTranslatef                = dllTranslatef                = GPA( "glTranslatef" );
+	qglVertex2d                  = dllVertex2d                  = GPA( "glVertex2d" );
+	qglVertex2dv                 = dllVertex2dv                 = GPA( "glVertex2dv" );
+	qglVertex2f                  = dllVertex2f                  = GPA( "glVertex2f" );
+	qglVertex2fv                 = dllVertex2fv                 = GPA( "glVertex2fv" );
+	qglVertex2i                  = dllVertex2i                  = GPA( "glVertex2i" );
+	qglVertex2iv                 = dllVertex2iv                 = GPA( "glVertex2iv" );
+	qglVertex2s                  = dllVertex2s                  = GPA( "glVertex2s" );
+	qglVertex2sv                 = dllVertex2sv                 = GPA( "glVertex2sv" );
+	qglVertex3d                  = dllVertex3d                  = GPA( "glVertex3d" );
+	qglVertex3dv                 = dllVertex3dv                 = GPA( "glVertex3dv" );
+	qglVertex3f                  = dllVertex3f                  = GPA( "glVertex3f" );
+	qglVertex3fv                 = dllVertex3fv                 = GPA( "glVertex3fv" );
+	qglVertex3i                  = dllVertex3i                  = GPA( "glVertex3i" );
+	qglVertex3iv                 = dllVertex3iv                 = GPA( "glVertex3iv" );
+	qglVertex3s                  = dllVertex3s                  = GPA( "glVertex3s" );
+	qglVertex3sv                 = dllVertex3sv                 = GPA( "glVertex3sv" );
+	qglVertex4d                  = dllVertex4d                  = GPA( "glVertex4d" );
+	qglVertex4dv                 = dllVertex4dv                 = GPA( "glVertex4dv" );
+	qglVertex4f                  = dllVertex4f                  = GPA( "glVertex4f" );
+	qglVertex4fv                 = dllVertex4fv                 = GPA( "glVertex4fv" );
+	qglVertex4i                  = dllVertex4i                  = GPA( "glVertex4i" );
+	qglVertex4iv                 = dllVertex4iv                 = GPA( "glVertex4iv" );
+	qglVertex4s                  = dllVertex4s                  = GPA( "glVertex4s" );
+	qglVertex4sv                 = dllVertex4sv                 = GPA( "glVertex4sv" );
+	qglVertexPointer             = dllVertexPointer             = GPA( "glVertexPointer" );
+	qglViewport                  = dllViewport                  = GPA( "glViewport" );
 
 	// check logging
-	QGL_EnableLogging( r_logFile->integer );
+	QGL_EnableLogging(r_logFile->integer);
 
 	return true;
 }
 
-void QGL_EnableLogging( bool enable )
+void QGL_EnableLogging(bool enable)
 {
 	static bool isEnabled;
 
 	// return if we're already active
-	if ( isEnabled && enable ) {
+	if (isEnabled && enable) {
 		// decrement log counter and stop if it has reached 0
-		ri.Cvar_Set( "r_logFile", va("%d", r_logFile->integer - 1 ) );
-		if ( r_logFile->integer ) {
+		ri.Cvar_Set("r_logFile", va("%d", r_logFile->integer - 1));
+		if (r_logFile->integer) {
 			return;
 		}
 		enable = false;
 	}
 
 	// return if we're already disabled
-	if ( !enable && !isEnabled )
+	if (!enable && !isEnabled) {
 		return;
+	}
 
 	isEnabled = enable;
 
-	if ( enable )
-	{
-		if ( !glw_state.log_fp )
-		{
-			struct tm *newtime;
+	if (enable) {
+		if (!glw_state.log_fp) {
+
+			struct tm* newtime;
 			time_t aclock;
 			char buffer[1024];
-			cvar_t	*basedir;
+			cvar_t* basedir;
 
-			time( &aclock );
-			newtime = localtime( &aclock );
+			time(&aclock);
+			newtime = localtime(&aclock);
 
-			asctime( newtime );
+			asctime(newtime);
 
-			basedir = ri.Cvar_Get( "fs_basepath", "", 0 );
-			Com_sprintf( buffer, sizeof(buffer), "%s/gl.log", basedir->string ); 
-			glw_state.log_fp = fopen( buffer, "wt" );
+			basedir = ri.Cvar_Get("fs_basepath", "", 0);
+			Com_sprintf(buffer, sizeof(buffer), "%s/gl.log", basedir->string);
+			glw_state.log_fp = fopen(buffer, "wt");
 
-			fprintf( glw_state.log_fp, "%s\n", asctime( newtime ) );
+			fprintf(glw_state.log_fp, "%s\n", asctime(newtime));
 		}
 
 		qglAccum                     = logAccum;
@@ -3743,292 +3602,293 @@ void QGL_EnableLogging( bool enable )
 		qglCopyTexSubImage1D         = logCopyTexSubImage1D;
 		qglCopyTexSubImage2D         = logCopyTexSubImage2D;
 		qglCullFace                  = logCullFace;
-		qglDeleteLists               = logDeleteLists ;
-		qglDeleteTextures            = logDeleteTextures ;
-		qglDepthFunc                 = logDepthFunc ;
-		qglDepthMask                 = logDepthMask ;
-		qglDepthRange                = logDepthRange ;
-		qglDisable                   = logDisable ;
-		qglDisableClientState        = logDisableClientState ;
-		qglDrawArrays                = logDrawArrays ;
-		qglDrawBuffer                = logDrawBuffer ;
-		qglDrawElements              = logDrawElements ;
-		qglDrawPixels                = logDrawPixels ;
-		qglEdgeFlag                  = logEdgeFlag ;
-		qglEdgeFlagPointer           = logEdgeFlagPointer ;
-		qglEdgeFlagv                 = logEdgeFlagv ;
-		qglEnable                    = 	logEnable                    ;
-		qglEnableClientState         = 	logEnableClientState         ;
-		qglEnd                       = 	logEnd                       ;
-		qglEndList                   = 	logEndList                   ;
-		qglEvalCoord1d				 = 	logEvalCoord1d				 ;
-		qglEvalCoord1dv              = 	logEvalCoord1dv              ;
-		qglEvalCoord1f               = 	logEvalCoord1f               ;
-		qglEvalCoord1fv              = 	logEvalCoord1fv              ;
-		qglEvalCoord2d               = 	logEvalCoord2d               ;
-		qglEvalCoord2dv              = 	logEvalCoord2dv              ;
-		qglEvalCoord2f               = 	logEvalCoord2f               ;
-		qglEvalCoord2fv              = 	logEvalCoord2fv              ;
-		qglEvalMesh1                 = 	logEvalMesh1                 ;
-		qglEvalMesh2                 = 	logEvalMesh2                 ;
-		qglEvalPoint1                = 	logEvalPoint1                ;
-		qglEvalPoint2                = 	logEvalPoint2                ;
-		qglFeedbackBuffer            = 	logFeedbackBuffer            ;
-		qglFinish                    = 	logFinish                    ;
-		qglFlush                     = 	logFlush                     ;
-		qglFogf                      = 	logFogf                      ;
-		qglFogfv                     = 	logFogfv                     ;
-		qglFogi                      = 	logFogi                      ;
-		qglFogiv                     = 	logFogiv                     ;
-		qglFrontFace                 = 	logFrontFace                 ;
-		qglFrustum                   = 	logFrustum                   ;
-		qglGenLists                  = 	logGenLists                  ;
-		qglGenTextures               = 	logGenTextures               ;
-		qglGetBooleanv               = 	logGetBooleanv               ;
-		qglGetClipPlane              = 	logGetClipPlane              ;
-		qglGetDoublev                = 	logGetDoublev                ;
-		qglGetError                  = 	logGetError                  ;
-		qglGetFloatv                 = 	logGetFloatv                 ;
-		qglGetIntegerv               = 	logGetIntegerv               ;
-		qglGetLightfv                = 	logGetLightfv                ;
-		qglGetLightiv                = 	logGetLightiv                ;
-		qglGetMapdv                  = 	logGetMapdv                  ;
-		qglGetMapfv                  = 	logGetMapfv                  ;
-		qglGetMapiv                  = 	logGetMapiv                  ;
-		qglGetMaterialfv             = 	logGetMaterialfv             ;
-		qglGetMaterialiv             = 	logGetMaterialiv             ;
-		qglGetPixelMapfv             = 	logGetPixelMapfv             ;
-		qglGetPixelMapuiv            = 	logGetPixelMapuiv            ;
-		qglGetPixelMapusv            = 	logGetPixelMapusv            ;
-		qglGetPointerv               = 	logGetPointerv               ;
-		qglGetPolygonStipple         = 	logGetPolygonStipple         ;
-		qglGetString                 = 	logGetString                 ;
-		qglGetTexEnvfv               = 	logGetTexEnvfv               ;
-		qglGetTexEnviv               = 	logGetTexEnviv               ;
-		qglGetTexGendv               = 	logGetTexGendv               ;
-		qglGetTexGenfv               = 	logGetTexGenfv               ;
-		qglGetTexGeniv               = 	logGetTexGeniv               ;
-		qglGetTexImage               = 	logGetTexImage               ;
-		qglGetTexLevelParameterfv    = 	logGetTexLevelParameterfv    ;
-		qglGetTexLevelParameteriv    = 	logGetTexLevelParameteriv    ;
-		qglGetTexParameterfv         = 	logGetTexParameterfv         ;
-		qglGetTexParameteriv         = 	logGetTexParameteriv         ;
-		qglHint                      = 	logHint                      ;
-		qglIndexMask                 = 	logIndexMask                 ;
-		qglIndexPointer              = 	logIndexPointer              ;
-		qglIndexd                    = 	logIndexd                    ;
-		qglIndexdv                   = 	logIndexdv                   ;
-		qglIndexf                    = 	logIndexf                    ;
-		qglIndexfv                   = 	logIndexfv                   ;
-		qglIndexi                    = 	logIndexi                    ;
-		qglIndexiv                   = 	logIndexiv                   ;
-		qglIndexs                    = 	logIndexs                    ;
-		qglIndexsv                   = 	logIndexsv                   ;
-		qglIndexub                   = 	logIndexub                   ;
-		qglIndexubv                  = 	logIndexubv                  ;
-		qglInitNames                 = 	logInitNames                 ;
-		qglInterleavedArrays         = 	logInterleavedArrays         ;
-		qglIsEnabled                 = 	logIsEnabled                 ;
-		qglIsList                    = 	logIsList                    ;
-		qglIsTexture                 = 	logIsTexture                 ;
-		qglLightModelf               = 	logLightModelf               ;
-		qglLightModelfv              = 	logLightModelfv              ;
-		qglLightModeli               = 	logLightModeli               ;
-		qglLightModeliv              = 	logLightModeliv              ;
-		qglLightf                    = 	logLightf                    ;
-		qglLightfv                   = 	logLightfv                   ;
-		qglLighti                    = 	logLighti                    ;
-		qglLightiv                   = 	logLightiv                   ;
-		qglLineStipple               = 	logLineStipple               ;
-		qglLineWidth                 = 	logLineWidth                 ;
-		qglListBase                  = 	logListBase                  ;
-		qglLoadIdentity              = 	logLoadIdentity              ;
-		qglLoadMatrixd               = 	logLoadMatrixd               ;
-		qglLoadMatrixf               = 	logLoadMatrixf               ;
-		qglLoadName                  = 	logLoadName                  ;
-		qglLogicOp                   = 	logLogicOp                   ;
-		qglMap1d                     = 	logMap1d                     ;
-		qglMap1f                     = 	logMap1f                     ;
-		qglMap2d                     = 	logMap2d                     ;
-		qglMap2f                     = 	logMap2f                     ;
-		qglMapGrid1d                 = 	logMapGrid1d                 ;
-		qglMapGrid1f                 = 	logMapGrid1f                 ;
-		qglMapGrid2d                 = 	logMapGrid2d                 ;
-		qglMapGrid2f                 = 	logMapGrid2f                 ;
-		qglMaterialf                 = 	logMaterialf                 ;
-		qglMaterialfv                = 	logMaterialfv                ;
-		qglMateriali                 = 	logMateriali                 ;
-		qglMaterialiv                = 	logMaterialiv                ;
-		qglMatrixMode                = 	logMatrixMode                ;
-		qglMultMatrixd               = 	logMultMatrixd               ;
-		qglMultMatrixf               = 	logMultMatrixf               ;
-		qglNewList                   = 	logNewList                   ;
-		qglNormal3b                  = 	logNormal3b                  ;
-		qglNormal3bv                 = 	logNormal3bv                 ;
-		qglNormal3d                  = 	logNormal3d                  ;
-		qglNormal3dv                 = 	logNormal3dv                 ;
-		qglNormal3f                  = 	logNormal3f                  ;
-		qglNormal3fv                 = 	logNormal3fv                 ;
-		qglNormal3i                  = 	logNormal3i                  ;
-		qglNormal3iv                 = 	logNormal3iv                 ;
-		qglNormal3s                  = 	logNormal3s                  ;
-		qglNormal3sv                 = 	logNormal3sv                 ;
-		qglNormalPointer             = 	logNormalPointer             ;
-		qglOrtho                     = 	logOrtho                     ;
-		qglPassThrough               = 	logPassThrough               ;
-		qglPixelMapfv                = 	logPixelMapfv                ;
-		qglPixelMapuiv               = 	logPixelMapuiv               ;
-		qglPixelMapusv               = 	logPixelMapusv               ;
-		qglPixelStoref               = 	logPixelStoref               ;
-		qglPixelStorei               = 	logPixelStorei               ;
-		qglPixelTransferf            = 	logPixelTransferf            ;
-		qglPixelTransferi            = 	logPixelTransferi            ;
-		qglPixelZoom                 = 	logPixelZoom                 ;
-		qglPointSize                 = 	logPointSize                 ;
-		qglPolygonMode               = 	logPolygonMode               ;
-		qglPolygonOffset             = 	logPolygonOffset             ;
-		qglPolygonStipple            = 	logPolygonStipple            ;
-		qglPopAttrib                 = 	logPopAttrib                 ;
-		qglPopClientAttrib           = 	logPopClientAttrib           ;
-		qglPopMatrix                 = 	logPopMatrix                 ;
-		qglPopName                   = 	logPopName                   ;
-		qglPrioritizeTextures        = 	logPrioritizeTextures        ;
-		qglPushAttrib                = 	logPushAttrib                ;
-		qglPushClientAttrib          = 	logPushClientAttrib          ;
-		qglPushMatrix                = 	logPushMatrix                ;
-		qglPushName                  = 	logPushName                  ;
-		qglRasterPos2d               = 	logRasterPos2d               ;
-		qglRasterPos2dv              = 	logRasterPos2dv              ;
-		qglRasterPos2f               = 	logRasterPos2f               ;
-		qglRasterPos2fv              = 	logRasterPos2fv              ;
-		qglRasterPos2i               = 	logRasterPos2i               ;
-		qglRasterPos2iv              = 	logRasterPos2iv              ;
-		qglRasterPos2s               = 	logRasterPos2s               ;
-		qglRasterPos2sv              = 	logRasterPos2sv              ;
-		qglRasterPos3d               = 	logRasterPos3d               ;
-		qglRasterPos3dv              = 	logRasterPos3dv              ;
-		qglRasterPos3f               = 	logRasterPos3f               ;
-		qglRasterPos3fv              = 	logRasterPos3fv              ;
-		qglRasterPos3i               = 	logRasterPos3i               ;
-		qglRasterPos3iv              = 	logRasterPos3iv              ;
-		qglRasterPos3s               = 	logRasterPos3s               ;
-		qglRasterPos3sv              = 	logRasterPos3sv              ;
-		qglRasterPos4d               = 	logRasterPos4d               ;
-		qglRasterPos4dv              = 	logRasterPos4dv              ;
-		qglRasterPos4f               = 	logRasterPos4f               ;
-		qglRasterPos4fv              = 	logRasterPos4fv              ;
-		qglRasterPos4i               = 	logRasterPos4i               ;
-		qglRasterPos4iv              = 	logRasterPos4iv              ;
-		qglRasterPos4s               = 	logRasterPos4s               ;
-		qglRasterPos4sv              = 	logRasterPos4sv              ;
-		qglReadBuffer                = 	logReadBuffer                ;
-		qglReadPixels                = 	logReadPixels                ;
-		qglRectd                     = 	logRectd                     ;
-		qglRectdv                    = 	logRectdv                    ;
-		qglRectf                     = 	logRectf                     ;
-		qglRectfv                    = 	logRectfv                    ;
-		qglRecti                     = 	logRecti                     ;
-		qglRectiv                    = 	logRectiv                    ;
-		qglRects                     = 	logRects                     ;
-		qglRectsv                    = 	logRectsv                    ;
-		qglRenderMode                = 	logRenderMode                ;
-		qglRotated                   = 	logRotated                   ;
-		qglRotatef                   = 	logRotatef                   ;
-		qglScaled                    = 	logScaled                    ;
-		qglScalef                    = 	logScalef                    ;
-		qglScissor                   = 	logScissor                   ;
-		qglSelectBuffer              = 	logSelectBuffer              ;
-		qglShadeModel                = 	logShadeModel                ;
-		qglStencilFunc               = 	logStencilFunc               ;
-		qglStencilMask               = 	logStencilMask               ;
-		qglStencilOp                 = 	logStencilOp                 ;
-		qglTexCoord1d                = 	logTexCoord1d                ;
-		qglTexCoord1dv               = 	logTexCoord1dv               ;
-		qglTexCoord1f                = 	logTexCoord1f                ;
-		qglTexCoord1fv               = 	logTexCoord1fv               ;
-		qglTexCoord1i                = 	logTexCoord1i                ;
-		qglTexCoord1iv               = 	logTexCoord1iv               ;
-		qglTexCoord1s                = 	logTexCoord1s                ;
-		qglTexCoord1sv               = 	logTexCoord1sv               ;
-		qglTexCoord2d                = 	logTexCoord2d                ;
-		qglTexCoord2dv               = 	logTexCoord2dv               ;
-		qglTexCoord2f                = 	logTexCoord2f                ;
-		qglTexCoord2fv               = 	logTexCoord2fv               ;
-		qglTexCoord2i                = 	logTexCoord2i                ;
-		qglTexCoord2iv               = 	logTexCoord2iv               ;
-		qglTexCoord2s                = 	logTexCoord2s                ;
-		qglTexCoord2sv               = 	logTexCoord2sv               ;
-		qglTexCoord3d                = 	logTexCoord3d                ;
-		qglTexCoord3dv               = 	logTexCoord3dv               ;
-		qglTexCoord3f                = 	logTexCoord3f                ;
-		qglTexCoord3fv               = 	logTexCoord3fv               ;
-		qglTexCoord3i                = 	logTexCoord3i                ;
-		qglTexCoord3iv               = 	logTexCoord3iv               ;
-		qglTexCoord3s                = 	logTexCoord3s                ;
-		qglTexCoord3sv               = 	logTexCoord3sv               ;
-		qglTexCoord4d                = 	logTexCoord4d                ;
-		qglTexCoord4dv               = 	logTexCoord4dv               ;
-		qglTexCoord4f                = 	logTexCoord4f                ;
-		qglTexCoord4fv               = 	logTexCoord4fv               ;
-		qglTexCoord4i                = 	logTexCoord4i                ;
-		qglTexCoord4iv               = 	logTexCoord4iv               ;
-		qglTexCoord4s                = 	logTexCoord4s                ;
-		qglTexCoord4sv               = 	logTexCoord4sv               ;
-		qglTexCoordPointer           = 	logTexCoordPointer           ;
-		qglTexEnvf                   = 	logTexEnvf                   ;
-		qglTexEnvfv                  = 	logTexEnvfv                  ;
-		qglTexEnvi                   = 	logTexEnvi                   ;
-		qglTexEnviv                  = 	logTexEnviv                  ;
-		qglTexGend                   = 	logTexGend                   ;
-		qglTexGendv                  = 	logTexGendv                  ;
-		qglTexGenf                   = 	logTexGenf                   ;
-		qglTexGenfv                  = 	logTexGenfv                  ;
-		qglTexGeni                   = 	logTexGeni                   ;
-		qglTexGeniv                  = 	logTexGeniv                  ;
-		qglTexImage1D                = 	logTexImage1D                ;
-		qglTexImage2D                = 	logTexImage2D                ;
-		qglTexParameterf             = 	logTexParameterf             ;
-		qglTexParameterfv            = 	logTexParameterfv            ;
-		qglTexParameteri             = 	logTexParameteri             ;
-		qglTexParameteriv            = 	logTexParameteriv            ;
-		qglTexSubImage1D             = 	logTexSubImage1D             ;
-		qglTexSubImage2D             = 	logTexSubImage2D             ;
-		qglTranslated                = 	logTranslated                ;
-		qglTranslatef                = 	logTranslatef                ;
-		qglVertex2d                  = 	logVertex2d                  ;
-		qglVertex2dv                 = 	logVertex2dv                 ;
-		qglVertex2f                  = 	logVertex2f                  ;
-		qglVertex2fv                 = 	logVertex2fv                 ;
-		qglVertex2i                  = 	logVertex2i                  ;
-		qglVertex2iv                 = 	logVertex2iv                 ;
-		qglVertex2s                  = 	logVertex2s                  ;
-		qglVertex2sv                 = 	logVertex2sv                 ;
-		qglVertex3d                  = 	logVertex3d                  ;
-		qglVertex3dv                 = 	logVertex3dv                 ;
-		qglVertex3f                  = 	logVertex3f                  ;
-		qglVertex3fv                 = 	logVertex3fv                 ;
-		qglVertex3i                  = 	logVertex3i                  ;
-		qglVertex3iv                 = 	logVertex3iv                 ;
-		qglVertex3s                  = 	logVertex3s                  ;
-		qglVertex3sv                 = 	logVertex3sv                 ;
-		qglVertex4d                  = 	logVertex4d                  ;
-		qglVertex4dv                 = 	logVertex4dv                 ;
-		qglVertex4f                  = 	logVertex4f                  ;
-		qglVertex4fv                 = 	logVertex4fv                 ;
-		qglVertex4i                  = 	logVertex4i                  ;
-		qglVertex4iv                 = 	logVertex4iv                 ;
-		qglVertex4s                  = 	logVertex4s                  ;
-		qglVertex4sv                 = 	logVertex4sv                 ;
-		qglVertexPointer             = 	logVertexPointer             ;
-		qglViewport                  = 	logViewport                  ;
-	}
-	else
-	{
-		if ( glw_state.log_fp )	{
-			fprintf( glw_state.log_fp, "*** CLOSING LOG ***\n" );
-			fclose( glw_state.log_fp );
+		qglDeleteLists               = logDeleteLists;
+		qglDeleteTextures            = logDeleteTextures;
+		qglDepthFunc                 = logDepthFunc;
+		qglDepthMask                 = logDepthMask;
+		qglDepthRange                = logDepthRange;
+		qglDisable                   = logDisable;
+		qglDisableClientState        = logDisableClientState;
+		qglDrawArrays                = logDrawArrays;
+		qglDrawBuffer                = logDrawBuffer;
+		qglDrawElements              = logDrawElements;
+		qglDrawPixels                = logDrawPixels;
+		qglEdgeFlag                  = logEdgeFlag;
+		qglEdgeFlagPointer           = logEdgeFlagPointer;
+		qglEdgeFlagv                 = logEdgeFlagv;
+		qglEnable                    = logEnable;
+		qglEnableClientState         = logEnableClientState;
+		qglEnd                       = logEnd;
+		qglEndList                   = logEndList;
+		qglEvalCoord1d				 = logEvalCoord1d;
+		qglEvalCoord1dv              = logEvalCoord1dv;
+		qglEvalCoord1f               = logEvalCoord1f;
+		qglEvalCoord1fv              = logEvalCoord1fv;
+		qglEvalCoord2d               = logEvalCoord2d;
+		qglEvalCoord2dv              = logEvalCoord2dv;
+		qglEvalCoord2f               = logEvalCoord2f;
+		qglEvalCoord2fv              = logEvalCoord2fv;
+		qglEvalMesh1                 = logEvalMesh1;
+		qglEvalMesh2                 = logEvalMesh2;
+		qglEvalPoint1                = logEvalPoint1;
+		qglEvalPoint2                = logEvalPoint2;
+		qglFeedbackBuffer            = logFeedbackBuffer;
+		qglFinish                    = logFinish;
+		qglFlush                     = logFlush;
+		qglFogf                      = logFogf;
+		qglFogfv                     = logFogfv;
+		qglFogi                      = logFogi;
+		qglFogiv                     = logFogiv;
+		qglFrontFace                 = logFrontFace;
+		qglFrustum                   = logFrustum;
+		qglGenLists                  = logGenLists;
+		qglGenTextures               = logGenTextures;
+		qglGetBooleanv               = logGetBooleanv;
+		qglGetClipPlane              = logGetClipPlane;
+		qglGetDoublev                = logGetDoublev;
+		qglGetError                  = logGetError;
+		qglGetFloatv                 = logGetFloatv;
+		qglGetIntegerv               = logGetIntegerv;
+		qglGetLightfv                = logGetLightfv;
+		qglGetLightiv                = logGetLightiv;
+		qglGetMapdv                  = logGetMapdv;
+		qglGetMapfv                  = logGetMapfv;
+		qglGetMapiv                  = logGetMapiv;
+		qglGetMaterialfv             = logGetMaterialfv;
+		qglGetMaterialiv             = logGetMaterialiv;
+		qglGetPixelMapfv             = logGetPixelMapfv;
+		qglGetPixelMapuiv            = logGetPixelMapuiv;
+		qglGetPixelMapusv            = logGetPixelMapusv;
+		qglGetPointerv               = logGetPointerv;
+		qglGetPolygonStipple         = logGetPolygonStipple;
+		qglGetString                 = logGetString;
+		qglGetTexEnvfv               = logGetTexEnvfv;
+		qglGetTexEnviv               = logGetTexEnviv;
+		qglGetTexGendv               = logGetTexGendv;
+		qglGetTexGenfv               = logGetTexGenfv;
+		qglGetTexGeniv               = logGetTexGeniv;
+		qglGetTexImage               = logGetTexImage;
+		qglGetTexLevelParameterfv    = logGetTexLevelParameterfv;
+		qglGetTexLevelParameteriv    = logGetTexLevelParameteriv;
+		qglGetTexParameterfv         = logGetTexParameterfv;
+		qglGetTexParameteriv         = logGetTexParameteriv;
+		qglHint                      = logHint;
+		qglIndexMask                 = logIndexMask;
+		qglIndexPointer              = logIndexPointer;
+		qglIndexd                    = logIndexd;
+		qglIndexdv                   = logIndexdv;
+		qglIndexf                    = logIndexf;
+		qglIndexfv                   = logIndexfv;
+		qglIndexi                    = logIndexi;
+		qglIndexiv                   = logIndexiv;
+		qglIndexs                    = logIndexs;
+		qglIndexsv                   = logIndexsv;
+		qglIndexub                   = logIndexub;
+		qglIndexubv                  = logIndexubv;
+		qglInitNames                 = logInitNames;
+		qglInterleavedArrays         = logInterleavedArrays;
+		qglIsEnabled                 = logIsEnabled;
+		qglIsList                    = logIsList;
+		qglIsTexture                 = logIsTexture;
+		qglLightModelf               = logLightModelf;
+		qglLightModelfv              = logLightModelfv;
+		qglLightModeli               = logLightModeli;
+		qglLightModeliv              = logLightModeliv;
+		qglLightf                    = logLightf;
+		qglLightfv                   = logLightfv;
+		qglLighti                    = logLighti;
+		qglLightiv                   = logLightiv;
+		qglLineStipple               = logLineStipple;
+		qglLineWidth                 = logLineWidth;
+		qglListBase                  = logListBase;
+		qglLoadIdentity              = logLoadIdentity;
+		qglLoadMatrixd               = logLoadMatrixd;
+		qglLoadMatrixf               = logLoadMatrixf;
+		qglLoadName                  = logLoadName;
+		qglLogicOp                   = logLogicOp;
+		qglMap1d                     = logMap1d;
+		qglMap1f                     = logMap1f;
+		qglMap2d                     = logMap2d;
+		qglMap2f                     = logMap2f;
+		qglMapGrid1d                 = logMapGrid1d;
+		qglMapGrid1f                 = logMapGrid1f;
+		qglMapGrid2d                 = logMapGrid2d;
+		qglMapGrid2f                 = logMapGrid2f;
+		qglMaterialf                 = logMaterialf;
+		qglMaterialfv                = logMaterialfv;
+		qglMateriali                 = logMateriali;
+		qglMaterialiv                = logMaterialiv;
+		qglMatrixMode                = logMatrixMode;
+		qglMultMatrixd               = logMultMatrixd;
+		qglMultMatrixf               = logMultMatrixf;
+		qglNewList                   = logNewList;
+		qglNormal3b                  = logNormal3b;
+		qglNormal3bv                 = logNormal3bv;
+		qglNormal3d                  = logNormal3d;
+		qglNormal3dv                 = logNormal3dv;
+		qglNormal3f                  = logNormal3f;
+		qglNormal3fv                 = logNormal3fv;
+		qglNormal3i                  = logNormal3i;
+		qglNormal3iv                 = logNormal3iv;
+		qglNormal3s                  = logNormal3s;
+		qglNormal3sv                 = logNormal3sv;
+		qglNormalPointer             = logNormalPointer;
+		qglOrtho                     = logOrtho;
+		qglPassThrough               = logPassThrough;
+		qglPixelMapfv                = logPixelMapfv;
+		qglPixelMapuiv               = logPixelMapuiv;
+		qglPixelMapusv               = logPixelMapusv;
+		qglPixelStoref               = logPixelStoref;
+		qglPixelStorei               = logPixelStorei;
+		qglPixelTransferf            = logPixelTransferf;
+		qglPixelTransferi            = logPixelTransferi;
+		qglPixelZoom                 = logPixelZoom;
+		qglPointSize                 = logPointSize;
+		qglPolygonMode               = logPolygonMode;
+		qglPolygonOffset             = logPolygonOffset;
+		qglPolygonStipple            = logPolygonStipple;
+		qglPopAttrib                 = logPopAttrib;
+		qglPopClientAttrib           = logPopClientAttrib;
+		qglPopMatrix                 = logPopMatrix;
+		qglPopName                   = logPopName;
+		qglPrioritizeTextures        = logPrioritizeTextures;
+		qglPushAttrib                = logPushAttrib;
+		qglPushClientAttrib          = logPushClientAttrib;
+		qglPushMatrix                = logPushMatrix;
+		qglPushName                  = logPushName;
+		qglRasterPos2d               = logRasterPos2d;
+		qglRasterPos2dv              = logRasterPos2dv;
+		qglRasterPos2f               = logRasterPos2f;
+		qglRasterPos2fv              = logRasterPos2fv;
+		qglRasterPos2i               = logRasterPos2i;
+		qglRasterPos2iv              = logRasterPos2iv;
+		qglRasterPos2s               = logRasterPos2s;
+		qglRasterPos2sv              = logRasterPos2sv;
+		qglRasterPos3d               = logRasterPos3d;
+		qglRasterPos3dv              = logRasterPos3dv;
+		qglRasterPos3f               = logRasterPos3f;
+		qglRasterPos3fv              = logRasterPos3fv;
+		qglRasterPos3i               = logRasterPos3i;
+		qglRasterPos3iv              = logRasterPos3iv;
+		qglRasterPos3s               = logRasterPos3s;
+		qglRasterPos3sv              = logRasterPos3sv;
+		qglRasterPos4d               = logRasterPos4d;
+		qglRasterPos4dv              = logRasterPos4dv;
+		qglRasterPos4f               = logRasterPos4f;
+		qglRasterPos4fv              = logRasterPos4fv;
+		qglRasterPos4i               = logRasterPos4i;
+		qglRasterPos4iv              = logRasterPos4iv;
+		qglRasterPos4s               = logRasterPos4s;
+		qglRasterPos4sv              = logRasterPos4sv;
+		qglReadBuffer                = logReadBuffer;
+		qglReadPixels                = logReadPixels;
+		qglRectd                     = logRectd;
+		qglRectdv                    = logRectdv;
+		qglRectf                     = logRectf;
+		qglRectfv                    = logRectfv;
+		qglRecti                     = logRecti;
+		qglRectiv                    = logRectiv;
+		qglRects                     = logRects;
+		qglRectsv                    = logRectsv;
+		qglRenderMode                = logRenderMode;
+		qglRotated                   = logRotated;
+		qglRotatef                   = logRotatef;
+		qglScaled                    = logScaled;
+		qglScalef                    = logScalef;
+		qglScissor                   = logScissor;
+		qglSelectBuffer              = logSelectBuffer;
+		qglShadeModel                = logShadeModel;
+		qglStencilFunc               = logStencilFunc;
+		qglStencilMask               = logStencilMask;
+		qglStencilOp                 = logStencilOp;
+		qglTexCoord1d                = logTexCoord1d;
+		qglTexCoord1dv               = logTexCoord1dv;
+		qglTexCoord1f                = logTexCoord1f;
+		qglTexCoord1fv               = logTexCoord1fv;
+		qglTexCoord1i                = logTexCoord1i;
+		qglTexCoord1iv               = logTexCoord1iv;
+		qglTexCoord1s                = logTexCoord1s;
+		qglTexCoord1sv               = logTexCoord1sv;
+		qglTexCoord2d                = logTexCoord2d;
+		qglTexCoord2dv               = logTexCoord2dv;
+		qglTexCoord2f                = logTexCoord2f;
+		qglTexCoord2fv               = logTexCoord2fv;
+		qglTexCoord2i                = logTexCoord2i;
+		qglTexCoord2iv               = logTexCoord2iv;
+		qglTexCoord2s                = logTexCoord2s;
+		qglTexCoord2sv               = logTexCoord2sv;
+		qglTexCoord3d                = logTexCoord3d;
+		qglTexCoord3dv               = logTexCoord3dv;
+		qglTexCoord3f                = logTexCoord3f;
+		qglTexCoord3fv               = logTexCoord3fv;
+		qglTexCoord3i                = logTexCoord3i;
+		qglTexCoord3iv               = logTexCoord3iv;
+		qglTexCoord3s                = logTexCoord3s;
+		qglTexCoord3sv               = logTexCoord3sv;
+		qglTexCoord4d                = logTexCoord4d;
+		qglTexCoord4dv               = logTexCoord4dv;
+		qglTexCoord4f                = logTexCoord4f;
+		qglTexCoord4fv               = logTexCoord4fv;
+		qglTexCoord4i                = logTexCoord4i;
+		qglTexCoord4iv               = logTexCoord4iv;
+		qglTexCoord4s                = logTexCoord4s;
+		qglTexCoord4sv               = logTexCoord4sv;
+		qglTexCoordPointer           = logTexCoordPointer;
+		qglTexEnvf                   = logTexEnvf;
+		qglTexEnvfv                  = logTexEnvfv;
+		qglTexEnvi                   = logTexEnvi;
+		qglTexEnviv                  = logTexEnviv;
+		qglTexGend                   = logTexGend;
+		qglTexGendv                  = logTexGendv;
+		qglTexGenf                   = logTexGenf;
+		qglTexGenfv                  = logTexGenfv;
+		qglTexGeni                   = logTexGeni;
+		qglTexGeniv                  = logTexGeniv;
+		qglTexImage1D                = logTexImage1D;
+		qglTexImage2D                = logTexImage2D;
+		qglTexParameterf             = logTexParameterf;
+		qglTexParameterfv            = logTexParameterfv;
+		qglTexParameteri             = logTexParameteri;
+		qglTexParameteriv            = logTexParameteriv;
+		qglTexSubImage1D             = logTexSubImage1D;
+		qglTexSubImage2D             = logTexSubImage2D;
+		qglTranslated                = logTranslated;
+		qglTranslatef                = logTranslatef;
+		qglVertex2d                  = logVertex2d;
+		qglVertex2dv                 = logVertex2dv;
+		qglVertex2f                  = logVertex2f;
+		qglVertex2fv                 = logVertex2fv;
+		qglVertex2i                  = logVertex2i;
+		qglVertex2iv                 = logVertex2iv;
+		qglVertex2s                  = logVertex2s;
+		qglVertex2sv                 = logVertex2sv;
+		qglVertex3d                  = logVertex3d;
+		qglVertex3dv                 = logVertex3dv;
+		qglVertex3f                  = logVertex3f;
+		qglVertex3fv                 = logVertex3fv;
+		qglVertex3i                  = logVertex3i;
+		qglVertex3iv                 = logVertex3iv;
+		qglVertex3s                  = logVertex3s;
+		qglVertex3sv                 = logVertex3sv;
+		qglVertex4d                  = logVertex4d;
+		qglVertex4dv                 = logVertex4dv;
+		qglVertex4f                  = logVertex4f;
+		qglVertex4fv                 = logVertex4fv;
+		qglVertex4i                  = logVertex4i;
+		qglVertex4iv                 = logVertex4iv;
+		qglVertex4s                  = logVertex4s;
+		qglVertex4sv                 = logVertex4sv;
+		qglVertexPointer             = logVertexPointer;
+		qglViewport                  = logViewport;
+
+	} else {
+		
+		if (glw_state.log_fp) {
+			fprintf(glw_state.log_fp, "*** CLOSING LOG ***\n");
+			fclose(glw_state.log_fp);
 			glw_state.log_fp = NULL;
 		}
+
 		qglAccum                     = dllAccum;
 		qglAlphaFunc                 = dllAlphaFunc;
 		qglAreTexturesResident       = dllAreTexturesResident;
@@ -4087,288 +3947,285 @@ void QGL_EnableLogging( bool enable )
 		qglCopyTexSubImage1D         = dllCopyTexSubImage1D;
 		qglCopyTexSubImage2D         = dllCopyTexSubImage2D;
 		qglCullFace                  = dllCullFace;
-		qglDeleteLists               = dllDeleteLists ;
-		qglDeleteTextures            = dllDeleteTextures ;
-		qglDepthFunc                 = dllDepthFunc ;
-		qglDepthMask                 = dllDepthMask ;
-		qglDepthRange                = dllDepthRange ;
-		qglDisable                   = dllDisable ;
-		qglDisableClientState        = dllDisableClientState ;
-		qglDrawArrays                = dllDrawArrays ;
-		qglDrawBuffer                = dllDrawBuffer ;
-		qglDrawElements              = dllDrawElements ;
-		qglDrawPixels                = dllDrawPixels ;
-		qglEdgeFlag                  = dllEdgeFlag ;
-		qglEdgeFlagPointer           = dllEdgeFlagPointer ;
-		qglEdgeFlagv                 = dllEdgeFlagv ;
-		qglEnable                    = 	dllEnable                    ;
-		qglEnableClientState         = 	dllEnableClientState         ;
-		qglEnd                       = 	dllEnd                       ;
-		qglEndList                   = 	dllEndList                   ;
-		qglEvalCoord1d				 = 	dllEvalCoord1d				 ;
-		qglEvalCoord1dv              = 	dllEvalCoord1dv              ;
-		qglEvalCoord1f               = 	dllEvalCoord1f               ;
-		qglEvalCoord1fv              = 	dllEvalCoord1fv              ;
-		qglEvalCoord2d               = 	dllEvalCoord2d               ;
-		qglEvalCoord2dv              = 	dllEvalCoord2dv              ;
-		qglEvalCoord2f               = 	dllEvalCoord2f               ;
-		qglEvalCoord2fv              = 	dllEvalCoord2fv              ;
-		qglEvalMesh1                 = 	dllEvalMesh1                 ;
-		qglEvalMesh2                 = 	dllEvalMesh2                 ;
-		qglEvalPoint1                = 	dllEvalPoint1                ;
-		qglEvalPoint2                = 	dllEvalPoint2                ;
-		qglFeedbackBuffer            = 	dllFeedbackBuffer            ;
-		qglFinish                    = 	dllFinish                    ;
-		qglFlush                     = 	dllFlush                     ;
-		qglFogf                      = 	dllFogf                      ;
-		qglFogfv                     = 	dllFogfv                     ;
-		qglFogi                      = 	dllFogi                      ;
-		qglFogiv                     = 	dllFogiv                     ;
-		qglFrontFace                 = 	dllFrontFace                 ;
-		qglFrustum                   = 	dllFrustum                   ;
-		qglGenLists                  = 	dllGenLists                  ;
-		qglGenTextures               = 	dllGenTextures               ;
-		qglGetBooleanv               = 	dllGetBooleanv               ;
-		qglGetClipPlane              = 	dllGetClipPlane              ;
-		qglGetDoublev                = 	dllGetDoublev                ;
-		qglGetError                  = 	dllGetError                  ;
-		qglGetFloatv                 = 	dllGetFloatv                 ;
-		qglGetIntegerv               = 	dllGetIntegerv               ;
-		qglGetLightfv                = 	dllGetLightfv                ;
-		qglGetLightiv                = 	dllGetLightiv                ;
-		qglGetMapdv                  = 	dllGetMapdv                  ;
-		qglGetMapfv                  = 	dllGetMapfv                  ;
-		qglGetMapiv                  = 	dllGetMapiv                  ;
-		qglGetMaterialfv             = 	dllGetMaterialfv             ;
-		qglGetMaterialiv             = 	dllGetMaterialiv             ;
-		qglGetPixelMapfv             = 	dllGetPixelMapfv             ;
-		qglGetPixelMapuiv            = 	dllGetPixelMapuiv            ;
-		qglGetPixelMapusv            = 	dllGetPixelMapusv            ;
-		qglGetPointerv               = 	dllGetPointerv               ;
-		qglGetPolygonStipple         = 	dllGetPolygonStipple         ;
-		qglGetString                 = 	dllGetString                 ;
-		qglGetTexEnvfv               = 	dllGetTexEnvfv               ;
-		qglGetTexEnviv               = 	dllGetTexEnviv               ;
-		qglGetTexGendv               = 	dllGetTexGendv               ;
-		qglGetTexGenfv               = 	dllGetTexGenfv               ;
-		qglGetTexGeniv               = 	dllGetTexGeniv               ;
-		qglGetTexImage               = 	dllGetTexImage               ;
-		qglGetTexLevelParameterfv    = 	dllGetTexLevelParameterfv    ;
-		qglGetTexLevelParameteriv    = 	dllGetTexLevelParameteriv    ;
-		qglGetTexParameterfv         = 	dllGetTexParameterfv         ;
-		qglGetTexParameteriv         = 	dllGetTexParameteriv         ;
-		qglHint                      = 	dllHint                      ;
-		qglIndexMask                 = 	dllIndexMask                 ;
-		qglIndexPointer              = 	dllIndexPointer              ;
-		qglIndexd                    = 	dllIndexd                    ;
-		qglIndexdv                   = 	dllIndexdv                   ;
-		qglIndexf                    = 	dllIndexf                    ;
-		qglIndexfv                   = 	dllIndexfv                   ;
-		qglIndexi                    = 	dllIndexi                    ;
-		qglIndexiv                   = 	dllIndexiv                   ;
-		qglIndexs                    = 	dllIndexs                    ;
-		qglIndexsv                   = 	dllIndexsv                   ;
-		qglIndexub                   = 	dllIndexub                   ;
-		qglIndexubv                  = 	dllIndexubv                  ;
-		qglInitNames                 = 	dllInitNames                 ;
-		qglInterleavedArrays         = 	dllInterleavedArrays         ;
-		qglIsEnabled                 = 	dllIsEnabled                 ;
-		qglIsList                    = 	dllIsList                    ;
-		qglIsTexture                 = 	dllIsTexture                 ;
-		qglLightModelf               = 	dllLightModelf               ;
-		qglLightModelfv              = 	dllLightModelfv              ;
-		qglLightModeli               = 	dllLightModeli               ;
-		qglLightModeliv              = 	dllLightModeliv              ;
-		qglLightf                    = 	dllLightf                    ;
-		qglLightfv                   = 	dllLightfv                   ;
-		qglLighti                    = 	dllLighti                    ;
-		qglLightiv                   = 	dllLightiv                   ;
-		qglLineStipple               = 	dllLineStipple               ;
-		qglLineWidth                 = 	dllLineWidth                 ;
-		qglListBase                  = 	dllListBase                  ;
-		qglLoadIdentity              = 	dllLoadIdentity              ;
-		qglLoadMatrixd               = 	dllLoadMatrixd               ;
-		qglLoadMatrixf               = 	dllLoadMatrixf               ;
-		qglLoadName                  = 	dllLoadName                  ;
-		qglLogicOp                   = 	dllLogicOp                   ;
-		qglMap1d                     = 	dllMap1d                     ;
-		qglMap1f                     = 	dllMap1f                     ;
-		qglMap2d                     = 	dllMap2d                     ;
-		qglMap2f                     = 	dllMap2f                     ;
-		qglMapGrid1d                 = 	dllMapGrid1d                 ;
-		qglMapGrid1f                 = 	dllMapGrid1f                 ;
-		qglMapGrid2d                 = 	dllMapGrid2d                 ;
-		qglMapGrid2f                 = 	dllMapGrid2f                 ;
-		qglMaterialf                 = 	dllMaterialf                 ;
-		qglMaterialfv                = 	dllMaterialfv                ;
-		qglMateriali                 = 	dllMateriali                 ;
-		qglMaterialiv                = 	dllMaterialiv                ;
-		qglMatrixMode                = 	dllMatrixMode                ;
-		qglMultMatrixd               = 	dllMultMatrixd               ;
-		qglMultMatrixf               = 	dllMultMatrixf               ;
-		qglNewList                   = 	dllNewList                   ;
-		qglNormal3b                  = 	dllNormal3b                  ;
-		qglNormal3bv                 = 	dllNormal3bv                 ;
-		qglNormal3d                  = 	dllNormal3d                  ;
-		qglNormal3dv                 = 	dllNormal3dv                 ;
-		qglNormal3f                  = 	dllNormal3f                  ;
-		qglNormal3fv                 = 	dllNormal3fv                 ;
-		qglNormal3i                  = 	dllNormal3i                  ;
-		qglNormal3iv                 = 	dllNormal3iv                 ;
-		qglNormal3s                  = 	dllNormal3s                  ;
-		qglNormal3sv                 = 	dllNormal3sv                 ;
-		qglNormalPointer             = 	dllNormalPointer             ;
-		qglOrtho                     = 	dllOrtho                     ;
-		qglPassThrough               = 	dllPassThrough               ;
-		qglPixelMapfv                = 	dllPixelMapfv                ;
-		qglPixelMapuiv               = 	dllPixelMapuiv               ;
-		qglPixelMapusv               = 	dllPixelMapusv               ;
-		qglPixelStoref               = 	dllPixelStoref               ;
-		qglPixelStorei               = 	dllPixelStorei               ;
-		qglPixelTransferf            = 	dllPixelTransferf            ;
-		qglPixelTransferi            = 	dllPixelTransferi            ;
-		qglPixelZoom                 = 	dllPixelZoom                 ;
-		qglPointSize                 = 	dllPointSize                 ;
-		qglPolygonMode               = 	dllPolygonMode               ;
-		qglPolygonOffset             = 	dllPolygonOffset             ;
-		qglPolygonStipple            = 	dllPolygonStipple            ;
-		qglPopAttrib                 = 	dllPopAttrib                 ;
-		qglPopClientAttrib           = 	dllPopClientAttrib           ;
-		qglPopMatrix                 = 	dllPopMatrix                 ;
-		qglPopName                   = 	dllPopName                   ;
-		qglPrioritizeTextures        = 	dllPrioritizeTextures        ;
-		qglPushAttrib                = 	dllPushAttrib                ;
-		qglPushClientAttrib          = 	dllPushClientAttrib          ;
-		qglPushMatrix                = 	dllPushMatrix                ;
-		qglPushName                  = 	dllPushName                  ;
-		qglRasterPos2d               = 	dllRasterPos2d               ;
-		qglRasterPos2dv              = 	dllRasterPos2dv              ;
-		qglRasterPos2f               = 	dllRasterPos2f               ;
-		qglRasterPos2fv              = 	dllRasterPos2fv              ;
-		qglRasterPos2i               = 	dllRasterPos2i               ;
-		qglRasterPos2iv              = 	dllRasterPos2iv              ;
-		qglRasterPos2s               = 	dllRasterPos2s               ;
-		qglRasterPos2sv              = 	dllRasterPos2sv              ;
-		qglRasterPos3d               = 	dllRasterPos3d               ;
-		qglRasterPos3dv              = 	dllRasterPos3dv              ;
-		qglRasterPos3f               = 	dllRasterPos3f               ;
-		qglRasterPos3fv              = 	dllRasterPos3fv              ;
-		qglRasterPos3i               = 	dllRasterPos3i               ;
-		qglRasterPos3iv              = 	dllRasterPos3iv              ;
-		qglRasterPos3s               = 	dllRasterPos3s               ;
-		qglRasterPos3sv              = 	dllRasterPos3sv              ;
-		qglRasterPos4d               = 	dllRasterPos4d               ;
-		qglRasterPos4dv              = 	dllRasterPos4dv              ;
-		qglRasterPos4f               = 	dllRasterPos4f               ;
-		qglRasterPos4fv              = 	dllRasterPos4fv              ;
-		qglRasterPos4i               = 	dllRasterPos4i               ;
-		qglRasterPos4iv              = 	dllRasterPos4iv              ;
-		qglRasterPos4s               = 	dllRasterPos4s               ;
-		qglRasterPos4sv              = 	dllRasterPos4sv              ;
-		qglReadBuffer                = 	dllReadBuffer                ;
-		qglReadPixels                = 	dllReadPixels                ;
-		qglRectd                     = 	dllRectd                     ;
-		qglRectdv                    = 	dllRectdv                    ;
-		qglRectf                     = 	dllRectf                     ;
-		qglRectfv                    = 	dllRectfv                    ;
-		qglRecti                     = 	dllRecti                     ;
-		qglRectiv                    = 	dllRectiv                    ;
-		qglRects                     = 	dllRects                     ;
-		qglRectsv                    = 	dllRectsv                    ;
-		qglRenderMode                = 	dllRenderMode                ;
-		qglRotated                   = 	dllRotated                   ;
-		qglRotatef                   = 	dllRotatef                   ;
-		qglScaled                    = 	dllScaled                    ;
-		qglScalef                    = 	dllScalef                    ;
-		qglScissor                   = 	dllScissor                   ;
-		qglSelectBuffer              = 	dllSelectBuffer              ;
-		qglShadeModel                = 	dllShadeModel                ;
-		qglStencilFunc               = 	dllStencilFunc               ;
-		qglStencilMask               = 	dllStencilMask               ;
-		qglStencilOp                 = 	dllStencilOp                 ;
-		qglTexCoord1d                = 	dllTexCoord1d                ;
-		qglTexCoord1dv               = 	dllTexCoord1dv               ;
-		qglTexCoord1f                = 	dllTexCoord1f                ;
-		qglTexCoord1fv               = 	dllTexCoord1fv               ;
-		qglTexCoord1i                = 	dllTexCoord1i                ;
-		qglTexCoord1iv               = 	dllTexCoord1iv               ;
-		qglTexCoord1s                = 	dllTexCoord1s                ;
-		qglTexCoord1sv               = 	dllTexCoord1sv               ;
-		qglTexCoord2d                = 	dllTexCoord2d                ;
-		qglTexCoord2dv               = 	dllTexCoord2dv               ;
-		qglTexCoord2f                = 	dllTexCoord2f                ;
-		qglTexCoord2fv               = 	dllTexCoord2fv               ;
-		qglTexCoord2i                = 	dllTexCoord2i                ;
-		qglTexCoord2iv               = 	dllTexCoord2iv               ;
-		qglTexCoord2s                = 	dllTexCoord2s                ;
-		qglTexCoord2sv               = 	dllTexCoord2sv               ;
-		qglTexCoord3d                = 	dllTexCoord3d                ;
-		qglTexCoord3dv               = 	dllTexCoord3dv               ;
-		qglTexCoord3f                = 	dllTexCoord3f                ;
-		qglTexCoord3fv               = 	dllTexCoord3fv               ;
-		qglTexCoord3i                = 	dllTexCoord3i                ;
-		qglTexCoord3iv               = 	dllTexCoord3iv               ;
-		qglTexCoord3s                = 	dllTexCoord3s                ;
-		qglTexCoord3sv               = 	dllTexCoord3sv               ;
-		qglTexCoord4d                = 	dllTexCoord4d                ;
-		qglTexCoord4dv               = 	dllTexCoord4dv               ;
-		qglTexCoord4f                = 	dllTexCoord4f                ;
-		qglTexCoord4fv               = 	dllTexCoord4fv               ;
-		qglTexCoord4i                = 	dllTexCoord4i                ;
-		qglTexCoord4iv               = 	dllTexCoord4iv               ;
-		qglTexCoord4s                = 	dllTexCoord4s                ;
-		qglTexCoord4sv               = 	dllTexCoord4sv               ;
-		qglTexCoordPointer           = 	dllTexCoordPointer           ;
-		qglTexEnvf                   = 	dllTexEnvf                   ;
-		qglTexEnvfv                  = 	dllTexEnvfv                  ;
-		qglTexEnvi                   = 	dllTexEnvi                   ;
-		qglTexEnviv                  = 	dllTexEnviv                  ;
-		qglTexGend                   = 	dllTexGend                   ;
-		qglTexGendv                  = 	dllTexGendv                  ;
-		qglTexGenf                   = 	dllTexGenf                   ;
-		qglTexGenfv                  = 	dllTexGenfv                  ;
-		qglTexGeni                   = 	dllTexGeni                   ;
-		qglTexGeniv                  = 	dllTexGeniv                  ;
-		qglTexImage1D                = 	dllTexImage1D                ;
-		qglTexImage2D                = 	dllTexImage2D                ;
-		qglTexParameterf             = 	dllTexParameterf             ;
-		qglTexParameterfv            = 	dllTexParameterfv            ;
-		qglTexParameteri             = 	dllTexParameteri             ;
-		qglTexParameteriv            = 	dllTexParameteriv            ;
-		qglTexSubImage1D             = 	dllTexSubImage1D             ;
-		qglTexSubImage2D             = 	dllTexSubImage2D             ;
-		qglTranslated                = 	dllTranslated                ;
-		qglTranslatef                = 	dllTranslatef                ;
-		qglVertex2d                  = 	dllVertex2d                  ;
-		qglVertex2dv                 = 	dllVertex2dv                 ;
-		qglVertex2f                  = 	dllVertex2f                  ;
-		qglVertex2fv                 = 	dllVertex2fv                 ;
-		qglVertex2i                  = 	dllVertex2i                  ;
-		qglVertex2iv                 = 	dllVertex2iv                 ;
-		qglVertex2s                  = 	dllVertex2s                  ;
-		qglVertex2sv                 = 	dllVertex2sv                 ;
-		qglVertex3d                  = 	dllVertex3d                  ;
-		qglVertex3dv                 = 	dllVertex3dv                 ;
-		qglVertex3f                  = 	dllVertex3f                  ;
-		qglVertex3fv                 = 	dllVertex3fv                 ;
-		qglVertex3i                  = 	dllVertex3i                  ;
-		qglVertex3iv                 = 	dllVertex3iv                 ;
-		qglVertex3s                  = 	dllVertex3s                  ;
-		qglVertex3sv                 = 	dllVertex3sv                 ;
-		qglVertex4d                  = 	dllVertex4d                  ;
-		qglVertex4dv                 = 	dllVertex4dv                 ;
-		qglVertex4f                  = 	dllVertex4f                  ;
-		qglVertex4fv                 = 	dllVertex4fv                 ;
-		qglVertex4i                  = 	dllVertex4i                  ;
-		qglVertex4iv                 = 	dllVertex4iv                 ;
-		qglVertex4s                  = 	dllVertex4s                  ;
-		qglVertex4sv                 = 	dllVertex4sv                 ;
-		qglVertexPointer             = 	dllVertexPointer             ;
-		qglViewport                  = 	dllViewport                  ;
+		qglDeleteLists               = dllDeleteLists;
+		qglDeleteTextures            = dllDeleteTextures;
+		qglDepthFunc                 = dllDepthFunc;
+		qglDepthMask                 = dllDepthMask;
+		qglDepthRange                = dllDepthRange;
+		qglDisable                   = dllDisable;
+		qglDisableClientState        = dllDisableClientState;
+		qglDrawArrays                = dllDrawArrays;
+		qglDrawBuffer                = dllDrawBuffer;
+		qglDrawElements              = dllDrawElements;
+		qglDrawPixels                = dllDrawPixels;
+		qglEdgeFlag                  = dllEdgeFlag;
+		qglEdgeFlagPointer           = dllEdgeFlagPointer;
+		qglEdgeFlagv                 = dllEdgeFlagv;
+		qglEnable                    = dllEnable;
+		qglEnableClientState         = dllEnableClientState;
+		qglEnd                       = dllEnd;
+		qglEndList                   = dllEndList;
+		qglEvalCoord1d				 = dllEvalCoord1d;
+		qglEvalCoord1dv              = dllEvalCoord1dv;
+		qglEvalCoord1f               = dllEvalCoord1f;
+		qglEvalCoord1fv              = dllEvalCoord1fv;
+		qglEvalCoord2d               = dllEvalCoord2d;
+		qglEvalCoord2dv              = dllEvalCoord2dv;
+		qglEvalCoord2f               = dllEvalCoord2f;
+		qglEvalCoord2fv              = dllEvalCoord2fv;
+		qglEvalMesh1                 = dllEvalMesh1;
+		qglEvalMesh2                 = dllEvalMesh2;
+		qglEvalPoint1                = dllEvalPoint1;
+		qglEvalPoint2                = dllEvalPoint2;
+		qglFeedbackBuffer            = dllFeedbackBuffer;
+		qglFinish                    = dllFinish;
+		qglFlush                     = dllFlush;
+		qglFogf                      = dllFogf;
+		qglFogfv                     = dllFogfv;
+		qglFogi                      = dllFogi;
+		qglFogiv                     = dllFogiv;
+		qglFrontFace                 = dllFrontFace;
+		qglFrustum                   = dllFrustum;
+		qglGenLists                  = dllGenLists;
+		qglGenTextures               = dllGenTextures;
+		qglGetBooleanv               = dllGetBooleanv;
+		qglGetClipPlane              = dllGetClipPlane;
+		qglGetDoublev                = dllGetDoublev;
+		qglGetError                  = dllGetError;
+		qglGetFloatv                 = dllGetFloatv;
+		qglGetIntegerv               = dllGetIntegerv;
+		qglGetLightfv                = dllGetLightfv;
+		qglGetLightiv                = dllGetLightiv;
+		qglGetMapdv                  = dllGetMapdv;
+		qglGetMapfv                  = dllGetMapfv;
+		qglGetMapiv                  = dllGetMapiv;
+		qglGetMaterialfv             = dllGetMaterialfv;
+		qglGetMaterialiv             = dllGetMaterialiv;
+		qglGetPixelMapfv             = dllGetPixelMapfv;
+		qglGetPixelMapuiv            = dllGetPixelMapuiv;
+		qglGetPixelMapusv            = dllGetPixelMapusv;
+		qglGetPointerv               = dllGetPointerv;
+		qglGetPolygonStipple         = dllGetPolygonStipple;
+		qglGetString                 = dllGetString;
+		qglGetTexEnvfv               = dllGetTexEnvfv;
+		qglGetTexEnviv               = dllGetTexEnviv;
+		qglGetTexGendv               = dllGetTexGendv;
+		qglGetTexGenfv               = dllGetTexGenfv;
+		qglGetTexGeniv               = dllGetTexGeniv;
+		qglGetTexImage               = dllGetTexImage;
+		qglGetTexLevelParameterfv    = dllGetTexLevelParameterfv;
+		qglGetTexLevelParameteriv    = dllGetTexLevelParameteriv;
+		qglGetTexParameterfv         = dllGetTexParameterfv;
+		qglGetTexParameteriv         = dllGetTexParameteriv;
+		qglHint                      = dllHint;
+		qglIndexMask                 = dllIndexMask;
+		qglIndexPointer              = dllIndexPointer;
+		qglIndexd                    = dllIndexd;
+		qglIndexdv                   = dllIndexdv;
+		qglIndexf                    = dllIndexf;
+		qglIndexfv                   = dllIndexfv;
+		qglIndexi                    = dllIndexi;
+		qglIndexiv                   = dllIndexiv;
+		qglIndexs                    = dllIndexs;
+		qglIndexsv                   = dllIndexsv;
+		qglIndexub                   = dllIndexub;
+		qglIndexubv                  = dllIndexubv;
+		qglInitNames                 = dllInitNames;
+		qglInterleavedArrays         = dllInterleavedArrays;
+		qglIsEnabled                 = dllIsEnabled;
+		qglIsList                    = dllIsList;
+		qglIsTexture                 = dllIsTexture;
+		qglLightModelf               = dllLightModelf;
+		qglLightModelfv              = dllLightModelfv;
+		qglLightModeli               = dllLightModeli;
+		qglLightModeliv              = dllLightModeliv;
+		qglLightf                    = dllLightf;
+		qglLightfv                   = dllLightfv;
+		qglLighti                    = dllLighti;
+		qglLightiv                   = dllLightiv;
+		qglLineStipple               = dllLineStipple;
+		qglLineWidth                 = dllLineWidth;
+		qglListBase                  = dllListBase;
+		qglLoadIdentity              = dllLoadIdentity;
+		qglLoadMatrixd               = dllLoadMatrixd;
+		qglLoadMatrixf               = dllLoadMatrixf;
+		qglLoadName                  = dllLoadName;
+		qglLogicOp                   = dllLogicOp;
+		qglMap1d                     = dllMap1d;
+		qglMap1f                     = dllMap1f;
+		qglMap2d                     = dllMap2d;
+		qglMap2f                     = dllMap2f;
+		qglMapGrid1d                 = dllMapGrid1d;
+		qglMapGrid1f                 = dllMapGrid1f;
+		qglMapGrid2d                 = dllMapGrid2d;
+		qglMapGrid2f                 = dllMapGrid2f;
+		qglMaterialf                 = dllMaterialf;
+		qglMaterialfv                = dllMaterialfv;
+		qglMateriali                 = dllMateriali;
+		qglMaterialiv                = dllMaterialiv;
+		qglMatrixMode                = dllMatrixMode;
+		qglMultMatrixd               = dllMultMatrixd;
+		qglMultMatrixf               = dllMultMatrixf;
+		qglNewList                   = dllNewList;
+		qglNormal3b                  = dllNormal3b;
+		qglNormal3bv                 = dllNormal3bv;
+		qglNormal3d                  = dllNormal3d;
+		qglNormal3dv                 = dllNormal3dv;
+		qglNormal3f                  = dllNormal3f;
+		qglNormal3fv                 = dllNormal3fv;
+		qglNormal3i                  = dllNormal3i;
+		qglNormal3iv                 = dllNormal3iv;
+		qglNormal3s                  = dllNormal3s;
+		qglNormal3sv                 = dllNormal3sv;
+		qglNormalPointer             = dllNormalPointer;
+		qglOrtho                     = dllOrtho;
+		qglPassThrough               = dllPassThrough;
+		qglPixelMapfv                = dllPixelMapfv;
+		qglPixelMapuiv               = dllPixelMapuiv;
+		qglPixelMapusv               = dllPixelMapusv;
+		qglPixelStoref               = dllPixelStoref;
+		qglPixelStorei               = dllPixelStorei;
+		qglPixelTransferf            = dllPixelTransferf;
+		qglPixelTransferi            = dllPixelTransferi;
+		qglPixelZoom                 = dllPixelZoom;
+		qglPointSize                 = dllPointSize;
+		qglPolygonMode               = dllPolygonMode;
+		qglPolygonOffset             = dllPolygonOffset;
+		qglPolygonStipple            = dllPolygonStipple;
+		qglPopAttrib                 = dllPopAttrib;
+		qglPopClientAttrib           = dllPopClientAttrib;
+		qglPopMatrix                 = dllPopMatrix;
+		qglPopName                   = dllPopName;
+		qglPrioritizeTextures        = dllPrioritizeTextures;
+		qglPushAttrib                = dllPushAttrib;
+		qglPushClientAttrib          = dllPushClientAttrib;
+		qglPushMatrix                = dllPushMatrix;
+		qglPushName                  = dllPushName;
+		qglRasterPos2d               = dllRasterPos2d;
+		qglRasterPos2dv              = dllRasterPos2dv;
+		qglRasterPos2f               = dllRasterPos2f;
+		qglRasterPos2fv              = dllRasterPos2fv;
+		qglRasterPos2i               = dllRasterPos2i;
+		qglRasterPos2iv              = dllRasterPos2iv;
+		qglRasterPos2s               = dllRasterPos2s;
+		qglRasterPos2sv              = dllRasterPos2sv;
+		qglRasterPos3d               = dllRasterPos3d;
+		qglRasterPos3dv              = dllRasterPos3dv;
+		qglRasterPos3f               = dllRasterPos3f;
+		qglRasterPos3fv              = dllRasterPos3fv;
+		qglRasterPos3i               = dllRasterPos3i;
+		qglRasterPos3iv              = dllRasterPos3iv;
+		qglRasterPos3s               = dllRasterPos3s;
+		qglRasterPos3sv              = dllRasterPos3sv;
+		qglRasterPos4d               = dllRasterPos4d;
+		qglRasterPos4dv              = dllRasterPos4dv;
+		qglRasterPos4f               = dllRasterPos4f;
+		qglRasterPos4fv              = dllRasterPos4fv;
+		qglRasterPos4i               = dllRasterPos4i;
+		qglRasterPos4iv              = dllRasterPos4iv;
+		qglRasterPos4s               = dllRasterPos4s;
+		qglRasterPos4sv              = dllRasterPos4sv;
+		qglReadBuffer                = dllReadBuffer;
+		qglReadPixels                = dllReadPixels;
+		qglRectd                     = dllRectd;
+		qglRectdv                    = dllRectdv;
+		qglRectf                     = dllRectf;
+		qglRectfv                    = dllRectfv;
+		qglRecti                     = dllRecti;
+		qglRectiv                    = dllRectiv;
+		qglRects                     = dllRects;
+		qglRectsv                    = dllRectsv;
+		qglRenderMode                = dllRenderMode;
+		qglRotated                   = dllRotated;
+		qglRotatef                   = dllRotatef;
+		qglScaled                    = dllScaled;
+		qglScalef                    = dllScalef;
+		qglScissor                   = dllScissor;
+		qglSelectBuffer              = dllSelectBuffer;
+		qglShadeModel                = dllShadeModel;
+		qglStencilFunc               = dllStencilFunc;
+		qglStencilMask               = dllStencilMask;
+		qglStencilOp                 = dllStencilOp;
+		qglTexCoord1d                = dllTexCoord1d;
+		qglTexCoord1dv               = dllTexCoord1dv;
+		qglTexCoord1f                = dllTexCoord1f;
+		qglTexCoord1fv               = dllTexCoord1fv;
+		qglTexCoord1i                = dllTexCoord1i;
+		qglTexCoord1iv               = dllTexCoord1iv;
+		qglTexCoord1s                = dllTexCoord1s;
+		qglTexCoord1sv               = dllTexCoord1sv;
+		qglTexCoord2d                = dllTexCoord2d;
+		qglTexCoord2dv               = dllTexCoord2dv;
+		qglTexCoord2f                = dllTexCoord2f;
+		qglTexCoord2fv               = dllTexCoord2fv;
+		qglTexCoord2i                = dllTexCoord2i;
+		qglTexCoord2iv               = dllTexCoord2iv;
+		qglTexCoord2s                = dllTexCoord2s;
+		qglTexCoord2sv               = dllTexCoord2sv;
+		qglTexCoord3d                = dllTexCoord3d;
+		qglTexCoord3dv               = dllTexCoord3dv;
+		qglTexCoord3f                = dllTexCoord3f;
+		qglTexCoord3fv               = dllTexCoord3fv;
+		qglTexCoord3i                = dllTexCoord3i;
+		qglTexCoord3iv               = dllTexCoord3iv;
+		qglTexCoord3s                = dllTexCoord3s;
+		qglTexCoord3sv               = dllTexCoord3sv;
+		qglTexCoord4d                = dllTexCoord4d;
+		qglTexCoord4dv               = dllTexCoord4dv;
+		qglTexCoord4f                = dllTexCoord4f;
+		qglTexCoord4fv               = dllTexCoord4fv;
+		qglTexCoord4i                = dllTexCoord4i;
+		qglTexCoord4iv               = dllTexCoord4iv;
+		qglTexCoord4s                = dllTexCoord4s;
+		qglTexCoord4sv               = dllTexCoord4sv;
+		qglTexCoordPointer           = dllTexCoordPointer;
+		qglTexEnvf                   = dllTexEnvf;
+		qglTexEnvfv                  = dllTexEnvfv;
+		qglTexEnvi                   = dllTexEnvi;
+		qglTexEnviv                  = dllTexEnviv;
+		qglTexGend                   = dllTexGend;
+		qglTexGendv                  = dllTexGendv;
+		qglTexGenf                   = dllTexGenf;
+		qglTexGenfv                  = dllTexGenfv;
+		qglTexGeni                   = dllTexGeni;
+		qglTexGeniv                  = dllTexGeniv;
+		qglTexImage1D                = dllTexImage1D;
+		qglTexImage2D                = dllTexImage2D;
+		qglTexParameterf             = dllTexParameterf;
+		qglTexParameterfv            = dllTexParameterfv;
+		qglTexParameteri             = dllTexParameteri;
+		qglTexParameteriv            = dllTexParameteriv;
+		qglTexSubImage1D             = dllTexSubImage1D;
+		qglTexSubImage2D             = dllTexSubImage2D;
+		qglTranslated                = dllTranslated;
+		qglTranslatef                = dllTranslatef;
+		qglVertex2d                  = dllVertex2d;
+		qglVertex2dv                 = dllVertex2dv;
+		qglVertex2f                  = dllVertex2f;
+		qglVertex2fv                 = dllVertex2fv;
+		qglVertex2i                  = dllVertex2i;
+		qglVertex2iv                 = dllVertex2iv;
+		qglVertex2s                  = dllVertex2s;
+		qglVertex2sv                 = dllVertex2sv;
+		qglVertex3d                  = dllVertex3d;
+		qglVertex3dv                 = dllVertex3dv;
+		qglVertex3f                  = dllVertex3f;
+		qglVertex3fv                 = dllVertex3fv;
+		qglVertex3i                  = dllVertex3i;
+		qglVertex3iv                 = dllVertex3iv;
+		qglVertex3s                  = dllVertex3s;
+		qglVertex3sv                 = dllVertex3sv;
+		qglVertex4d                  = dllVertex4d;
+		qglVertex4dv                 = dllVertex4dv;
+		qglVertex4f                  = dllVertex4f;
+		qglVertex4fv                 = dllVertex4fv;
+		qglVertex4i                  = dllVertex4i;
+		qglVertex4iv                 = dllVertex4iv;
+		qglVertex4s                  = dllVertex4s;
+		qglVertex4sv                 = dllVertex4sv;
+		qglVertexPointer             = dllVertexPointer;
+		qglViewport                  = dllViewport;
 	}
 }
 
 #pragma warning (default : 4113 4133 4047 )
-
-
-

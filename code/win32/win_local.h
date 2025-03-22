@@ -19,7 +19,10 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
 // win_local.h: Win32-specific Quake3 header file
+
+#include <SDL3/SDL.h>
 
 #if defined (_MSC_VER) && (_MSC_VER >= 1200)
 #pragma warning(disable : 4201)
@@ -30,66 +33,48 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #pragma warning( pop )
 #endif
 
-#define	DIRECTSOUND_VERSION	0x0300
-#define	DIRECTINPUT_VERSION	0x0300
-
-#include <dinput.h>
-#include <dsound.h>
-#include <winsock.h>
-#include <wsipx.h>
-
-void	IN_MouseEvent (int mstate);
-
 void Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr );
-
-void	Sys_CreateConsole( void );
-void	Sys_DestroyConsole( void );
-
-char	*Sys_ConsoleInput (void);
-
-bool	Sys_GetPacket ( netadr_t *net_from, msg_t *net_message );
+void Sys_CreateConsole(void);
+void Sys_DestroyConsole(void);
+char* Sys_ConsoleInput (void);
+bool Sys_GetPacket(netadr_t* net_from, msg_t* net_message);
 
 // Input subsystem
-
-void	IN_Init (void);
-void	IN_Shutdown (void);
-void	IN_JoystickCommands (void);
-
-void	IN_Move (usercmd_t *cmd);
-// add additional non keyboard / non mouse movement on top of the keyboard move cmd
-
-void	IN_DeactivateWin32Mouse( void);
-
-void	IN_Activate (bool active);
-void	IN_Frame (void);
+void IN_Init(void);
+void IN_Shutdown(void);
+void IN_Activate(bool active);
+void IN_Frame(void);
 
 // window procedure
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam);
+void TranslateAndDispatchEvent(const SDL_Event* msg);
 
-void Conbuf_AppendText( const char *msg );
-
-void SNDDMA_Activate( void );
-int  SNDDMA_InitDS ();
+void Conbuf_AppendText(const char* msg);
 
 typedef struct
 {
-	
-	HINSTANCE		reflib_library;		// Handle to refresh DLL 
-	bool		reflib_active;
+	SDL_SharedObject* hinstOpenGL;	// handle for the OpenGL library
+	SDL_GLContext hGLRC;			// handle to GL rendering context
+	FILE* log_fp;
+	int	desktopBitsPixel;
+	int	desktopWidth;
+	int desktopHeight;
+	bool allowdisplaydepthchange;
+	bool pixelFormatSet;
+	bool cdsFullscreen;
+} glwstate_t;
 
-	HWND			hWnd;
-	HINSTANCE		hInstance;
+extern glwstate_t glw_state;
+
+typedef struct
+{
+	SDL_Window* hWnd;
 	bool		activeApp;
 	bool		isMinimized;
-	OSVERSIONINFO	osversion;
 
 	// when we get a windows message, we store the time off so keyboard processing
 	// can know the exact time of an event
-	unsigned		sysMsgTime;
+	unsigned	sysMsgTime;
 } WinVars_t;
+
 
 extern WinVars_t	g_wv;

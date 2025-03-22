@@ -171,7 +171,7 @@ void S_Init( void ) {
 
 	if ( r ) {
 		s_soundStarted = 1;
-		s_soundMuted = 1;
+		s_soundMuted = false;
 		s_numSfx = 0;
 
 		Com_Memset(sfxHash, 0, sizeof(sfx_t *)*LOOP_HASH);
@@ -656,33 +656,32 @@ If we are about to perform file access, clear the buffer
 so sound doesn't stutter.
 ==================
 */
-void S_ClearSoundBuffer( void ) {
-	int		clear;
-		
-	if (!s_soundStarted)
+void S_ClearSoundBuffer(void)
+{
+	int	clear;
+
+	if (!s_soundStarted) {
 		return;
+	}
 
 	// stop looping sounds
-	Com_Memset(loopSounds, 0, MAX_GENTITIES*sizeof(loopSound_t));
-	Com_Memset(loop_channels, 0, MAX_CHANNELS*sizeof(channel_t));
+	Com_Memset(loopSounds, 0, MAX_GENTITIES * sizeof(loopSound_t));
+	Com_Memset(loop_channels, 0, MAX_CHANNELS * sizeof(channel_t));
 	numLoopChannels = 0;
 
 	S_ChannelSetup();
 
 	s_rawend = 0;
 
-	if (dma.samplebits == 8)
+	if (dma.samplebits == 8) {
 		clear = 0x80;
-	else
+	} else {
 		clear = 0;
-
-	SNDDMA_BeginPainting ();
-	if (dma.buffer)
-	{
-		Com_Memset(dma.buffer, clear, dma.samples * dma.samplebits/8);
 	}
 
-	SNDDMA_Submit ();
+	if (dma.buffer) {
+		Com_Memset(dma.buffer, clear, dma.samples * dma.samplebits / 8);
+	}
 }
 
 /*
@@ -1233,7 +1232,8 @@ void S_GetSoundtime(void)
 }
 
 
-void S_Update_(void) {
+void S_Update_(void)
+{
 	unsigned        endtime;
 	int				samps;
 	static			float	lastTime = 0.0f;
@@ -1241,7 +1241,7 @@ void S_Update_(void) {
 	float			thisTime, sane;
 	static			int ot = -1;
 
-	if ( !s_soundStarted || s_soundMuted ) {
+	if (!s_soundStarted || s_soundMuted) {
 		return;
 	}
 
@@ -1253,6 +1253,7 @@ void S_Update_(void) {
 	if (s_soundtime == ot) {
 		return;
 	}
+
 	ot = s_soundtime;
 
 	// clear any sound effects that end before the current time,
@@ -1260,12 +1261,12 @@ void S_Update_(void) {
 	S_ScanChannelStarts();
 
 	sane = thisTime - lastTime;
-	if (sane<11) {
+	if (sane < 11) {
 		sane = 11;			// 85hz
 	}
 
 	ma = s_mixahead->value * dma.speed;
-	op = s_mixPreStep->value + sane*dma.speed*0.01;
+	op = s_mixPreStep->value + sane * dma.speed * 0.01;
 
 	if (op < ma) {
 		ma = op;
@@ -1275,21 +1276,15 @@ void S_Update_(void) {
 	endtime = s_soundtime + ma;
 
 	// mix to an even submission block size
-	endtime = (endtime + dma.submission_chunk-1)
-		& ~(dma.submission_chunk-1);
+	endtime = (endtime + dma.submission_chunk - 1)
+		& ~(dma.submission_chunk - 1);
 
 	// never mix more than the complete buffer
-	samps = dma.samples >> (dma.channels-1);
+	samps = dma.samples >> (dma.channels - 1);
 	if (endtime - s_soundtime > samps)
 		endtime = s_soundtime + samps;
 
-
-
-	SNDDMA_BeginPainting ();
-
-	S_PaintChannels (endtime);
-
-	SNDDMA_Submit ();
+	S_PaintChannels(endtime);
 
 	lastTime = thisTime;
 }
