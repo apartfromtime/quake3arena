@@ -24,7 +24,742 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../client/client.h"
 #include "../win32/win_local.h"
 
-static char		sys_cmdline[MAX_STRING_CHARS];
+// when we get a windows message, we store the time off so keyboard processing
+// can know the exact time of an event
+unsigned int s_sysMsgTime;
+
+/*
+=========================================================================
+
+JOYSTICK
+
+=========================================================================
+*/
+
+typedef struct
+{
+	bool	mouseActive;
+	bool	mouseInitialized;
+} WinMouseVars_t;
+
+static WinMouseVars_t s_wmv;
+
+//
+// Joystick definitions
+//
+#define	JOY_MAX_AXES		6				// X, Y, Z, R, U, V
+
+typedef struct
+{
+	SDL_Gamepad* gamepad;
+	int id;			// joystick number
+	int oldbuttonstate;
+	int	oldpovstate;
+	bool avail;
+} joystickInfo_t;
+
+static	joystickInfo_t	joy;
+
+cvar_t* in_joystick;
+cvar_t* in_joyBallScale;
+cvar_t* in_debugJoystick;
+cvar_t* joy_threshold;
+
+bool	in_appactive;
+
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+void IN_StartupJoystick(void)
+{
+	int numdevs;
+
+	// assume no joystick
+	joy.avail = false;
+
+	if (!in_joystick->integer) {
+		Com_Printf("Joystick is not active.\n");
+		return;
+	}
+
+	if (!SDL_WasInit(SDL_INIT_GAMEPAD)) {
+		if (!SDL_Init(SDL_INIT_GAMEPAD)) {
+			Com_Printf("Couldn't init SDL gamepad: %s.\n", SDL_GetError());
+			return;
+		}
+	}
+
+	SDL_AddGamepadMappingsFromFile("gamecontrollerdb.txt");
+
+	// verify joystick driver is present
+	SDL_JoystickID* joysticks = SDL_GetJoysticks(&numdevs);
+	if (numdevs == 0) {
+		Com_Printf("joystick not found -- driver not present\n");
+		return;
+	}
+
+	// cycle through the joystick ids for the first valid one
+	joy.gamepad = NULL;
+	for (joy.id = 0; joy.id < numdevs; joy.id++)
+	{
+		if (SDL_IsGamepad(joysticks[joy.id]) == true) {
+			joy.gamepad = SDL_OpenGamepad(joysticks[joy.id]);
+			break;
+		}
+	}
+
+	// abort startup if we didn't find a valid joystick
+	if (joy.gamepad == NULL) {
+		Com_Printf("joystick not found -- no valid joysticks\n");
+		return;
+	}
+
+	// get the capabilities of the selected joystick
+	Com_Printf("Joystick found.\n");
+	Com_Printf("Pname: %s\n", SDL_GetGamepadName(joy.gamepad));
+	Com_Printf("OemVxD: %d\n", SDL_GetGamepadProductVersion(joy.gamepad));
+	Com_Printf("RegKey: %s\n", SDL_GetGamepadSerial(joy.gamepad));
+
+	int numButtons = 0;
+	int numAxes = 0;
+
+	for (size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++)
+	{
+		numButtons = SDL_GamepadHasButton(joy.gamepad, i) == true ? numButtons + 1 : numButtons;
+	}
+
+	for (size_t i = 0; i < SDL_GAMEPAD_AXIS_COUNT; i++)
+	{
+		numAxes = SDL_GamepadHasAxis(joy.gamepad, i) == true ? numAxes + 1 : numAxes;
+	}
+
+	Com_Printf("Numbuttons: %i / %i\n", numButtons, SDL_GAMEPAD_BUTTON_COUNT);
+	Com_Printf("Axis: %i / %i\n", numAxes, SDL_GAMEPAD_AXIS_COUNT);
+
+	// old button and POV states default to no buttons pressed
+	joy.oldbuttonstate = 0;
+	joy.oldpovstate = 0;
+
+	// mark the joystick as available
+	joy.avail = true;
+}
+
+/*
+===========
+JoyToF
+===========
+*/
+float JoyToF(int value)
+{
+	float	fValue;
+
+	if (value > -(int)(joy_threshold->value * 0X7FFF) &&
+		value <  (int)(joy_threshold->value * 0X7FFF)) {
+
+		return 0;
+	}
+
+	// move centerpoint to zero
+	if (value < 0)
+	{
+		value -= 32768;
+	}
+	else
+	{
+		value += 32768;
+	}
+
+	// convert range from -32768..32767 to -1..1 
+	fValue = (float)value / 32768.0;
+
+	if (fValue < -1.0f) {
+		fValue = -1.0f;
+	}
+	if (fValue > 1.0f) {
+		fValue = 1.0f;
+	}
+
+	return fValue;
+}
+
+int JoyToI(int value)
+{
+	if (value > -(int)(joy_threshold->value * 0X7FFF) &&
+		value <  (int)(joy_threshold->value * 0X7FFF)) {
+
+		return 0;
+	}
+
+	// move centerpoint to zero
+	if (value < 0) {
+		value -= 32768;
+	}
+	else {
+		value += 32768;
+	}
+
+	int iValue = (float)value / 32768.0;
+
+	return iValue;
+}
+
+int	joyDirectionKeys[16] =
+{
+	K_LEFTARROW, K_RIGHTARROW,
+	K_UPARROW, K_DOWNARROW,
+	K_JOY16, K_JOY17,
+	K_JOY18, K_JOY19,
+	K_JOY20, K_JOY21,
+	K_JOY22, K_JOY23,
+
+	K_JOY24, K_JOY25,
+	K_JOY26, K_JOY27
+};
+
+/*
+===========
+IN_JoyMove
+===========
+*/
+unsigned long s_joystick_lx = 0;
+unsigned long s_joystick_ly = 0;
+unsigned long s_joystick_rx = 0;
+unsigned long s_joystick_ry = 0;
+
+void IN_JoyMove(void)
+{
+	float fAxisValue[4] = { 0.0f };
+	unsigned long povstate = 0;
+	int x = 0, y = 0;
+
+	// verify joystick is available and that the user wants to use it
+	if (!joy.avail) {
+		return;
+	}
+
+	// collect the joystick data, if possible
+	if (in_debugJoystick->integer) {
+
+	}
+
+	// convert main joystick motion into 6 direction button bits
+	fAxisValue[0] = JoyToF(s_joystick_lx);
+	fAxisValue[1] = JoyToF(s_joystick_ly);
+	fAxisValue[2] = JoyToF(s_joystick_rx);
+	fAxisValue[3] = JoyToF(s_joystick_ry);
+	
+	for (int i = 0; i < SDL_GAMEPAD_AXIS_COUNT && i < 4; i++)
+	{
+		// get the floating point zero-centered, potentially-inverted data for the current axis
+		if (fAxisValue[i] < -joy_threshold->value) {
+			povstate |= (1 << (i * 2));
+		}
+		else if (fAxisValue[i] > joy_threshold->value) {
+			povstate |= (1 << (i * 2 + 1));
+		}
+	}
+
+	// determine which bits have changed and key an auxillary event for each change
+	for (int i = 0; i < 16; i++) {
+		if ((povstate & (1 << i)) && !(joy.oldpovstate & (1 << i))) {
+			Sys_QueEvent(s_sysMsgTime, SE_KEY, joyDirectionKeys[i], true, 0, NULL);
+		}
+
+		if (!(povstate & (1 << i)) && (joy.oldpovstate & (1 << i))) {
+			Sys_QueEvent(s_sysMsgTime, SE_KEY, joyDirectionKeys[i], false, 0, NULL);
+		}
+	}
+	joy.oldpovstate = povstate;
+
+	// if there is a trackball like interface, simulate mouse moves
+	if (SDL_GAMEPAD_AXIS_COUNT >= 6) {
+		x = JoyToI(s_joystick_rx) * in_joyBallScale->value;
+		y = JoyToI(s_joystick_ry) * in_joyBallScale->value;
+		if (x != 0 || y != 0) {
+			Sys_QueEvent(s_sysMsgTime, SE_MOUSE, x, y, 0, NULL);
+		}
+	}
+}
+
+/*
+============================================================
+
+  MOUSE CONTROL
+
+============================================================
+*/
+
+cvar_t* in_mouse;
+
+/*
+===========
+IN_ActivateMouse
+
+Called when the window gains focus or changes in some way
+===========
+*/
+void IN_ActivateMouse(void)
+{
+	if (!s_wmv.mouseInitialized) {
+		return;
+	}
+
+	if (!in_mouse->integer) {
+		s_wmv.mouseActive = false;
+		return;
+	}
+
+	if (s_wmv.mouseActive) {
+		return;
+	}
+
+	s_wmv.mouseActive = true;
+	SDL_CaptureMouse(true);
+	SDL_HideCursor();
+	SDL_SetWindowRelativeMouseMode(g_wv.hWnd, true);
+}
+
+/*
+===========
+IN_DeactivateMouse
+
+Called when the window loses focus
+===========
+*/
+void IN_DeactivateMouse(void)
+{
+	if (!s_wmv.mouseInitialized) {
+		return;
+	}
+
+	if (!s_wmv.mouseActive) {
+		return;
+	}
+
+	s_wmv.mouseActive = false;
+	SDL_SetWindowRelativeMouseMode(g_wv.hWnd, false);
+	SDL_ShowCursor();
+	SDL_CaptureMouse(false);
+}
+
+/*
+===========
+IN_StartupMouse
+===========
+*/
+void IN_StartupMouse(void)
+{
+	s_wmv.mouseInitialized = false;
+
+	if (in_mouse->integer == 0) {
+		Com_Printf("Mouse control not active.\n");
+		return;
+	}
+
+	s_wmv.mouseInitialized = true;
+}
+
+
+/*
+=========================================================================
+
+INPUT
+
+=========================================================================
+*/
+
+
+/*
+===========
+IN_Shutdown
+===========
+*/
+void IN_Shutdown(void)
+{
+	IN_DeactivateMouse();
+}
+
+/*
+===========
+IN_Init
+===========
+*/
+void IN_Init(void)
+{
+	Com_Printf("\n------- Input Initialization -------\n");
+
+	// mouse variables
+	in_mouse = Cvar_Get("in_mouse", "1", CVAR_ARCHIVE | CVAR_LATCH);
+
+	// joystick variables
+	in_joystick = Cvar_Get("in_joystick", "0", CVAR_ARCHIVE | CVAR_LATCH);
+	in_joyBallScale = Cvar_Get("in_joyBallScale", "0.02", CVAR_ARCHIVE);
+	in_debugJoystick = Cvar_Get("in_debugjoystick", "0", CVAR_TEMP);
+
+	joy_threshold = Cvar_Get("joy_threshold", "0.15", CVAR_ARCHIVE);
+
+	IN_StartupMouse();
+	IN_StartupJoystick();
+
+	Com_Printf("------------------------------------\n");
+}
+
+/*
+===========
+IN_Activate
+
+Called when the main window gains or loses focus.
+The window may have been destroyed and recreated
+between a deactivate and an activate.
+===========
+*/
+void IN_Activate(bool active)
+{
+	in_appactive = active;
+
+	if (!active) {
+		IN_DeactivateMouse();
+	}
+}
+
+/*
+==================
+IN_Frame
+
+Called every frame, even if not generating commands
+==================
+*/
+void IN_Frame(void)
+{
+	IN_JoyMove();			// post joystick events
+
+	if (!s_wmv.mouseInitialized) {
+		return;
+	}
+
+	if (cls.keyCatchers & KEYCATCH_CONSOLE) {
+		// temporarily deactivate if not in the game and running on the desktop
+		if (Cvar_VariableValue("r_fullscreen") == 0) {
+			IN_DeactivateMouse();
+			return;
+		}
+	}
+
+	if (!in_appactive) {
+		IN_DeactivateMouse();
+		return;
+	}
+
+	IN_ActivateMouse();
+}
+
+WinVars_t g_wv;
+
+// Console variables that we need to access from this module
+cvar_t* r_fullscreen;
+cvar_t* vid_xpos;			// X coordinate of window position
+cvar_t* vid_ypos;			// Y coordinate of window position
+
+//==========================================================================
+
+static byte s_scantokey[128] =
+{
+	//  0			1			2			3			4			5			6			7 
+	//  8           9			A			B			C			D			E			F 
+		0,			27,			'1',		'2',		'3',		'4',		'5',		'6',
+		'7',		'8',		'9',		'0',		'-',		'=',		K_BACKSPACE,  9,		// 0
+		'q',		'w',		'e',		'r',		't',		'y',		'u',		'i',
+		'o',		'p',		'[',		']',		13 ,		K_CTRL,		'a',		's',		// 1
+		'd',		'f',		'g',		'h',		'j',		'k',		'l',		';',
+		'\'',		'`',		K_SHIFT,	'\\',		'z',		'x',		'c',		'v',		// 2
+		'b',		'n',		'm',		',',		'.',		'/',		K_SHIFT,	'*',
+		K_ALT,		' ',		K_CAPSLOCK,	K_F1,		K_F2,		K_F3,		K_F4,		K_F5,		// 3
+		K_F6,		K_F7,		K_F8,		K_F9,		K_F10,		K_PAUSE,	0,			K_HOME,
+		K_UPARROW,	K_PGUP,		K_KP_MINUS,	K_LEFTARROW,K_KP_5,		K_RIGHTARROW,K_KP_PLUS,	K_END,		// 4
+		K_DOWNARROW,K_PGDN,		K_INS,		K_DEL,		0,			0,			0,			K_F11,
+		K_F12,		0,			0,			0,			0,			0,			0,			0,			// 5
+		0,			0,			0,			0,			0,			0,			0,			0,
+		0,			0,			0,			0,			0,			0,			0,			0,			// 6
+		0,			0,			0,			0,			0,			0,			0,			0,
+		0,			0,			0,			0,			0,			0,			0,			0			// 7
+};
+
+/*
+=======
+MapKey
+
+Map from windows to quake keynums
+=======
+*/
+static int MapKey(int key)
+{
+	int result;
+	int modified;
+	bool is_extended;
+
+	//	Com_Printf( "0x%x\n", key);
+
+	modified = key & 255;
+
+	if (modified > 127) {
+		return 0;
+	}
+
+	if (key & (1 << 24)) {
+		is_extended = true;
+	}
+	else {
+		is_extended = false;
+	}
+
+	result = s_scantokey[modified];
+
+	if (!is_extended)
+	{
+		switch (result)
+		{
+		case K_HOME:
+			return K_KP_HOME;
+		case K_UPARROW:
+			return K_KP_UPARROW;
+		case K_PGUP:
+			return K_KP_PGUP;
+		case K_LEFTARROW:
+			return K_KP_LEFTARROW;
+		case K_RIGHTARROW:
+			return K_KP_RIGHTARROW;
+		case K_END:
+			return K_KP_END;
+		case K_DOWNARROW:
+			return K_KP_DOWNARROW;
+		case K_PGDN:
+			return K_KP_PGDN;
+		case K_INS:
+			return K_KP_INS;
+		case K_DEL:
+			return K_KP_DEL;
+		default:
+			return result;
+		}
+	}
+	else
+	{
+		switch (result)
+		{
+		case K_PAUSE:
+			return K_KP_NUMLOCK;
+		case 0x0D:
+			return K_KP_ENTER;
+		case 0x2F:
+			return K_KP_SLASH;
+		case 0xAF:
+			return K_KP_PLUS;
+		}
+		return result;
+	}
+}
+
+//=============================================================================
+// Window event callback function
+//=============================================================================
+static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
+{
+	switch (msg->type)
+	{
+	case SDL_EVENT_WINDOW_SHOWN:
+	{
+		r_fullscreen = Cvar_Get("r_fullscreen", "1", CVAR_ARCHIVE | CVAR_LATCH);
+		vid_xpos = Cvar_Get("vid_xpos", "3", CVAR_ARCHIVE);
+		vid_ypos = Cvar_Get("vid_ypos", "22", CVAR_ARCHIVE);
+
+		return;
+	}
+	case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+	{
+		Cbuf_ExecuteText(EXEC_APPEND, "quit");
+
+		return;
+	}
+	case SDL_EVENT_WINDOW_FOCUS_GAINED:
+	{
+		Com_DPrintf("Application Active\n");
+
+		g_wv.isMinimized = false;
+		IN_Activate(true);
+
+		return;
+	}
+	case SDL_EVENT_WINDOW_MINIMIZED:
+	case SDL_EVENT_WINDOW_FOCUS_LOST:
+	{
+		if (msg->type != SDL_EVENT_WINDOW_MINIMIZED) {
+			Com_DPrintf("Application Inactive\n");
+		}
+
+		g_wv.isMinimized = true;
+		IN_Activate(false);
+
+		return;
+	}
+	case SDL_EVENT_WINDOW_MOVED:
+	{
+		if (!r_fullscreen->integer) {
+
+			Cvar_SetValue("vid_xpos", msg->window.data1);
+			Cvar_SetValue("vid_ypos", msg->window.data2);
+		}
+
+		return;
+	}
+	case SDL_EVENT_CLIPBOARD_UPDATE:
+	{
+		return;
+	}
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_KEY_UP:
+	{
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(msg->key.raw),
+			(msg->type == SDL_EVENT_KEY_DOWN) ? true : false, 0, NULL);
+		return;
+	}
+	case SDL_EVENT_TEXT_INPUT:
+	{
+		Sys_QueEvent(s_sysMsgTime, SE_CHAR, msg->text.text[0], 0, 0, NULL);
+		return;
+	}
+	case SDL_EVENT_MOUSE_MOTION:
+	{
+		if ((cls.keyCatchers & KEYCATCH_CONSOLE) != KEYCATCH_CONSOLE) {
+			Sys_QueEvent(s_sysMsgTime, SE_MOUSE, msg->motion.xrel, msg->motion.yrel, 0,
+				NULL);
+		}
+
+		return;
+	}
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	{
+		int	key = 0;
+
+		switch (msg->button.button)
+		{
+		case SDL_BUTTON_LEFT:
+		{
+			key = K_MOUSE1;
+		} break;
+		case SDL_BUTTON_MIDDLE:
+		{
+			key = K_MOUSE3;
+		} break;
+		case SDL_BUTTON_RIGHT:
+		{
+			key = K_MOUSE2;
+		} break;
+		case SDL_BUTTON_X1:
+		{
+			key = K_MOUSE4;
+		} break;
+		case SDL_BUTTON_X2:
+		{
+			key = K_MOUSE5;
+		} break;
+		}
+
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, key,
+			(msg->type == SDL_EVENT_MOUSE_BUTTON_DOWN) ? true : false, 0, NULL);
+
+		return;
+	}
+	case SDL_EVENT_MOUSE_WHEEL:
+	{
+		if (in_mouse->integer == 1 ||
+			(!r_fullscreen->integer && (cls.keyCatchers & KEYCATCH_CONSOLE))) {
+
+			if ((int)(msg->wheel.y) > 0) {
+				for (int i = 0; i < (int)(msg->wheel.y); i++)
+				{
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELUP, true, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELUP, false, 0, NULL);
+				}
+			} else {
+				for (int i = 0; i < -(int)(msg->wheel.y); i++)
+				{
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELDOWN, true, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELDOWN, false, 0, NULL);
+				}
+			}
+
+			return;
+		}
+
+	} break;
+	case SDL_EVENT_GAMEPAD_AXIS_MOTION:
+	{
+		switch (msg->gaxis.axis)
+		{
+		case SDL_GAMEPAD_AXIS_LEFTX:
+		{
+			s_joystick_lx = msg->gaxis.value;
+		} break;
+		case SDL_GAMEPAD_AXIS_LEFTY:
+		{
+			s_joystick_ly = msg->gaxis.value;
+		} break;
+		case SDL_GAMEPAD_AXIS_RIGHTX:
+		{
+			s_joystick_rx = msg->gaxis.value;
+		} break;
+		case SDL_GAMEPAD_AXIS_RIGHTY:
+		{
+			s_joystick_ry = msg->gaxis.value;
+		} break;
+		case SDL_GAMEPAD_AXIS_LEFT_TRIGGER:
+		{
+
+		} break;
+		case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER:
+		{
+
+		} break;
+		}
+		return;
+	}
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+	case SDL_EVENT_GAMEPAD_BUTTON_UP:
+	{
+		if (!joy.avail) {
+			return;
+		}
+
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, K_JOY1 + msg->gbutton.button,
+			msg->gbutton.down, 0, NULL);
+	}
+	case SDL_EVENT_GAMEPAD_ADDED:
+	case SDL_EVENT_GAMEPAD_REMOVED:
+	{
+		return;
+	}
+	case SDL_EVENT_GAMEPAD_SENSOR_UPDATE:
+	{
+		return;
+	}
+	}
+}
+
+//=============================================================================
+// Translate virtual key codes
+//=============================================================================
+void TranslateAndDispatchEvent(const SDL_Event* msg)
+{
+	if (msg != NULL) {
+		s_sysMsgTime = Sys_Milliseconds();
+		SDLWndProc(g_wv.hWnd, msg);
+	}
+}
+
+static char sys_cmdline[MAX_STRING_CHARS] = { 0 };
 
 /*
 =============
@@ -142,10 +877,36 @@ Sys_CheckCD
 Return true if the proper CD is in the drive
 ================
 */
-bool	Sys_CheckCD( void ) {
-  // FIXME: mission pack
-  return true;
-	//return Sys_ScanForCD();
+bool Sys_CheckCD(void)
+{
+	// FIXME: mission pack
+	return true; // return Sys_ScanForCD();
+}
+
+/*
+================
+Sys_DateAndTime
+
+Returns current system date and time
+================
+*/
+const char*
+Sys_DateAndTime(void)
+{
+	static char buffer[MAX_STRING_CHARS] = { 0 };
+	char* pstr = NULL;
+	struct tm* newtime = NULL;
+	time_t aclock;
+
+	time(&aclock);
+	newtime = localtime(&aclock);
+	pstr = asctime(newtime);
+
+	if (pstr != NULL) {
+		Q_strncpyz(buffer, pstr, strlen(pstr));
+	}
+
+	return &buffer[0];
 }
 
 /*
@@ -164,7 +925,7 @@ int Sys_Milliseconds(void)
 		initialized = true;
 	}
 
-	sys_curtime = SDL_GetTicks() - sys_timeBase;
+	sys_curtime = SDL_GetTicks();
 
 	return sys_curtime;
 }
@@ -415,9 +1176,6 @@ sysEvent_t Sys_GetEvent(void)
 		if (msg.type == SDL_EVENT_QUIT) {
 			Com_Quit_f();
 		}
-
-		// save the msg time, because wndprocs don't have access to the timestamp
-		g_wv.sysMsgTime = Sys_Milliseconds();
 
 		TranslateAndDispatchEvent(&msg);
 	}

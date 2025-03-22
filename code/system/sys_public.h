@@ -2,6 +2,7 @@
 #define SYS_PUBLIC_H
 
 #ifdef _WIN32
+#pragma warning(disable : 4201)			// nameless struct or union
 #pragma warning(disable : 4018)			// signed/unsigned mismatch
 #pragma warning(disable : 4244)			// 'conversion' conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable : 4142)			// benign redefinition
@@ -135,6 +136,8 @@ char* Sys_GetClipboardData(void);	// note that this isn't journaled...
 
 void	Sys_Print(const char* msg);
 
+const char* Sys_DateAndTime(void);
+
 // Sys_Milliseconds should only be used for profiling purposes,
 // any game related timing information should come from event timestamps
 int		Sys_Milliseconds(void);
@@ -155,8 +158,8 @@ void	Sys_SetErrorText(const char* text);
 
 void	Sys_SendPacket(int length, const void* data, netadr_t to);
 
+// Does NOT parse port numbers, only base addresses.
 bool	Sys_StringToAdr(const char* s, netadr_t* a);
-//Does NOT parse port numbers, only base addresses.
 
 bool	Sys_IsLANAddress(netadr_t adr);
 void		Sys_ShowIP(void);

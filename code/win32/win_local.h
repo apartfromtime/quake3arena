@@ -23,30 +23,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // win_local.h: Win32-specific Quake3 header file
 
 #include <SDL3/SDL.h>
-
-#if defined (_MSC_VER) && (_MSC_VER >= 1200)
-#pragma warning(disable : 4201)
-#pragma warning( push )
-#endif
 #include <windows.h>
-#if defined (_MSC_VER) && (_MSC_VER >= 1200)
-#pragma warning( pop )
-#endif
 
 void Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr );
 void Sys_CreateConsole(void);
 void Sys_DestroyConsole(void);
 char* Sys_ConsoleInput (void);
 bool Sys_GetPacket(netadr_t* net_from, msg_t* net_message);
-
-// Input subsystem
-void IN_Init(void);
-void IN_Shutdown(void);
-void IN_Activate(bool active);
-void IN_Frame(void);
-
-// window procedure
-void TranslateAndDispatchEvent(const SDL_Event* msg);
 
 void Conbuf_AppendText(const char* msg);
 
@@ -68,13 +51,8 @@ extern glwstate_t glw_state;
 typedef struct
 {
 	SDL_Window* hWnd;
-	bool		activeApp;
 	bool		isMinimized;
-
-	// when we get a windows message, we store the time off so keyboard processing
-	// can know the exact time of an event
-	unsigned	sysMsgTime;
 } WinVars_t;
 
 
-extern WinVars_t	g_wv;
+extern WinVars_t g_wv;

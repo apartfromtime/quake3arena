@@ -1124,10 +1124,8 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="system\sdl_input.c" />
     <ClCompile Include="system\sdl_main.c" />
     <ClCompile Include="system\sdl_snd.c" />
-    <ClCompile Include="system\sdl_wndproc.c" />
     <ClCompile Include="win32\win_net.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
