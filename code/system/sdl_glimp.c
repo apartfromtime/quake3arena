@@ -741,8 +741,6 @@ void GLimp_LogComment(char* comment)
 	}
 }
 
-#ifdef _WIN32
-
 /*
 ===========================================================
 
@@ -751,10 +749,10 @@ SMP acceleration
 ===========================================================
 */
 
-
-HANDLE renderCommandsEvent;
-HANDLE renderCompletedEvent;
-HANDLE renderActiveEvent;
+SDL_Condition* renderCommandsEvent = NULL;
+SDL_Condition* renderCompletedEvent = NULL;
+SDL_Condition* renderActiveEvent = NULL;
+SDL_Mutex* renderMutex = NULL;
 
 void (*glimpRenderThread)(void);
 
@@ -771,85 +769,90 @@ void GLimp_RenderThreadWrapper(void)
 GLimp_SpawnRenderThread
 =======================
 */
-HANDLE	renderThreadHandle;
-int		renderThreadId;
+SDL_Thread* renderThreadHandle = NULL;
+SDL_ThreadID renderThreadId = 0;
 
 bool GLimp_SpawnRenderThread(void (*function)(void))
 {
-	renderCommandsEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	renderCompletedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	renderActiveEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	renderCommandsEvent = SDL_CreateCondition();
+	renderCompletedEvent = SDL_CreateCondition();
+	renderActiveEvent = SDL_CreateCondition();
+	renderMutex = SDL_CreateMutex();
 
 	glimpRenderThread = function;
 
-	renderThreadHandle = CreateThread(
-		NULL,	// LPSECURITY_ATTRIBUTES lpsa,
-		0,		// DWORD cbStack,
-		(LPTHREAD_START_ROUTINE)GLimp_RenderThreadWrapper,	// LPTHREAD_START_ROUTINE lpStartAddr,
-		0,			// LPVOID lpvThreadParm,
-		0,			//   DWORD fdwCreate,
-		&renderThreadId);
+	renderThreadHandle = SDL_CreateThread(
+		(SDL_ThreadFunction)GLimp_RenderThreadWrapper,
+		"GLimp_RenderThreadWrapper",
+		NULL);
 
 	if (!renderThreadHandle) {
 		return false;
 	}
 
+	renderThreadId = SDL_GetThreadID(renderThreadHandle);
+
 	return true;
 }
 
-static void*	smpData;
-static int		wglErrors;
+static void* s_smpData;
+static int s_wglErrors;
 
 void* GLimp_RendererSleep(void)
 {
 	void* data;
 
 	if (!SDL_GL_MakeCurrent(g_wv.hWnd, NULL)) {
-		wglErrors++;
+		s_wglErrors++;
 	}
 
-	ResetEvent(renderActiveEvent);
+	SDL_BroadcastCondition(renderActiveEvent);
 
 	// after this, the front end can exit GLimp_FrontEndSleep
-	SetEvent(renderCompletedEvent);
+	SDL_SignalCondition(renderCompletedEvent);
 
-	WaitForSingleObject(renderCommandsEvent, INFINITE);
+	SDL_LockMutex(renderMutex);
+	SDL_WaitCondition(renderCommandsEvent, renderMutex);
 
 	if (!SDL_GL_MakeCurrent(g_wv.hWnd, glw_state.hGLRC)) {
-		wglErrors++;
+		s_wglErrors++;
 	}
 
-	ResetEvent(renderCompletedEvent);
-	ResetEvent(renderCommandsEvent);
+	SDL_BroadcastCondition(renderCompletedEvent);
+	SDL_BroadcastCondition(renderCommandsEvent);
+	SDL_UnlockMutex(renderMutex);
 
-	data = smpData;
+	data = s_smpData;
 
 	// after this, the main thread can exit GLimp_WakeRenderer
-	SetEvent(renderActiveEvent);
+	SDL_SignalCondition(renderActiveEvent);
 
 	return data;
 }
 
 void GLimp_FrontEndSleep(void)
 {
-	WaitForSingleObject(renderCompletedEvent, INFINITE);
+	SDL_LockMutex(renderMutex);
+	SDL_WaitConditionTimeout(renderCompletedEvent, renderMutex, 5);
 
 	if (!SDL_GL_MakeCurrent(g_wv.hWnd, glw_state.hGLRC)) {
-		wglErrors++;
+		s_wglErrors++;
 	}
+	SDL_UnlockMutex(renderMutex);
 }
 
 void GLimp_WakeRenderer(void* data)
 {
-	smpData = data;
+	SDL_LockMutex(renderMutex);
+	s_smpData = data;
 
 	if (!SDL_GL_MakeCurrent(g_wv.hWnd, NULL)) {
-		wglErrors++;
+		s_wglErrors++;
 	}
 
 	// after this, the renderer can continue through GLimp_RendererSleep
-	SetEvent(renderCommandsEvent);
+	SDL_SignalCondition(renderCommandsEvent);
 
-	WaitForSingleObject(renderActiveEvent, INFINITE);
+	SDL_WaitCondition(renderActiveEvent, renderMutex);
+	SDL_UnlockMutex(renderMutex);
 }
-#endif // #ifdef _WIN32
