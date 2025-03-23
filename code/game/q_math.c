@@ -598,6 +598,18 @@ void VectorRotate( vec3_t in, vec3_t matrix[3], vec3_t out )
 
 //============================================================================
 
+/*
+================
+Q_SnapVector
+================
+*/
+void Q_SnapVector(float* v)
+{
+	v[0] = rint(v[0]);
+	v[1] = rint(v[1]);
+	v[2] = rint(v[2]);
+}
+
 #if Q_CPU_PPC && !defined(C_ONLY)
 
 float Q_rsqrt(float number)

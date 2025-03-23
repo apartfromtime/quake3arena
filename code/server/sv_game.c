@@ -451,7 +451,7 @@ int SV_GameSystemCalls( int *args ) {
 	case G_REAL_TIME:
 		return Com_RealTime( VMA(1) );
 	case G_SNAPVECTOR:
-		Sys_SnapVector( VMA(1) );
+		Q_SnapVector( VMA(1) );
 		return 0;
 	case G_PARSE_INFO:
 	{

@@ -138,8 +138,6 @@ const char* Sys_DateAndTime(void);
 // any game related timing information should come from event timestamps
 int		Sys_Milliseconds(void);
 
-void	Sys_SnapVector(float* v);
-
 int		Sys_GetProcessorId(void);
 
 void	Sys_BeginStreamedFile(qhandle_t f, int readahead);
