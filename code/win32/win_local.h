@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // win_local.h: Win32-specific Quake3 header file
 
 #include <SDL3/SDL.h>
-#include <windows.h>
 
 void Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr );
 void Sys_CreateConsole(void);
