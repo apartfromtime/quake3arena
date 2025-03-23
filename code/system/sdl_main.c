@@ -47,7 +47,7 @@ static WinMouseVars_t s_wmv;
 //
 // Joystick definitions
 //
-#define	JOY_MAX_AXES		6				// X, Y, Z, R, U, V
+#define	JOY_MAX_AXES		6			// X, Y, Z, R, U, V
 
 typedef struct
 {
@@ -162,12 +162,9 @@ float JoyToF(int value)
 	}
 
 	// move centerpoint to zero
-	if (value < 0)
-	{
+	if (value < 0) {
 		value -= 32768;
-	}
-	else
-	{
+	} else {
 		value += 32768;
 	}
 
@@ -182,27 +179,6 @@ float JoyToF(int value)
 	}
 
 	return fValue;
-}
-
-int JoyToI(int value)
-{
-	if (value > -(int)(joy_threshold->value * 0X7FFF) &&
-		value <  (int)(joy_threshold->value * 0X7FFF)) {
-
-		return 0;
-	}
-
-	// move centerpoint to zero
-	if (value < 0) {
-		value -= 32768;
-	}
-	else {
-		value += 32768;
-	}
-
-	int iValue = (float)value / 32768.0;
-
-	return iValue;
 }
 
 int	joyDirectionKeys[16] =
@@ -232,7 +208,7 @@ void IN_JoyMove(void)
 {
 	float fAxisValue[4] = { 0.0f };
 	unsigned long povstate = 0;
-	int x = 0, y = 0;
+	float x = 0.0f, y = 0.0f;
 
 	// verify joystick is available and that the user wants to use it
 	if (!joy.avail) {
@@ -241,7 +217,6 @@ void IN_JoyMove(void)
 
 	// collect the joystick data, if possible
 	if (in_debugJoystick->integer) {
-
 	}
 
 	// convert main joystick motion into 6 direction button bits
@@ -271,12 +246,13 @@ void IN_JoyMove(void)
 			Sys_QueEvent(s_sysMsgTime, SE_KEY, joyDirectionKeys[i], false, 0, NULL);
 		}
 	}
+
 	joy.oldpovstate = povstate;
 
 	// if there is a trackball like interface, simulate mouse moves
 	if (SDL_GAMEPAD_AXIS_COUNT >= 6) {
-		x = JoyToI(s_joystick_rx) * in_joyBallScale->value;
-		y = JoyToI(s_joystick_ry) * in_joyBallScale->value;
+		x = JoyToF(s_joystick_rx) * in_joyBallScale->value;
+		y = JoyToF(s_joystick_ry) * in_joyBallScale->value;
 		if (x != 0 || y != 0) {
 			Sys_QueEvent(s_sysMsgTime, SE_MOUSE, x, y, 0, NULL);
 		}
