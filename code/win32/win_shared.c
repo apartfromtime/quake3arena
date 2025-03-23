@@ -602,32 +602,4 @@ void Sys_SnapVector(float* v)
 	*/
 }
 
-/*
-==================
-Sys_LowPhysicalMemory()
-==================
-*/
-#define MEM_THRESHOLD 96*1024*1024
-bool Sys_LowPhysicalMemory(void)
-{
-	MEMORYSTATUS stat;
-	GlobalMemoryStatus(&stat);
-	return (stat.dwTotalPhys <= MEM_THRESHOLD) ? true : false;
-}
-
-unsigned int Sys_ProcessorCount(void)
-{
-	return SDL_GetNumLogicalCPUCores();
-}
-
 //============================================
-
-unsigned int
-Sys_GetSystemDirectory(const char* dir, unsigned int size)
-{
-	if (dir == NULL) {
-		return 0;
-	}
-
-	return GetSystemDirectory((LPSTR)dir, size);
-}

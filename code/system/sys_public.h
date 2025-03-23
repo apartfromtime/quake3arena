@@ -126,9 +126,6 @@ void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath, int (Q_CDECL** entryPo
 	int (Q_CDECL* systemcalls)(int, ...));
 void	Sys_UnloadDll(void* dllHandle);
 
-unsigned int
-Sys_GetSystemDirectory(const char* dir, unsigned int size);
-
 void	Q_CDECL Sys_Error(const char* error, ...);
 void	Sys_Quit(void);
 char* Sys_GetClipboardData(void);	// note that this isn't journaled...

@@ -891,6 +891,27 @@ const char* Sys_GetCurrentUser(void)
 }
 
 /*
+==================
+Sys_LowPhysicalMemory()
+==================
+*/
+bool Sys_LowPhysicalMemory(void)
+{
+	const int memThreshold = 96*1024*1024;
+	return ((SDL_GetSystemRAM()*1024*1024) <= memThreshold) ? true : false;
+}
+
+/*
+==============
+Sys_ProcessorCount
+==============
+*/
+unsigned int Sys_ProcessorCount(void)
+{
+	return SDL_GetNumLogicalCPUCores();
+}
+
+/*
 ================
 Sys_CheckCD
 

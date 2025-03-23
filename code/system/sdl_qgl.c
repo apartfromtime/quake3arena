@@ -3136,24 +3136,12 @@ void QGL_Shutdown(void)
 ** operating systems we need to do the right thing, whatever that
 ** might be.
 */
-bool QGL_Init( const char *dllname )
+bool QGL_Init(const char* dllname)
 {
-	char systemDir[1024];
-	char libName[1024];
-
-	Sys_GetSystemDirectory(systemDir, MAX_STRING_CHARS);
-
 	assert(glw_state.hinstOpenGL == 0);
 
 	ri.Printf(PRINT_ALL, "...initializing QGL\n");
-
-	if (dllname[0] != '!') {
-		Com_sprintf(libName, sizeof(libName), "%s\\%s", systemDir, dllname);
-	} else {
-		Q_strncpyz(libName, dllname, sizeof(libName));
-	}
-
-	ri.Printf(PRINT_ALL, "...calling SDL_LoadObject( '%s.dll' ): ", libName);
+	ri.Printf(PRINT_ALL, "...calling SDL_LoadObject( '%s.dll' ): ", dllname);
 
 	if ((glw_state.hinstOpenGL = SDL_LoadObject(dllname)) == 0) {
 		ri.Printf(PRINT_ALL, "failed\n");
