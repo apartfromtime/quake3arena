@@ -631,29 +631,3 @@ Sys_GetSystemDirectory(const char* dir, unsigned int size)
 
 	return GetSystemDirectory((LPSTR)dir, size);
 }
-
-char* Sys_GetCurrentUser(void)
-{
-	static char s_userName[1024];
-	unsigned long size = sizeof(s_userName);
-
-	if (!GetUserName(s_userName, &size)) {
-		Q_strncpyz(s_userName, "player", 7);
-	}
-
-	if (!s_userName[0]) {
-		Q_strncpyz(s_userName, "player", 7);
-	}
-
-	return s_userName;
-}
-
-const char* Sys_DefaultHomePath(void)
-{
-	return SDL_GetUserFolder(SDL_FOLDER_HOME);
-}
-
-const char *Sys_DefaultInstallPath(void)
-{
-	return Sys_Cwd();
-}

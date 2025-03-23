@@ -128,7 +128,6 @@ void	Sys_UnloadDll(void* dllHandle);
 
 unsigned int
 Sys_GetSystemDirectory(const char* dir, unsigned int size);
-char* Sys_GetCurrentUser(void);
 
 void	Q_CDECL Sys_Error(const char* error, ...);
 void	Sys_Quit(void);

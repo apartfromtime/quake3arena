@@ -847,6 +847,50 @@ const char* Sys_DefaultBasePath(void)
 }
 
 /*
+==============
+Sys_DefaultHomePath
+==============
+*/
+const char* Sys_DefaultHomePath(void)
+{
+	return SDL_GetUserFolder(SDL_FOLDER_HOME);
+}
+
+/*
+==============
+Sys_DefaultInstallPath
+==============
+*/
+const char* Sys_DefaultInstallPath(void)
+{
+	return Sys_Cwd();
+}
+
+/*
+==============
+Sys_GetCurrentUser
+==============
+*/
+const char* Sys_GetCurrentUser(void)
+{
+	const char* delim = "/\\";
+	const char* save = NULL;
+	const char* next = NULL;
+	const char* name = NULL;
+
+	next = SDL_strtok_r((char*)SDL_GetUserFolder(SDL_FOLDER_HOME), delim, &save);
+	while ((next = SDL_strtok_r(NULL, delim, &save)) != NULL) {
+		name = next;
+	}
+
+	if (name == NULL) {
+		return "player";
+	}
+
+	return name;
+}
+
+/*
 ================
 Sys_CheckCD
 
