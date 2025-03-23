@@ -891,6 +891,25 @@ const char* Sys_GetCurrentUser(void)
 }
 
 /*
+================
+Sys_GetClipboardData
+================
+*/
+char* Sys_GetClipboardData(void)
+{
+	char* data = NULL;
+	char* text = NULL;
+
+	if ((text = SDL_GetClipboardText()) != 0) {
+		data = Z_Malloc(SDL_strlen(text) + 1);
+		SDL_strlcpy(data, text, SDL_strlen(text) + 1);
+		SDL_free(text);
+	}
+
+	return data;
+}
+
+/*
 ==================
 Sys_LowPhysicalMemory()
 ==================
