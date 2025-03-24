@@ -19,10 +19,11 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
 /*
-** WIN_GLIMP.C
+** SDL_GLIMP.C
 **
-** This file contains ALL Win32 specific stuff having to do with the
+** This file contains ALL SDL specific stuff having to do with the
 ** OpenGL refresh.  When a port is being made the following functions
 ** must be implemented by the port:
 **
@@ -32,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ** GLimp_Shutdown
 **
 ** Note that the GLW_xxx functions are Windows specific GL-subsystem
-** related functions that are relevant ONLY to win_glimp.c
+** related functions that are relevant ONLY to sdl_glimp.c
 */
 
 #include "../renderer/tr_local.h"

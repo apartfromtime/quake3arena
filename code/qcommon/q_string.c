@@ -173,7 +173,12 @@ int Q_stricmp (const char* s1, const char* s2)
 
 char* Q_strlwr(char* s1)
 {
-    char* s;
+    char* s = NULL;
+
+    if (s1 == NULL) {
+        assert(0);
+        return s;
+    }
 
     s = s1;
     while (*s) {
@@ -197,7 +202,6 @@ char* Q_strupr(char* s1)
     return s1;
 }
 
-
 // never goes past bounds or leaves without a terminating 0
 void Q_strcat(char* dest, int size, const char* src)
 {
@@ -210,7 +214,6 @@ void Q_strcat(char* dest, int size, const char* src)
 
     Q_strncpyz(dest + l1, src, size - l1);
 }
-
 
 int Q_PrintStrlen(const char* string)
 {
