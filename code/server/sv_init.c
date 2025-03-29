@@ -329,7 +329,7 @@ void SV_TouchCGame(void) {
 	char filename[MAX_QPATH];
 
 	Com_sprintf( filename, sizeof(filename), "vm/%s.qvm", "cgame" );
-	FS_FOpenFileRead( filename, &f, false );
+	FS_FOpenFileRead( filename, &f );
 	if ( f ) {
 		FS_FCloseFile( f );
 	}

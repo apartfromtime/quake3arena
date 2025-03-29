@@ -1147,7 +1147,7 @@ static void RoQReset() {
 
 	Sys_EndStreamedFile(cinTable[currentHandle].iFile);
 	FS_FCloseFile( cinTable[currentHandle].iFile );
-	FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile, true);
+	FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile);
 	// let the background thread start reading ahead
 	Sys_BeginStreamedFile( cinTable[currentHandle].iFile, 0x10000 );
 	Sys_StreamedRead (cin.file, 16, 1, cinTable[currentHandle].iFile);
@@ -1508,7 +1508,7 @@ int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBi
 	strcpy(cinTable[currentHandle].fileName, name);
 
 	cinTable[currentHandle].ROQSize = 0;
-	cinTable[currentHandle].ROQSize = FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile, true);
+	cinTable[currentHandle].ROQSize = FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile);
 
 	if (cinTable[currentHandle].ROQSize<=0) {
 		Com_DPrintf("play(%s), ROQSize<=0\n", arg);

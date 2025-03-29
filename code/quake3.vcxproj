@@ -129,7 +129,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release_TA/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>Release_TA/quake3.pdb</ProgramDatabaseFile>
@@ -177,7 +177,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -230,7 +230,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\quake3___Win32_Release_TA_DEMO/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -275,7 +275,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -320,7 +320,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\quake3___Win32_Debug_TA_DEMO/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -366,7 +366,7 @@
       <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl3.lib;rpmalloc.lib;minizip.lib;winmm.lib;wsock32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug_TA/quake3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -398,7 +398,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\libs\minizip\unzip.c" />
     <ClCompile Include="client\cl_cgame.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">Disabled</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug TA DEMO|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1182,7 +1181,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\libs\minizip\unzip.h" />
+    <ClInclude Include="..\libs\minizip-ng-4.0.8\compat\unzip.h" />
     <ClInclude Include="client\cin_types.h" />
     <ClInclude Include="client\cl_types.h" />
     <ClInclude Include="client\key_types.h" />

@@ -540,8 +540,8 @@ void Com_InitJournaling( void ) {
 		com_journalDataFile = FS_FOpenFileWrite( "journaldata.dat" );
 	} else if ( com_journal->integer == 2 ) {
 		Com_Printf( "Replaying journaled events\n");
-		FS_FOpenFileRead( "journal.dat", &com_journalFile, true );
-		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile, true );
+		FS_FOpenFileRead( "journal.dat", &com_journalFile );
+		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile );
 	}
 
 	if ( !com_journalFile || !com_journalDataFile ) {

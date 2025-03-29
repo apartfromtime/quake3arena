@@ -1462,7 +1462,7 @@ void S_StartBackgroundTrack( const char *intro, const char *loop ){
 	//
 	// open up a wav file and get all the info
 	//
-	FS_FOpenFileRead( name, &s_backgroundFile, true );
+	FS_FOpenFileRead( name, &s_backgroundFile );
 	if ( !s_backgroundFile ) {
 		Com_Printf( S_COLOR_YELLOW "WARNING: couldn't open music file %s\n", name );
 		return;

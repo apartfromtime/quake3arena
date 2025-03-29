@@ -113,7 +113,7 @@ int		FS_filelength(qhandle_t f);
 qhandle_t FS_SV_FOpenFileWrite(const char* filename);
 int		FS_SV_FOpenFileRead(const char* filename, qhandle_t* fp);
 void	FS_SV_Rename(const char* from, const char* to);
-int		FS_FOpenFileRead(const char* qpath, qhandle_t* file, bool uniqueFILE);
+int		FS_FOpenFileRead(const char* qpath, qhandle_t* file);
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
