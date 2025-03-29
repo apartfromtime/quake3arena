@@ -91,10 +91,10 @@ ConfirmMenu_Key
 */
 static qhandle_t ConfirmMenu_Key( int key ) {
 	switch ( key ) {
-	case K_KP_LEFTARROW:
-	case K_LEFTARROW:
-	case K_KP_RIGHTARROW:
-	case K_RIGHTARROW:
+	case K_KP_4:
+	case K_LEFT:
+	case K_KP_6:
+	case K_RIGHT:
 		key = K_TAB;
 		break;
 

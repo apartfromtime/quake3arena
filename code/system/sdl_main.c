@@ -183,15 +183,14 @@ float JoyToF(int value)
 
 int	joyDirectionKeys[16] =
 {
-	K_LEFTARROW, K_RIGHTARROW,
-	K_UPARROW, K_DOWNARROW,
-	K_JOY16, K_JOY17,
-	K_JOY18, K_JOY19,
-	K_JOY20, K_JOY21,
-	K_JOY22, K_JOY23,
-
-	K_JOY24, K_JOY25,
-	K_JOY26, K_JOY27
+	SDLK_LEFT,	SDLK_RIGHT,
+	SDLK_UP,	SDLK_DOWN,
+	K_JOY16,	K_JOY17,
+	K_JOY18,	K_JOY19,
+	K_JOY20,	K_JOY21,
+	K_JOY22,	K_JOY23,
+	K_JOY24,	K_JOY25,
+	K_JOY26,	K_JOY27
 };
 
 /*
@@ -440,26 +439,315 @@ cvar_t* vid_ypos;			// Y coordinate of window position
 
 //==========================================================================
 
-static byte s_scantokey[128] =
-{
-	//  0			1			2			3			4			5			6			7 
-	//  8           9			A			B			C			D			E			F 
-		0,			27,			'1',		'2',		'3',		'4',		'5',		'6',
-		'7',		'8',		'9',		'0',		'-',		'=',		K_BACKSPACE,  9,		// 0
-		'q',		'w',		'e',		'r',		't',		'y',		'u',		'i',
-		'o',		'p',		'[',		']',		13 ,		K_CTRL,		'a',		's',		// 1
-		'd',		'f',		'g',		'h',		'j',		'k',		'l',		';',
-		'\'',		'`',		K_SHIFT,	'\\',		'z',		'x',		'c',		'v',		// 2
-		'b',		'n',		'm',		',',		'.',		'/',		K_SHIFT,	'*',
-		K_ALT,		' ',		K_CAPSLOCK,	K_F1,		K_F2,		K_F3,		K_F4,		K_F5,		// 3
-		K_F6,		K_F7,		K_F8,		K_F9,		K_F10,		K_PAUSE,	0,			K_HOME,
-		K_UPARROW,	K_PGUP,		K_KP_MINUS,	K_LEFTARROW,K_KP_5,		K_RIGHTARROW,K_KP_PLUS,	K_END,		// 4
-		K_DOWNARROW,K_PGDN,		K_INS,		K_DEL,		0,			0,			0,			K_F11,
-		K_F12,		0,			0,			0,			0,			0,			0,			0,			// 5
-		0,			0,			0,			0,			0,			0,			0,			0,
-		0,			0,			0,			0,			0,			0,			0,			0,			// 6
-		0,			0,			0,			0,			0,			0,			0,			0,
-		0,			0,			0,			0,			0,			0,			0,			0			// 7
+static uint32_t s_scantosdlb[SDL_SCANCODE_COUNT] = {
+	// mouse buttons
+	K_UNKNOWN,
+	K_MOUSE1,
+	K_MOUSE2,
+	K_MOUSE3,
+	K_MOUSE4,
+	K_MOUSE5,
+	K_MOUSE_WHEELUP,
+	K_MOUSE_WHEELDOWN
+};
+
+static uint32_t s_scantosdlk[SDL_SCANCODE_COUNT] = {
+	// keyboard keys
+	K_UNKNOWN,
+	0,
+	0,
+	0,
+	K_A,
+	K_B,
+	K_C,
+	K_D,
+	K_E,
+	K_F,
+	K_G,
+	K_H,
+	K_I,
+	K_J,
+	K_K,
+	K_L,
+	K_M,
+	K_N,
+	K_O,
+	K_P,
+	K_Q,
+	K_R,
+	K_S,
+	K_T,
+	K_U,
+	K_V,
+	K_W,
+	K_X,
+	K_Y,
+	K_Z,
+	K_1,
+	K_2,
+	K_3,
+	K_4,
+	K_5,
+	K_6,
+	K_7,
+	K_8,
+	K_9,
+	K_0,
+	K_RETURN,
+	K_ESCAPE,
+	K_BACKSPACE,
+	K_TAB,
+	K_SPACE,
+	K_MINUS,
+	K_EQUALS,
+	K_LEFTBRACKET,
+	K_RIGHTBRACKET,
+	K_BACKSLASH,
+	0,
+	K_SEMICOLON,
+	K_APOSTROPHE,
+	K_GRAVE,
+	K_COMMA,
+	K_PERIOD,
+	K_SLASH,
+	K_CAPSLOCK,
+	K_F1,
+	K_F2,
+	K_F3,
+	K_F4,
+	K_F5,
+	K_F6,
+	K_F7,
+	K_F8,
+	K_F9,
+	K_F10,
+	K_F11,
+	K_F12,
+	K_PRINTSCREEN,
+	K_SCROLLLOCK,
+	K_PAUSE,
+	K_INSERT,
+	K_HOME,
+	K_PAGEUP,
+	K_DELETE,
+	K_END,
+	K_PAGEDOWN,
+	K_RIGHT,
+	K_LEFT,
+	K_DOWN,
+	K_UP,
+	K_NUMLOCKCLEAR,
+	K_KP_DIVIDE,
+	K_KP_MULTIPLY,
+	K_KP_MINUS,
+	K_KP_PLUS,
+	K_KP_ENTER,
+	K_KP_1,
+	K_KP_2,
+	K_KP_3,
+	K_KP_4,
+	K_KP_5,
+	K_KP_6,
+	K_KP_7,
+	K_KP_8,
+	K_KP_9,
+	K_KP_0,
+	K_KP_PERIOD,
+	0,
+	K_APPLICATION,
+	K_POWER,
+	K_KP_EQUALS,
+	K_F13,
+	K_F14,
+	K_F15,
+	K_F16,
+	K_F17,
+	K_F18,
+	K_F19,
+	K_F20,
+	K_F21,
+	K_F22,
+	K_F23,
+	K_F24,
+	K_EXECUTE,
+	K_HELP,
+	K_MENU,
+	K_SELECT,
+	K_STOP,
+	K_AGAIN,
+	K_UNDO,
+	K_CUT,
+	K_COPY,
+	K_PASTE,
+	K_FIND,
+	K_MUTE,
+	K_VOLUMEUP,
+	K_VOLUMEDOWN,
+	0,
+	0,
+	0,
+	K_KP_COMMA,
+	K_KP_EQUALSAS400,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	K_ALTERASE,
+	K_SYSREQ,
+	K_CANCEL,
+	K_CLEAR,
+	K_PRIOR,
+	K_RETURN2,
+	K_SEPARATOR,
+	K_OUT,
+	K_OPER,
+	K_CLEARAGAIN,
+	K_CRSEL,
+	K_EXSEL,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	K_KP_00,
+	K_KP_000,
+	K_THOUSANDSSEPARATOR,
+	K_DECIMALSEPARATOR,
+	K_CURRENCYUNIT,
+	K_CURRENCYSUBUNIT,
+	K_KP_LEFTPAREN,
+	K_KP_RIGHTPAREN,
+	K_KP_LEFTBRACE,
+	K_KP_RIGHTBRACE,
+	K_KP_TAB,
+	K_KP_BACKSPACE,
+	K_KP_A,
+	K_KP_B,
+	K_KP_C,
+	K_KP_D,
+	K_KP_E,
+	K_KP_F,
+	K_KP_XOR,
+	K_KP_POWER,
+	K_KP_PERCENT,
+	K_KP_LESS,
+	K_KP_GREATER,
+	K_KP_AMPERSAND,
+	K_KP_DBLAMPERSAND,
+	K_KP_VERTICALBAR,
+	K_KP_DBLVERTICALBAR,
+	K_KP_COLON,
+	K_KP_HASH,
+	K_KP_SPACE,
+	K_KP_AT,
+	K_KP_EXCLAM,
+	K_KP_MEMSTORE,
+	K_KP_MEMRECALL,
+	K_KP_MEMCLEAR,
+	K_KP_MEMADD,
+	K_KP_MEMSUBTRACT,
+	K_KP_MEMMULTIPLY,
+	K_KP_MEMDIVIDE,
+	K_KP_PLUSMINUS,
+	K_KP_CLEAR,
+	K_KP_CLEARENTRY,
+	K_KP_BINARY,
+	K_KP_OCTAL,
+	K_KP_DECIMAL,
+	K_KP_HEXADECIMAL,
+	0,
+	0,
+	K_LCTRL,
+	K_LSHIFT,
+	K_LALT,
+	K_LGUI,
+	K_RCTRL,
+	K_RSHIFT,
+	K_RALT,
+	K_RGUI,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	K_MODE,
+
+	// usage keys
+	K_SLEEP,
+	K_WAKE,
+	K_CHANNEL_INCREMENT,
+	K_CHANNEL_DECREMENT,
+	K_MEDIA_PLAY,
+	K_MEDIA_PAUSE,
+	K_MEDIA_RECORD,
+	K_MEDIA_FAST_FORWARD,
+	K_MEDIA_REWIND,
+	K_MEDIA_NEXT_TRACK,
+	K_MEDIA_PREVIOUS_TRACK,
+	K_MEDIA_STOP,
+	K_MEDIA_EJECT,
+	K_MEDIA_PLAY_PAUSE,
+	K_MEDIA_SELECT,
+	K_AC_NEW,
+	K_AC_OPEN,
+	K_AC_CLOSE,
+	K_AC_EXIT,
+	K_AC_SAVE,
+	K_AC_PRINT,
+	K_AC_PROPERTIES,
+	K_AC_SEARCH,
+	K_AC_HOME,
+	K_AC_BACK,
+	K_AC_FORWARD,
+	K_AC_STOP,
+	K_AC_REFRESH,
+	K_AC_BOOKMARKS,
+
+	// mobile keys
+	K_SOFTLEFT,
+	K_SOFTRIGHT,
+	K_CALL,
+	K_ENDCALL
 };
 
 /*
@@ -469,72 +757,51 @@ MapKey
 Map from windows to quake keynums
 =======
 */
-static int MapKey(int key)
+static uint32_t
+MapKey(uint32_t* scantokey, uint32_t scancode)
 {
-	int result;
-	int modified;
-	bool is_extended;
+	uint32_t scan = 0;
+	uint32_t code = 0;
 
-	//	Com_Printf( "0x%x\n", key);
-
-	modified = key & 255;
-
-	if (modified > 127) {
-		return 0;
+	if (scantokey == NULL) {
+		return SDLK_UNKNOWN;
 	}
-
-	if (key & (1 << 24)) {
-		is_extended = true;
+	scan = scancode & 0x3FF;
+	if (scan > SDL_SCANCODE_COUNT) {
+		return SDLK_UNKNOWN;
 	}
-	else {
-		is_extended = false;
-	}
-
-	result = s_scantokey[modified];
-
-	if (!is_extended)
-	{
-		switch (result)
+	code = scantokey[scan];
+	if ((SDL_SCANCODE_TO_KEYCODE(scancode) & SDLK_EXTENDED_MASK)) {
+		switch (SDL_SCANCODE_TO_KEYCODE(scancode))
 		{
-		case K_HOME:
-			return K_KP_HOME;
-		case K_UPARROW:
-			return K_KP_UPARROW;
-		case K_PGUP:
-			return K_KP_PGUP;
-		case K_LEFTARROW:
-			return K_KP_LEFTARROW;
-		case K_RIGHTARROW:
-			return K_KP_RIGHTARROW;
-		case K_END:
-			return K_KP_END;
-		case K_DOWNARROW:
-			return K_KP_DOWNARROW;
-		case K_PGDN:
-			return K_KP_PGDN;
-		case K_INS:
-			return K_KP_INS;
-		case K_DEL:
-			return K_KP_DEL;
+		case SDLK_LEFT_TAB:
+		{
+			code = K_TAB;
+		} break;
+		case SDLK_LMETA:
+		{
+			code = K_LALT;
+		} break;
+		case SDLK_RMETA:
+		{
+			code = K_RALT;
+		} break;
+		case SDLK_LHYPER:
+		{
+			code = K_LCTRL;
+		} break;
+		case SDLK_RHYPER:
+		{
+			code = K_RCTRL;
+		} break;
 		default:
-			return result;
-		}
-	}
-	else
-	{
-		switch (result)
 		{
-		case K_PAUSE:
-			return K_KP_NUMLOCK;
-		case 0x0D:
-			return K_KP_ENTER;
-		case 0x2F:
-			return K_KP_SLASH;
-		case 0xAF:
-			return K_KP_PLUS;
+			code = K_UNKNOWN;
 		}
-		return result;
+		}
 	}
+
+	return code;
 }
 
 //=============================================================================
@@ -596,7 +863,7 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 	case SDL_EVENT_KEY_DOWN:
 	case SDL_EVENT_KEY_UP:
 	{
-		Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(msg->key.raw),
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(s_scantosdlk, msg->key.scancode),
 			(msg->type == SDL_EVENT_KEY_DOWN) ? true : false, 0, NULL);
 		return;
 	}
@@ -617,33 +884,7 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 	case SDL_EVENT_MOUSE_BUTTON_UP:
 	{
-		int	key = 0;
-
-		switch (msg->button.button)
-		{
-		case SDL_BUTTON_LEFT:
-		{
-			key = K_MOUSE1;
-		} break;
-		case SDL_BUTTON_MIDDLE:
-		{
-			key = K_MOUSE3;
-		} break;
-		case SDL_BUTTON_RIGHT:
-		{
-			key = K_MOUSE2;
-		} break;
-		case SDL_BUTTON_X1:
-		{
-			key = K_MOUSE4;
-		} break;
-		case SDL_BUTTON_X2:
-		{
-			key = K_MOUSE5;
-		} break;
-		}
-
-		Sys_QueEvent(s_sysMsgTime, SE_KEY, key,
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(s_scantosdlb, msg->button.button),
 			(msg->type == SDL_EVENT_MOUSE_BUTTON_DOWN) ? true : false, 0, NULL);
 
 		return;
@@ -656,14 +897,14 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 			if ((int)(msg->wheel.y) > 0) {
 				for (int i = 0; i < (int)(msg->wheel.y); i++)
 				{
-					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELUP, true, 0, NULL);
-					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELUP, false, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MOUSE_WHEELUP, true, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MOUSE_WHEELUP, false, 0, NULL);
 				}
 			} else {
 				for (int i = 0; i < -(int)(msg->wheel.y); i++)
 				{
-					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELDOWN, true, 0, NULL);
-					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MWHEELDOWN, false, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MOUSE_WHEELDOWN, true, 0, NULL);
+					Sys_QueEvent(s_sysMsgTime, SE_KEY, K_MOUSE_WHEELDOWN, false, 0, NULL);
 				}
 			}
 

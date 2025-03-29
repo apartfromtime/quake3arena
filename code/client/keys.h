@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include "../ui/keycodes.h"
 
-#define	MAX_KEYS		256
-
 typedef struct
 {
 	char    binding[MAX_STRING_CHARS];
@@ -31,7 +29,7 @@ typedef struct
 } qkey_t;
 
 extern	bool	key_overstrikeMode;
-extern	qkey_t		keys[MAX_KEYS];
+extern	qkey_t		keys[K_COUNT];
 
 /*
 ==============================================================

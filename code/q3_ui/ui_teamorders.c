@@ -179,8 +179,8 @@ qhandle_t UI_TeamOrdersMenu_Key( int key ) {
 			}
 			return menu_null_sound;
 
-		case K_KP_UPARROW:
-		case K_UPARROW:
+		case K_KP_8:
+		case K_UP:
 			l->oldvalue = l->curvalue;
 
 			if( l->curvalue == 0 ) {
@@ -191,8 +191,8 @@ qhandle_t UI_TeamOrdersMenu_Key( int key ) {
 			}
 			return menu_move_sound;
 
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
+		case K_KP_2:
+		case K_DOWN:
 			l->oldvalue = l->curvalue;
 
 			if( l->curvalue == l->numitems - 1 ) {

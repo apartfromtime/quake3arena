@@ -100,11 +100,11 @@ static void Demos_MenuEvent( void *ptr, int event ) {
 		break;
 
 	case ID_LEFT:
-		ScrollList_Key( &s_demos.list, K_LEFTARROW );
+		ScrollList_Key( &s_demos.list, K_LEFT );
 		break;
 
 	case ID_RIGHT:
-		ScrollList_Key( &s_demos.list, K_RIGHTARROW );
+		ScrollList_Key( &s_demos.list, K_RIGHT );
 		break;
 	}
 }
