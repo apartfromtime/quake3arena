@@ -821,42 +821,42 @@ static void Controls_GetConfig( void )
 Controls_SetConfig
 =================
 */
-static void Controls_SetConfig( void )
+static void Controls_SetConfig(void)
 {
-	int		i;
-	bind_t*	bindptr;
+	bind_t* bindptr = NULL;
 
 	// set the bindings from the local store
 	bindptr = g_bindings;
 
 	// iterate each command, get its numeric binding
-	for (i=0; ;i++,bindptr++)
+	for (int i = 0; ; i++, bindptr++)
 	{
-		if (!bindptr->label)
+		if (!bindptr->label) {
 			break;
+		}
 
-		if (bindptr->bind1 != -1)
-		{	
-			trap_Key_SetBinding( bindptr->bind1, bindptr->command );
-
-			if (bindptr->bind2 != -1)
-				trap_Key_SetBinding( bindptr->bind2, bindptr->command );
+		if (bindptr->bind1 != -1) {
+			trap_Key_SetBinding(bindptr->bind1, bindptr->command);
+			if (bindptr->bind2 != -1) {
+				trap_Key_SetBinding(bindptr->bind2, bindptr->command);
+			}
 		}
 	}
 
-	if ( s_controls.invertmouse.curvalue )
-		trap_Cvar_SetValue( "m_pitch", -fabs( trap_Cvar_VariableValue( "m_pitch" ) ) );
-	else
-		trap_Cvar_SetValue( "m_pitch", fabs( trap_Cvar_VariableValue( "m_pitch" ) ) );
+	if (s_controls.invertmouse.curvalue) {
+		trap_Cvar_SetValue("m_pitch", -fabs(trap_Cvar_VariableValue("m_pitch")));
+	} else {
+		trap_Cvar_SetValue("m_pitch", fabs(trap_Cvar_VariableValue("m_pitch")));
+	}
 
-	trap_Cvar_SetValue( "m_filter", s_controls.smoothmouse.curvalue );
-	trap_Cvar_SetValue( "cl_run", s_controls.alwaysrun.curvalue );
-	trap_Cvar_SetValue( "cg_autoswitch", s_controls.autoswitch.curvalue );
-	trap_Cvar_SetValue( "sensitivity", s_controls.sensitivity.curvalue );
-	trap_Cvar_SetValue( "in_joystick", s_controls.joyenable.curvalue );
-	trap_Cvar_SetValue( "joy_threshold", s_controls.joythreshold.curvalue );
-	trap_Cvar_SetValue( "cl_freelook", s_controls.freelook.curvalue );
-	trap_Cmd_ExecuteText( EXEC_APPEND, "in_restart\n" );
+	trap_Cvar_SetValue("m_filter", s_controls.smoothmouse.curvalue);
+	trap_Cvar_SetValue("cl_run", s_controls.alwaysrun.curvalue);
+	trap_Cvar_SetValue("cg_autoswitch", s_controls.autoswitch.curvalue);
+	trap_Cvar_SetValue("sensitivity", s_controls.sensitivity.curvalue);
+	trap_Cvar_SetValue("in_joystick", s_controls.joyenable.curvalue);
+	trap_Cvar_SetValue("joy_threshold", s_controls.joythreshold.curvalue);
+	trap_Cvar_SetValue("cl_freelook", s_controls.freelook.curvalue);
+	trap_Cmd_ExecuteText(EXEC_APPEND, "in_restart\n");
 }
 
 /*

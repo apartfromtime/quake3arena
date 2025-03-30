@@ -153,7 +153,7 @@ JoyToF
 */
 float JoyToF(int value)
 {
-	float	fValue;
+	float fValue;
 
 	if (value > -(int)(joy_threshold->value * 0X7FFF) &&
 		value <  (int)(joy_threshold->value * 0X7FFF)) {
@@ -161,11 +161,8 @@ float JoyToF(int value)
 		return 0;
 	}
 
-	// move centerpoint to zero
-	if (value < 0) {
-		value -= 32768;
-	} else {
-		value += 32768;
+	if (value > 0) {
+		value++;
 	}
 
 	// convert range from -32768..32767 to -1..1 
@@ -181,81 +178,23 @@ float JoyToF(int value)
 	return fValue;
 }
 
-int	joyDirectionKeys[16] =
-{
-	SDLK_LEFT,	SDLK_RIGHT,
-	SDLK_UP,	SDLK_DOWN,
-	K_JOY16,	K_JOY17,
-	K_JOY18,	K_JOY19,
-	K_JOY20,	K_JOY21,
-	K_JOY22,	K_JOY23,
-	K_JOY24,	K_JOY25,
-	K_JOY26,	K_JOY27
-};
-
 /*
 ===========
-IN_JoyMove
+JoyToI
 ===========
 */
-unsigned long s_joystick_lx = 0;
-unsigned long s_joystick_ly = 0;
-unsigned long s_joystick_rx = 0;
-unsigned long s_joystick_ry = 0;
-
-void IN_JoyMove(void)
+int JoyToI(int value)
 {
-	float fAxisValue[4] = { 0.0f };
-	unsigned long povstate = 0;
-	float x = 0.0f, y = 0.0f;
-
-	// verify joystick is available and that the user wants to use it
-	if (!joy.avail) {
-		return;
+	if (value > -(int)(joy_threshold->value * 0X7FFF) &&
+		value <  (int)(joy_threshold->value * 0X7FFF)) {
+		return 0;
 	}
 
-	// collect the joystick data, if possible
-	if (in_debugJoystick->integer) {
+	if (value > 0) {
+		value++;
 	}
 
-	// convert main joystick motion into 6 direction button bits
-	fAxisValue[0] = JoyToF(s_joystick_lx);
-	fAxisValue[1] = JoyToF(s_joystick_ly);
-	fAxisValue[2] = JoyToF(s_joystick_rx);
-	fAxisValue[3] = JoyToF(s_joystick_ry);
-	
-	for (int i = 0; i < SDL_GAMEPAD_AXIS_COUNT && i < 4; i++)
-	{
-		// get the floating point zero-centered, potentially-inverted data for the current axis
-		if (fAxisValue[i] < -joy_threshold->value) {
-			povstate |= (1 << (i * 2));
-		}
-		else if (fAxisValue[i] > joy_threshold->value) {
-			povstate |= (1 << (i * 2 + 1));
-		}
-	}
-
-	// determine which bits have changed and key an auxillary event for each change
-	for (int i = 0; i < 16; i++) {
-		if ((povstate & (1 << i)) && !(joy.oldpovstate & (1 << i))) {
-			Sys_QueEvent(s_sysMsgTime, SE_KEY, joyDirectionKeys[i], true, 0, NULL);
-		}
-
-		if (!(povstate & (1 << i)) && (joy.oldpovstate & (1 << i))) {
-			Sys_QueEvent(s_sysMsgTime, SE_KEY, joyDirectionKeys[i], false, 0, NULL);
-		}
-	}
-
-	joy.oldpovstate = povstate;
-
-	// if there is a trackball like interface, simulate mouse moves
-	if (SDL_GAMEPAD_AXIS_COUNT >= 6) {
-		x = JoyToF(s_joystick_rx) * in_joyBallScale->value;
-		y = JoyToF(s_joystick_ry) * in_joyBallScale->value;
-		if (x != 0 || y != 0) {
-			Sys_QueEvent(s_sysMsgTime, SE_MOUSE, x, y, 0, NULL);
-		}
-	}
+	return value;
 }
 
 /*
@@ -369,7 +308,7 @@ void IN_Init(void)
 	in_mouse = Cvar_Get("in_mouse", "1", CVAR_ARCHIVE | CVAR_LATCH);
 
 	// joystick variables
-	in_joystick = Cvar_Get("in_joystick", "0", CVAR_ARCHIVE | CVAR_LATCH);
+	in_joystick = Cvar_Get("in_joystick", "1", CVAR_ARCHIVE | CVAR_LATCH);
 	in_joyBallScale = Cvar_Get("in_joyBallScale", "0.02", CVAR_ARCHIVE);
 	in_debugJoystick = Cvar_Get("in_debugjoystick", "0", CVAR_TEMP);
 
@@ -408,8 +347,6 @@ Called every frame, even if not generating commands
 */
 void IN_Frame(void)
 {
-	IN_JoyMove();			// post joystick events
-
 	if (!s_wmv.mouseInitialized) {
 		return;
 	}
@@ -439,6 +376,39 @@ cvar_t* vid_ypos;			// Y coordinate of window position
 
 //==========================================================================
 
+static uint32_t s_scantosdlg[SDL_SCANCODE_COUNT] = {
+	// gamepad buttons
+	// K_UNKNOWN,
+	K_GAMEPAD_BUTTON_SOUTH,
+	K_GAMEPAD_BUTTON_EAST,
+	K_GAMEPAD_BUTTON_WEST,
+	K_GAMEPAD_BUTTON_NORTH,
+	K_GAMEPAD_BUTTON_BACK,
+	K_GAMEPAD_BUTTON_GUIDE,
+	K_GAMEPAD_BUTTON_START,
+	K_GAMEPAD_BUTTON_LEFT_STICK,
+	K_GAMEPAD_BUTTON_RIGHT_STICK,
+	K_GAMEPAD_BUTTON_LEFT_SHOULDER,
+	K_GAMEPAD_BUTTON_RIGHT_SHOULDER,
+	K_GAMEPAD_BUTTON_DPAD_UP,
+	K_GAMEPAD_BUTTON_DPAD_DOWN,
+	K_GAMEPAD_BUTTON_DPAD_LEFT,
+	K_GAMEPAD_BUTTON_DPAD_RIGHT,
+	K_GAMEPAD_BUTTON_MISC1,
+	K_GAMEPAD_BUTTON_RIGHT_PADDLE1,
+	K_GAMEPAD_BUTTON_LEFT_PADDLE1,
+	K_GAMEPAD_BUTTON_RIGHT_PADDLE2,
+	K_GAMEPAD_BUTTON_LEFT_PADDLE2,
+	K_GAMEPAD_BUTTON_TOUCHPAD,
+	K_GAMEPAD_BUTTON_MISC2,
+	K_GAMEPAD_BUTTON_MISC3,
+	K_GAMEPAD_BUTTON_MISC4,
+	K_GAMEPAD_BUTTON_MISC5,
+	K_GAMEPAD_BUTTON_MISC6,
+	K_GAMEPAD_BUTTON_LEFT_TRIGGER,
+	K_GAMEPAD_BUTTON_RIGHT_TRIGGER,
+};
+
 static uint32_t s_scantosdlb[SDL_SCANCODE_COUNT] = {
 	// mouse buttons
 	K_UNKNOWN,
@@ -448,7 +418,7 @@ static uint32_t s_scantosdlb[SDL_SCANCODE_COUNT] = {
 	K_MOUSE4,
 	K_MOUSE5,
 	K_MOUSE_WHEELUP,
-	K_MOUSE_WHEELDOWN
+	K_MOUSE_WHEELDOWN,
 };
 
 static uint32_t s_scantosdlk[SDL_SCANCODE_COUNT] = {
@@ -914,33 +884,76 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 	} break;
 	case SDL_EVENT_GAMEPAD_AXIS_MOTION:
 	{
+		float fPos = 0;
+		int16_t iPos = 0;
+		int16_t xPos = 0;
+		int16_t yPos = 0;
+		int16_t zPos = 0;
+		int16_t rPos = 0;
+		int16_t uPos = 0;
+		int16_t vPos = 0;
+		int16_t axis = 0;
+
 		switch (msg->gaxis.axis)
 		{
 		case SDL_GAMEPAD_AXIS_LEFTX:
 		{
-			s_joystick_lx = msg->gaxis.value;
+			xPos = msg->gaxis.value;
+			fPos = JoyToF(msg->gaxis.value);
+			axis = AXIS_SIDE;
 		} break;
 		case SDL_GAMEPAD_AXIS_LEFTY:
 		{
-			s_joystick_ly = msg->gaxis.value;
+			yPos = msg->gaxis.value;
+			fPos = -JoyToF(msg->gaxis.value);
+			axis = AXIS_FORWARD;
 		} break;
 		case SDL_GAMEPAD_AXIS_RIGHTX:
 		{
-			s_joystick_rx = msg->gaxis.value;
+			zPos = msg->gaxis.value;
+			fPos = -JoyToF(msg->gaxis.value);
+			axis = AXIS_YAW;
 		} break;
 		case SDL_GAMEPAD_AXIS_RIGHTY:
 		{
-			s_joystick_ry = msg->gaxis.value;
+			rPos = msg->gaxis.value;
+			fPos = JoyToF(msg->gaxis.value);
+			axis = AXIS_PITCH;
 		} break;
 		case SDL_GAMEPAD_AXIS_LEFT_TRIGGER:
 		{
-
+			uPos = msg->gaxis.value;
+			iPos = JoyToI(msg->gaxis.value);
+			Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(s_scantosdlg, SDL_GAMEPAD_BUTTON_MISC6 + 1),
+				(iPos != 0) ? true : false, 0, NULL);
+			return;
 		} break;
 		case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER:
 		{
-
+			vPos = msg->gaxis.value;
+			iPos = JoyToI(msg->gaxis.value);
+			Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(s_scantosdlg, SDL_GAMEPAD_BUTTON_MISC6 + 2),
+				(iPos != 0) ? true : false, 0, NULL);
+			return;
 		} break;
 		}
+
+		if (in_debugJoystick->integer) {
+			Com_Printf("%5.2f %5.2f %5.2f %5.2f %6i %6i\n",
+				JoyToF(xPos), JoyToF(yPos),
+				JoyToF(zPos), JoyToF(rPos),
+				JoyToI(uPos), JoyToI(vPos));
+		}
+
+		if (fPos < 0.0f) {
+			iPos = -1;
+		}
+		if (fPos > 0.0f) {
+			iPos = 1;
+		}
+
+		Sys_QueEvent(s_sysMsgTime, SE_JOYSTICK_AXIS, axis, iPos, 0, NULL);
+
 		return;
 	}
 	case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
@@ -950,7 +963,7 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 			return;
 		}
 
-		Sys_QueEvent(s_sysMsgTime, SE_KEY, K_JOY1 + msg->gbutton.button,
+		Sys_QueEvent(s_sysMsgTime, SE_KEY, MapKey(s_scantosdlg, msg->gbutton.button),
 			msg->gbutton.down, 0, NULL);
 	}
 	case SDL_EVENT_GAMEPAD_ADDED:
