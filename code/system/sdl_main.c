@@ -1245,6 +1245,184 @@ int Sys_Milliseconds(void)
 }
 
 /*
+==============================================================
+
+DIRECTORY SCANNING
+
+==============================================================
+*/
+
+#define	MAX_FOUND_FILES	0x1000
+
+void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter,
+	char** list, int* numfiles)
+{
+	char    newsubdirs[MAX_OSPATH];
+	char    filename[MAX_OSPATH];
+	char    search[MAX_OSPATH];
+	char**  findinfo;
+	int     findhandle;
+	int     nfiles;
+
+	if (*numfiles >= MAX_FOUND_FILES - 1) {
+		return;
+	}
+
+	if (strlen(subdirs)) {
+		Com_sprintf(search, sizeof(search), "%s\\%s", basedir, subdirs);
+	} else {
+		Com_sprintf(search, sizeof(search), "%s", basedir);
+	}
+
+	findinfo = SDL_GlobDirectory(search, "*", 0, &findhandle);
+	if (findhandle == -1) {
+		return;
+	}
+
+	nfiles = 0;
+	do {
+		if (Q_stricmp(findinfo[nfiles], ".") && Q_stricmp(findinfo[nfiles], "..")) {
+			if (strlen(subdirs)) {
+				Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s\\%s", subdirs,
+					findinfo[nfiles]);
+			} else {
+				Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s",
+					findinfo[nfiles]);
+			}
+
+			Sys_ListFilteredFiles(basedir, newsubdirs, filter, list, numfiles);
+		}
+
+		if (*numfiles >= MAX_FOUND_FILES - 1) {
+			break;
+		}
+
+		Com_sprintf(filename, sizeof(filename), "%s\\%s", subdirs,
+			findinfo[nfiles]);
+
+		if (!Com_FilterPath(filter, filename, false)) {
+			continue;
+		}
+
+		list[*numfiles] = Z_TagMalloc(strlen(filename) + 1, TAG_SMALL);
+		Q_strncpyz(list[*numfiles], filename, strlen(filename) + 1);
+		(*numfiles)++;
+		nfiles++;
+
+	} while (findinfo[nfiles] != NULL);
+
+	SDL_free(findinfo);
+}
+
+char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
+	int* numfiles, bool wantsubs)
+{
+	char    pattern[MAX_OSPATH];
+	char    search[MAX_OSPATH];
+	char*   list[MAX_FOUND_FILES];
+	char**  listCopy;
+	char**  findinfo;
+	int     nfiles;
+	int     findhandle;
+	int     flag;
+	int     i;
+
+	if (filter) {
+
+		nfiles = 0;
+		Sys_ListFilteredFiles(directory, "", filter, list, &nfiles);
+
+		list[nfiles] = 0;
+		*numfiles = nfiles;
+
+		if (!nfiles) {
+			return NULL;
+		}
+
+		listCopy = Z_Malloc((nfiles + 1) * sizeof(*listCopy));
+		for (i = 0; i < nfiles; i++)
+		{
+			listCopy[i] = list[i];
+		}
+
+		listCopy[i] = NULL;
+
+		return listCopy;
+	}
+
+	if (!extension) {
+		extension = "";
+	}
+
+	Com_sprintf(pattern, sizeof(pattern), "*%s", extension);
+	Com_sprintf(search, sizeof(search), "%s", directory);
+
+	// search
+	findinfo = SDL_GlobDirectory(search, pattern, 0, &findhandle);
+
+	if (findhandle == 0) {
+		*numfiles = 0;
+		return NULL;
+	}
+
+	nfiles = 0;
+	do {
+
+		list[nfiles] = Z_TagMalloc(strlen(findinfo[nfiles]) + 1, TAG_SMALL);
+		Q_strncpyz(list[nfiles], findinfo[nfiles], strlen(findinfo[nfiles]) + 1);
+		nfiles++;
+	} while (findinfo[nfiles] != NULL);
+
+	list[nfiles] = 0;
+
+	SDL_free(findinfo);
+
+	// return a copy of the list
+	*numfiles = nfiles;
+
+	if (!nfiles) {
+		return NULL;
+	}
+
+	listCopy = Z_Malloc((nfiles + 1) * sizeof(*listCopy));
+	for (i = 0; i < nfiles; i++)
+	{
+		listCopy[i] = list[i];
+	}
+
+	listCopy[i] = NULL;
+
+	do {
+		flag = 0;
+		for (i = 1; i < nfiles; i++)
+		{
+			if (Q_strgtr(listCopy[i - 1], listCopy[i])) {
+				char* temp = listCopy[i];
+				listCopy[i] = listCopy[i - 1];
+				listCopy[i - 1] = temp;
+				flag = 1;
+			}
+		}
+	} while (flag);
+
+	return listCopy;
+}
+
+void Sys_FreeFileList(char** list)
+{
+	if (!list) {
+		return;
+	}
+
+	for (int i = 0; list[i]; i++)
+	{
+		Z_Free(list[i]);
+	}
+
+	Z_Free(list);
+}
+
+/*
 ========================================================================
 
 LOAD/UNLOAD DLL
