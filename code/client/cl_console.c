@@ -577,13 +577,15 @@ Con_DrawSolidConsole
 Draws the console with the solid background
 ================
 */
-void Con_DrawSolidConsole( float frac ) {
+void Con_DrawSolidConsole(float frac)
+{
+	char buffer[MAX_STRING_CHARS] = { 0 };
 	int				i, x, y;
 	int				rows;
-	short			*text;
+	short* text;
 	int				row;
 	int				lines;
-//	qhandle_t		conShader;
+	//	qhandle_t		conShader;
 	int				currentColor;
 	vec4_t			color;
 
@@ -591,101 +593,96 @@ void Con_DrawSolidConsole( float frac ) {
 	if (lines <= 0)
 		return;
 
-	if (lines > cls.glconfig.vidHeight )
+	if (lines > cls.glconfig.vidHeight)
 		lines = cls.glconfig.vidHeight;
 
 	// on wide screens, we will center the text
 	con.xadjust = 0;
-	SCR_AdjustFrom640( &con.xadjust, NULL, NULL, NULL );
+	SCR_AdjustFrom640(&con.xadjust, NULL, NULL, NULL);
 
 	// draw the background
 	y = frac * SCREEN_HEIGHT - 2;
-	if ( y < 1 ) {
+	if (y < 1) {
 		y = 0;
-	}
-	else {
-		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+	} else {
+		SCR_DrawPic(0, 0, SCREEN_WIDTH, y, cls.consoleShader);
 	}
 
 	color[0] = 1;
 	color[1] = 0;
 	color[2] = 0;
 	color[3] = 1;
-	SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
+	SCR_FillRect(0, y, SCREEN_WIDTH, 2, color);
 
+	// draw the time and version number
+	re.SetColor(g_color_table[ColorIndex(COLOR_RED)]);
 
-	// draw the version number
+	Com_sprintf(buffer, MAX_STRING_CHARS, "%s %s", Sys_DateAndTime(), Q3_VERSION);
+	i = strlen(buffer);
 
-	re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
-
-	i = strlen( Q3_VERSION );
-
-	for (x=0 ; x<i ; x++) {
-
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH, 
-
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)), Q3_VERSION[x] );
-
+	for (x = 0; x < i; x++)
+	{
+		SCR_DrawSmallChar(cls.glconfig.vidWidth - (i - x) * SMALLCHAR_WIDTH,
+			(lines - (SMALLCHAR_HEIGHT + SMALLCHAR_HEIGHT / 2)), buffer[x]);
 	}
-
 
 	// draw the text
 	con.vislines = lines;
-	rows = (lines-SMALLCHAR_WIDTH)/SMALLCHAR_WIDTH;		// rows of text to draw
+	rows = (lines - SMALLCHAR_WIDTH) / SMALLCHAR_WIDTH;			// rows of text to draw
 
-	y = lines - (SMALLCHAR_HEIGHT*3);
+	y = lines - (SMALLCHAR_HEIGHT * 3);
 
 	// draw from the bottom up
-	if (con.display != con.current)
-	{
-	// draw arrows to show the buffer is backscrolled
-		re.SetColor( g_color_table[ColorIndex(COLOR_RED)] );
-		for (x=0 ; x<con.linewidth ; x+=4)
-			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
+	if (con.display != con.current) {
+
+		// draw arrows to show the buffer is backscrolled
+		re.SetColor(g_color_table[ColorIndex(COLOR_RED)]);
+		for (x = 0; x < con.linewidth; x += 4)
+			SCR_DrawSmallChar(con.xadjust + (x + 1) * SMALLCHAR_WIDTH, y, '^');
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
-	
+
 	row = con.display;
 
-	if ( con.x == 0 ) {
+	if (con.x == 0) {
 		row--;
 	}
 
 	currentColor = 7;
-	re.SetColor( g_color_table[currentColor] );
+	re.SetColor(g_color_table[currentColor]);
 
-	for (i=0 ; i<rows ; i++, y -= SMALLCHAR_HEIGHT, row--)
+	for (i = 0; i < rows; i++, y -= SMALLCHAR_HEIGHT, row--)
 	{
 		if (row < 0)
 			break;
 		if (con.current - row >= con.totallines) {
 			// past scrollback wrap point
-			continue;	
+			continue;
 		}
 
-		text = con.text + (row % con.totallines)*con.linewidth;
+		text = con.text + (row % con.totallines) * con.linewidth;
 
-		for (x=0 ; x<con.linewidth ; x++) {
-			if ( ( text[x] & 0xff ) == ' ' ) {
+		for (x = 0; x < con.linewidth; x++)
+		{
+			if ((text[x] & 0xff) == ' ') {
 				continue;
 			}
 
-			if ( ( (text[x]>>8)&7 ) != currentColor ) {
-				currentColor = (text[x]>>8)&7;
-				re.SetColor( g_color_table[currentColor] );
+			if (((text[x] >> 8) & 7) != currentColor) {
+				currentColor = (text[x] >> 8) & 7;
+				re.SetColor(g_color_table[currentColor]);
 			}
-			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, text[x] & 0xff );
+
+			SCR_DrawSmallChar(con.xadjust + (x + 1) * SMALLCHAR_WIDTH, y, text[x] & 0xff);
 		}
 	}
 
 	// draw the input prompt, user text, and cursor if desired
-	Con_DrawInput ();
+	Con_DrawInput();
 
-	re.SetColor( NULL );
+	re.SetColor(NULL);
 }
-
-
 
 /*
 ==================

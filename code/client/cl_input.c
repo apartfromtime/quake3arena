@@ -380,36 +380,42 @@ void CL_JoystickEvent( int axis, int value, int time ) {
 CL_JoystickMove
 =================
 */
-void CL_JoystickMove( usercmd_t *cmd ) {
+void CL_JoystickMove(usercmd_t* cmd)
+{
 	int		movespeed;
 	float	anglespeed;
 
-	if ( in_speed.active ^ cl_run->integer ) {
-		movespeed = 2;
-	} else {
-		movespeed = 1;
+	if (in_speed.active ^ cl_run->integer) {
+		movespeed = 127;
+		cmd->buttons &= ~BUTTON_WALKING;
+	}
+	else {
 		cmd->buttons |= BUTTON_WALKING;
+		movespeed = 64;
 	}
 
-	if ( in_speed.active ) {
+	if (in_speed.active) {
 		anglespeed = 0.001 * cls.frametime * cl_anglespeedkey->value;
 	} else {
 		anglespeed = 0.001 * cls.frametime;
 	}
 
-	if ( !in_strafe.active ) {
-		g_clientActive.viewangles[YAW] += anglespeed * cl_yawspeed->value * g_clientActive.joystickAxis[AXIS_SIDE];
-	} else {
-		cmd->rightmove = ClampChar( cmd->rightmove + g_clientActive.joystickAxis[AXIS_SIDE] );
+	g_clientActive.viewangles[YAW] += anglespeed * cl_yawspeed->value * g_clientActive.joystickAxis[AXIS_YAW];
+
+	if (in_strafe.active) {
+		cmd->rightmove = ClampChar(cmd->rightmove + (movespeed * g_clientActive.joystickAxis[AXIS_SIDE]));
 	}
 
-	if ( in_mlooking ) {
-		g_clientActive.viewangles[PITCH] += anglespeed * cl_pitchspeed->value * g_clientActive.joystickAxis[AXIS_FORWARD];
-	} else {
-		cmd->forwardmove = ClampChar( cmd->forwardmove + g_clientActive.joystickAxis[AXIS_FORWARD] );
+	if (in_mlooking || cl_freelook->integer) {
+		float invert = 1.0f;
+		if (m_pitch->value < 0.0f) {
+			invert = -1.0f;
+		}
+		g_clientActive.viewangles[PITCH] += anglespeed * invert * cl_pitchspeed->value * g_clientActive.joystickAxis[AXIS_PITCH];
 	}
 
-	cmd->upmove = ClampChar( cmd->upmove + g_clientActive.joystickAxis[AXIS_UP] );
+	cmd->forwardmove = ClampChar(cmd->forwardmove + (movespeed * g_clientActive.joystickAxis[AXIS_FORWARD]));
+	cmd->upmove = ClampChar(cmd->upmove + g_clientActive.joystickAxis[AXIS_UP]);
 }
 
 /*

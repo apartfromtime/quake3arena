@@ -1727,7 +1727,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 		max = Item_ListBox_MaxScroll(item);
 		if (item->window.flags & WINDOW_HORIZONTAL) {
 			viewmax = (item->window.rect.w / listPtr->elementWidth);
-			if ( key == K_LEFTARROW || key == K_KP_LEFTARROW ) 
+			if ( key == K_LEFT || key == K_KP_4 ) 
 			{
 				if (!listPtr->notselectable) {
 					listPtr->cursorPos--;
@@ -1750,7 +1750,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 				}
 				return true;
 			}
-			if ( key == K_RIGHTARROW || key == K_KP_RIGHTARROW ) 
+			if ( key == K_RIGHT || key == K_KP_6 )
 			{
 				if (!listPtr->notselectable) {
 					listPtr->cursorPos++;
@@ -1776,7 +1776,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 		}
 		else {
 			viewmax = (item->window.rect.h / listPtr->elementHeight);
-			if ( key == K_UPARROW || key == K_KP_UPARROW ) 
+			if ( key == K_UP || key == K_KP_8 )
 			{
 				if (!listPtr->notselectable) {
 					listPtr->cursorPos--;
@@ -1799,7 +1799,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 				}
 				return true;
 			}
-			if ( key == K_DOWNARROW || key == K_KP_DOWNARROW ) 
+			if ( key == K_DOWN || key == K_KP_2 )
 			{
 				if (!listPtr->notselectable) {
 					listPtr->cursorPos++;
@@ -1863,17 +1863,17 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 			}
 			return true;
 		}
-		if ( key == K_HOME || key == K_KP_HOME) {
+		if ( key == K_HOME || key == K_KP_7) {
 			// home
 			listPtr->startPos = 0;
 			return true;
 		}
-		if ( key == K_END || key == K_KP_END) {
+		if ( key == K_END || key == K_KP_1) {
 			// end
 			listPtr->startPos = max;
 			return true;
 		}
-		if (key == K_PGUP || key == K_KP_PGUP ) {
+		if (key == K_PAGEUP || key == K_KP_9 ) {
 			// page up
 			if (!listPtr->notselectable) {
 				listPtr->cursorPos -= viewmax;
@@ -1897,7 +1897,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 			}
 			return true;
 		}
-		if ( key == K_PGDN || key == K_KP_PGDN ) {
+		if ( key == K_PAGEDOWN || key == K_KP_3 ) {
 			// page down
 			if (!listPtr->notselectable) {
 				listPtr->cursorPos += viewmax;
@@ -1928,7 +1928,7 @@ bool Item_ListBox_HandleKey(itemDef_t *item, int key, bool down, bool force) {
 bool Item_YesNo_HandleKey(itemDef_t *item, int key) {
 
   if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item->cvar) {
-		if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3) {
+		if (key == K_MOUSE1 || key == K_RETURN || key == K_MOUSE2 || key == K_MOUSE3) {
 	    DC->setCVar(item->cvar, va("%i", !DC->getCVarValue(item->cvar)));
 		  return true;
 		}
@@ -2002,7 +2002,7 @@ bool Item_Multi_HandleKey(itemDef_t *item, int key) {
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
 	if (multiPtr) {
 	  if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item->cvar) {
-			if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3) {
+			if (key == K_MOUSE1 || key == K_RETURN || key == K_MOUSE2 || key == K_MOUSE3) {
 				int current = Item_Multi_FindCvarByValue(item) + 1;
 				int max = Item_Multi_CountSettings(item);
 				if ( current < 0 || current >= max ) {
@@ -2094,7 +2094,7 @@ bool Item_TextField_HandleKey(itemDef_t *item, int key) {
 
 		} else {
 
-			if ( key == K_DEL || key == K_KP_DEL ) {
+			if ( key == K_DELETE || key == K_KP_PERIOD ) {
 				if ( item->cursorPos < len ) {
 					memmove( buff + item->cursorPos, buff + item->cursorPos + 1, len - item->cursorPos);
 					DC->setCVar(item->cvar, buff);
@@ -2102,7 +2102,7 @@ bool Item_TextField_HandleKey(itemDef_t *item, int key) {
 				return true;
 			}
 
-			if ( key == K_RIGHTARROW || key == K_KP_RIGHTARROW ) 
+			if ( key == K_RIGHT || key == K_KP_6 ) 
 			{
 				if (editPtr->maxPaintChars && item->cursorPos >= editPtr->maxPaintChars && item->cursorPos < len) {
 					item->cursorPos++;
@@ -2115,7 +2115,7 @@ bool Item_TextField_HandleKey(itemDef_t *item, int key) {
 				return true;
 			}
 
-			if ( key == K_LEFTARROW || key == K_KP_LEFTARROW ) 
+			if ( key == K_LEFT || key == K_KP_4)
 			{
 				if ( item->cursorPos > 0 ) {
 					item->cursorPos--;
@@ -2126,13 +2126,13 @@ bool Item_TextField_HandleKey(itemDef_t *item, int key) {
 				return true;
 			}
 
-			if ( key == K_HOME || key == K_KP_HOME) {// || ( tolower(key) == 'a' && trap_Key_IsDown( K_CTRL ) ) ) {
+			if ( key == K_HOME || key == K_KP_7) {// || ( tolower(key) == 'a' && trap_Key_IsDown( K_CTRL ) ) ) {
 				item->cursorPos = 0;
 				editPtr->paintOffset = 0;
 				return true;
 			}
 
-			if ( key == K_END || key == K_KP_END)  {// ( tolower(key) == 'e' && trap_Key_IsDown( K_CTRL ) ) ) {
+			if ( key == K_END || key == K_KP_1)  {// ( tolower(key) == 'e' && trap_Key_IsDown( K_CTRL ) ) ) {
 				item->cursorPos = len;
 				if(item->cursorPos > editPtr->maxPaintChars) {
 					editPtr->paintOffset = len - editPtr->maxPaintChars;
@@ -2140,27 +2140,27 @@ bool Item_TextField_HandleKey(itemDef_t *item, int key) {
 				return true;
 			}
 
-			if ( key == K_INS || key == K_KP_INS ) {
+			if ( key == K_INSERT || key == K_KP_0 ) {
 				DC->setOverstrikeMode(!DC->getOverstrikeMode());
 				return true;
 			}
 		}
 
-		if (key == K_TAB || key == K_DOWNARROW || key == K_KP_DOWNARROW) {
+		if (key == K_TAB || key == K_DOWN || key == K_KP_2) {
 			newItem = Menu_SetNextCursorItem(item->parent);
 			if (newItem && (newItem->type == ITEM_TYPE_EDITFIELD || newItem->type == ITEM_TYPE_NUMERICFIELD)) {
 				g_editItem = newItem;
 			}
 		}
 
-		if (key == K_UPARROW || key == K_KP_UPARROW) {
+		if (key == K_UP || key == K_KP_8) {
 			newItem = Menu_SetPrevCursorItem(item->parent);
 			if (newItem && (newItem->type == ITEM_TYPE_EDITFIELD || newItem->type == ITEM_TYPE_NUMERICFIELD)) {
 				g_editItem = newItem;
 			}
 		}
 
-		if ( key == K_ENTER || key == K_KP_ENTER || key == K_ESCAPE)  {
+		if ( key == K_RETURN || key == K_KP_ENTER || key == K_ESCAPE)  {
 			return false;
 		}
 
@@ -2330,7 +2330,7 @@ bool Item_Slider_HandleKey(itemDef_t *item, int key, bool down) {
 
 	//DC->Print("slider handle key\n");
 	if (item->window.flags & WINDOW_HASFOCUS && item->cvar && Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory)) {
-		if (key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3) {
+		if (key == K_MOUSE1 || key == K_RETURN || key == K_MOUSE2 || key == K_MOUSE3) {
 			editFieldDef_t *editDef = item->typeData;
 			if (editDef) {
 				rectDef_t testRect;
@@ -2616,7 +2616,7 @@ void Menu_HandleKey(menuDef_t *menu, int key, bool down) {
 			g_editingField = false;
 			g_editItem = NULL;
 			Display_MouseMove(NULL, DC->cursorx, DC->cursory);
-		} else if (key == K_TAB || key == K_UPARROW || key == K_DOWNARROW) {
+		} else if (key == K_TAB || key == K_UP || key == K_DOWN) {
 			return;
 		}
 	}
@@ -2673,8 +2673,8 @@ void Menu_HandleKey(menuDef_t *menu, int key, bool down) {
 				DC->executeText(EXEC_APPEND, "screenshot\n");
 			}
 			break;
-		case K_KP_UPARROW:
-		case K_UPARROW:
+		case K_KP_8:
+		case K_UP:
 			Menu_SetPrevCursorItem(menu);
 			break;
 
@@ -2686,8 +2686,8 @@ void Menu_HandleKey(menuDef_t *menu, int key, bool down) {
 			}
 			break;
 		case K_TAB:
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
+		case K_KP_2:
+		case K_DOWN:
 			Menu_SetNextCursorItem(menu);
 			break;
 
@@ -2717,25 +2717,9 @@ void Menu_HandleKey(menuDef_t *menu, int key, bool down) {
 		case K_JOY2:
 		case K_JOY3:
 		case K_JOY4:
-		case K_AUX1:
-		case K_AUX2:
-		case K_AUX3:
-		case K_AUX4:
-		case K_AUX5:
-		case K_AUX6:
-		case K_AUX7:
-		case K_AUX8:
-		case K_AUX9:
-		case K_AUX10:
-		case K_AUX11:
-		case K_AUX12:
-		case K_AUX13:
-		case K_AUX14:
-		case K_AUX15:
-		case K_AUX16:
 			break;
 		case K_KP_ENTER:
-		case K_ENTER:
+		case K_RETURN:
 			if (item) {
 				if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD) {
 					item->cursorPos = 0;
@@ -3133,19 +3117,19 @@ typedef struct
 static bind_t g_bindings[] = 
 {
 	{"+scores",			 K_TAB,				-1,		-1, -1},
-	{"+button2",		 K_ENTER,			-1,		-1, -1},
-	{"+speed", 			 K_SHIFT,			-1,		-1,	-1},
-	{"+forward", 		 K_UPARROW,		-1,		-1, -1},
-	{"+back", 			 K_DOWNARROW,	-1,		-1, -1},
+	{"+button2",		 K_RETURN,			-1,		-1, -1},
+	{"+speed", 			 K_LSHIFT,			-1,		-1,	-1},
+	{"+forward", 		 K_UP,		-1,		-1, -1},
+	{"+back", 			 K_DOWN,	-1,		-1, -1},
 	{"+moveleft", 	 ',',					-1,		-1, -1},
 	{"+moveright", 	 '.',					-1,		-1, -1},
 	{"+moveup",			 K_SPACE,			-1,		-1, -1},
 	{"+movedown",		 'c',					-1,		-1, -1},
-	{"+left", 			 K_LEFTARROW,	-1,		-1, -1},
-	{"+right", 			 K_RIGHTARROW,	-1,		-1, -1},
-	{"+strafe", 		 K_ALT,				-1,		-1, -1},
-	{"+lookup", 		 K_PGDN,				-1,		-1, -1},
-	{"+lookdown", 	 K_DEL,				-1,		-1, -1},
+	{"+left", 			 K_LEFT,	-1,		-1, -1},
+	{"+right", 			 K_RIGHT,	-1,		-1, -1},
+	{"+strafe", 		 K_LALT,				-1,		-1, -1},
+	{"+lookup", 		 K_PAGEDOWN,				-1,		-1, -1},
+	{"+lookdown", 	 K_DELETE,				-1,		-1, -1},
 	{"+mlook", 			 '/',					-1,		-1, -1},
 	{"centerview", 	 K_END,				-1,		-1, -1},
 	{"+zoom", 			 -1,						-1,		-1, -1},
@@ -3162,7 +3146,7 @@ static bind_t g_bindings[] =
 	{"weapon 11",		 -1,					-1,		-1, -1},
 	{"weapon 12",		 -1,					-1,		-1, -1},
 	{"weapon 13",		 -1,					-1,		-1, -1},
-	{"+attack", 		 K_CTRL,				-1,		-1, -1},
+	{"+attack", 		 K_LCTRL,				-1,		-1, -1},
 	{"weapprev",		 '[',					-1,		-1, -1},
 	{"weapnext", 		 ']',					-1,		-1, -1},
 	{"+button3", 		 K_MOUSE3,			-1,		-1, -1},
@@ -3186,8 +3170,8 @@ static bind_t g_bindings[] =
 	{"tauntTaunt", K_F3,			-1,		-1, -1},
 	{"tauntDeathInsult", K_F4,			-1,		-1, -1},
 	{"tauntGauntlet", K_F5,			-1,		-1, -1},
-	{"scoresUp", K_KP_PGUP,			-1,		-1, -1},
-	{"scoresDown", K_KP_PGDN,			-1,		-1, -1},
+	{"scoresUp", K_KP_9,			-1,		-1, -1},
+	{"scoresDown", K_KP_3,			-1,		-1, -1},
 	// bk001205 - this one below was:  '-1' 
 	{"messagemode",  -1,					-1,		-1, -1},
 	{"messagemode2", -1,						-1,		-1, -1},
@@ -3227,7 +3211,7 @@ static void Controls_GetKeyAssignment (char *command, int *twokeys)
 	twokeys[0] = twokeys[1] = -1;
 	count = 0;
 
-	for ( j = 0; j < 256; j++ )
+	for ( j = 0; j < K_COUNT; j++ )
 	{
 		DC->getBindingBuf( j, b, 256 );
 		if ( *b == 0 ) {
@@ -3459,7 +3443,7 @@ bool Item_Bind_HandleKey(itemDef_t *item, int key, bool down) {
 
 	if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && !g_waitingForKey)
 	{
-		if (down && (key == K_MOUSE1 || key == K_ENTER)) {
+		if (down && (key == K_MOUSE1 || key == K_RETURN)) {
 			g_waitingForKey = true;
 			g_bindItem = item;
 		}
@@ -4091,7 +4075,7 @@ void Menu_ScrollFeeder(menuDef_t *menu, int feeder, bool down) {
 		int i;
     for (i = 0; i < menu->itemCount; i++) {
 			if (menu->items[i]->special == feeder) {
-				Item_ListBox_HandleKey(menu->items[i], (down) ? K_DOWNARROW : K_UPARROW, true, true);
+				Item_ListBox_HandleKey(menu->items[i], (down) ? K_DOWN : K_UP, true, true);
 				return;
 			}
 		}

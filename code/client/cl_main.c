@@ -475,7 +475,7 @@ static void CL_WalkDemoExt(char *arg, char *name, int *demofile)
 	while(demo_protocols[i])
 	{
 		Com_sprintf (name, MAX_QPATH, "demos/%s.dm_%d", arg, demo_protocols[i]);
-		FS_FOpenFileRead( name, demofile, true );
+		FS_FOpenFileRead( name, demofile );
 		if (*demofile)
 		{
 			Com_Printf("Demo file: %s\n", name);
@@ -529,7 +529,7 @@ void CL_PlayDemo_f( void ) {
 		if (demo_protocols[i])
 		{
 			Com_sprintf (name, sizeof(name), "demos/%s", arg);
-			FS_FOpenFileRead( name, &clc.demofile, true );
+			FS_FOpenFileRead( name, &clc.demofile );
 		} else {
 			Com_Printf("Protocol %d not supported for demos\n", protocol);
 			Q_strncpyz(retry, arg, sizeof(retry));

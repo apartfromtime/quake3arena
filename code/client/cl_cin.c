@@ -1030,45 +1030,45 @@ static void setupQuad( long xOff, long yOff )
 *
 ******************************************************************************/
 
-static void readQuadInfo( byte *qData )
+static void readQuadInfo(byte* qData)
 {
 	if (currentHandle < 0) return;
 
-	cinTable[currentHandle].xsize    = qData[0]+qData[1]*256;
-	cinTable[currentHandle].ysize    = qData[2]+qData[3]*256;
-	cinTable[currentHandle].maxsize  = qData[4]+qData[5]*256;
-	cinTable[currentHandle].minsize  = qData[6]+qData[7]*256;
-	
-	cinTable[currentHandle].CIN_HEIGHT = cinTable[currentHandle].ysize;
-	cinTable[currentHandle].CIN_WIDTH  = cinTable[currentHandle].xsize;
+	cinTable[currentHandle].xsize = qData[0] + qData[1] * 256;
+	cinTable[currentHandle].ysize = qData[2] + qData[3] * 256;
+	cinTable[currentHandle].maxsize = qData[4] + qData[5] * 256;
+	cinTable[currentHandle].minsize = qData[6] + qData[7] * 256;
 
-	cinTable[currentHandle].samplesPerLine = cinTable[currentHandle].CIN_WIDTH*cinTable[currentHandle].samplesPerPixel;
-	cinTable[currentHandle].screenDelta = cinTable[currentHandle].CIN_HEIGHT*cinTable[currentHandle].samplesPerLine;
+	cinTable[currentHandle].CIN_HEIGHT = cinTable[currentHandle].ysize;
+	cinTable[currentHandle].CIN_WIDTH = cinTable[currentHandle].xsize;
+
+	cinTable[currentHandle].samplesPerLine = cinTable[currentHandle].CIN_WIDTH * cinTable[currentHandle].samplesPerPixel;
+	cinTable[currentHandle].screenDelta = cinTable[currentHandle].CIN_HEIGHT * cinTable[currentHandle].samplesPerLine;
 
 	cinTable[currentHandle].half = false;
 	cinTable[currentHandle].smootheddouble = false;
-	
+
 	cinTable[currentHandle].VQ0 = cinTable[currentHandle].VQNormal;
 	cinTable[currentHandle].VQ1 = cinTable[currentHandle].VQBuffer;
 
-	cinTable[currentHandle].t[0] = (0 - (unsigned int)cin.linbuf)+(unsigned int)cin.linbuf+cinTable[currentHandle].screenDelta;
-	cinTable[currentHandle].t[1] = (0 - ((unsigned int)cin.linbuf + cinTable[currentHandle].screenDelta))+(unsigned int)cin.linbuf;
+	cinTable[currentHandle].t[0] = (0 - (unsigned int)cin.linbuf) + (unsigned int)cin.linbuf + cinTable[currentHandle].screenDelta;
+	cinTable[currentHandle].t[1] = (0 - ((unsigned int)cin.linbuf + cinTable[currentHandle].screenDelta)) + (unsigned int)cin.linbuf;
 
-        cinTable[currentHandle].drawX = cinTable[currentHandle].CIN_WIDTH;
-        cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
-        
-	// rage pro is very slow at 512 wide textures, voodoo can't do it at all
-	if ( glConfig.hardwareType == GLHW_RAGEPRO || glConfig.maxTextureSize <= 256) {
-                if (cinTable[currentHandle].drawX>256) {
-                        cinTable[currentHandle].drawX = 256;
-                }
-                if (cinTable[currentHandle].drawY>256) {
-                        cinTable[currentHandle].drawY = 256;
-                }
+	cinTable[currentHandle].drawX = cinTable[currentHandle].CIN_WIDTH;
+	cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
+
+	if (glConfig.maxTextureSize <= 256) {
+		if (cinTable[currentHandle].drawX > 256) {
+			cinTable[currentHandle].drawX = 256;
+		}
+		if (cinTable[currentHandle].drawY > 256) {
+			cinTable[currentHandle].drawY = 256;
+		}
 		if (cinTable[currentHandle].CIN_WIDTH != 256 || cinTable[currentHandle].CIN_HEIGHT != 256) {
-			Com_Printf("HACK: approxmimating cinematic for Rage Pro or Voodoo\n");
+			Com_Printf("HACK: approxmimating cinematic for GPU\n");
 		}
 	}
+
 #if defined(MACOS_X)
 	cinTable[currentHandle].drawX = 256;
 	cinTable[currentHandle].drawX = 256;
@@ -1147,7 +1147,7 @@ static void RoQReset() {
 
 	Sys_EndStreamedFile(cinTable[currentHandle].iFile);
 	FS_FCloseFile( cinTable[currentHandle].iFile );
-	FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile, true);
+	FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile);
 	// let the background thread start reading ahead
 	Sys_BeginStreamedFile( cinTable[currentHandle].iFile, 0x10000 );
 	Sys_StreamedRead (cin.file, 16, 1, cinTable[currentHandle].iFile);
@@ -1508,7 +1508,7 @@ int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBi
 	strcpy(cinTable[currentHandle].fileName, name);
 
 	cinTable[currentHandle].ROQSize = 0;
-	cinTable[currentHandle].ROQSize = FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile, true);
+	cinTable[currentHandle].ROQSize = FS_FOpenFileRead (cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile);
 
 	if (cinTable[currentHandle].ROQSize<=0) {
 		Com_DPrintf("play(%s), ROQSize<=0\n", arg);

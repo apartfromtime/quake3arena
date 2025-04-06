@@ -19,6 +19,7 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
+
 //
 /*
 =======================================================================
@@ -2257,7 +2258,7 @@ static bool UI_OwnerDrawVisible(int flags) {
 }
 
 static bool UI_Handicap_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
     int h;
     h = ClampFloat( 5, 100, trap_Cvar_VariableValue("handicap") );
 		if (key == K_MOUSE2) {
@@ -2277,7 +2278,7 @@ static bool UI_Handicap_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_Effects_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 
 		if (key == K_MOUSE2) {
 	    uiInfo.effectsColor--;
@@ -2298,7 +2299,7 @@ static bool UI_Effects_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_ClanName_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
     int i;
     i = UI_TeamIndexFromName(UI_Cvar_VariableString("ui_teamName"));
 		if (uiInfo.teamList[i].cinematic >= 0) {
@@ -2325,7 +2326,7 @@ static bool UI_ClanName_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_GameType_HandleKey(int flags, float *special, int key, bool resetMap) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		int oldCount = UI_MapCountByGameType(true);
 
 		// hard coded mess here
@@ -2364,7 +2365,7 @@ static bool UI_GameType_HandleKey(int flags, float *special, int key, bool reset
 }
 
 static bool UI_NetGameType_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 
 		if (key == K_MOUSE2) {
 			ui_netGameType.integer--;
@@ -2389,7 +2390,7 @@ static bool UI_NetGameType_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_JoinGameType_HandleKey(int flags, float *special, int key) {
-	if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+	if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 
 		if (key == K_MOUSE2) {
 			ui_joinGameType.integer--;
@@ -2413,7 +2414,7 @@ static bool UI_JoinGameType_HandleKey(int flags, float *special, int key) {
 
 
 static bool UI_Skill_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
   	int i = trap_Cvar_VariableValue( "g_spSkill" );
 
 		if (key == K_MOUSE2) {
@@ -2435,7 +2436,7 @@ static bool UI_Skill_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_TeamName_HandleKey(int flags, float *special, int key, bool blue) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
     int i;
     i = UI_TeamIndexFromName(UI_Cvar_VariableString((blue) ? "ui_blueTeam" : "ui_redTeam"));
 
@@ -2459,7 +2460,7 @@ static bool UI_TeamName_HandleKey(int flags, float *special, int key, bool blue)
 }
 
 static bool UI_TeamMember_HandleKey(int flags, float *special, int key, bool blue, int num) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		// 0 - None
 		// 1 - Human
 		// 2..NumCharacters - Bot
@@ -2493,7 +2494,7 @@ static bool UI_TeamMember_HandleKey(int flags, float *special, int key, bool blu
 }
 
 static bool UI_NetSource_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		
 		if (key == K_MOUSE2) {
 			ui_netSource.integer--;
@@ -2518,7 +2519,7 @@ static bool UI_NetSource_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_NetFilter_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 
 		if (key == K_MOUSE2) {
 			ui_serverFilterType.integer--;
@@ -2538,7 +2539,7 @@ static bool UI_NetFilter_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_OpponentName_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		if (key == K_MOUSE2) {
 			UI_PriorOpponent();
 		} else {
@@ -2550,7 +2551,7 @@ static bool UI_OpponentName_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_BotName_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		int game = trap_Cvar_VariableValue("g_gametype");
 		int value = uiInfo.botIndex;
 
@@ -2580,7 +2581,7 @@ static bool UI_BotName_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_BotSkill_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		if (key == K_MOUSE2) {
 			uiInfo.skillIndex--;
 		} else {
@@ -2597,7 +2598,7 @@ static bool UI_BotSkill_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_RedBlue_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		uiInfo.redBlue ^= 1;
 		return true;
 	}
@@ -2605,7 +2606,7 @@ static bool UI_RedBlue_HandleKey(int flags, float *special, int key) {
 }
 
 static bool UI_Crosshair_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		if (key == K_MOUSE2) {
 			uiInfo.currentCrosshair--;
 		} else {
@@ -2626,7 +2627,7 @@ static bool UI_Crosshair_HandleKey(int flags, float *special, int key) {
 
 
 static bool UI_SelectedPlayer_HandleKey(int flags, float *special, int key) {
-  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER) {
+  if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_RETURN || key == K_KP_ENTER) {
 		int selected;
 
 		UI_BuildPlayerList();

@@ -245,8 +245,8 @@ static qhandle_t PlayerModel_MenuKey( int key )
 
 	switch (key)
 	{
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
+		case K_KP_4:
+		case K_LEFT:
 			m = Menu_ItemAtCursor(&s_playermodel.menu);
 			picnum = m->id - ID_PLAYERPIC0;
 			if (picnum >= 0 && picnum <= 15)
@@ -269,8 +269,8 @@ static qhandle_t PlayerModel_MenuKey( int key )
 			}
 			break;
 
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
+		case K_KP_6:
+		case K_RIGHT:
 			m = Menu_ItemAtCursor(&s_playermodel.menu);
 			picnum = m->id - ID_PLAYERPIC0;
 			if (picnum >= 0 && picnum <= 15)

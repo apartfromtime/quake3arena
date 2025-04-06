@@ -116,6 +116,7 @@ struct cplane_s;
 #define Q_min( x, y )   ( ( ( x ) < ( y ) ) ? ( x ) : ( y ) )
 #define Q_sign( f )     ( ( f > 0 ) ? 1 : ( ( f < 0 ) ? -1 : 0 ) )
 
+void Q_SnapVector(float* v);
 float Q_rsqrt(float f);		// reciprocal square root
 float Q_fabs(float f);
 

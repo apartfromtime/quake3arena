@@ -239,28 +239,6 @@ PROTOCOL
 									// PORT_SERVER so a single machine can
 									// run multiple servers
 
-// the cmd_strings[] array in cl_parse.c should mirror this
-//
-// client <-> server
-//
-typedef enum
-{
-	CMD_BAD,
-	CMD_NOP,
-	CMD_EOF,
-	// Client
-	CMD_CL_MOVE,            // [usercmd_t]
-	CMD_CL_MOVENODELTA,     // [usercmd_t]
-	CMD_CL_COMMAND,         // [string] message
-	// Server
-	CMD_SV_GAMESTATE,       // [short] [string] only in gamestate messages
-	CMD_SV_CONFIGSTRING,    // only in gamestate messages
-	CMD_SV_BASELINE,        // [string] to be executed by client game module
-	CMD_SV_SERVERCOMMAND,   // [short] size [size bytes]
-	CMD_SV_DOWNLOAD,
-	CMD_SV_SNAPSHOT
-} SVCL_CMD_OPS;
-
 /*
 ==============================================================
 

@@ -140,14 +140,14 @@ void MField_KeyDownEvent( mfield_t *edit, int key ) {
 	int		len;
 
 	// shift-insert is paste
-	if ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && trap_Key_IsDown( K_SHIFT ) ) {
+	if ( ( ( key == K_INSERT ) || ( key == K_KP_0 ) ) && trap_Key_IsDown( K_LSHIFT ) ) {
 		MField_Paste( edit );
 		return;
 	}
 
 	len = strlen( edit->buffer );
 
-	if ( key == K_DEL || key == K_KP_DEL ) {
+	if ( key == K_DELETE || key == K_KP_PERIOD ) {
 		if ( edit->cursor < len ) {
 			memmove( edit->buffer + edit->cursor, 
 				edit->buffer + edit->cursor + 1, len - edit->cursor );
@@ -155,7 +155,7 @@ void MField_KeyDownEvent( mfield_t *edit, int key ) {
 		return;
 	}
 
-	if ( key == K_RIGHTARROW || key == K_KP_RIGHTARROW ) 
+	if ( key == K_RIGHT || key == K_KP_6 ) 
 	{
 		if ( edit->cursor < len ) {
 			edit->cursor++;
@@ -167,7 +167,7 @@ void MField_KeyDownEvent( mfield_t *edit, int key ) {
 		return;
 	}
 
-	if ( key == K_LEFTARROW || key == K_KP_LEFTARROW ) 
+	if ( key == K_LEFT || key == K_KP_4 ) 
 	{
 		if ( edit->cursor > 0 ) {
 			edit->cursor--;
@@ -179,13 +179,13 @@ void MField_KeyDownEvent( mfield_t *edit, int key ) {
 		return;
 	}
 
-	if ( key == K_HOME || key == K_KP_HOME || ( tolower(key) == 'a' && trap_Key_IsDown( K_CTRL ) ) ) {
+	if ( key == K_HOME || key == K_KP_7 || ( tolower(key) == 'a' && trap_Key_IsDown( K_LCTRL ) ) ) {
 		edit->cursor = 0;
 		edit->scroll = 0;
 		return;
 	}
 
-	if ( key == K_END || key == K_KP_END || ( tolower(key) == 'e' && trap_Key_IsDown( K_CTRL ) ) ) {
+	if ( key == K_END || key == K_KP_1 || ( tolower(key) == 'e' && trap_Key_IsDown( K_LCTRL ) ) ) {
 		edit->cursor = len;
 		edit->scroll = len - edit->widthInChars + 1;
 		if (edit->scroll < 0)
@@ -193,7 +193,7 @@ void MField_KeyDownEvent( mfield_t *edit, int key ) {
 		return;
 	}
 
-	if ( key == K_INS || key == K_KP_INS ) {
+	if ( key == K_INSERT || key == K_KP_0 ) {
 		trap_Key_SetOverstrikeMode( !trap_Key_GetOverstrikeMode() );
 		return;
 	}
@@ -398,7 +398,7 @@ qhandle_t MenuField_Key( menufield_s* m, int* key )
 	switch ( keycode )
 	{
 		case K_KP_ENTER:
-		case K_ENTER:
+		case K_RETURN:
 		case K_JOY1:
 		case K_JOY2:
 		case K_JOY3:
@@ -408,10 +408,10 @@ qhandle_t MenuField_Key( menufield_s* m, int* key )
 			break;
 
 		case K_TAB:
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
-		case K_KP_UPARROW:
-		case K_UPARROW:
+		case K_KP_2:
+		case K_DOWN:
+		case K_KP_8:
+		case K_UP:
 			break;
 
 		default:

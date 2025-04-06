@@ -2,23 +2,12 @@
 #define SYS_PUBLIC_H
 
 #ifdef _WIN32
+#pragma warning(disable : 4201)			// nameless struct or union
 #pragma warning(disable : 4018)			// signed/unsigned mismatch
 #pragma warning(disable : 4244)			// 'conversion' conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable : 4142)			// benign redefinition
 #pragma warning(disable : 4996)			// This function or variable may be unsafe
 #endif
-
-// returnbed by Sys_GetProcessorId
-#define CPUID_GENERIC			0			// any unrecognized processor
-
-#define CPUID_AXP				0x10
-
-#define CPUID_INTEL_UNSUPPORTED	0x20			// Intel 386/486
-#define CPUID_INTEL_PENTIUM		0x21			// Intel Pentium or PPro
-#define CPUID_INTEL_MMX			0x22			// Intel Pentium/MMX or P2/MMX
-#define CPUID_INTEL_KATMAI		0x23			// Intel Katmai
-
-#define CPUID_AMD_3DNOW			0x30			// AMD K6 3DNOW!
 
 // this is the define for determining if we have an asm version of a C function
 #if (defined _M_IX86 || defined __i386__) && !defined __sun__  && !defined __LCC__
@@ -137,19 +126,17 @@ void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath, int (Q_CDECL** entryPo
 	int (Q_CDECL* systemcalls)(int, ...));
 void	Sys_UnloadDll(void* dllHandle);
 
-char* Sys_GetCurrentUser(void);
-
 void	Q_CDECL Sys_Error(const char* error, ...);
 void	Sys_Quit(void);
 char* Sys_GetClipboardData(void);	// note that this isn't journaled...
 
 void	Sys_Print(const char* msg);
 
+const char* Sys_DateAndTime(void);
+
 // Sys_Milliseconds should only be used for profiling purposes,
 // any game related timing information should come from event timestamps
 int		Sys_Milliseconds(void);
-
-void	Sys_SnapVector(float* v);
 
 int		Sys_GetProcessorId(void);
 
@@ -165,8 +152,8 @@ void	Sys_SetErrorText(const char* text);
 
 void	Sys_SendPacket(int length, const void* data, netadr_t to);
 
+// Does NOT parse port numbers, only base addresses.
 bool	Sys_StringToAdr(const char* s, netadr_t* a);
-//Does NOT parse port numbers, only base addresses.
 
 bool	Sys_IsLANAddress(netadr_t adr);
 void		Sys_ShowIP(void);
@@ -174,16 +161,16 @@ void		Sys_ShowIP(void);
 bool	Sys_CheckCD(void);
 
 void	Sys_Mkdir(const char* path);
-char* Sys_Cwd(void);
-void	Sys_SetDefaultCDPath(const char* path);
+const char* Sys_Cwd(void);
+void Sys_SetDefaultCDPath(const char* path);
 char* Sys_DefaultCDPath(void);
-void	Sys_SetDefaultInstallPath(const char* path);
-char* Sys_DefaultInstallPath(void);
-void  Sys_SetDefaultHomePath(const char* path);
-char* Sys_DefaultHomePath(void);
+void Sys_SetDefaultInstallPath(const char* path);
+const char* Sys_DefaultInstallPath(void);
+void Sys_SetDefaultHomePath(const char* path);
+const char* Sys_DefaultHomePath(void);
 
 char** Sys_ListFiles(const char* directory, const char* extension, char* filter, int* numfiles, bool wantsubs);
-void	Sys_FreeFileList(char** list);
+void Sys_FreeFileList(char** list);
 
 bool Sys_LowPhysicalMemory();
 unsigned int Sys_ProcessorCount();

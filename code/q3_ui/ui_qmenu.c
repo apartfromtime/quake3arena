@@ -465,12 +465,12 @@ static qhandle_t RadioButton_Key( menuradiobutton_s *rb, int key )
 		case K_JOY2:
 		case K_JOY3:
 		case K_JOY4:
-		case K_ENTER:
+		case K_RETURN:
 		case K_KP_ENTER:
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
+		case K_KP_4:
+		case K_LEFT:
+		case K_KP_6:
+		case K_RIGHT:
 			rb->curvalue = !rb->curvalue;
 			if ( rb->generic.callback )
 				rb->generic.callback( rb, QM_ACTIVATED );
@@ -587,8 +587,8 @@ static qhandle_t Slider_Key( menuslider_s *s, int key )
 				sound = 0;
 			break;
 
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
+		case K_KP_4:
+		case K_LEFT:
 			if (s->curvalue > s->minvalue)
 			{
 				s->curvalue--;
@@ -598,8 +598,8 @@ static qhandle_t Slider_Key( menuslider_s *s, int key )
 				sound = menu_buzz_sound;
 			break;			
 
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
+		case K_KP_6:
+		case K_RIGHT:
 			if (s->curvalue < s->maxvalue)
 			{
 				s->curvalue++;
@@ -806,8 +806,8 @@ static qhandle_t SpinControl_Key( menulist_s *s, int key )
 			sound = menu_move_sound;
 			break;
 		
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
+		case K_KP_4:
+		case K_LEFT:
 			if (s->curvalue > 0)
 			{
 				s->curvalue--;
@@ -817,8 +817,8 @@ static qhandle_t SpinControl_Key( menulist_s *s, int key )
 				sound = menu_buzz_sound;
 			break;
 
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
+		case K_KP_6:
+		case K_RIGHT:
 			if (s->curvalue < s->numitems-1)
 			{
 				s->curvalue++;
@@ -967,7 +967,7 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 			}
 			break;
 
-		case K_KP_HOME:
+		case K_KP_7:
 		case K_HOME:
 			l->oldvalue = l->curvalue;
 			l->curvalue = 0;
@@ -980,7 +980,7 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 			}
 			return (menu_buzz_sound);
 
-		case K_KP_END:
+		case K_KP_1:
 		case K_END:
 			l->oldvalue = l->curvalue;
 			l->curvalue = l->numitems-1;
@@ -1001,8 +1001,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 			}
 			return (menu_buzz_sound);
 
-		case K_PGUP:
-		case K_KP_PGUP:
+		case K_PAGEUP:
+		case K_KP_9:
 			if( l->columns > 1 ) {
 				return menu_null_sound;
 			}
@@ -1024,8 +1024,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 			}
 			return (menu_buzz_sound);
 
-		case K_PGDN:
-		case K_KP_PGDN:
+		case K_PAGEDOWN:
+		case K_KP_3:
 			if( l->columns > 1 ) {
 				return menu_null_sound;
 			}
@@ -1047,8 +1047,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 			}
 			return (menu_buzz_sound);
 
-		case K_KP_UPARROW:
-		case K_UPARROW:
+		case K_KP_8:
+		case K_UP:
 			if( l->curvalue == 0 ) {
 				return menu_buzz_sound;
 			}
@@ -1071,8 +1071,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 
 			return (menu_move_sound);
 
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
+		case K_KP_2:
+		case K_DOWN:
 			if( l->curvalue == l->numitems - 1 ) {
 				return menu_buzz_sound;
 			}
@@ -1095,8 +1095,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 
 			return menu_move_sound;
 
-		case K_KP_LEFTARROW:
-		case K_LEFTARROW:
+		case K_KP_4:
+		case K_LEFT:
 			if( l->columns == 1 ) {
 				return menu_null_sound;
 			}
@@ -1118,8 +1118,8 @@ qhandle_t ScrollList_Key( menulist_s *l, int key )
 
 			return menu_move_sound;
 
-		case K_KP_RIGHTARROW:
-		case K_RIGHTARROW:
+		case K_KP_6:
+		case K_RIGHT:
 			if( l->columns == 1 ) {
 				return menu_null_sound;
 			}
@@ -1643,8 +1643,8 @@ qhandle_t Menu_DefaultKey( menuframework_s *m, int key )
 			trap_Cmd_ExecuteText(EXEC_APPEND, "screenshot\n");
 			break;
 #endif
-		case K_KP_UPARROW:
-		case K_UPARROW:
+		case K_KP_8:
+		case K_UP:
 			cursor_prev    = m->cursor;
 			m->cursor_prev = m->cursor;
 			m->cursor--;
@@ -1656,8 +1656,8 @@ qhandle_t Menu_DefaultKey( menuframework_s *m, int key )
 			break;
 
 		case K_TAB:
-		case K_KP_DOWNARROW:
-		case K_DOWNARROW:
+		case K_KP_2:
+		case K_DOWN:
 			cursor_prev    = m->cursor;
 			m->cursor_prev = m->cursor;
 			m->cursor++;
@@ -1679,24 +1679,8 @@ qhandle_t Menu_DefaultKey( menuframework_s *m, int key )
 		case K_JOY2:
 		case K_JOY3:
 		case K_JOY4:
-		case K_AUX1:
-		case K_AUX2:
-		case K_AUX3:
-		case K_AUX4:
-		case K_AUX5:
-		case K_AUX6:
-		case K_AUX7:
-		case K_AUX8:
-		case K_AUX9:
-		case K_AUX10:
-		case K_AUX11:
-		case K_AUX12:
-		case K_AUX13:
-		case K_AUX14:
-		case K_AUX15:
-		case K_AUX16:
 		case K_KP_ENTER:
-		case K_ENTER:
+		case K_RETURN:
 			if (item)
 				if (!(item->flags & (QMF_MOUSEONLY|QMF_GRAYED|QMF_INACTIVE)))
 					return (Menu_ActivateItem( m, item ));
@@ -1722,12 +1706,7 @@ void Menu_Cache( void )
 	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
 
 	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
-	if ( uis.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		// the blend effect turns to shit with the normal 
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menubackRagePro" );
-	} else {
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
-	}
+	uis.menuBackShader = trap_R_RegisterShaderNoMip( "menuback" );
 	uis.menuBackNoLogoShader = trap_R_RegisterShaderNoMip( "menubacknologo" );
 
 	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", false );
