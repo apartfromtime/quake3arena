@@ -110,6 +110,7 @@ qhandle_t	FS_FOpenFileWrite(const char* qpath);
 // will properly create any needed paths and deal with seperater character issues
 
 int		FS_filelength(qhandle_t f);
+char* FS_BuildOSPath(const char* base, const char* game, const char* qpath);
 qhandle_t FS_SV_FOpenFileWrite(const char* filename);
 int		FS_SV_FOpenFileRead(const char* filename, qhandle_t* fp);
 void	FS_SV_Rename(const char* from, const char* to);

@@ -1265,8 +1265,6 @@ void Sys_UnloadDll(void* dllHandle)
 	}
 }
 
-extern char* FS_BuildOSPath(const char* base, const char* game, const char* qpath);
-
 /*
 =================
 Sys_LoadDll
@@ -1274,12 +1272,13 @@ Sys_LoadDll
 Used to load a development dll instead of a virtual machine
 =================
 */
-void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath, int (Q_CDECL** entryPoint)(int, ...),
+void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath,
+	int (Q_CDECL** entryPoint)(int, ...),
 	int (Q_CDECL* systemcalls)(int, ...))
 {
 	static int	lastWarning = 0;
 	SDL_SharedObject* libHandle;
-	void	(Q_CDECL * dllEntry)(int (Q_CDECL * syscallptr)(int, ...));
+	void (Q_CDECL * dllEntry)(int (Q_CDECL * syscallptr)(int, ...));
 	char* basepath;
 	char* cdpath;
 	char* gamedir;
