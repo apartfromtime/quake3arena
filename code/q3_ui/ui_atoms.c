@@ -1086,19 +1086,22 @@ void UI_Shutdown( void ) {
 UI_Init
 =================
 */
-void UI_Init( void ) {
-	UI_RegisterCvars();
+void UI_Init(void)
+{
 
+	Com_Printf("------- UI Info ------\n");
+
+	UI_RegisterCvars();
 	UI_InitGameinfo();
 
 	// cache redundant calulations
-	trap_GetGlconfig( &uis.glconfig );
+	trap_GetGlconfig(&uis.glconfig);
 
 	// for 640x480 virtualized screen
-	uis.scale = uis.glconfig.vidHeight * (1.0/480.0);
-	if ( uis.glconfig.vidWidth * 480 > uis.glconfig.vidHeight * 640 ) {
+	uis.scale = uis.glconfig.vidHeight * (1.0 / 480.0);
+	if (uis.glconfig.vidWidth * 480 > uis.glconfig.vidHeight * 640) {
 		// wide screen
-		uis.bias = 0.5 * ( uis.glconfig.vidWidth - ( uis.glconfig.vidHeight * (640.0/480.0) ) );
+		uis.bias = 0.5 * (uis.glconfig.vidWidth - (uis.glconfig.vidHeight * (640.0 / 480.0)));
 	}
 	else {
 		// no wide screen
@@ -1109,7 +1112,9 @@ void UI_Init( void ) {
 	Menu_Cache();
 
 	uis.activemenu = NULL;
-	uis.menusp     = 0;
+	uis.menusp = 0;
+
+	Com_Printf("----------------------\n");
 }
 
 /*

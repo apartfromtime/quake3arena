@@ -5024,6 +5024,8 @@ void _UI_Init( bool inGameLoad ) {
 	const char *menuSet;
 	int start;
 
+	Com_Printf("------- UI Info ------\n");
+
 	//uiInfo.inGameLoad = inGameLoad;
 
 	UI_RegisterCvars();
@@ -5161,6 +5163,8 @@ void _UI_Init( bool inGameLoad ) {
 	trap_Cvar_Register(NULL, "debug_protocol", "", 0 );
 
 	trap_Cvar_Set("ui_actualNetGameType", va("%d", ui_netGameType.integer));
+
+	Com_Printf("----------------------\n");
 }
 
 
