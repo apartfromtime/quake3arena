@@ -77,10 +77,10 @@ Reset_MenuKey
 */
 static qhandle_t Reset_MenuKey( int key ) {
 	switch ( key ) {
-	case K_KP_LEFTARROW:
-	case K_LEFTARROW:
-	case K_KP_RIGHTARROW:
-	case K_RIGHTARROW:
+	case K_KP_4:
+	case K_LEFT:
+	case K_KP_6:
+	case K_RIGHT:
 		key = K_TAB;
 		break;
 
