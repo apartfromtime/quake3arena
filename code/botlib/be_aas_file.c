@@ -349,7 +349,7 @@ int AAS_LoadAASFile(char *filename)
 	//dump current loaded aas file
 	AAS_DumpAASData();
 	//open the file
-	botimport.FS_FOpenFile( filename, &fp, FS_READ );
+	botimport.FS_FOpenFile( filename, &fp, FS_READ, 0);
 	if (!fp)
 	{
 		AAS_Error("can't open %s\n", filename);
@@ -534,7 +534,7 @@ bool AAS_WriteAASFile(char *filename)
 	header.version = LittleLong(AASVERSION);
 	header.bspchecksum = LittleLong(aasworld.bspchecksum);
 	//open a new file
-	botimport.FS_FOpenFile( filename, &fp, FS_WRITE );
+	botimport.FS_FOpenFile(filename, &fp, FS_WRITE, 0);
 	if (!fp)
 	{
 		botimport.Print(PRT_ERROR, "error opening %s\n", filename);

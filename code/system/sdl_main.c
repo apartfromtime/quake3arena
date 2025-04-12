@@ -1245,6 +1245,221 @@ int Sys_Milliseconds(void)
 }
 
 /*
+========================================================================
+
+BACKGROUND FILE STREAMING
+
+========================================================================
+*/
+
+typedef struct
+{
+	qhandle_t   file;
+	byte*       buffer;
+	bool        eof;
+	bool        active;
+	int         bufferSize;
+	int         streamPosition;			// next byte to be returned by Sys_StreamRead
+	int         threadPosition;			// next byte to be read from file
+} streamsIO_t;
+
+typedef struct
+{
+	SDL_Thread* threadHandle;
+	int         threadId;
+	SDL_Mutex*  crit;
+	streamsIO_t sIO[MAX_FILE_HANDLES];
+} streamState_t;
+
+static streamState_t s_stream;
+
+/*
+===============
+Sys_StreamThread
+
+A thread will be sitting in this loop forever
+================
+*/
+void Sys_StreamThread(void)
+{
+	int buffer;
+	int count;
+	int readCount;
+	int bufferPoint;
+	int r, i;
+
+	while (1)
+	{
+		SDL_Delay(10);
+		SDL_LockMutex(s_stream.crit);
+		for (i = 1; i < MAX_FILE_HANDLES; i++)
+		{
+			// if there is any space left in the buffer, fill it up
+			if (s_stream.sIO[i].active && !s_stream.sIO[i].eof) {
+				count = s_stream.sIO[i].bufferSize - (s_stream.sIO[i].threadPosition -
+					s_stream.sIO[i].streamPosition);
+				if (!count) {
+					continue;
+				}
+
+				bufferPoint = s_stream.sIO[i].threadPosition %
+					s_stream.sIO[i].bufferSize;
+				buffer = s_stream.sIO[i].bufferSize - bufferPoint;
+				readCount = buffer < count ? buffer : count;
+
+				r = FS_Read(s_stream.sIO[i].buffer + bufferPoint, readCount,
+					s_stream.sIO[i].file);
+				s_stream.sIO[i].threadPosition += r;
+
+				if (r != readCount) {
+					s_stream.sIO[i].eof = true;
+				}
+			}
+		}
+		SDL_UnlockMutex(s_stream.crit);
+	}
+}
+
+void Sys_InitStreamThread(void)
+{
+	int i;
+
+	s_stream.crit = SDL_CreateMutex();
+	s_stream.threadHandle = SDL_CreateThread((SDL_ThreadFunction)Sys_StreamThread,
+		"Sys_StreamThread", NULL);
+	if (!s_stream.threadHandle) {
+		return;
+	}
+	s_stream.threadId = SDL_GetThreadID(s_stream.threadHandle);
+
+	for (i = 0; i < MAX_FILE_HANDLES; i++)
+	{
+		s_stream.sIO[i].active = false;
+	}
+}
+
+void Sys_ShutdownStreamThread(void)
+{
+	SDL_DetachThread(s_stream.threadHandle);
+}
+
+void Sys_BeginStreamedFile(qhandle_t f, int readAhead)
+{
+	if (!s_stream.threadHandle) {
+		return;
+	}
+
+	if (s_stream.sIO[f].file) {
+		Sys_EndStreamedFile(s_stream.sIO[f].file);
+	}
+
+	s_stream.sIO[f].file = f;
+	s_stream.sIO[f].buffer = Z_Malloc(readAhead);
+	s_stream.sIO[f].bufferSize = readAhead;
+	s_stream.sIO[f].streamPosition = 0;
+	s_stream.sIO[f].threadPosition = 0;
+	s_stream.sIO[f].eof = false;
+	s_stream.sIO[f].active = true;
+}
+
+void Sys_EndStreamedFile(qhandle_t f)
+{
+	if (!s_stream.threadHandle) {
+		return;
+	}
+
+	if (f != s_stream.sIO[f].file) {
+		Com_Error(ERR_FATAL, "Sys_EndStreamedFile: wrong file");
+	}
+	// don't leave critical section until another stream is started
+	SDL_LockMutex(s_stream.crit);
+	s_stream.sIO[f].file = 0;
+	s_stream.sIO[f].active = false;
+	Z_Free(s_stream.sIO[f].buffer);
+	SDL_UnlockMutex(s_stream.crit);
+}
+
+int Sys_StreamedRead(void* buffer, int size, int count, qhandle_t f)
+{
+	if (!s_stream.threadHandle) {
+		return FS_Read(buffer, size * count, f);
+	}
+
+	int available;
+	int remaining;
+	int sleepCount;
+	int copy;
+	int bufferCount;
+	int bufferPoint;
+	byte* dest;
+
+	if (s_stream.sIO[f].active == false) {
+		Com_Error(ERR_FATAL, "Streamed read with non-streaming file");
+	}
+
+	dest = (byte*)buffer;
+	remaining = size * count;
+
+	if (remaining <= 0) {
+		Com_Error(ERR_FATAL, "Streamed read with non-positive size");
+	}
+
+	sleepCount = 0;
+	while (remaining > 0)
+	{
+		available = s_stream.sIO[f].threadPosition - s_stream.sIO[f].streamPosition;
+		if (!available) {
+			if (s_stream.sIO[f].eof) {
+				break;
+			}
+			if (sleepCount == 1) {
+				Com_DPrintf("Sys_StreamedRead: waiting\n");
+			}
+			if (++sleepCount > 100) {
+				Com_Error(ERR_FATAL, "Sys_StreamedRead: thread has died");
+			}
+			SDL_Delay(10);
+			continue;
+		}
+		SDL_LockMutex(s_stream.crit);
+
+		bufferPoint = s_stream.sIO[f].streamPosition % s_stream.sIO[f].bufferSize;
+		bufferCount = s_stream.sIO[f].bufferSize - bufferPoint;
+
+		copy = available < bufferCount ? available : bufferCount;
+		if (copy > remaining) {
+			copy = remaining;
+		}
+
+		Com_Memcpy(dest, s_stream.sIO[f].buffer + bufferPoint, copy);
+		s_stream.sIO[f].streamPosition += copy;
+		dest += copy;
+		remaining -= copy;
+
+		SDL_UnlockMutex(s_stream.crit);
+	}
+
+	return (count * size - remaining) / size;
+}
+
+void Sys_StreamSeek(qhandle_t f, int offset, int origin)
+{
+	if (!s_stream.threadHandle) {
+		FS_Seek(f, offset, origin);
+	}
+
+	// halt the thread
+	SDL_LockMutex(s_stream.crit);
+	// clear to that point
+	FS_Seek(f, offset, origin);
+	s_stream.sIO[f].streamPosition = 0;
+	s_stream.sIO[f].threadPosition = 0;
+	s_stream.sIO[f].eof = false;
+	// let the thread start running at the new position
+	SDL_UnlockMutex(s_stream.crit);
+}
+
+/*
 ==============================================================
 
 DIRECTORY SCANNING

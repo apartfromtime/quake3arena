@@ -407,7 +407,7 @@ typedef struct botlib_import_s
 	float	(*Cvar_VariableValue)(const char* var_name);
 	
 	// file system access
-	int			(*FS_FOpenFile)(const char *qpath, qhandle_t *file, fsMode_t mode);
+	int			(*FS_FOpenFile)(const char *qpath, qhandle_t *file, fsMode_t mode, int readAhead);
 	int			(*FS_Read)(void *buffer, int len, qhandle_t f);
 	int			(*FS_Write)(const void *buffer, int len, qhandle_t f);
 	void		(*FS_FCloseFile)(qhandle_t f);

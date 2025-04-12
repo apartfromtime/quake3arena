@@ -348,7 +348,7 @@ int SV_GameSystemCalls( int *args ) {
 		return 0;
 
 	case G_FS_FOPEN_FILE:
-		return FS_FOpenFileByMode( VMA(1), VMA(2), args[3] );
+		return FS_FOpenFileByMode(VMA(1), VMA(2), args[3], 0x10000);
 	case G_FS_READ:
 		FS_Read2( VMA(1), args[2], args[3] );
 		return 0;

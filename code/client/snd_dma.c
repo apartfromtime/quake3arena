@@ -1369,7 +1369,7 @@ background music functions
 int	FGetLittleLong( qhandle_t f ) {
 	int		v;
 
-	FS_Read( &v, sizeof(v), f );
+	FS_Read2( &v, sizeof(v), f );
 
 	return LittleLong( v);
 }
@@ -1377,7 +1377,7 @@ int	FGetLittleLong( qhandle_t f ) {
 int	FGetLittleShort( qhandle_t f ) {
 	short	v;
 
-	FS_Read( &v, sizeof(v), f );
+	FS_Read2( &v, sizeof(v), f );
 
 	return LittleShort( v);
 }
@@ -1390,8 +1390,8 @@ int S_FindWavChunk( qhandle_t f, char *chunk ) {
 
 	name[4] = 0;
 	len = 0;
-	r = FS_Read( name, 4, f );
-	if ( r != 4 ) {
+	r = FS_Read2( name, 4, f );
+	if ( r * 4 != 4 ) {
 		return 0;
 	}
 	len = FGetLittleLong( f );
@@ -1418,7 +1418,6 @@ void S_StopBackgroundTrack( void ) {
 	if ( !s_backgroundFile ) {
 		return;
 	}
-	Sys_EndStreamedFile( s_backgroundFile );
 	FS_FCloseFile( s_backgroundFile );
 	s_backgroundFile = 0;
 	s_rawend = 0;
@@ -1454,23 +1453,19 @@ void S_StartBackgroundTrack( const char *intro, const char *loop ){
 	// close the background track, but DON'T reset s_rawend
 	// if restarting the same back ground track
 	if ( s_backgroundFile ) {
-		Sys_EndStreamedFile( s_backgroundFile );
 		FS_FCloseFile( s_backgroundFile );
 		s_backgroundFile = 0;
 	}
 
-	//
 	// open up a wav file and get all the info
-	//
-	FS_FOpenFileRead( name, &s_backgroundFile );
+	FS_FOpenFileByMode(name, &s_backgroundFile, FS_READ, 0);
 	if ( !s_backgroundFile ) {
 		Com_Printf( S_COLOR_YELLOW "WARNING: couldn't open music file %s\n", name );
 		return;
 	}
 
 	// skip the riff wav header
-
-	FS_Read(dump, 12, s_backgroundFile);
+	FS_Read2(dump, 12, s_backgroundFile);
 
 	if ( !S_FindWavChunk( s_backgroundFile, "fmt " ) ) {
 		Com_Printf( "No fmt chunk in %s\n", name );
@@ -1508,11 +1503,6 @@ void S_StartBackgroundTrack( const char *intro, const char *loop ){
 	s_backgroundInfo.samples = len / (s_backgroundInfo.width * s_backgroundInfo.channels);
 
 	s_backgroundSamples = s_backgroundInfo.samples;
-
-	//
-	// start the background streaming
-	//
-	Sys_BeginStreamedFile( s_backgroundFile, 0x10000 );
 }
 
 /*
@@ -1563,8 +1553,8 @@ void S_UpdateBackgroundTrack( void ) {
 			fileSamples = fileBytes / (s_backgroundInfo.width * s_backgroundInfo.channels);
 		}
 
-		r = Sys_StreamedRead( raw, 1, fileBytes, s_backgroundFile );
-		if ( r != fileBytes ) {
+		r = FS_Read2( raw, fileBytes, s_backgroundFile );
+		if ( r * fileBytes != fileBytes ) {
 			Com_Printf("StreamedRead failure on music track\n");
 			S_StopBackgroundTrack();
 			return;
@@ -1581,7 +1571,6 @@ void S_UpdateBackgroundTrack( void ) {
 		if ( !s_backgroundSamples ) {
 			// loop
 			if (s_backgroundLoop[0]) {
-				Sys_EndStreamedFile( s_backgroundFile );
 				FS_FCloseFile( s_backgroundFile );
 				s_backgroundFile = 0;
 				S_StartBackgroundTrack( s_backgroundLoop, s_backgroundLoop );

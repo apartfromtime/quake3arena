@@ -775,7 +775,7 @@ int CL_UISystemCalls( int *args ) {
 		return 0;
 
 	case UI_FS_FOPENFILE:
-		return FS_FOpenFileByMode( VMA(1), VMA(2), args[3] );
+		return FS_FOpenFileByMode(VMA(1), VMA(2), args[3], 0x10000);
 
 	case UI_FS_READ:
 		FS_Read2( VMA(1), args[2], args[3] );

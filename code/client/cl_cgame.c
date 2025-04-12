@@ -445,7 +445,7 @@ int CL_CgameSystemCalls( int *args ) {
 		Cmd_ArgsBuffer( VMA(1), args[2] );
 		return 0;
 	case CG_FS_FOPENFILE:
-		return FS_FOpenFileByMode( VMA(1), VMA(2), args[3] );
+		return FS_FOpenFileByMode(VMA(1), VMA(2), args[3], 0x10000);
 	case CG_FS_READ:
 		FS_Read2( VMA(1), args[2], args[3] );
 		return 0;
