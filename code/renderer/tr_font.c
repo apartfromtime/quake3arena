@@ -82,7 +82,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _TRUNC(x)  ((x) >> 6)
 
 FT_Library ftLibrary = NULL;  
-#endif // BUILD_FREETYPE
+#endif // #ifdef BUILD_FREETYPE
 
 #define MAX_FONTS 6
 static int registeredFontCount = 0;
@@ -114,14 +114,14 @@ R_RenderGlyph(FT_GlyphSlot glyph, glyphInfo_t* glyphOut)
     if (glyph->format == ft_glyph_format_outline) {
         size = pitch * height;
 
-        bitmap = Z_Malloc(sizeof(FT_Bitmap));
+        bitmap = ri.Malloc(sizeof(FT_Bitmap));
 
         bitmap->width = width;
         bitmap->rows = height;
         bitmap->pitch = pitch;
         bitmap->pixel_mode = ft_pixel_mode_grays;
         //bitmap->pixel_mode = ft_pixel_mode_mono;
-        bitmap->buffer = Z_Malloc(pitch * height);
+        bitmap->buffer = ri.Malloc(pitch * height);
         bitmap->num_grays = 256;
 
         Com_Memset(bitmap->buffer, 0, size);
@@ -172,8 +172,8 @@ RE_ConstructGlyphInfo(unsigned char* imageOut, int* xOut, int* yOut, int* maxHei
         }
 
         if (calcHeight) {
-            Z_Free(bitmap->buffer);
-            Z_Free(bitmap);
+            ri.Free(bitmap->buffer);
+            ri.Free(bitmap);
             return &glyph;
         }
 
@@ -194,8 +194,8 @@ RE_ConstructGlyphInfo(unsigned char* imageOut, int* xOut, int* yOut, int* maxHei
             if (*yOut + *maxHeight + 1 >= 255) {
                 *yOut = -1;
                 *xOut = -1;
-                Z_Free(bitmap->buffer);
-                Z_Free(bitmap);
+                ri.Free(bitmap->buffer);
+                ri.Free(bitmap);
                 return &glyph;
             } else {
                 *xOut = 0;
@@ -204,8 +204,8 @@ RE_ConstructGlyphInfo(unsigned char* imageOut, int* xOut, int* yOut, int* maxHei
         } else if (*yOut + *maxHeight + 1 >= 255) {
             *yOut = -1;
             *xOut = -1;
-            Z_Free(bitmap->buffer);
-            Z_Free(bitmap);
+            ri.Free(bitmap->buffer);
+            ri.Free(bitmap);
             return &glyph;
         }
 
@@ -261,8 +261,8 @@ RE_ConstructGlyphInfo(unsigned char* imageOut, int* xOut, int* yOut, int* maxHei
         *xOut += scaled_width + 1;
     }
 
-    Z_Free(bitmap->buffer);
-    Z_Free(bitmap);
+    ri.Free(bitmap->buffer);
+    ri.Free(bitmap);
 
     return &glyph;
 }
@@ -315,7 +315,7 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
     // make a 256x256 image buffer, once it is full, register it, clean it and keep going 
     // until all glyphs are rendered
 
-    out = Z_Malloc(1024 * 1024);
+    out = ri.Malloc(1024 * 1024);
     
     if (out == NULL) {
         ri.Printf(PRINT_ALL, "RE_RegisterFont: Z_Malloc failure during output image creation.\n");
@@ -348,7 +348,7 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
 
             scaledSize = 256 * 256;
             newSize = scaledSize * 4;
-            imageBuff = Z_Malloc(newSize);
+            imageBuff = ri.Malloc(newSize);
             left = 0;
             max = 0;
 
@@ -391,7 +391,7 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
             Com_Memset(out, 0, 1024 * 1024);
             xOut = 0;
             yOut = 0;
-            Z_Free(imageBuff);
+            ri.Free(imageBuff);
             i++;
 
         } else {
@@ -409,10 +409,10 @@ void Build_FreeTypeFont(fontInfo_t* font, const char* fontName, int pointSize)
         ri.FS_WriteFile(va("fonts/fontImage_%i.dat", pointSize), font, sizeof(fontInfo_t));
     }
 
-    Z_Free(out);
+    ri.Free(out);
     ri.FS_FreeFile(faceData);
 }
-#endif // BUILD_FREETYPE
+#endif // #ifdef BUILD_FREETYPE
 
 void RE_RegisterFont(const char* fontName, int pointSize, fontInfo_t* font)
 {

@@ -1354,7 +1354,7 @@ void WriteTGA(char* filename, byte* data, int width, int height)
 	byte* buffer;
 	int		i, c;
 
-	buffer = Z_Malloc(width * height * 4 + 18);
+	buffer = ri.Malloc(width * height * 4 + 18);
 	Com_Memset(buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = width & 255;
@@ -1374,7 +1374,7 @@ void WriteTGA(char* filename, byte* data, int width, int height)
 	}
 
 	ri.FS_WriteFile(filename, buffer, c);
-	Z_Free(buffer);
+	ri.Free(buffer);
 }
 
 /*
