@@ -88,7 +88,9 @@ keyname_t keynames[] =
 	{ "TAB",		K_TAB },
 	{ "SPACE",		K_SPACE },
 
+	{ "_",			K_MINUS },
 	{ "-",			K_MINUS },
+	{ "+",			K_EQUALS },
 	{ "=",			K_EQUALS },
 	{ "[",			K_LEFTBRACKET },
 	{ "]",			K_RIGHTBRACKET },
@@ -96,6 +98,7 @@ keyname_t keynames[] =
 	{ "SEMICOLON",	K_SEMICOLON },			// because a raw semicolon seperates commands
 	{ "'",			K_APOSTROPHE },
 	{ "`",			K_GRAVE },
+	{ "~",			K_GRAVE },
 	{ ",",			K_COMMA },
 	{ ".",			K_PERIOD },
 	{ "/",			K_SLASH },
