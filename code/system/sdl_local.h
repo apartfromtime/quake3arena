@@ -46,7 +46,6 @@ typedef struct
 	bool		isMinimized;
 } WinVars_t;
 
-
 extern WinVars_t g_wv;
 
 #endif // #ifndef _SDL_LOCAL_H_
