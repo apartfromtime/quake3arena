@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "../renderer/tr_local.h"
-#include "../win32/win_local.h"
+#include "../system/sdl_local.h"
 
 void QGL_EnableLogging( bool enable );
 

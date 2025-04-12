@@ -19,9 +19,9 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
-// win_main.c
 
 #include "../client/client.h"
+#include "../system/sdl_local.h"
 #include "../win32/win_local.h"
 
 // when we get a windows message, we store the time off so keyboard processing

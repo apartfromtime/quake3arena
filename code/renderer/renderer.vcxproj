@@ -546,11 +546,11 @@
     <ClInclude Include="..\game\q_shared.h" />
     <ClInclude Include="..\qcommon\qcommon.h" />
     <ClInclude Include="..\qcommon\qfiles.h" />
+    <ClInclude Include="..\system\sdl_local.h" />
     <ClInclude Include="qgl.h" />
     <ClInclude Include="..\game\surfaceflags.h" />
     <ClInclude Include="tr_local.h" />
     <ClInclude Include="tr_public.h" />
-    <ClInclude Include="..\win32\win_local.h" />
     <ClInclude Include="tr_types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

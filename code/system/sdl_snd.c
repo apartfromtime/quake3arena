@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "../client/snd_local.h"
-#include "../win32/win_local.h"
+#include "../system/sdl_local.h"
 
 static SDL_AudioStream* s_stream = NULL;
 static long s_bufferSize = 0;
