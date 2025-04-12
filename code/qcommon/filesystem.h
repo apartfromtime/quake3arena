@@ -161,7 +161,7 @@ void	FS_Flush(qhandle_t f);
 void 	Q_CDECL FS_Printf(qhandle_t f, const char* fmt, ...);
 // like fprintf
 
-int		FS_FOpenFileByMode(const char* qpath, qhandle_t* f, fsMode_t mode);
+int		FS_FOpenFileByMode(const char* qpath, qhandle_t* f, fsMode_t mode, int readAhead);
 // opens a file for reading, writing, or appending depending on the value of mode
 
 int		FS_Seek(qhandle_t f, long offset, int origin);

@@ -305,9 +305,19 @@ static char		fs_serverReferencedPakNames[MAX_SEARCH_PATHS][MAX_STRING_CHARS];		/
 char lastValidBase[MAX_OSPATH];
 char lastValidGame[MAX_OSPATH];
 
-// productId: This file is copyright 1999 Id Software, and may not be duplicated except during a licensed installation of the full commercial version of Quake 3:Arena
+// productId: This file is copyright 1999 Id Software, and may not be duplicated
+// except during a licensed installation of the full commercial version of Quake 3:Arena
 static byte fs_scrambledProductId[152] = {
-220, 129, 255, 108, 244, 163, 171, 55, 133, 65, 199, 36, 140, 222, 53, 99, 65, 171, 175, 232, 236, 193, 210, 250, 169, 104, 231, 231, 21, 201, 170, 208, 135, 175, 130, 136, 85, 215, 71, 23, 96, 32, 96, 83, 44, 240, 219, 138, 184, 215, 73, 27, 196, 247, 55, 139, 148, 68, 78, 203, 213, 238, 139, 23, 45, 205, 118, 186, 236, 230, 231, 107, 212, 1, 10, 98, 30, 20, 116, 180, 216, 248, 166, 35, 45, 22, 215, 229, 35, 116, 250, 167, 117, 3, 57, 55, 201, 229, 218, 222, 128, 12, 141, 149, 32, 110, 168, 215, 184, 53, 31, 147, 62, 12, 138, 67, 132, 54, 125, 6, 221, 148, 140, 4, 21, 44, 198, 3, 126, 12, 100, 236, 61, 42, 44, 251, 15, 135, 14, 134, 89, 92, 177, 246, 152, 106, 124, 78, 118, 80, 28, 42
+	220, 129, 255, 108, 244, 163, 171,  55, 133,  65, 199,  36, 140, 222,  53,  99,
+	 65, 171, 175, 232, 236, 193, 210, 250, 169, 104, 231, 231,  21, 201, 170, 208,
+	135, 175, 130, 136,  85, 215,  71,  23,  96,  32,  96,  83,  44, 240, 219, 138,
+	184, 215,  73,  27, 196, 247,  55, 139, 148,  68,  78, 203, 213, 238, 139,  23,
+	 45, 205, 118, 186, 236, 230, 231, 107, 212,   1,  10,  98,  30,  20, 116, 180,
+	216, 248, 166,  35,  45,  22, 215, 229,  35, 116, 250, 167, 117,   3,  57,  55,
+	201, 229, 218, 222, 128,  12, 141, 149,  32, 110, 168, 215, 184,  53,  31, 147,
+	 62,  12, 138,  67, 132,  54, 125,   6, 221, 148, 140,   4,  21,  44, 198,   3,
+	126,  12, 100, 236,  61,  42,  44, 251,  15, 135,  14, 134,  89,  92, 177, 246,
+	152, 106, 124,  78, 118,  80,  28,  42
 };
 
 #ifdef FS_MISSING
@@ -363,7 +373,9 @@ int FS_LoadStack()
 return a hash value for the filename
 ================
 */
-static long FS_HashFileName( const char *fname, int hashSize ) {
+static long
+FS_HashFileName(const char* fname, int hashSize)
+{
 	int		i;
 	long	hash;
 	char	letter;
@@ -372,40 +384,47 @@ static long FS_HashFileName( const char *fname, int hashSize ) {
 	i = 0;
 	while (fname[i] != '\0') {
 		letter = tolower(fname[i]);
-		if (letter =='.') break;				// don't include extension
-		if (letter =='\\') letter = '/';		// damn path names
+		if (letter == '.') break;				// don't include extension
+		if (letter == '\\') letter = '/';		// damn path names
 		if (letter == PATH_SEP) letter = '/';		// damn path names
-		hash+=(long)(letter)*(i+119);
+		hash += (long)(letter) * (i + 119);
 		i++;
 	}
+
 	hash = (hash ^ (hash >> 10) ^ (hash >> 20));
-	hash &= (hashSize-1);
+	hash &= (hashSize - 1);
+	
 	return hash;
 }
 
-static qhandle_t	FS_HandleForFile(void) {
-	int		i;
+static qhandle_t FS_HandleForFile(void)
+{
+	int i;
 
-	for ( i = 1 ; i < MAX_FILE_HANDLES ; i++ ) {
-		if ( fsh[i].handleFiles.file.o == NULL ) {
+	for (i = 1; i < MAX_FILE_HANDLES; i++)
+	{
+		if (fsh[i].handleFiles.file.o == NULL) {
 			return i;
 		}
 	}
-	Com_Error( ERR_DROP, "FS_HandleForFile: none free" );
+
+	Com_Error(ERR_DROP, "FS_HandleForFile: none free");
+	
 	return 0;
 }
 
-static FILE	*FS_FileForHandle( qhandle_t f ) {
-	if ( f < 0 || f > MAX_FILE_HANDLES ) {
-		Com_Error( ERR_DROP, "FS_FileForHandle: out of reange" );
+static FILE* FS_FileForHandle(qhandle_t f)
+{
+	if (f < 0 || f > MAX_FILE_HANDLES) {
+		Com_Error(ERR_DROP, "FS_FileForHandle: out of reange");
 	}
 	if (fsh[f].zipFile == true) {
-		Com_Error( ERR_DROP, "FS_FileForHandle: can't get FILE on zip file" );
+		Com_Error(ERR_DROP, "FS_FileForHandle: can't get FILE on zip file");
 	}
-	if ( ! fsh[f].handleFiles.file.o ) {
-		Com_Error( ERR_DROP, "FS_FileForHandle: NULL" );
+	if (!fsh[f].handleFiles.file.o) {
+		Com_Error(ERR_DROP, "FS_FileForHandle: NULL");
 	}
-	
+
 	return fsh[f].handleFiles.file.o;
 }
 
@@ -821,6 +840,7 @@ void FS_FCloseFile( qhandle_t f ) {
 
 	if (fsh[f].streamed) {
 		Sys_EndStreamedFile(f);
+		fsh[f].streamed = false;
 	}
 	if (fsh[f].zipFile == true) {
 		unzCloseCurrentFile( fsh[f].handleFiles.file.z );
@@ -3245,13 +3265,10 @@ void FS_InitFilesystem( void ) {
 	// graphics screen when the font fails to load
 	if ( FS_ReadFile( "default.cfg", NULL ) <= 0 ) {
 		Com_Error( ERR_FATAL, "Couldn't load default.cfg" );
-		// bk001208 - SafeMode see below, FIXME?
 	}
 
 	Q_strncpyz(lastValidBase, fs_basepath->string, sizeof(lastValidBase));
 	Q_strncpyz(lastValidGame, fs_gamedirvar->string, sizeof(lastValidGame));
-
-  // bk001208 - SafeMode see below, FIXME?
 }
 
 
@@ -3332,42 +3349,49 @@ Handle based file calls for virtual machines
 ========================================================================================
 */
 
-int		FS_FOpenFileByMode( const char *qpath, qhandle_t *f, fsMode_t mode ) {
+int FS_FOpenFileByMode(const char* qpath, qhandle_t* f, fsMode_t mode, int readAhead)
+{
 	int		r;
 	bool	sync;
 
 	sync = false;
 
-	switch( mode ) {
+	switch (mode)
+	{
 	case FS_READ:
-		r = FS_FOpenFileRead( qpath, f );
-		break;
+	{
+		r = FS_FOpenFileRead(qpath, f);
+	} break;
 	case FS_WRITE:
-		*f = FS_FOpenFileWrite( qpath );
+	{
+		*f = FS_FOpenFileWrite(qpath);
 		r = 0;
 		if (*f == 0) {
 			r = -1;
 		}
-		break;
+	} break;
 	case FS_APPEND_SYNC:
 		sync = true;
 	case FS_APPEND:
-		*f = FS_FOpenFileAppend( qpath );
+	{
+		*f = FS_FOpenFileAppend(qpath);
 		r = 0;
 		if (*f == 0) {
 			r = -1;
 		}
-		break;
+	}	break;
 	default:
-		Com_Error( ERR_FATAL, "FSH_FOpenFile: bad mode" );
+	{
+		Com_Error(ERR_FATAL, "FSH_FOpenFile: bad mode");
 		return -1;
+	}
 	}
 
 	if (!f) {
 		return r;
 	}
 
-	if ( *f ) {
+	if (*f) {
 		if (fsh[*f].zipFile == true) {
 			fsh[*f].baseOffset = unztell(fsh[*f].handleFiles.file.z);
 		} else {
@@ -3377,7 +3401,13 @@ int		FS_FOpenFileByMode( const char *qpath, qhandle_t *f, fsMode_t mode ) {
 		fsh[*f].streamed = false;
 
 		if (mode == FS_READ) {
-			Sys_BeginStreamedFile( *f, 0x4000 );
+			// Stream the whole file. Streaming the whole file fixes concurrency issue with
+			// minizip.
+			if (readAhead == 0) {
+				Sys_BeginStreamedFile(*f, r);
+			} else {
+				Sys_BeginStreamedFile(*f, readAhead);
+			}
 			fsh[*f].streamed = true;
 		}
 	}

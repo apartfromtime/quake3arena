@@ -1287,7 +1287,7 @@ script_t *LoadScriptFile(const char *filename)
 		Com_sprintf(pathname, sizeof(pathname), "%s/%s", basefolder, filename);
 	else
 		Com_sprintf(pathname, sizeof(pathname), "%s", filename);
-	length = botimport.FS_FOpenFile( pathname, &fp, FS_READ );
+	length = botimport.FS_FOpenFile( pathname, &fp, FS_READ, 0);
 	if (!fp) return NULL;
 #else
 	fp = fopen(filename, "rb");

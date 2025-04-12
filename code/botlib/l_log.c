@@ -55,7 +55,7 @@ void Bot_LogOpen(char* filename)
 	{
 		if (!logfile.handle && filename[0])
 		{
-			botimport.FS_FOpenFile(filename, &logfile.handle, FS_WRITE);
+			botimport.FS_FOpenFile(filename, &logfile.handle, FS_WRITE, 0);
 		}
 
 		if (!logfile.handle)
