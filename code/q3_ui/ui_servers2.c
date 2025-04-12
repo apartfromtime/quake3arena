@@ -1213,11 +1213,11 @@ static void ArenaServers_Event( void* ptr, int event ) {
 		break;
 
 	case ID_SCROLL_UP:
-		ScrollList_Key( &g_arenaservers.list, K_UPARROW );
+		ScrollList_Key( &g_arenaservers.list, K_UP );
 		break;
 
 	case ID_SCROLL_DOWN:
-		ScrollList_Key( &g_arenaservers.list, K_DOWNARROW );
+		ScrollList_Key( &g_arenaservers.list, K_DOWN );
 		break;
 
 	case ID_BACK:
@@ -1286,7 +1286,7 @@ static qhandle_t ArenaServers_MenuKey( int key ) {
 		return menu_move_sound;
 	}
 
-	if( ( key == K_DEL || key == K_KP_DEL ) && ( g_servertype == AS_FAVORITES ) &&
+	if( ( key == K_BACKSPACE || key == K_KP_PERIOD ) && ( g_servertype == AS_FAVORITES ) &&
 		( Menu_ItemAtCursor( &g_arenaservers.menu) == &g_arenaservers.list ) ) {
 		ArenaServers_Remove();
 		ArenaServers_UpdateMenu();
