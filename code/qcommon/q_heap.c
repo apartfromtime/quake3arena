@@ -47,34 +47,6 @@ static int s_zoneAlloc;
 static int s_zoneTotal;
 
 /*
-================
-Z_TagMalloc
-================
-*/
-#ifdef ZONE_DEBUG
-void* Z_TagMallocDebug(int size, int tag, char* label, char* file, int line)
-{
-#else
-void* Z_TagMalloc(int size, int tag)
-{
-#endif
-	void* buf = NULL;
-
-	if (!tag) {
-		Com_Error(ERR_FATAL, "Z_TagMalloc: tried to use a 0 tag");
-	}
-	
-	if ((s_zoneAlloc + size) < s_zoneTotal)
-	{
-		buf = rpaligned_alloc(4, size);
-		s_zoneAlloc += rpmalloc_usable_size(buf);
-		memset(buf, 0, size);
-	}
-
-	return buf;
-}
-
-/*
 ========================
 Z_Malloc
 ========================
@@ -88,11 +60,12 @@ void* Z_Malloc(int size)
 #endif
 	void* buf = NULL;
 
-#ifdef ZONE_DEBUG
-	buf = Z_TagMallocDebug(size, TAG_GENERAL, label, file, line);
-#else
-	buf = Z_TagMalloc(size, TAG_GENERAL);
-#endif
+	if ((s_zoneAlloc + size) < s_zoneTotal)
+	{
+		buf = rpaligned_alloc(4, size);
+		s_zoneAlloc += rpmalloc_usable_size(buf);
+		memset(buf, 0, size);
+	}
 
 	return buf;
 }
@@ -200,13 +173,12 @@ void* Hunk_Alloc(int size)
 #endif
 	void* buf = NULL;
 
-	if (s_hunk == NULL)
-	{
+	if (s_hunk == NULL) {
 		Com_Error(ERR_FATAL, "Hunk_Alloc: Hunk memory system not initialized");
 	}
 
-	if ((s_hunkAlloc + size) < s_hunkTotal)
-	{
+	if ((s_hunkAlloc + size) < s_hunkTotal) {
+
 		buf = rpmalloc_heap_aligned_alloc(s_hunk, 4, size);
 		s_hunkAlloc += rpmalloc_usable_size(buf);
 		memset(buf, 0, size);
@@ -220,13 +192,13 @@ void* Hunk_Alloc(int size)
 Hunk_InitMemory
 =================
 */
-bool Hunk_InitMemory(int hunkSize)
+bool
+Hunk_InitMemory(int hunkSize)
 {
 	s_hunkTotal = 1024 * 1024 * hunkSize;
 	s_hunk = rpmalloc_heap_acquire();
 
-	if (!s_hunk)
-	{
+	if (!s_hunk) {
 		return false;
 	}
 
@@ -238,7 +210,6 @@ bool Hunk_InitMemory(int hunkSize)
 Hunk_Meminfo
 =================
 */
-
 void
 Hunk_Meminfo(void)
 {
@@ -255,10 +226,27 @@ Hunk_Clear
 The server calls this before shutting down or loading a new map
 =================
 */
-void Hunk_Clear(void)
+void
+Hunk_Clear(void)
 {
 	s_hunkAlloc = 0;
 	rpmalloc_heap_free_all(s_hunk);
+	Com_Printf("Hunk_Clear: reset the hunk ok\n");
+}
+
+/*
+=================
+Hunk_ClearToMark
+
+The client calls this before starting a vid_restart or snd_restart
+=================
+*/
+void
+Hunk_ClearToMark(void)
+{
+	s_hunkAlloc = 0;
+	rpmalloc_heap_release(s_hunk);
+	s_hunk = rpmalloc_heap_acquire();
 	Com_Printf("Hunk_Clear: reset the hunk ok\n");
 }
 
@@ -283,7 +271,8 @@ Multiple files can be loaded in temporary memory.
 When the files-in-use count reaches zero, all temp memory will be deleted
 =================
 */
-void* Hunk_AllocateTempMemory(int size)
+void*
+Hunk_AllocateTempMemory(int size)
 {
 	void* buf;
 
@@ -291,8 +280,7 @@ void* Hunk_AllocateTempMemory(int size)
 	// this allows the config and product id files ( journal files too ) to be loaded
 	// by the file system without redunant routines in the file system utilizing different 
 	// memory systems
-	if (s_hunk == NULL)
-	{
+	if (s_hunk == NULL) {
 		return Z_Malloc(size);
 	}
 
@@ -308,16 +296,15 @@ void* Hunk_AllocateTempMemory(int size)
 Hunk_FreeTempMemory
 ==================
 */
-void Hunk_FreeTempMemory(void* buf)
+void
+Hunk_FreeTempMemory(void* buf)
 {
 	// free with Z_Free if the hunk has not been initialized
 	// this allows the config and product id files ( journal files too ) to be loaded
 	// by the file system without redunant routines in the file system utilizing different 
 	// memory systems
-	if (s_hunk == NULL)
-	{
+	if (s_hunk == NULL) {
 		Z_Free(buf);
-
 		return;
 	}
 	
@@ -330,7 +317,8 @@ void Hunk_FreeTempMemory(void* buf)
 Hunk_MemoryRemaining
 ====================
 */
-int	Hunk_MemoryRemaining(void)
+int
+Hunk_MemoryRemaining(void)
 {
 	return (s_hunkTotal - s_hunkAlloc);
 }

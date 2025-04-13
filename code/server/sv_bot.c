@@ -284,7 +284,7 @@ BotImport_ZoneAllocDebug
 */
 void* BotImport_ZoneAllocDebug(int size, char* label, char* file, int line)
 {
-	return Z_TagMallocDebug(size, TAG_BOTLIB, label, file, line);
+	return Z_MallocDebug(size, label, file, line);
 }
 #else
 /*
@@ -294,7 +294,7 @@ BotImport_ZoneAlloc
 */
 void* BotImport_ZoneAlloc(int size)
 {
-	return Z_TagMalloc(size, TAG_BOTLIB);
+	return Z_Malloc(size);
 }
 #endif // #ifdef ZONE_DEBUG
 

@@ -1826,7 +1826,7 @@ static int FS_AddFileToList( char *name, char *list[MAX_FOUND_FILES], int nfiles
 			return nfiles;		// allready in list
 		}
 	}
-	list[nfiles] = Z_TagMalloc(strlen(name) + 1, TAG_SMALL);
+	list[nfiles] = Z_Malloc(strlen(name) + 1);
 	Q_strncpyz(list[nfiles], name, strlen(name) + 1);
 	nfiles++;
 

@@ -37,14 +37,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DEF_COMZONEMEGS "16"
 #endif
 
-typedef enum {
-	TAG_FREE,
-	TAG_GENERAL,
+typedef enum
+{
+	TAG_GENERAL = 0x00,
 	TAG_BOTLIB,
 	TAG_SOUND,
 	TAG_RENDERER,
 	TAG_SMALL,
-	TAG_STATIC
+	TAG_STATIC,
+	TAG_COUNT
 } memtag_t;
 
 /*
@@ -76,12 +77,9 @@ void Mem_Initialize(void);
 void Mem_Shutdown(void);
 
 #ifdef ZONE_DEBUG
-#define Z_TagMalloc(size, tag)			Z_TagMallocDebug(size, tag, #size, __FILE__, __LINE__)
-#define Z_Malloc(size)					Z_MallocDebug(size, #size, __FILE__, __LINE__)
-void* Z_TagMallocDebug(int size, int tag, char* label, char* file, int line);
+#define Z_Malloc(size)		Z_MallocDebug(size, #size, __FILE__, __LINE__)
 void* Z_MallocDebug(int size, char* label, char* file, int line);
 #else
-void* Z_TagMalloc(int size, int tag);
 void* Z_Malloc(int size);
 #endif
 bool Zone_InitSmallZoneMemory(int zoneSize);
@@ -96,10 +94,12 @@ void* Hunk_AllocDebug(int size, char* label, char* file, int line);
 #else
 void* Hunk_Alloc(int size);
 #endif
+int Heap_InitMemory(void);
 bool Hunk_InitMemory(int hunkSize);
 void Hunk_Meminfo(void);
 void Hunk_Free(void* buf);
 void Hunk_Clear(void);
+void Hunk_ClearToMark(void);
 void* Hunk_AllocateTempMemory(int size);
 void Hunk_FreeTempMemory(void* buf);
 int	Hunk_MemoryRemaining(void);

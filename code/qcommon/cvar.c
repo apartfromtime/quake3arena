@@ -212,7 +212,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 			&& var_value[0] ) {
 			var->flags &= ~CVAR_USER_CREATED;
 			Z_Free( var->resetString );
-			var->resetString = Z_TagMalloc(strlen(var_value) + 1, TAG_SMALL);
+			var->resetString = Z_Malloc(strlen(var_value) + 1);
 			Q_strncpyz(var->resetString, var_value, strlen(var_value) + 1);
 
 			// ZOID--needs to be set so that cvars the game sets as 
@@ -225,7 +225,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 		if ( !var->resetString[0] ) {
 			// we don't have a reset string yet
 			Z_Free( var->resetString );
-			var->resetString = Z_TagMalloc(strlen(var_value) + 1, TAG_SMALL);
+			var->resetString = Z_Malloc(strlen(var_value) + 1);
 			Q_strncpyz(var->resetString, var_value, strlen(var_value) + 1);
 		} else if ( var_value[0] && strcmp( var->resetString, var_value ) ) {
 			Com_DPrintf( "Warning: cvar \"%s\" given initial values: \"%s\" and \"%s\"\n",
@@ -259,15 +259,15 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	}
 	var = &cvar_indexes[cvar_numIndexes];
 	cvar_numIndexes++;
-	var->name = Z_TagMalloc(strlen(var_name) + 1, TAG_SMALL);
+	var->name = Z_Malloc(strlen(var_name) + 1);
 	Q_strncpyz(var->name, var_name, strlen(var_name) + 1);
-	var->string = Z_TagMalloc(strlen(var_value) + 1, TAG_SMALL);
+	var->string = Z_Malloc(strlen(var_value) + 1);
 	Q_strncpyz(var->string, var_value, strlen(var_value) + 1);
 	var->modified = true;
 	var->modificationCount = 1;
 	var->value = atof (var->string);
 	var->integer = atoi(var->string);
-	var->resetString = Z_TagMalloc(strlen(var_value) + 1, TAG_SMALL);
+	var->resetString = Z_Malloc(strlen(var_value) + 1);
 	Q_strncpyz(var->resetString, var_value, strlen(var_value) + 1);
 
 	// link the variable in
@@ -357,7 +357,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 			}
 
 			Com_Printf ("%s will be changed upon restarting.\n", var_name);
-			var->latchedString = Z_TagMalloc(strlen(value) + 1, TAG_SMALL);
+			var->latchedString = Z_Malloc(strlen(value) + 1);
 			Q_strncpyz(var->latchedString, value, strlen(value) + 1);
 			var->modified = true;
 			var->modificationCount++;
@@ -388,7 +388,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 	
 	Z_Free (var->string);	// free the old value string
 	
-	var->string = Z_TagMalloc(strlen(value) + 1, TAG_SMALL);
+	var->string = Z_Malloc(strlen(value) + 1);
 	Q_strncpyz(var->string, value, strlen(value) + 1);
 	var->value = atof (var->string);
 	var->integer = atoi (var->string);

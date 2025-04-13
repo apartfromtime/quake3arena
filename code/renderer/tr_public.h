@@ -113,19 +113,18 @@ typedef struct {
 	// for anything game related.  Get time from the refdef
 	int		(*Milliseconds)( void );
 
-	// stack based memory allocation for per-level things that
-	// won't be freed
+	// stack based memory allocation for per-level things that won't be freed
 #ifdef HUNK_DEBUG
 	void*	(*Hunk_AllocDebug)(int size, char* label, char* file, int line);
 #else
 	void*	(*Hunk_Alloc)(int size);
 #endif
-	void	*(*Hunk_AllocateTempMemory)( int size );
-	void	(*Hunk_FreeTempMemory)( void *block );
+	void*	(*Hunk_AllocateTempMemory)(int size);
+	void	(*Hunk_FreeTempMemory)(void* block);
 
 	// dynamic memory allocator for things that need to be freed
-	void	*(*Malloc)( int bytes );
-	void	(*Free)( void *buf );
+	void*	(*Malloc)(int bytes);
+	void	(*Free)(void* buf);
 
 	cvar_t	*(*Cvar_Get)( const char *name, const char *value, int flags );
 	void	(*Cvar_Set)( const char *name, const char *value );

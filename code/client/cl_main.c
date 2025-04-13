@@ -2156,7 +2156,7 @@ CL_RefMalloc
 ============
 */
 void *CL_RefMalloc( int size ) {
-	return Z_TagMalloc( size, TAG_RENDERER );
+	return Z_Malloc( size );
 }
 
 int CL_ScaledMilliseconds(void) {

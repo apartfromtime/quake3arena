@@ -110,7 +110,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	case WM_CLOSE:
 		if ( ( com_dedicated && com_dedicated->integer ) )
 		{
-			cmdString = Z_TagMalloc(5, TAG_SMALL);
+			cmdString = Z_Malloc(5);
 			Q_strncpyz(cmdString, "quit", 5);
 			Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
 		}
@@ -163,7 +163,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			else
 			{
 				Cvar_Set("viewlog", "0");
-				cmdString = Z_TagMalloc(5, TAG_SMALL);
+				cmdString = Z_Malloc(5);
 				Q_strncpyz(cmdString, "quit", 5);
 				Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
 			}

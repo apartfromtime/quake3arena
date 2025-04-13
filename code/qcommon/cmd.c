@@ -562,8 +562,8 @@ void	Cmd_AddCommand( const char *cmd_name, xcommand_t function ) {
 	}
 
 	// use a small malloc to avoid zone fragmentation
-	cmd = Z_TagMalloc(sizeof(cmd_function_t), TAG_SMALL);
-	cmd->name = Z_TagMalloc(strlen( cmd_name ) + 1, TAG_SMALL);
+	cmd = Z_Malloc(sizeof(cmd_function_t));
+	cmd->name = Z_Malloc(strlen( cmd_name ) + 1);
 	Q_strncpyz(cmd->name, cmd_name, strlen(cmd_name) + 1);
 	cmd->function = function;
 	cmd->next = cmd_functions;

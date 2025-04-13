@@ -1519,7 +1519,7 @@ void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter,
 			continue;
 		}
 
-		list[*numfiles] = Z_TagMalloc(strlen(filename) + 1, TAG_SMALL);
+		list[*numfiles] = Z_Malloc(strlen(filename) + 1);
 		Q_strncpyz(list[*numfiles], filename, strlen(filename) + 1);
 		(*numfiles)++;
 		nfiles++;
@@ -1583,7 +1583,7 @@ char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
 	nfiles = 0;
 	do {
 
-		list[nfiles] = Z_TagMalloc(strlen(findinfo[nfiles]) + 1, TAG_SMALL);
+		list[nfiles] = Z_Malloc(strlen(findinfo[nfiles]) + 1);
 		Q_strncpyz(list[nfiles], findinfo[nfiles], strlen(findinfo[nfiles]) + 1);
 		nfiles++;
 	} while (findinfo[nfiles] != NULL);
