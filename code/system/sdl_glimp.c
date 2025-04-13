@@ -97,7 +97,7 @@ GLW_StartDriverAndSetMode(const char* drivername, int mode, int colorbits, bool 
 /*
 ** GLW_MakeContext
 */
-static int GLW_MakeContext(int colorbits, int depthbits, int stencilbits, bool stereo)
+static int GLW_MakeContext(int colorbits, int depthbits, int stencilbits, bool stereo, bool srgb)
 {
 	int pixelformat = 0;
 
@@ -108,6 +108,11 @@ static int GLW_MakeContext(int colorbits, int depthbits, int stencilbits, bool s
 		// choose, set, and describe our desired pixel format.  If we're
 		// using a minidriver then we need to bypass the GDI functions,
 		// otherwise use the GDI functions.
+
+		if (SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, srgb) == false) {
+			ri.Printf(PRINT_ALL, "...GLW_ChoosePFD failed\n");
+			return TRY_PFD_FAIL_SOFT;
+		}
 
 		if (SDL_GL_SetAttribute(SDL_GL_STEREO, stereo) == false) {
 			ri.Printf(PRINT_ALL, "...GLW_ChoosePFD failed\n");
@@ -172,7 +177,7 @@ static int GLW_MakeContext(int colorbits, int depthbits, int stencilbits, bool s
 static bool GLW_InitDriver(const char* drivername, int colorbits)
 {
 	int		tpfd;
-	int		depthbits, stencilbits;
+	int		depthbits, stencilbits, srgb;
 
 	ri.Printf(PRINT_ALL, "Initializing OpenGL driver\n");
 
@@ -197,12 +202,14 @@ static bool GLW_InitDriver(const char* drivername, int colorbits)
 		stencilbits = 0;
 	}
 
+	srgb = 1;
+
 	// make two attempts to set the PIXELFORMAT
 
 	// first attempt: r_colorbits, depthbits, and r_stencilbits
 	if (!glw_state.pixelFormatSet) {
 
-		if ((tpfd = GLW_MakeContext(colorbits, depthbits, stencilbits, r_stereo->integer)) !=
+		if ((tpfd = GLW_MakeContext(colorbits, depthbits, stencilbits, r_stereo->integer, srgb)) !=
 			TRY_PFD_SUCCESS) {
 			if (tpfd == TRY_PFD_FAIL_HARD) {
 
@@ -223,10 +230,18 @@ static bool GLW_InitDriver(const char* drivername, int colorbits)
 			}
 
 			stencilbits = 0;
-			if (GLW_MakeContext(colorbits, depthbits, stencilbits, r_stereo->integer) !=
+			if (GLW_MakeContext(colorbits, depthbits, stencilbits, r_stereo->integer, srgb) !=
 				TRY_PFD_SUCCESS) {
 
-				ri.Printf(PRINT_ALL, "...failed to find an appropriate PIXELFORMAT\n");
+				// third attemp: no srgb framebuffer
+				srgb = 0;
+				if (GLW_MakeContext(colorbits, depthbits, stencilbits, r_stereo->integer, srgb) !=
+					TRY_PFD_SUCCESS) {
+
+					ri.Printf(PRINT_ALL, "...failed to find an appropriate PIXELFORMAT\n");
+
+					return false;
+				}
 
 				return false;
 			}
