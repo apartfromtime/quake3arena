@@ -548,7 +548,8 @@ typedef struct {
 	qhandle_t			cursor;
 	qhandle_t			rb_on;
 	qhandle_t			rb_off;
-	float				scale;
+	float				yscale;
+	float				xscale;
 	float				bias;
 	bool			demoversion;
 	bool			firstdraw;
