@@ -55,12 +55,12 @@ void Bot_LogOpen(char* filename)
 	{
 		if (!logfile.handle && filename[0])
 		{
-			botimport.FS_FOpenFile(filename, &logfile.handle, FS_WRITE, 0);
+			g_bimport.FS_FOpenFile(filename, &logfile.handle, FS_WRITE, 0);
 		}
 
 		if (!logfile.handle)
 		{
-			botimport.Print(PRT_WARNING, "Couldn't open logfile: %s\n", filename);
+			g_bimport.Print(PRT_WARNING, "Couldn't open logfile: %s\n", filename);
 			return;
 		}
 		else
@@ -77,7 +77,7 @@ void Bot_LogOpen(char* filename)
 	}
 	else
 	{
-		botimport.Print(PRT_MESSAGE, "Not logging to disk.\n");
+		g_bimport.Print(PRT_MESSAGE, "Not logging to disk.\n");
 	}
 }
 
@@ -90,11 +90,11 @@ void Bot_LogShutdown(void)
 {
 	if (logfile.handle)
 	{
-		botimport.FS_FCloseFile(logfile.handle);
+		g_bimport.FS_FCloseFile(logfile.handle);
 
 		logfile.handle = 0;
 
-		botimport.Print(PRT_MESSAGE, "Closed log %s\n", logfile.filename);
+		g_bimport.Print(PRT_MESSAGE, "Closed log %s\n", logfile.filename);
 	}
 }
 
@@ -117,7 +117,7 @@ void Q_CDECL Bot_LogPrintf(char* fmt, ...)
 	vsprintf(string, fmt, argptr);
 	va_end(argptr);
 
-	botimport.FS_Write(string, strlen(string), logfile.handle);
+	g_bimport.FS_Write(string, strlen(string), logfile.handle);
 }
 
 /*
@@ -136,7 +136,7 @@ void Q_CDECL Bot_LogPrintfTimeStamped(char* fmt, ...)
 		return;
 	}
 
-	sec = botimport.Milliseconds() / 1000;
+	sec = g_bimport.Milliseconds() / 1000;
 
 	min = sec / 60;
 	sec -= min * 60;
@@ -149,7 +149,7 @@ void Q_CDECL Bot_LogPrintfTimeStamped(char* fmt, ...)
 	vsprintf(string + 7, fmt, argptr);
 	va_end(argptr);
 
-	botimport.FS_Write(string, strlen(string), logfile.handle);
+	g_bimport.FS_Write(string, strlen(string), logfile.handle);
 }
 
 /*

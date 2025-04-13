@@ -93,7 +93,7 @@ int GeneticParentsAndChildSelection(int numranks, float *ranks, int *parent1, in
 
 	if (numranks > 256)
 	{
-		botimport.Print(PRT_WARNING, "GeneticParentsAndChildSelection: too many bots\n");
+		g_bimport.Print(PRT_WARNING, "GeneticParentsAndChildSelection: too many bots\n");
 		*parent1 = *parent2 = *child = 0;
 		return false;
 	} //end if
@@ -104,7 +104,7 @@ int GeneticParentsAndChildSelection(int numranks, float *ranks, int *parent1, in
 	} //end for
 	if (max < 3)
 	{
-		botimport.Print(PRT_WARNING, "GeneticParentsAndChildSelection: too few valid bots\n");
+		g_bimport.Print(PRT_WARNING, "GeneticParentsAndChildSelection: too few valid bots\n");
 		*parent1 = *parent2 = *child = 0;
 		return false;
 	} //end if

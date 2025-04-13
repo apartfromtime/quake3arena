@@ -44,7 +44,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "be_aas_funcs.h"
 #include "be_aas_def.h"
 
-extern botlib_import_t botimport;
+extern botlib_import_t g_bimport;
 
 //#define AAS_SAMPLE_DEBUG
 
@@ -81,7 +81,7 @@ void AAS_PresenceTypeBoundingBox(int presencetype, vec3_t mins, vec3_t maxs)
 	else if (presencetype == PRESENCE_CROUCH) index = 2;
 	else
 	{
-		botimport.Print(PRT_FATAL, "AAS_PresenceTypeBoundingBox: unknown presence type\n");
+		g_bimport.Print(PRT_FATAL, "AAS_PresenceTypeBoundingBox: unknown presence type\n");
 		index = 2;
 	} //end if
 	VectorCopy(boxmins[index], mins);
@@ -155,7 +155,7 @@ aas_link_t *AAS_AllocAASLink(void)
 		if (bot_developer)
 #endif
 		{
-			botimport.Print(PRT_FATAL, "empty aas link heap\n");
+			g_bimport.Print(PRT_FATAL, "empty aas link heap\n");
 		} //end if
 		return NULL;
 	} //end if
@@ -220,7 +220,7 @@ int AAS_PointAreaNum(vec3_t point)
 
 	if (!aasworld.loaded)
 	{
-		botimport.Print(PRT_ERROR, "AAS_PointAreaNum: aas not loaded\n");
+		g_bimport.Print(PRT_ERROR, "AAS_PointAreaNum: aas not loaded\n");
 		return 0;
 	} //end if
 
@@ -310,7 +310,7 @@ int AAS_AreaCluster(int areanum)
 {
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
-		botimport.Print(PRT_ERROR, "AAS_AreaCluster: invalid area number\n");
+		g_bimport.Print(PRT_ERROR, "AAS_AreaCluster: invalid area number\n");
 		return 0;
 	} //end if
 	return aasworld.areasettings[areanum].cluster;
@@ -327,7 +327,7 @@ int AAS_AreaPresenceType(int areanum)
 	if (!aasworld.loaded) return 0;
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
-		botimport.Print(PRT_ERROR, "AAS_AreaPresenceType: invalid area number\n");
+		g_bimport.Print(PRT_ERROR, "AAS_AreaPresenceType: invalid area number\n");
 		return 0;
 	} //end if
 	return aasworld.areasettings[areanum].presencetype;
@@ -646,7 +646,7 @@ aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
 				return trace;
 			} //end if
 		} //end if
@@ -660,7 +660,7 @@ aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
 				return trace;
 			} //end if
 		} //end if
@@ -697,7 +697,7 @@ aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
 				return trace;
 			} //end if
 			//now put the part near the start of the line on the stack so we will
@@ -710,7 +710,7 @@ aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceBoundingBox: stack overflow\n");
 				return trace;
 			} //end if
 		} //end else
@@ -837,7 +837,7 @@ int AAS_TraceAreas(vec3_t start, vec3_t end, int *areas, vec3_t *points, int max
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
 				return numareas;
 			} //end if
 		} //end if
@@ -851,7 +851,7 @@ int AAS_TraceAreas(vec3_t start, vec3_t end, int *areas, vec3_t *points, int max
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
 				return numareas;
 			} //end if
 		} //end if
@@ -883,7 +883,7 @@ int AAS_TraceAreas(vec3_t start, vec3_t end, int *areas, vec3_t *points, int max
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
 				return numareas;
 			} //end if
 			//now put the part near the start of the line on the stack so we will
@@ -896,7 +896,7 @@ int AAS_TraceAreas(vec3_t start, vec3_t end, int *areas, vec3_t *points, int max
 			tstack_p++;
 			if (tstack_p >= &tracestack[127])
 			{
-				botimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
+				g_bimport.Print(PRT_ERROR, "AAS_TraceAreas: stack overflow\n");
 				return numareas;
 			} //end if
 		} //end else
@@ -1232,7 +1232,7 @@ aas_link_t *AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, int entnum)
 
 	if (!aasworld.loaded)
 	{
-		botimport.Print(PRT_ERROR, "AAS_LinkEntity: aas not loaded\n");
+		g_bimport.Print(PRT_ERROR, "AAS_LinkEntity: aas not loaded\n");
 		return NULL;
 	} //end if
 
@@ -1298,7 +1298,7 @@ aas_link_t *AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, int entnum)
 		} //end if
 		if (lstack_p >= &linkstack[127])
 		{
-			botimport.Print(PRT_ERROR, "AAS_LinkEntity: stack overflow\n");
+			g_bimport.Print(PRT_ERROR, "AAS_LinkEntity: stack overflow\n");
 			break;
 		} //end if
 		//if on the back side of the node
@@ -1309,7 +1309,7 @@ aas_link_t *AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, int entnum)
 		} //end if
 		if (lstack_p >= &linkstack[127])
 		{
-			botimport.Print(PRT_ERROR, "AAS_LinkEntity: stack overflow\n");
+			g_bimport.Print(PRT_ERROR, "AAS_LinkEntity: stack overflow\n");
 			break;
 		} //end if
 	} //end while
@@ -1368,7 +1368,7 @@ int AAS_AreaInfo( int areanum, aas_areainfo_t *info )
 		return 0;
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
-		botimport.Print(PRT_ERROR, "AAS_AreaInfo: areanum %d out of range\n", areanum);
+		g_bimport.Print(PRT_ERROR, "AAS_AreaInfo: areanum %d out of range\n", areanum);
 		return 0;
 	} //end if
 	settings = &aasworld.areasettings[areanum];

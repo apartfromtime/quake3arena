@@ -36,23 +36,23 @@ BOT CVAR
 // gets the string of the library variable with the given name
 char* Botlib_CvarGetString(char* var_name)
 {
-	return botimport.Cvar_VariableString(var_name);
+	return g_bimport.Cvar_VariableString(var_name);
 }
 
 // gets the value of the library variable with the given name
 float Botlib_CvarGetValue(char* var_name)
 {
-	return botimport.Cvar_VariableValue(var_name);
+	return g_bimport.Cvar_VariableValue(var_name);
 }
 
 // creates the library variable if not existing already and returns it
 cvar_t* Botlib_CvarGet(char* var_name, char* value)
 {
-	return botimport.Cvar_Get(var_name, value, 0);
+	return g_bimport.Cvar_Get(var_name, value, 0);
 }
 
 // sets the library variable
 void Botlib_CvarSet(char* var_name, char* value)
 {
-	botimport.Cvar_Set(var_name, value);
+	g_bimport.Cvar_Set(var_name, value);
 }

@@ -92,9 +92,9 @@ int max_routingcachesize;
 #ifdef ROUTING_DEBUG
 void AAS_RoutingInfo(void)
 {
-	botimport.Print(PRT_MESSAGE, "%d area cache updates\n", numareacacheupdates);
-	botimport.Print(PRT_MESSAGE, "%d portal cache updates\n", numportalcacheupdates);
-	botimport.Print(PRT_MESSAGE, "%d bytes routing cache\n", routingcachesize);
+	g_bimport.Print(PRT_MESSAGE, "%d area cache updates\n", numareacacheupdates);
+	g_bimport.Print(PRT_MESSAGE, "%d portal cache updates\n", numportalcacheupdates);
+	g_bimport.Print(PRT_MESSAGE, "%d bytes routing cache\n", routingcachesize);
 } //end of the function AAS_RoutingInfo
 #endif //ROUTING_DEBUG
 //===========================================================================
@@ -312,7 +312,7 @@ int AAS_EnableRoutingArea(int areanum, int enable)
 	{
 		if (bot_developer)
 		{
-			botimport.Print(PRT_ERROR, "AAS_EnableRoutingArea: areanum %d out of range\n", areanum);
+			g_bimport.Print(PRT_ERROR, "AAS_EnableRoutingArea: areanum %d out of range\n", areanum);
 		} //end if
 		return 0;
 	} //end if
@@ -422,7 +422,7 @@ void AAS_CreateReversedReachability(void)
 #ifdef DEBUG
 	int starttime;
 
-	starttime = botimport.Milliseconds();
+	starttime = g_bimport.Milliseconds();
 #endif
 
 	// free reversed links that have already been created
@@ -442,7 +442,7 @@ void AAS_CreateReversedReachability(void)
 
 		if (settings->numreachableareas >= 128)
 		{
-			botimport.Print(PRT_WARNING, "area %d has more than 128 reachabilities\n",
+			g_bimport.Print(PRT_WARNING, "area %d has more than 128 reachabilities\n",
 				i);
 		}
 
@@ -461,8 +461,8 @@ void AAS_CreateReversedReachability(void)
 		}
 	}
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "reversed reachability %d msec\n",
-		botimport.Milliseconds() - starttime);
+	g_bimport.Print(PRT_MESSAGE, "reversed reachability %d msec\n",
+		g_bimport.Milliseconds() - starttime);
 #endif
 }
 
@@ -507,7 +507,7 @@ void AAS_CalculateAreaTravelTimes(void)
 	aas_areasettings_t* settings;
 	int starttime;
 
-	starttime = botimport.Milliseconds();
+	starttime = g_bimport.Milliseconds();
 	// if there are still area travel times, free the memory
 	if (aasworld.areatraveltimes) FreeZoneMemory(aasworld.areatraveltimes);
 	
@@ -555,8 +555,8 @@ void AAS_CalculateAreaTravelTimes(void)
 	}
 
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "area travel times %d msec\n",
-		botimport.Milliseconds() - starttime);
+	g_bimport.Print(PRT_MESSAGE, "area travel times %d msec\n",
+		g_bimport.Milliseconds() - starttime);
 #endif
 }
 
@@ -892,7 +892,7 @@ void AAS_CreateAllRoutingCache(void)
 	int i, j, t;
 
 	aasworld.initialized = true;
-	botimport.Print(PRT_MESSAGE, "AAS_CreateAllRoutingCache\n");
+	g_bimport.Print(PRT_MESSAGE, "AAS_CreateAllRoutingCache\n");
 	for (i = 1; i < aasworld.numareas; i++)
 	{
 		if (!AAS_AreaReachability(i)) continue;
@@ -965,7 +965,7 @@ void AAS_WriteRouteCache(void)
 	} //end for
 	// open the file for writing
 	Com_sprintf(filename, MAX_QPATH, "maps/%s.rcd", aasworld.mapname);
-	botimport.FS_FOpenFile(filename, &fp, FS_WRITE, 0);
+	g_bimport.FS_FOpenFile(filename, &fp, FS_WRITE, 0);
 	if (!fp)
 	{
 		AAS_Error("Unable to open file: %s\n", filename);
@@ -981,7 +981,7 @@ void AAS_WriteRouteCache(void)
 	routecacheheader.numportalcache = numportalcache;
 	routecacheheader.numareacache = numareacache;
 	//write the header
-	botimport.FS_Write(&routecacheheader, sizeof(routecacheheader_t), fp);
+	g_bimport.FS_Write(&routecacheheader, sizeof(routecacheheader_t), fp);
 	//
 	totalsize = 0;
 	//write all the cache
@@ -989,7 +989,7 @@ void AAS_WriteRouteCache(void)
 	{
 		for (cache = aasworld.portalcache[i]; cache; cache = cache->next)
 		{
-			botimport.FS_Write(cache, cache->size, fp);
+			g_bimport.FS_Write(cache, cache->size, fp);
 			totalsize += cache->size;
 		} //end for
 	} //end for
@@ -1000,7 +1000,7 @@ void AAS_WriteRouteCache(void)
 		{
 			for (cache = aasworld.clusterareacache[i][j]; cache; cache = cache->next)
 			{
-				botimport.FS_Write(cache, cache->size, fp);
+				g_bimport.FS_Write(cache, cache->size, fp);
 				totalsize += cache->size;
 			} //end for
 		} //end for
@@ -1021,9 +1021,9 @@ void AAS_WriteRouteCache(void)
 	}
 	*/
 	//
-	botimport.FS_FCloseFile(fp);
-	botimport.Print(PRT_MESSAGE, "\nroute cache written to %s\n", filename);
-	botimport.Print(PRT_MESSAGE, "written %d bytes of routing cache\n", totalsize);
+	g_bimport.FS_FCloseFile(fp);
+	g_bimport.Print(PRT_MESSAGE, "\nroute cache written to %s\n", filename);
+	g_bimport.Print(PRT_MESSAGE, "written %d bytes of routing cache\n", totalsize);
 } //end of the function AAS_WriteRouteCache
 //===========================================================================
 //
@@ -1036,10 +1036,10 @@ aas_routingcache_t *AAS_ReadCache(qhandle_t fp)
 	int size;
 	aas_routingcache_t *cache;
 
-	botimport.FS_Read(&size, sizeof(size), fp);
+	g_bimport.FS_Read(&size, sizeof(size), fp);
 	cache = (aas_routingcache_t *) GetZoneMemory(size);
 	cache->size = size;
-	botimport.FS_Read((unsigned char *)cache + sizeof(size), size - sizeof(size), fp);
+	g_bimport.FS_Read((unsigned char *)cache + sizeof(size), size - sizeof(size), fp);
 	cache->reachabilities = (unsigned char *) cache + sizeof(aas_routingcache_t) - sizeof(unsigned short) +
 		(size - sizeof(aas_routingcache_t) + sizeof(unsigned short)) / 3 * 2;
 	return cache;
@@ -1059,12 +1059,12 @@ int AAS_ReadRouteCache(void)
 	aas_routingcache_t *cache;
 
 	Com_sprintf(filename, MAX_QPATH, "maps/%s.rcd", aasworld.mapname);
-	botimport.FS_FOpenFile(filename, &fp, FS_READ, 0);
+	g_bimport.FS_FOpenFile(filename, &fp, FS_READ, 0);
 	if (!fp)
 	{
 		return false;
 	} //end if
-	botimport.FS_Read(&routecacheheader, sizeof(routecacheheader_t), fp );
+	g_bimport.FS_Read(&routecacheheader, sizeof(routecacheheader_t), fp );
 	if (routecacheheader.ident != RCID)
 	{
 		AAS_Error("%s is not a route cache dump\n");
@@ -1132,7 +1132,7 @@ int AAS_ReadRouteCache(void)
 	}
 	*/
 	//
-	botimport.FS_FCloseFile(fp);
+	g_bimport.FS_FCloseFile(fp);
 	return true;
 } //end of the function AAS_ReadRouteCache
 //===========================================================================
@@ -1610,7 +1610,7 @@ int AAS_AreaRouteToGoalArea(int areanum, vec3_t origin, int goalareanum, int tra
 	{
 		if (bot_developer)
 		{
-			botimport.Print(PRT_ERROR, "AAS_AreaTravelTimeToGoalArea: areanum %d out of range\n", areanum);
+			g_bimport.Print(PRT_ERROR, "AAS_AreaTravelTimeToGoalArea: areanum %d out of range\n", areanum);
 		} //end if
 		return false;
 	} //end if
@@ -1618,7 +1618,7 @@ int AAS_AreaRouteToGoalArea(int areanum, vec3_t origin, int goalareanum, int tra
 	{
 		if (bot_developer)
 		{
-			botimport.Print(PRT_ERROR, "AAS_AreaTravelTimeToGoalArea: goalareanum %d out of range\n", goalareanum);
+			g_bimport.Print(PRT_ERROR, "AAS_AreaTravelTimeToGoalArea: goalareanum %d out of range\n", goalareanum);
 		} //end if
 		return false;
 	} //end if
@@ -1950,7 +1950,7 @@ int AAS_NextAreaReachability(int areanum, int reachnum)
 
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
-		botimport.Print(PRT_ERROR, "AAS_NextAreaReachability: areanum %d out of range\n", areanum);
+		g_bimport.Print(PRT_ERROR, "AAS_NextAreaReachability: areanum %d out of range\n", areanum);
 		return 0;
 	} //end if
 
@@ -1961,7 +1961,7 @@ int AAS_NextAreaReachability(int areanum, int reachnum)
 	} //end if
 	if (reachnum < settings->firstreachablearea)
 	{
-		botimport.Print(PRT_FATAL, "AAS_NextAreaReachability: reachnum < settings->firstreachableara");
+		g_bimport.Print(PRT_FATAL, "AAS_NextAreaReachability: reachnum < settings->firstreachableara");
 		return 0;
 	} //end if
 	reachnum++;

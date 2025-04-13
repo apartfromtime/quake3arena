@@ -46,7 +46,7 @@ void* GetZoneMemory(unsigned long size)
 	void* ptr = NULL;
 
 #ifdef ZONE_DEBUG
-	ptr = botimport.Zone_AllocDebug(size, label, file, line);
+	ptr = g_bimport.Zone_AllocDebug(size, label, file, line);
 #else
 	ptr = botimport.Zone_Alloc(size);
 #endif // #ifdef ZONE_DEBUG
@@ -68,7 +68,7 @@ void* GetHunkMemory(unsigned long size)
 	void* ptr = NULL;
 
 #ifdef HUNK_DEBUG
-	ptr = botimport.Hunk_AllocDebug(size, label, file, line);
+	ptr = g_bimport.Hunk_AllocDebug(size, label, file, line);
 #else
 	ptr = botimport.Hunk_Alloc(size);
 #endif // #ifdef HUNK_DEBUG
@@ -85,7 +85,7 @@ void FreeZoneMemory(void* ptr)
 {
 	if (ptr)
 	{
-		botimport.Zone_Free(ptr);
+		g_bimport.Zone_Free(ptr);
 	}
 }
 
@@ -96,5 +96,5 @@ Bot_ZoneAvailableMemory
 */
 int AvailableMemory(void)
 {
-	return botimport.Zone_AvailableMemory();
+	return g_bimport.Zone_AvailableMemory();
 }

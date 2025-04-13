@@ -67,7 +67,7 @@ Export_BotTest(int parm0, char* parm1, vec3_t parm2, vec3_t parm3)
 
 	if (!aasworld.loaded) return 0;
 
-	for (i = 0; i < 2; i++) if (!line[i]) line[i] = botimport.DebugLineCreate();
+	for (i = 0; i < 2; i++) if (!line[i]) line[i] = g_bimport.DebugLineCreate();
 
 	// AAS_ClearShownDebugLines();
 	// if (AAS_AgainstLadder(parm2)) botimport.Print(PRT_MESSAGE, "against ladder\n");
@@ -86,65 +86,65 @@ Export_BotTest(int parm0, char* parm1, vec3_t parm2, vec3_t parm3)
 		newarea = BotFuzzyPointReachabilityArea(origin);
 	}
 
-	botimport.Print(PRT_MESSAGE, "\rtravel time to goal (%d) = %d  ", s_goalareanum,
+	g_bimport.Print(PRT_MESSAGE, "\rtravel time to goal (%d) = %d  ", s_goalareanum,
 		AAS_AreaTravelTimeToGoalArea(newarea, origin, s_goalareanum, TFL_DEFAULT));
 	
 	if (newarea != area) {
 
-		botimport.Print(PRT_MESSAGE, "origin = %f, %f, %f\n", origin[0], origin[1],
+		g_bimport.Print(PRT_MESSAGE, "origin = %f, %f, %f\n", origin[0], origin[1],
 			origin[2]);
 		area = newarea;
-		botimport.Print(PRT_MESSAGE, "new area %d, cluster %d, presence type %d\n",
+		g_bimport.Print(PRT_MESSAGE, "new area %d, cluster %d, presence type %d\n",
 			area, AAS_AreaCluster(area), AAS_PointPresenceType(origin));
 		
-		botimport.Print(PRT_MESSAGE, "area contents: ");
+		g_bimport.Print(PRT_MESSAGE, "area contents: ");
 		if (aasworld.areasettings[area].contents & AREACONTENTS_WATER)
 		{
-			botimport.Print(PRT_MESSAGE, "water &");
+			g_bimport.Print(PRT_MESSAGE, "water &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_LAVA)
 		{
-			botimport.Print(PRT_MESSAGE, "lava &");
+			g_bimport.Print(PRT_MESSAGE, "lava &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_SLIME)
 		{
-			botimport.Print(PRT_MESSAGE, "slime &");
+			g_bimport.Print(PRT_MESSAGE, "slime &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_JUMPPAD)
 		{
-			botimport.Print(PRT_MESSAGE, "jump pad &");
+			g_bimport.Print(PRT_MESSAGE, "jump pad &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_CLUSTERPORTAL)
 		{
-			botimport.Print(PRT_MESSAGE, "cluster portal &");
+			g_bimport.Print(PRT_MESSAGE, "cluster portal &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_VIEWPORTAL)
 		{
-			botimport.Print(PRT_MESSAGE, "view portal &");
+			g_bimport.Print(PRT_MESSAGE, "view portal &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_DONOTENTER)
 		{
-			botimport.Print(PRT_MESSAGE, "do not enter &");
+			g_bimport.Print(PRT_MESSAGE, "do not enter &");
 		}
 
 		if (aasworld.areasettings[area].contents & AREACONTENTS_MOVER)
 		{
-			botimport.Print(PRT_MESSAGE, "mover &");
+			g_bimport.Print(PRT_MESSAGE, "mover &");
 		}
 
 		if (!aasworld.areasettings[area].contents)
 		{
-			botimport.Print(PRT_MESSAGE, "empty");
+			g_bimport.Print(PRT_MESSAGE, "empty");
 		}
 
-		botimport.Print(PRT_MESSAGE, "\n");
-		botimport.Print(PRT_MESSAGE, "travel time to goal (%d) = %d\n", s_goalareanum,
+		g_bimport.Print(PRT_MESSAGE, "\n");
+		g_bimport.Print(PRT_MESSAGE, "travel time to goal (%d) = %d\n", s_goalareanum,
 			AAS_AreaTravelTimeToGoalArea(newarea, origin, s_goalareanum, TFL_DEFAULT |
 				TFL_ROCKETJUMP));
 	}
@@ -162,7 +162,7 @@ Export_BotTest(int parm0, char* parm1, vec3_t parm2, vec3_t parm3)
 		{
 			s_goalareanum = newarea;
 			VectorCopy(parm2, s_goalorigin);
-			botimport.Print(PRT_MESSAGE, "new goal %2.1f %2.1f %2.1f area %d\n",
+			g_bimport.Print(PRT_MESSAGE, "new goal %2.1f %2.1f %2.1f area %d\n",
 				origin[0], origin[1], origin[2], newarea);
 		}
 	}

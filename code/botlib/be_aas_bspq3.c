@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "be_aas_funcs.h"
 #include "be_aas_def.h"
 
-extern botlib_import_t botimport;
+extern botlib_import_t g_bimport;
 
 //#define TRACE_DEBUG
 
@@ -140,7 +140,7 @@ void PrintContents(int contents)
 bsp_trace_t AAS_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask)
 {
 	bsp_trace_t bsptrace;
-	botimport.Trace(&bsptrace, start, mins, maxs, end, passent, contentmask);
+	g_bimport.Trace(&bsptrace, start, mins, maxs, end, passent, contentmask);
 	return bsptrace;
 } //end of the function AAS_Trace
 //===========================================================================
@@ -152,7 +152,7 @@ bsp_trace_t AAS_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int pa
 //===========================================================================
 int AAS_PointContents(vec3_t point)
 {
-	return botimport.PointContents(point);
+	return g_bimport.PointContents(point);
 } //end of the function AAS_PointContents
 //===========================================================================
 //
@@ -166,7 +166,7 @@ bool AAS_EntityCollision(int entnum,
 {
 	bsp_trace_t enttrace;
 
-	botimport.EntityTrace(&enttrace, start, boxmins, boxmaxs, end, entnum, contentmask);
+	g_bimport.EntityTrace(&enttrace, start, boxmins, boxmaxs, end, entnum, contentmask);
 	if (enttrace.fraction < trace->fraction)
 	{
 		Com_Memcpy(trace, &enttrace, sizeof(bsp_trace_t));
@@ -183,7 +183,7 @@ bool AAS_EntityCollision(int entnum,
 //===========================================================================
 bool AAS_inPVS(vec3_t p1, vec3_t p2)
 {
-	return botimport.inPVS(p1, p2);
+	return g_bimport.inPVS(p1, p2);
 } //end of the function AAS_InPVS
 //===========================================================================
 // returns true if in Potentially Hearable Set
@@ -204,7 +204,7 @@ bool AAS_inPHS(vec3_t p1, vec3_t p2)
 //===========================================================================
 void AAS_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t mins, vec3_t maxs, vec3_t origin)
 {
-	botimport.BSPModelMinsMaxsOrigin(modelnum, angles, mins, maxs, origin);
+	g_bimport.BSPModelMinsMaxsOrigin(modelnum, angles, mins, maxs, origin);
 } //end of the function AAS_BSPModelMinsMaxs
 //===========================================================================
 // unlinks the entity from all leaves
@@ -258,7 +258,7 @@ int AAS_BSPEntityInRange(int ent)
 {
 	if (ent <= 0 || ent >= bspworld.numentities)
 	{
-		botimport.Print(PRT_MESSAGE, "bsp entity out of range\n");
+		g_bimport.Print(PRT_MESSAGE, "bsp entity out of range\n");
 		return false;
 	} //end if
 	return true;
@@ -396,7 +396,7 @@ void AAS_ParseBSPEntities(void)
 		} //end if
 		if (bspworld.numentities >= MAX_BSPENTITIES)
 		{
-			botimport.Print(PRT_MESSAGE, "too many entities in BSP file\n");
+			g_bimport.Print(PRT_MESSAGE, "too many entities in BSP file\n");
 			break;
 		} //end if
 		ent = &bspworld.entities[bspworld.numentities];
@@ -475,9 +475,9 @@ void AAS_DumpBSPData(void)
 int AAS_LoadBSPFile(void)
 {
 	AAS_DumpBSPData();
-	bspworld.entdatasize = strlen(botimport.BSPEntityData()) + 1;
+	bspworld.entdatasize = strlen(g_bimport.BSPEntityData()) + 1;
 	bspworld.dentdata = (char *) GetHunkMemory(bspworld.entdatasize);
-	Com_Memcpy(bspworld.dentdata, botimport.BSPEntityData(), bspworld.entdatasize);
+	Com_Memcpy(bspworld.dentdata, g_bimport.BSPEntityData(), bspworld.entdatasize);
 	AAS_ParseBSPEntities();
 	bspworld.loaded = true;
 	return BLERR_NOERROR;

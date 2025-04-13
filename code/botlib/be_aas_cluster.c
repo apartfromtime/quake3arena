@@ -42,7 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "be_aas_funcs.h"
 #include "be_aas_def.h"
 
-extern botlib_import_t botimport;
+extern botlib_import_t g_bimport;
 
 #define AAS_MAX_PORTALS					65536
 #define AAS_MAX_PORTALINDEXSIZE			65536
@@ -925,7 +925,7 @@ void AAS_FindPossiblePortals(void)
 	{
 		numpossibleportals += AAS_CheckAreaForPossiblePortals(i);
 	} //end for
-	botimport.Print(PRT_MESSAGE, "\r%6d possible portal areas\n", numpossibleportals);
+	g_bimport.Print(PRT_MESSAGE, "\r%6d possible portal areas\n", numpossibleportals);
 } //end of the function AAS_FindPossiblePortals
 //===========================================================================
 //
@@ -1410,7 +1410,7 @@ void AAS_CountForcedClusterPortals(void)
 			num++;
 		} //end if
 	} //end for
-	botimport.Print(PRT_MESSAGE, "%6d forced portal areas\n", num);
+	g_bimport.Print(PRT_MESSAGE, "%6d forced portal areas\n", num);
 } //end of the function AAS_CountForcedClusterPortals
 //===========================================================================
 //
@@ -1499,11 +1499,11 @@ void AAS_InitClustering(void)
 		sizeof(aas_cluster_t));
 
 	removedPortalAreas = 0;
-	botimport.Print(PRT_MESSAGE, "\r%6d removed portal areas", removedPortalAreas);
+	g_bimport.Print(PRT_MESSAGE, "\r%6d removed portal areas", removedPortalAreas);
 	
 	while (1)
 	{
-		botimport.Print(PRT_MESSAGE, "\r%6d", removedPortalAreas);
+		g_bimport.Print(PRT_MESSAGE, "\r%6d", removedPortalAreas);
 		
 		// initialize the number of portals and clusters
 		aasworld.numportals = 1;			// portal 0 is a dummy
@@ -1525,7 +1525,7 @@ void AAS_InitClustering(void)
 		break;
 	}
 
-	botimport.Print(PRT_MESSAGE, "\n");
+	g_bimport.Print(PRT_MESSAGE, "\n");
 
 	// the AAS file should be saved
 	aasworld.savefile = true;
@@ -1537,12 +1537,12 @@ void AAS_InitClustering(void)
 	}
 
 	// report cluster info
-	botimport.Print(PRT_MESSAGE, "%6d portals created\n", aasworld.numportals);
-	botimport.Print(PRT_MESSAGE, "%6d clusters created\n", aasworld.numclusters);
+	g_bimport.Print(PRT_MESSAGE, "%6d portals created\n", aasworld.numportals);
+	g_bimport.Print(PRT_MESSAGE, "%6d clusters created\n", aasworld.numclusters);
 	
 	for (i = 1; i < aasworld.numclusters; i++)
 	{
-		botimport.Print(PRT_MESSAGE, "cluster %d has %d reachability areas\n", i,
+		g_bimport.Print(PRT_MESSAGE, "cluster %d has %d reachability areas\n", i,
 			aasworld.clusters[i].numreachabilityareas);
 	}
 	
@@ -1559,8 +1559,8 @@ void AAS_InitClustering(void)
 
 	total += numreachabilityareas * aasworld.numportals;
 
-	botimport.Print(PRT_MESSAGE, "%6i total reachability areas\n",
+	g_bimport.Print(PRT_MESSAGE, "%6i total reachability areas\n",
 		numreachabilityareas);
-	botimport.Print(PRT_MESSAGE, "%6i AAS memory/CPU usage (the lower the better)\n",
+	g_bimport.Print(PRT_MESSAGE, "%6i AAS memory/CPU usage (the lower the better)\n",
 		total * 3);
 }

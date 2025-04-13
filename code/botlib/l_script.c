@@ -210,7 +210,7 @@ void Q_CDECL ScriptError(script_t *script, char *str, ...)
 	vsprintf(text, str, ap);
 	va_end(ap);
 #ifdef BOTLIB
-	botimport.Print(PRT_ERROR, "file %s, line %d: %s\n", script->filename, script->line, text);
+	g_bimport.Print(PRT_ERROR, "file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BOTLIB
 #ifdef BSPC
 	Log_Print("error: file %s, line %d: %s\n", script->filename, script->line, text);
@@ -233,7 +233,7 @@ void Q_CDECL ScriptWarning(script_t *script, char *str, ...)
 	vsprintf(text, str, ap);
 	va_end(ap);
 #ifdef BOTLIB
-	botimport.Print(PRT_WARNING, "file %s, line %d: %s\n", script->filename, script->line, text);
+	g_bimport.Print(PRT_WARNING, "file %s, line %d: %s\n", script->filename, script->line, text);
 #endif //BOTLIB
 #ifdef BSPC
 	Log_Print("warning: file %s, line %d: %s\n", script->filename, script->line, text);
@@ -1287,7 +1287,7 @@ script_t *LoadScriptFile(const char *filename)
 		Com_sprintf(pathname, sizeof(pathname), "%s/%s", basefolder, filename);
 	else
 		Com_sprintf(pathname, sizeof(pathname), "%s", filename);
-	length = botimport.FS_FOpenFile( pathname, &fp, FS_READ, 0);
+	length = g_bimport.FS_FOpenFile( pathname, &fp, FS_READ, 0);
 	if (!fp) return NULL;
 #else
 	fp = fopen(filename, "rb");
@@ -1318,8 +1318,8 @@ script_t *LoadScriptFile(const char *filename)
 	SetScriptPunctuations(script, NULL);
 	//
 #ifdef BOTLIB
-	botimport.FS_Read(script->buffer, length, fp);
-	botimport.FS_FCloseFile(fp);
+	g_bimport.FS_Read(script->buffer, length, fp);
+	g_bimport.FS_FCloseFile(fp);
 #else
 	if (fread(script->buffer, length, 1, fp) != 1)
 	{

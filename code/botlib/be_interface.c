@@ -57,8 +57,8 @@ Bot_DebugInit(void);
 int
 Export_BotTest(int parm0, char* parm1, vec3_t parm2, vec3_t parm3);
 
-botlib_export_t be_botlib_export;
-botlib_import_t botimport;
+botlib_export_t g_bexport;
+botlib_import_t g_bimport;
 //
 cvar_t* bot_logfile;
 cvar_t* sv_maxclients;			// maximum number of clients
@@ -80,7 +80,7 @@ bool ValidClientNumber(int num, char *str)
 	if (num < 0 || num > sv_maxclients->integer)
 	{
 		// weird: the disabled stuff results in a crash
-		botimport.Print(PRT_ERROR, "%s: invalid client number %d, [0, %d]\n",
+		g_bimport.Print(PRT_ERROR, "%s: invalid client number %d, [0, %d]\n",
 			str, num, sv_maxclients->integer);
 
 		return false;
@@ -96,7 +96,7 @@ bool ValidEntityNumber(int num, char* str)
 {
 	if (num < 0 || num > sv_maxentities->integer)
 	{
-		botimport.Print(PRT_ERROR, "%s: invalid entity number %d, [0, %d]\n",
+		g_bimport.Print(PRT_ERROR, "%s: invalid entity number %d, [0, %d]\n",
 			str, num, sv_maxentities->integer);
 		return false;
 	}
@@ -111,7 +111,7 @@ bool BotLibSetup(char* str)
 {
 	if (!s_initialized)
 	{
-		botimport.Print(PRT_ERROR, "%s: bot library used before being setup\n", str);
+		g_bimport.Print(PRT_ERROR, "%s: bot library used before being setup\n", str);
 		return false;
 	}
 
@@ -136,7 +136,7 @@ int Export_BotLibSetup(void)
 	bot_logfile = Botlib_CvarGet("bot_log", "0");
 	Bot_LogOpen("botlib.log");
 
-	botimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
+	g_bimport.Print(PRT_MESSAGE, "------- BotLib Initialization -------\n");
 
 	sv_maxclients = Botlib_CvarGet("sv_maxclients", "8");
 	sv_maxentities = Botlib_CvarGet("sv_maxentities", "1024");
@@ -236,13 +236,13 @@ int Export_BotLibStartFrame(float time)
 int Export_BotLibLoadMap(const char* mapname)
 {
 #ifdef DEBUG
-	int starttime = botimport.Milliseconds();
+	int starttime = g_bimport.Milliseconds();
 #endif
 	int errnum = BLERR_NOERROR;
 
 	if (!BotLibSetup("BotLoadMap")) return BLERR_LIBRARYNOTSETUP;
 
-	botimport.Print(PRT_MESSAGE, "------------ Map Loading ------------\n");
+	g_bimport.Print(PRT_MESSAGE, "------------ Map Loading ------------\n");
 
 	// startup AAS for the current map, model and sound index
 	errnum = AAS_LoadMap(mapname);
@@ -252,10 +252,10 @@ int Export_BotLibLoadMap(const char* mapname)
 	BotInitLevelItems();
 	BotSetBrushModelTypes();
 
-	botimport.Print(PRT_MESSAGE, "-------------------------------------\n");
+	g_bimport.Print(PRT_MESSAGE, "-------------------------------------\n");
 #ifdef DEBUG
-	botimport.Print(PRT_MESSAGE, "map loaded in %d msec\n",
-		botimport.Milliseconds() - starttime);
+	g_bimport.Print(PRT_MESSAGE, "map loaded in %d msec\n",
+		g_bimport.Milliseconds() - starttime);
 #endif
 
 	return BLERR_NOERROR;
@@ -476,33 +476,33 @@ GetBotLibAPI
 botlib_export_t *GetBotLibAPI(int apiVersion, botlib_import_t *import)
 {
 	assert(import);   // bk001129 - this wasn't set for baseq3/
-	botimport = *import;
-	assert(botimport.Print);   // bk001129 - pars pro toto
+	g_bimport = *import;
+	assert(g_bimport.Print);   // bk001129 - pars pro toto
 
-	Com_Memset( &be_botlib_export, 0, sizeof( be_botlib_export ) );
+	Com_Memset( &g_bexport, 0, sizeof( g_bexport ) );
 
 	if ( apiVersion != BOTLIB_API_VERSION ) {
-		botimport.Print( PRT_ERROR, "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", BOTLIB_API_VERSION, apiVersion );
+		g_bimport.Print( PRT_ERROR, "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", BOTLIB_API_VERSION, apiVersion );
 		return NULL;
 	}
 
-	Init_AAS_Export(&be_botlib_export.aas);
-	Init_EA_Export(&be_botlib_export.ea);
-	Init_AI_Export(&be_botlib_export.ai);
+	Init_AAS_Export(&g_bexport.aas);
+	Init_EA_Export(&g_bexport.ea);
+	Init_AI_Export(&g_bexport.ai);
 
-	be_botlib_export.BotLibSetup = Export_BotLibSetup;
-	be_botlib_export.BotLibShutdown = Export_BotLibShutdown;
+	g_bexport.BotLibSetup = Export_BotLibSetup;
+	g_bexport.BotLibShutdown = Export_BotLibShutdown;
 
-	be_botlib_export.PC_AddGlobalDefine = PC_AddGlobalDefine;
-	be_botlib_export.PC_LoadSourceHandle = PC_LoadSourceHandle;
-	be_botlib_export.PC_FreeSourceHandle = PC_FreeSourceHandle;
-	be_botlib_export.PC_ReadTokenHandle = PC_ReadTokenHandle;
-	be_botlib_export.PC_SourceFileAndLine = PC_SourceFileAndLine;
+	g_bexport.PC_AddGlobalDefine = PC_AddGlobalDefine;
+	g_bexport.PC_LoadSourceHandle = PC_LoadSourceHandle;
+	g_bexport.PC_FreeSourceHandle = PC_FreeSourceHandle;
+	g_bexport.PC_ReadTokenHandle = PC_ReadTokenHandle;
+	g_bexport.PC_SourceFileAndLine = PC_SourceFileAndLine;
 
-	be_botlib_export.BotLibStartFrame = Export_BotLibStartFrame;
-	be_botlib_export.BotLibLoadMap = Export_BotLibLoadMap;
-	be_botlib_export.BotLibUpdateEntity = Export_BotLibUpdateEntity;
-	be_botlib_export.Test = Export_BotTest;
+	g_bexport.BotLibStartFrame = Export_BotLibStartFrame;
+	g_bexport.BotLibLoadMap = Export_BotLibLoadMap;
+	g_bexport.BotLibUpdateEntity = Export_BotLibUpdateEntity;
+	g_bexport.Test = Export_BotTest;
 
-	return &be_botlib_export;
+	return &g_bexport;
 }

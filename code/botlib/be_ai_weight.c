@@ -282,7 +282,7 @@ weightconfig_t* ReadWeightConfig(char* filename)
 #ifdef DEBUG
 	int starttime;
 
-	starttime = botimport.Milliseconds();
+	starttime = g_bimport.Milliseconds();
 #endif // #ifdef DEBUG
 
 	if (!Botlib_CvarGetValue("bot_reloadcharacters"))
@@ -310,7 +310,7 @@ weightconfig_t* ReadWeightConfig(char* filename)
 
 		if (avail == -1)
 		{
-			botimport.Print(PRT_ERROR, "weightFileList was full trying to load %s\n",
+			g_bimport.Print(PRT_ERROR, "weightFileList was full trying to load %s\n",
 				filename);
 			return NULL;
 		}
@@ -321,7 +321,7 @@ weightconfig_t* ReadWeightConfig(char* filename)
 
 	if (!source)
 	{
-		botimport.Print(PRT_ERROR, "counldn't load %s\n", filename);
+		g_bimport.Print(PRT_ERROR, "counldn't load %s\n", filename);
 		return NULL;
 	}
 
@@ -433,13 +433,13 @@ weightconfig_t* ReadWeightConfig(char* filename)
 	// free the source at the end of a pass
 	FreeSource(source);
 	// if the file was located in a pak file
-	botimport.Print(PRT_MESSAGE, "loaded %s\n", filename);
+	g_bimport.Print(PRT_MESSAGE, "loaded %s\n", filename);
 
 #ifdef DEBUG
 	if (bot_developer)
 	{
-		botimport.Print(PRT_MESSAGE, "weights loaded in %d msec\n",
-			botimport.Milliseconds() - starttime);
+		g_bimport.Print(PRT_MESSAGE, "weights loaded in %d msec\n",
+			g_bimport.Milliseconds() - starttime);
 	}
 #endif // #ifdef DEBUG
 
@@ -849,7 +849,7 @@ int InterbreedFuzzySeperator_r(fuzzyseperator_t *fs1, fuzzyseperator_t *fs2,
 	{
 		if (!fs2->child || !fsout->child)
 		{
-			botimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal child\n");
+			g_bimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal child\n");
 			return false;
 		} //end if
 		if (!InterbreedFuzzySeperator_r(fs2->child, fs2->child, fsout->child))
@@ -861,7 +861,7 @@ int InterbreedFuzzySeperator_r(fuzzyseperator_t *fs1, fuzzyseperator_t *fs2,
 	{
 		if (fs2->type != WT_BALANCE || fsout->type != WT_BALANCE)
 		{
-			botimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal balance\n");
+			g_bimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal balance\n");
 			return false;
 		} //end if
 		fsout->weight = (fs1->weight + fs2->weight) / 2;
@@ -872,7 +872,7 @@ int InterbreedFuzzySeperator_r(fuzzyseperator_t *fs1, fuzzyseperator_t *fs2,
 	{
 		if (!fs2->next || !fsout->next)
 		{
-			botimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal next\n");
+			g_bimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal next\n");
 			return false;
 		} //end if
 		if (!InterbreedFuzzySeperator_r(fs1->next, fs2->next, fsout->next))
@@ -897,7 +897,7 @@ void InterbreedWeightConfigs(weightconfig_t *config1, weightconfig_t *config2,
 	if (config1->numweights != config2->numweights ||
 		config1->numweights != configout->numweights)
 	{
-		botimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal numweights\n");
+		g_bimport.Print(PRT_ERROR, "cannot interbreed weight configs, unequal numweights\n");
 		return;
 	} //end if
 	for (i = 0; i < config1->numweights; i++)

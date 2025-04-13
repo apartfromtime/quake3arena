@@ -85,12 +85,12 @@ bot_character_t *BotCharacterFromHandle(int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
-		botimport.Print(PRT_FATAL, "character handle %d out of range\n", handle);
+		g_bimport.Print(PRT_FATAL, "character handle %d out of range\n", handle);
 		return NULL;
 	} //end if
 	if (!botcharacters[handle])
 	{
-		botimport.Print(PRT_FATAL, "invalid character %d\n", handle);
+		g_bimport.Print(PRT_FATAL, "invalid character %d\n", handle);
 		return NULL;
 	} //end if
 	return botcharacters[handle];
@@ -147,12 +147,12 @@ void BotFreeCharacter2(int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
-		botimport.Print(PRT_FATAL, "character handle %d out of range\n", handle);
+		g_bimport.Print(PRT_FATAL, "character handle %d out of range\n", handle);
 		return;
 	} //end if
 	if (!botcharacters[handle])
 	{
-		botimport.Print(PRT_FATAL, "invalid character %d\n", handle);
+		g_bimport.Print(PRT_FATAL, "invalid character %d\n", handle);
 		return;
 	} //end if
 	BotFreeCharacterStrings(botcharacters[handle]);
@@ -220,7 +220,7 @@ bot_character_t *BotLoadCharacterFromFile(char *charfile, int skill)
 	source = LoadSourceFile(charfile);
 	if (!source)
 	{
-		botimport.Print(PRT_ERROR, "counldn't load %s\n", charfile);
+		g_bimport.Print(PRT_ERROR, "counldn't load %s\n", charfile);
 		return NULL;
 	} //end if
 	ch = (bot_character_t *) GetZoneMemory(sizeof(bot_character_t) +
@@ -385,7 +385,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 #ifdef DEBUG
 	int starttime;
 
-	starttime = botimport.Milliseconds();
+	starttime = g_bimport.Milliseconds();
 #endif // #ifdef DEBUG
 
 	// find a free spot for a character
@@ -401,7 +401,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 		cachedhandle = BotFindCachedCharacter(charfile, skill);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill,
+			g_bimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill,
 				charfile);
 			return cachedhandle;
 		}
@@ -413,18 +413,18 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded skill %d from %s\n", intskill, charfile);
+		g_bimport.Print(PRT_MESSAGE, "loaded skill %d from %s\n", intskill, charfile);
 #ifdef DEBUG
 		if (bot_developer)
 		{
-			botimport.Print(PRT_MESSAGE, "skill %d loaded in %d msec from %s\n", intskill,
-				botimport.Milliseconds() - starttime, charfile);
+			g_bimport.Print(PRT_MESSAGE, "skill %d loaded in %d msec from %s\n", intskill,
+				g_bimport.Milliseconds() - starttime, charfile);
 		}
 #endif // #ifdef DEBUG
 		return handle;
 	}
 
-	botimport.Print(PRT_WARNING, "couldn't find skill %d in %s\n", intskill, charfile);
+	g_bimport.Print(PRT_WARNING, "couldn't find skill %d in %s\n", intskill, charfile);
 
 	if (!reload)
 	{
@@ -432,7 +432,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 		cachedhandle = BotFindCachedCharacter(DEFAULT_CHARACTER, skill);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached default skill %d from %s\n",
+			g_bimport.Print(PRT_MESSAGE, "loaded cached default skill %d from %s\n",
 				intskill, charfile);
 			return cachedhandle;
 		}
@@ -443,7 +443,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded default skill %d from %s\n",
+		g_bimport.Print(PRT_MESSAGE, "loaded default skill %d from %s\n",
 			intskill, charfile);
 		return handle;
 	}
@@ -454,7 +454,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 		cachedhandle = BotFindCachedCharacter(charfile, -1);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n",
+			g_bimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n",
 				botcharacters[cachedhandle]->skill, charfile);
 			return cachedhandle;
 		}
@@ -465,7 +465,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded skill %f from %s\n", ch->skill, charfile);
+		g_bimport.Print(PRT_MESSAGE, "loaded skill %f from %s\n", ch->skill, charfile);
 		return handle;
 	}
 
@@ -475,7 +475,7 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 		cachedhandle = BotFindCachedCharacter(DEFAULT_CHARACTER, -1);
 		if (cachedhandle)
 		{
-			botimport.Print(PRT_MESSAGE, "loaded cached default skill %f from %s\n",
+			g_bimport.Print(PRT_MESSAGE, "loaded cached default skill %f from %s\n",
 				botcharacters[cachedhandle]->skill, charfile);
 			return cachedhandle;
 		}
@@ -486,12 +486,12 @@ int BotLoadCachedCharacter(char *charfile, float skill, int reload)
 	if (ch)
 	{
 		botcharacters[handle] = ch;
-		botimport.Print(PRT_MESSAGE, "loaded default skill %f from %s\n",
+		g_bimport.Print(PRT_MESSAGE, "loaded default skill %f from %s\n",
 			ch->skill, charfile);
 		return handle;
 	}
 
-	botimport.Print(PRT_WARNING, "couldn't load any skill from %s\n", charfile);
+	g_bimport.Print(PRT_WARNING, "couldn't load any skill from %s\n", charfile);
 	
 	return 0;			// couldn't load any character
 }
@@ -588,7 +588,7 @@ int BotLoadCharacter(char *charfile, float skill)
 	handle = BotFindCachedCharacter(charfile, skill);
 	if (handle)
 	{
-		botimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill, charfile);
+		g_bimport.Print(PRT_MESSAGE, "loaded cached skill %f from %s\n", skill, charfile);
 		return handle;
 	} //end if
 	if (skill < 4.0)
@@ -629,12 +629,12 @@ int CheckCharacteristicIndex(int character, int index)
 	if (!ch) return false;
 	if (index < 0 || index >= MAX_CHARACTERISTICS)
 	{
-		botimport.Print(PRT_ERROR, "characteristic %d does not exist\n", index);
+		g_bimport.Print(PRT_ERROR, "characteristic %d does not exist\n", index);
 		return false;
 	} //end if
 	if (!ch->c[index].type)
 	{
-		botimport.Print(PRT_ERROR, "characteristic %d is not initialized\n", index);
+		g_bimport.Print(PRT_ERROR, "characteristic %d is not initialized\n", index);
 		return false;
 	} //end if
 	return true;
@@ -666,7 +666,7 @@ float Characteristic_Float(int character, int index)
 	//cannot convert a string pointer to a float
 	else
 	{
-		botimport.Print(PRT_ERROR, "characteristic %d is not a float\n", index);
+		g_bimport.Print(PRT_ERROR, "characteristic %d is not a float\n", index);
 		return 0;
 	} //end else if
 //	return 0;
@@ -686,7 +686,7 @@ float Characteristic_BFloat(int character, int index, float min, float max)
 	if (!ch) return 0;
 	if (min > max)
 	{
-		botimport.Print(PRT_ERROR, "cannot bound characteristic %d between %f and %f\n", index, min, max);
+		g_bimport.Print(PRT_ERROR, "cannot bound characteristic %d between %f and %f\n", index, min, max);
 		return 0;
 	} //end if
 	value = Characteristic_Float(character, index);
@@ -720,7 +720,7 @@ int Characteristic_Integer(int character, int index)
 	} //end else if
 	else
 	{
-		botimport.Print(PRT_ERROR, "characteristic %d is not a integer\n", index);
+		g_bimport.Print(PRT_ERROR, "characteristic %d is not a integer\n", index);
 		return 0;
 	} //end else if
 //	return 0;
@@ -740,7 +740,7 @@ int Characteristic_BInteger(int character, int index, int min, int max)
 	if (!ch) return 0;
 	if (min > max)
 	{
-		botimport.Print(PRT_ERROR, "cannot bound characteristic %d between %d and %d\n", index, min, max);
+		g_bimport.Print(PRT_ERROR, "cannot bound characteristic %d between %d and %d\n", index, min, max);
 		return 0;
 	} //end if
 	value = Characteristic_Integer(character, index);
@@ -771,7 +771,7 @@ void Characteristic_String(int character, int index, char *buf, int size)
 	} //end if
 	else
 	{
-		botimport.Print(PRT_ERROR, "characteristic %d is not a string\n", index);
+		g_bimport.Print(PRT_ERROR, "characteristic %d is not a string\n", index);
 		return;
 	} //end else if
 	return;

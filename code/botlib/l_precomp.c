@@ -94,7 +94,7 @@ void Q_CDECL SourceError(source_t *source, char *str, ...)
 	vsprintf(text, str, ap);
 	va_end(ap);
 #ifdef BOTLIB
-	botimport.Print(PRT_ERROR, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
+	g_bimport.Print(PRT_ERROR, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif	//BOTLIB
 #ifdef BSPC
 	Log_Print("error: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
@@ -115,7 +115,7 @@ void Q_CDECL SourceWarning(source_t *source, char *str, ...)
 	vsprintf(text, str, ap);
 	va_end(ap);
 #ifdef BOTLIB
-	botimport.Print(PRT_WARNING, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
+	g_bimport.Print(PRT_WARNING, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
 #endif //BOTLIB
 #ifdef BSPC
 	Log_Print("warning: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text);
@@ -3095,7 +3095,7 @@ void PC_CheckOpenSourceHandles(void)
 		if (sourceFiles[i])
 		{
 #ifdef BOTLIB
-			botimport.Print(PRT_ERROR, "file %s still open in precompiler\n", sourceFiles[i]->scriptstack->filename);
+			g_bimport.Print(PRT_ERROR, "file %s still open in precompiler\n", sourceFiles[i]->scriptstack->filename);
 #endif	//BOTLIB
 		} //end if
 	} //end for

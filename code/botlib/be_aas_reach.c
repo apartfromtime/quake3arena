@@ -43,7 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "be_aas_def.h"
 
 
-extern botlib_import_t botimport;
+extern botlib_import_t g_bimport;
 
 //#define REACH_DEBUG
 
@@ -237,7 +237,7 @@ int AAS_GetJumpPadInfo(int ent, vec3_t areastart, vec3_t absmins, vec3_t absmaxs
 	trace = AAS_TraceClientBBox(teststart, origin, PRESENCE_CROUCH, -1);
 	if (trace.startsolid)
 	{
-		botimport.Print(PRT_MESSAGE, "trigger_push start solid\n");
+		g_bimport.Print(PRT_MESSAGE, "trigger_push start solid\n");
 		VectorCopy(origin, areastart);
 	} //end if
 	else
@@ -256,7 +256,7 @@ int AAS_GetJumpPadInfo(int ent, vec3_t areastart, vec3_t absmins, vec3_t absmaxs
 	} //end for
 	if (!ent2)
 	{
-		botimport.Print(PRT_MESSAGE, "trigger_push without target entity %s\n", target);
+		g_bimport.Print(PRT_MESSAGE, "trigger_push without target entity %s\n", target);
 		return false;
 	} //end if
 	AAS_VectorForBSPEpairKey(ent2, "origin", ent2origin);
@@ -266,7 +266,7 @@ int AAS_GetJumpPadInfo(int ent, vec3_t areastart, vec3_t absmins, vec3_t absmaxs
 	time = sqrt( height / ( 0.5 * gravity ) );
 	if (!time)
 	{
-		botimport.Print(PRT_MESSAGE, "trigger_push without time\n");
+		g_bimport.Print(PRT_MESSAGE, "trigger_push without time\n");
 		return false;
 	} //end if
 	// set s.origin2 to the push velocity
@@ -319,7 +319,7 @@ int AAS_BestReachableFromJumpPadArea(vec3_t origin, vec3_t mins, vec3_t maxs)
 		} //end for
 		if (!link)
 		{
-			botimport.Print(PRT_MESSAGE, "trigger_push not in any jump pad area\n");
+			g_bimport.Print(PRT_MESSAGE, "trigger_push not in any jump pad area\n");
 			AAS_UnlinkFromAreas(areas);
 			continue;
 		} //end if
@@ -369,7 +369,7 @@ int AAS_BestReachableArea(vec3_t origin, vec3_t mins, vec3_t maxs, vec3_t goalor
 
 	if (!aasworld.loaded)
 	{
-		botimport.Print(PRT_ERROR, "AAS_BestReachableArea: aas not loaded\n");
+		g_bimport.Print(PRT_ERROR, "AAS_BestReachableArea: aas not loaded\n");
 		return 0;
 	} //end if
 	//find a point in an area
@@ -2772,14 +2772,14 @@ void AAS_Reachability_Teleport(void)
 		{
 			AAS_ValueForBSPEpairKey(ent, "model", model, MAX_EPAIRKEY);
 //#ifdef REACH_DEBUG
-			botimport.Print(PRT_MESSAGE, "trigger_multiple model = \"%s\"\n", model);
+			g_bimport.Print(PRT_MESSAGE, "trigger_multiple model = \"%s\"\n", model);
 //#endif REACH_DEBUG
 			VectorClear(angles);
 			AAS_BSPModelMinsMaxsOrigin(atoi(model+1), angles, mins, maxs, origin);
 			//
 			if (!AAS_ValueForBSPEpairKey(ent, "target", target, MAX_EPAIRKEY))
 			{
-				botimport.Print(PRT_ERROR, "trigger_multiple at %1.0f %1.0f %1.0f without target\n",
+				g_bimport.Print(PRT_ERROR, "trigger_multiple at %1.0f %1.0f %1.0f without target\n",
 									origin[0], origin[1], origin[2]);
 				continue;
 			} //end if
@@ -2801,7 +2801,7 @@ void AAS_Reachability_Teleport(void)
 			} //end if
 			if (!AAS_ValueForBSPEpairKey(dest, "target", target, MAX_EPAIRKEY))
 			{
-				botimport.Print(PRT_ERROR, "target_teleporter without target\n");
+				g_bimport.Print(PRT_ERROR, "target_teleporter without target\n");
 				continue;
 			} //end if
 		} //end else
@@ -2809,14 +2809,14 @@ void AAS_Reachability_Teleport(void)
 		{
 			AAS_ValueForBSPEpairKey(ent, "model", model, MAX_EPAIRKEY);
 //#ifdef REACH_DEBUG
-			botimport.Print(PRT_MESSAGE, "trigger_teleport model = \"%s\"\n", model);
+			g_bimport.Print(PRT_MESSAGE, "trigger_teleport model = \"%s\"\n", model);
 //#endif REACH_DEBUG
 			VectorClear(angles);
 			AAS_BSPModelMinsMaxsOrigin(atoi(model+1), angles, mins, maxs, origin);
 			//
 			if (!AAS_ValueForBSPEpairKey(ent, "target", target, MAX_EPAIRKEY))
 			{
-				botimport.Print(PRT_ERROR, "trigger_teleport at %1.0f %1.0f %1.0f without target\n",
+				g_bimport.Print(PRT_ERROR, "trigger_teleport at %1.0f %1.0f %1.0f without target\n",
 									origin[0], origin[1], origin[2]);
 				continue;
 			} //end if
@@ -2841,12 +2841,12 @@ void AAS_Reachability_Teleport(void)
 		} //end for
 		if (!dest)
 		{
-			botimport.Print(PRT_ERROR, "teleporter without misc_teleporter_dest (%s)\n", target);
+			g_bimport.Print(PRT_ERROR, "teleporter without misc_teleporter_dest (%s)\n", target);
 			continue;
 		} //end if
 		if (!AAS_VectorForBSPEpairKey(dest, "origin", destorigin))
 		{
-			botimport.Print(PRT_ERROR, "teleporter destination (%s) without origin\n", target);
+			g_bimport.Print(PRT_ERROR, "teleporter destination (%s) without origin\n", target);
 			continue;
 		} //end if
 		//
@@ -2859,7 +2859,7 @@ void AAS_Reachability_Teleport(void)
 			trace = AAS_TraceClientBBox(destorigin, end, PRESENCE_CROUCH, -1);
 			if (trace.startsolid)
 			{
-				botimport.Print(PRT_ERROR, "teleporter destination (%s) in solid\n", target);
+				g_bimport.Print(PRT_ERROR, "teleporter destination (%s) in solid\n", target);
 				continue;
 			} //end if
 			area2num = AAS_PointAreaNum(trace.endpos);
@@ -2893,7 +2893,7 @@ void AAS_Reachability_Teleport(void)
 				area2num = AAS_PointAreaNum(move.endpos);
 				if (move.stopevent & (SE_ENTERSLIME|SE_ENTERLAVA))
 				{
-					botimport.Print(PRT_WARNING, "teleported into slime or lava at dest %s\n", target);
+					g_bimport.Print(PRT_WARNING, "teleported into slime or lava at dest %s\n", target);
 				} //end if
 				VectorCopy(move.endpos, destorigin);
 			} //end else
@@ -2909,7 +2909,7 @@ void AAS_Reachability_Teleport(void)
 		VectorScale(mid, 0.5, mid);
 		//link an invalid (-1) entity
 		areas = AAS_LinkEntityClientBBox(mins, maxs, -1, PRESENCE_CROUCH);
-		if (!areas) botimport.Print(PRT_MESSAGE, "trigger_multiple not in any area\n");
+		if (!areas) g_bimport.Print(PRT_MESSAGE, "trigger_multiple not in any area\n");
 		//
 		for (link = areas; link; link = link->next_area)
 		{
@@ -2971,14 +2971,14 @@ void AAS_Reachability_Elevator(void)
 #endif //REACH_DEBUG
 			if (!AAS_ValueForBSPEpairKey(ent, "model", model, MAX_EPAIRKEY))
 			{
-				botimport.Print(PRT_ERROR, "func_plat without model\n");
+				g_bimport.Print(PRT_ERROR, "func_plat without model\n");
 				continue;
 			} //end if
 			//get the model number, and skip the leading *
 			modelnum = atoi(model+1);
 			if (modelnum <= 0)
 			{
-				botimport.Print(PRT_ERROR, "func_plat with invalid model number\n");
+				g_bimport.Print(PRT_ERROR, "func_plat with invalid model number\n");
 				continue;
 			} //end if
 			//get the mins, maxs and origin of the model
@@ -3306,14 +3306,14 @@ void AAS_Reachability_FuncBobbing(void)
 		//
 		if (!AAS_ValueForBSPEpairKey(ent, "model", model, MAX_EPAIRKEY))
 		{
-			botimport.Print(PRT_ERROR, "func_bobbing without model\n");
+			g_bimport.Print(PRT_ERROR, "func_bobbing without model\n");
 			continue;
 		} //end if
 		//get the model number, and skip the leading *
 		modelnum = atoi(model+1);
 		if (modelnum <= 0)
 		{
-			botimport.Print(PRT_ERROR, "func_bobbing with invalid model number\n");
+			g_bimport.Print(PRT_ERROR, "func_bobbing with invalid model number\n");
 			continue;
 		} //end if
 		//if the entity has an origin set then use it
@@ -3613,12 +3613,12 @@ void AAS_Reachability_JumpPad(void)
 		} //end for
 		if (!link)
 		{
-			botimport.Print(PRT_MESSAGE, "trigger_push not in any jump pad area\n");
+			g_bimport.Print(PRT_MESSAGE, "trigger_push not in any jump pad area\n");
 			AAS_UnlinkFromAreas(areas);
 			continue;
 		} //end if
 		//
-		botimport.Print(PRT_MESSAGE, "found a trigger_push with velocity %f %f %f\n", velocity[0], velocity[1], velocity[2]);
+		g_bimport.Print(PRT_MESSAGE, "found a trigger_push with velocity %f %f %f\n", velocity[0], velocity[1], velocity[2]);
 		//if there is a horizontal velocity check for a reachability without air control
 		if (velocity[0] || velocity[1])
 		{
@@ -3967,7 +3967,7 @@ void AAS_SetWeaponJumpAreaFlags(void)
 				{
 					if (!AAS_DropToFloor(origin, mins, maxs))
 					{
-						botimport.Print(PRT_MESSAGE, "%s in solid at (%1.1f %1.1f %1.1f)\n",
+						g_bimport.Print(PRT_MESSAGE, "%s in solid at (%1.1f %1.1f %1.1f)\n",
 														classname, origin[0], origin[1], origin[2]);
 					} //end if
 				} //end if
@@ -3991,7 +3991,7 @@ void AAS_SetWeaponJumpAreaFlags(void)
 			weaponjumpareas++;
 		} //end if
 	} //end for
-	botimport.Print(PRT_MESSAGE, "%d weapon jump areas\n", weaponjumpareas);
+	g_bimport.Print(PRT_MESSAGE, "%d weapon jump areas\n", weaponjumpareas);
 } //end of the function AAS_SetWeaponJumpAreaFlags
 //===========================================================================
 // create a possible weapon jump reachability from area1 to area2
@@ -4379,7 +4379,7 @@ int AAS_ContinueInitReachability(float time)
 	// if starting with area 1 (area 0 is a dummy)
 	if (aasworld.numreachabilityareas == 1)
 	{
-		botimport.Print(PRT_MESSAGE, "calculating reachability...\n");
+		g_bimport.Print(PRT_MESSAGE, "calculating reachability...\n");
 		lastpercentage = 0;
 		framereachability = 2000;
 		reachability_delay = 1000;
@@ -4387,7 +4387,7 @@ int AAS_ContinueInitReachability(float time)
 
 	// number of areas to calculate reachability for this cycle
 	todo = aasworld.numreachabilityareas + (int)framereachability;
-	start_time = botimport.Milliseconds();
+	start_time = g_bimport.Milliseconds();
 
 	// loop over the areas
 	for (i = aasworld.numreachabilityareas; i < aasworld.numareas && i < todo; i++)
@@ -4445,15 +4445,15 @@ int AAS_ContinueInitReachability(float time)
 		}
 
 		// if the calculation took more time than the max reachability delay
-		if (botimport.Milliseconds() - start_time > (int)reachability_delay) break;
+		if (g_bimport.Milliseconds() - start_time > (int)reachability_delay) break;
 		
 		if (aasworld.numreachabilityareas * 1000 / aasworld.numareas > lastpercentage) break;
 	}
 
 	if (aasworld.numreachabilityareas == aasworld.numareas)
 	{
-		botimport.Print(PRT_MESSAGE, "\r%6.1f%%", (float)100.0);
-		botimport.Print(PRT_MESSAGE, "\nplease wait while storing reachability...\n");
+		g_bimport.Print(PRT_MESSAGE, "\r%6.1f%%", (float)100.0);
+		g_bimport.Print(PRT_MESSAGE, "\nplease wait while storing reachability...\n");
 		aasworld.numreachabilityareas++;
 	}
 	// if this is the last step in the reachability calculations
@@ -4481,21 +4481,21 @@ int AAS_ContinueInitReachability(float time)
 		AAS_Reachability_FuncBobbing();
 
 #ifdef DEBUG
-		botimport.Print(PRT_MESSAGE, "%6d reach swim\n", reach_swim);
-		botimport.Print(PRT_MESSAGE, "%6d reach equal floor\n", reach_equalfloor);
-		botimport.Print(PRT_MESSAGE, "%6d reach step\n", reach_step);
-		botimport.Print(PRT_MESSAGE, "%6d reach barrier\n", reach_barrier);
-		botimport.Print(PRT_MESSAGE, "%6d reach waterjump\n", reach_waterjump);
-		botimport.Print(PRT_MESSAGE, "%6d reach walkoffledge\n", reach_walkoffledge);
-		botimport.Print(PRT_MESSAGE, "%6d reach jump\n", reach_jump);
-		botimport.Print(PRT_MESSAGE, "%6d reach ladder\n", reach_ladder);
-		botimport.Print(PRT_MESSAGE, "%6d reach walk\n", reach_walk);
-		botimport.Print(PRT_MESSAGE, "%6d reach teleport\n", reach_teleport);
-		botimport.Print(PRT_MESSAGE, "%6d reach funcbob\n", reach_funcbob);
-		botimport.Print(PRT_MESSAGE, "%6d reach elevator\n", reach_elevator);
-		botimport.Print(PRT_MESSAGE, "%6d reach grapple\n", reach_grapple);
-		botimport.Print(PRT_MESSAGE, "%6d reach rocketjump\n", reach_rocketjump);
-		botimport.Print(PRT_MESSAGE, "%6d reach jumppad\n", reach_jumppad);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach swim\n", reach_swim);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach equal floor\n", reach_equalfloor);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach step\n", reach_step);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach barrier\n", reach_barrier);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach waterjump\n", reach_waterjump);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach walkoffledge\n", reach_walkoffledge);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach jump\n", reach_jump);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach ladder\n", reach_ladder);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach walk\n", reach_walk);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach teleport\n", reach_teleport);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach funcbob\n", reach_funcbob);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach elevator\n", reach_elevator);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach grapple\n", reach_grapple);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach rocketjump\n", reach_rocketjump);
+		g_bimport.Print(PRT_MESSAGE, "%6d reach jumppad\n", reach_jumppad);
 #endif // #ifdef DEBUG
 
 		// store all the reachabilities
@@ -4505,12 +4505,12 @@ int AAS_ContinueInitReachability(float time)
 		FreeZoneMemory(areareachability);
 		aasworld.numreachabilityareas++;
 
-		botimport.Print(PRT_MESSAGE, "calculating clusters...\n");
+		g_bimport.Print(PRT_MESSAGE, "calculating clusters...\n");
 	}
 	else
 	{
 		lastpercentage = aasworld.numreachabilityareas * 1000 / aasworld.numareas;
-		botimport.Print(PRT_MESSAGE, "\r%6.1f%%", (float)lastpercentage / 10);
+		g_bimport.Print(PRT_MESSAGE, "\r%6.1f%%", (float)lastpercentage / 10);
 	}
 	
 	// not yet finished
