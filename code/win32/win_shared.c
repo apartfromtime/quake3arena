@@ -39,14 +39,16 @@ Search all the drives to see if there is a valid CD to grab
 the cddir from
 ================
 */
-bool Sys_ScanForCD(void) {
+bool Sys_ScanForCD(char* commandline)
+{
 	static char	cddir[MAX_OSPATH];
-	char		drive[4];
-	FILE* f;
 	char		test[MAX_OSPATH];
+	char		drive[4];
+	FILE*		f;
+
 #if 0
 	// don't override a cdpath on the command line
-	if (strstr(sys_cmdline, "cdpath")) {
+	if (strstr(commandline, "cdpath")) {
 		return;
 	}
 #endif

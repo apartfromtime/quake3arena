@@ -781,6 +781,12 @@ static void SDLWndProc(const SDL_Window* hwnd, const SDL_Event* msg)
 {
 	switch (msg->type)
 	{
+	case SDL_EVENT_QUIT:
+	{
+		Com_Quit_f();
+
+		return;
+	}
 	case SDL_EVENT_WINDOW_SHOWN:
 	{
 		r_fullscreen = Cvar_Get("r_fullscreen", "1", CVAR_ARCHIVE | CVAR_LATCH);
@@ -989,8 +995,6 @@ void TranslateAndDispatchEvent(const SDL_Event* msg)
 	}
 }
 
-static char sys_cmdline[MAX_STRING_CHARS] = { 0 };
-
 /*
 =============
 Sys_Error
@@ -1018,16 +1022,8 @@ void Q_CDECL Sys_Error(const char* error, ...)
 
 	// wait for the user to quit
 	SDL_PumpEvents();
-
-	while (1) {
-
-		SDL_PeepEvents(&msg, 1, SDL_GETEVENT, SDL_EVENT_FIRST,
-			SDL_EVENT_LAST);
-
-		if (msg.type == SDL_EVENT_QUIT) {
-			Com_Quit_f();
-		}
-
+	while (SDL_PeepEvents(&msg, 1, SDL_GETEVENT, SDL_EVENT_FIRST,
+		SDL_EVENT_LAST) > 0) {
 		TranslateAndDispatchEvent(&msg);
 	}
 
@@ -1876,14 +1872,8 @@ sysEvent_t Sys_GetEvent(void)
 
 	// pump the message loop
 	SDL_PumpEvents();
-
 	while (SDL_PeepEvents(&msg, 1, SDL_GETEVENT, SDL_EVENT_FIRST,
 		SDL_EVENT_LAST) > 0) {
-
-		if (msg.type == SDL_EVENT_QUIT) {
-			Com_Quit_f();
-		}
-
 		TranslateAndDispatchEvent(&msg);
 	}
 
@@ -1984,10 +1974,7 @@ void Sys_Init(void)
 	IN_Init();		// FIXME: not in dedicated?
 }
 
-
 //=======================================================================
-
-void Sys_InitStreamThread(void);
 
 /*
 ==================
@@ -1996,6 +1983,7 @@ main
 */
 int main(int argc, const char** argv)
 {
+	char sys_cmdline[MAX_STRING_CHARS] = { 0 };
 	int totalMsec = 0, countMsec = 0;
 	int startTime = 0, endTime = 0;
 
@@ -2017,7 +2005,7 @@ int main(int argc, const char** argv)
 
 #if 0
 	// if we find the CD, add a +set cddir xxx command line
-	Sys_ScanForCD();
+	Sys_ScanForCD(sys_cmdline);
 #endif
 
 	Sys_InitStreamThread();
