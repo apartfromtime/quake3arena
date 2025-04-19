@@ -1665,13 +1665,16 @@ Sys_LoadDll
 Used to load a development dll instead of a virtual machine
 =================
 */
-void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath,
-	int (Q_CDECL** entryPoint)(int, ...),
-	int (Q_CDECL* systemcalls)(int, ...))
+typedef int (Q_CDECL* EntryPoint)(int num, ...);
+typedef int (Q_CDECL* SystemCalls)(int arg, ...);
+typedef void (Q_CDECL* DLLEntry)(SystemCalls syscallptr);
+
+void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath, EntryPoint* entryPoint,
+	SystemCalls systemCalls)
 {
 	static int	lastWarning = 0;
 	SDL_SharedObject* libHandle;
-	void (Q_CDECL * dllEntry)(int (Q_CDECL * syscallptr)(int, ...));
+	DLLEntry dllEntry;
 	char* basepath;
 	char* cdpath;
 	char* gamedir;
@@ -1685,8 +1688,6 @@ void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath,
 	*fqpath = 0;		// added 7/20/02 by T.Ray
 
 	Com_sprintf(filename, sizeof(filename), "%sx86.dll", name);
-
-
 
 #ifdef NDEBUG
 	timestamp = Sys_Milliseconds();
@@ -1784,15 +1785,15 @@ void* Q_CDECL Sys_LoadDll(const char* name, char* fqpath,
 	}
 #endif
 
-	dllEntry = (void (Q_CDECL*)(int (Q_CDECL*)(int, ...)))SDL_LoadFunction(libHandle, "dllEntry");
-	*entryPoint = (int (Q_CDECL*)(int, ...))SDL_LoadFunction(libHandle, "vmMain");
+	dllEntry    = (DLLEntry)SDL_LoadFunction(libHandle, "dllEntry");
+	*entryPoint = (EntryPoint)SDL_LoadFunction(libHandle, "vmMain");
 
-	if (!*entryPoint || !dllEntry) {
+	if (!entryPoint || !dllEntry) {
 		SDL_UnloadObject(libHandle);
 		return NULL;
 	}
 
-	dllEntry(systemcalls);
+	dllEntry(systemCalls);
 
 	if (libHandle) {
 		Q_strncpyz(fqpath, filename, MAX_QPATH);

@@ -37,9 +37,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 // Extensions
 
-typedef void (GLAPIENTRY* PFNGLMULTITEXCOORD2FARB) (GLenum target, GLfloat s, GLfloat t);
-typedef void (GLAPIENTRY* PFNGLACTIVETEXTUREARB) (GLenum target);
-typedef void (GLAPIENTRY* PFNGLCLIENTACTIVETEXTUREARB) (GLenum target);
+typedef void (GLAPIENTRY* PFNGLMULTITEXCOORD2FARB)(GLenum target, GLfloat s, GLfloat t);
+typedef void (GLAPIENTRY* PFNGLACTIVETEXTUREARB)(GLenum target);
+typedef void (GLAPIENTRY* PFNGLCLIENTACTIVETEXTUREARB)(GLenum target);
 typedef void (GLAPIENTRY* PFNGLLOCKARRAYSEXT)(GLint first, GLint count);
 typedef void (GLAPIENTRY* PFNGLUNLOCKARRAYSEXT)(void);
 
