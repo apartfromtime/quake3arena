@@ -118,7 +118,7 @@ Com_StringContains
 const char *Com_StringContains( const char *str1, const char *str2, int casesensitive) {
 	int len, i, j;
 
-	len = strlen(str1) - strlen(str2);
+	len = Q_strlen(str1) - Q_strlen(str2);
 	for (i = 0; i <= len; i++, str1++) {
 		for (j = 0; str2[j]; j++) {
 			if (casesensitive) {
@@ -613,12 +613,17 @@ char *Q_strupr( char *s1 ) {
     return s1;
 }
 
+int
+Q_strlen(const char *pString)
+{
+	return strlen(pString) & 0xFFFFFFFF;			// conversion from 'size_t' to 'int', possible loss of data
+}
 
 // never goes past bounds or leaves without a terminating 0
 void Q_strcat( char *dest, int size, const char *src ) {
 	int		l1;
 
-	l1 = strlen( dest );
+	l1 = Q_strlen( dest );
 	if ( l1 >= size ) {
 		Com_Error( ERR_FATAL, "Q_strcat: already overflowed" );
 	}

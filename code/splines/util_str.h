@@ -32,6 +32,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #pragma warning(disable : 4710)     // function 'blah' not inlined
 #endif
 
+int Q_strlen(const char *pString);
+
 void TestStringClass ();
 
 class strdata
@@ -178,7 +180,7 @@ inline idStr::idStr
 
 	if ( text )
 		{
-      len = strlen( text );
+      len = Q_strlen( text );
 		EnsureAlloced ( len + 1 );
 		strcpy( m_data->data, text );
       m_data->len = len;
@@ -262,7 +264,7 @@ inline idStr::idStr
    int len;
 
    sprintf( text, "%.3f", num );
-   len = strlen( text );
+   len = Q_strlen( text );
    EnsureAlloced( len + 1 );
    strcpy( m_data->data, text );
    m_data->len = len;
@@ -278,7 +280,7 @@ inline idStr::idStr
    int len;
 
    sprintf( text, "%d", num );
-   len = strlen( text );
+   len = Q_strlen( text );
    EnsureAlloced( len + 1 );
    strcpy( m_data->data, text );
    m_data->len = len;
@@ -294,7 +296,7 @@ inline idStr::idStr
    int len;
 
    sprintf( text, "%u", num );
-   len = strlen( text );
+   len = Q_strlen( text );
    EnsureAlloced( len + 1 );
    strcpy( m_data->data, text );
    m_data->len = len;
@@ -329,7 +331,7 @@ inline void idStr::append
 
 	if ( text )
 		{
-		len = length() + strlen( text );
+		len = length() + Q_strlen( text );
 		EnsureAlloced( len + 1 );
 
       strcat( m_data->data, text );
@@ -436,7 +438,7 @@ inline void idStr::operator=
 
    if ( !m_data )
       {
-      len = strlen ( text );
+      len = Q_strlen ( text );
       EnsureAlloced( len + 1, false );
       strcpy ( m_data->data, text );
       m_data->len = len;
@@ -473,7 +475,7 @@ inline void idStr::operator=
       return;
       }
 
-	len = strlen( text );
+	len = Q_strlen( text );
    EnsureAlloced ( len + 1, false );
 	strcpy( m_data->data, text );
    m_data->len = len;

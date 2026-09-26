@@ -38,7 +38,7 @@ cvar_t		*r_fullscreen;
 
 #define VID_NUM_MODES ( sizeof( vid_modes ) / sizeof( vid_modes[0] ) )
 
-LONG WINAPI MainWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+LRESULT WINAPI MainWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 static qboolean s_alttab_disabled;
 
@@ -214,6 +214,9 @@ static int MapKey (int key)
 }
 
 
+extern cvar_t *in_mouse;
+extern cvar_t *in_logitechbug;
+
 /*
 ====================
 MainWndProc
@@ -221,13 +224,8 @@ MainWndProc
 main window procedure
 ====================
 */
-extern cvar_t *in_mouse;
-extern cvar_t *in_logitechbug;
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam)
+LRESULT WINAPI
+MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static qboolean flip = qtrue;
 	int zDelta, i;

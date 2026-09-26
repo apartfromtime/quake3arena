@@ -307,7 +307,7 @@ void MSG_WriteString( msg_t *sb, const char *s ) {
 		int		l,i;
 		char	string[MAX_STRING_CHARS];
 
-		l = strlen( s );
+		l = Q_strlen( s );
 		if ( l >= MAX_STRING_CHARS ) {
 			Com_Printf( "MSG_WriteString: MAX_STRING_CHARS" );
 			MSG_WriteData (sb, "", 1);
@@ -333,7 +333,7 @@ void MSG_WriteBigString( msg_t *sb, const char *s ) {
 		int		l,i;
 		char	string[BIG_INFO_STRING];
 
-		l = strlen( s );
+		l = Q_strlen( s );
 		if ( l >= BIG_INFO_STRING ) {
 			Com_Printf( "MSG_WriteString: BIG_INFO_STRING" );
 			MSG_WriteData (sb, "", 1);
@@ -781,7 +781,7 @@ typedef struct {
 } netField_t;
 
 // using the stringizing operator to save typing...
-#define	NETF(x) #x,(int)&((entityState_t*)0)->x
+#define	NETF(x) #x,(intptr_t)&((entityState_t*)0)->x
 
 netField_t	entityStateFields[] = 
 {
@@ -1096,7 +1096,7 @@ plyer_state_t communication
 */
 
 // using the stringizing operator to save typing...
-#define	PSF(x) #x,(int)&((playerState_t*)0)->x
+#define	PSF(x) #x,(intptr_t)&((playerState_t*)0)->x
 
 netField_t	playerStateFields[] = 
 {

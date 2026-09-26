@@ -234,7 +234,7 @@ void CL_ConfigstringModified( void ) {
 			continue;		// leave with the default empty string
 		}
 
-		len = strlen( dup );
+		len = Q_strlen( dup );
 
 		if ( len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS ) {
 			Com_Error( ERR_DROP, "MAX_GAMESTATE_CHARS exceeded" );
@@ -397,13 +397,12 @@ void CL_ShutdownCGame( void ) {
 	cgvm = NULL;
 }
 
-static int	FloatAsInt( float f ) {
-	int		temp;
+void *VM_ArgPtr(intptr_t intValue);
+float VM_ArgFlt(intptr_t intValue);
+int VM_FloatAsInt(float fltValue);
 
-	*(float *)&temp = f;
-
-	return temp;
-}
+#define	VMA(x)	VM_ArgPtr(args[x])
+#define	VMF(x)	VM_ArgFlt(args[x])
 
 /*
 ====================
@@ -412,9 +411,8 @@ CL_CgameSystemCalls
 The cgame module is making a system call
 ====================
 */
-#define	VMA(x) VM_ArgPtr(args[x])
-#define	VMF(x)	((float *)args)[x]
-int CL_CgameSystemCalls( int *args ) {
+intptr_t CL_CgameSystemCalls( intptr_t *args )
+{
 	switch( args[0] ) {
 	case CG_PRINT:
 		Com_Printf( "%s", VMA(1) );
@@ -484,6 +482,8 @@ int CL_CgameSystemCalls( int *args ) {
 		return CM_NumInlineModels();
 	case CG_CM_INLINEMODEL:
 		return CM_InlineModel( args[1] );
+	case CG_CM_LOADMODEL:
+		return 0;
 	case CG_CM_TEMPBOXMODEL:
 		return CM_TempBoxModel( VMA(1), VMA(2), /*int capsule*/ qfalse );
 	case CG_CM_TEMPCAPSULEMODEL:
@@ -493,19 +493,24 @@ int CL_CgameSystemCalls( int *args ) {
 	case CG_CM_TRANSFORMEDPOINTCONTENTS:
 		return CM_TransformedPointContents( VMA(1), args[2], VMA(3), VMA(4) );
 	case CG_CM_BOXTRACE:
-		CM_BoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qfalse );
+		CM_BoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7],
+			/*int capsule*/ qfalse );
 		return 0;
 	case CG_CM_CAPSULETRACE:
-		CM_BoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qtrue );
+		CM_BoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7],
+			/*int capsule*/ qtrue );
 		return 0;
 	case CG_CM_TRANSFORMEDBOXTRACE:
-		CM_TransformedBoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], VMA(8), VMA(9), /*int capsule*/ qfalse );
+		CM_TransformedBoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6],
+			args[7], VMA(8), VMA(9), /*int capsule*/ qfalse );
 		return 0;
 	case CG_CM_TRANSFORMEDCAPSULETRACE:
-		CM_TransformedBoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], VMA(8), VMA(9), /*int capsule*/ qtrue );
+		CM_TransformedBoxTrace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6],
+			args[7], VMA(8), VMA(9), /*int capsule*/ qtrue );
 		return 0;
 	case CG_CM_MARKFRAGMENTS:
-		return re.MarkFragments( args[1], VMA(2), VMA(3), args[4], VMA(5), args[6], VMA(7) );
+		return re.MarkFragments( args[1], VMA(2), VMA(3), args[4], VMA(5), args[6],
+			VMA(7) );
 	case CG_S_STARTSOUND:
 		S_StartSound( VMA(1), args[2], args[3], args[4] );
 		return 0;
@@ -534,6 +539,9 @@ int CL_CgameSystemCalls( int *args ) {
 		return S_RegisterSound( VMA(1), args[2] );
 	case CG_S_STARTBACKGROUNDTRACK:
 		S_StartBackgroundTrack( VMA(1), VMA(2) );
+		return 0;
+	case CG_S_STOPBACKGROUNDTRACK:
+		S_StopBackgroundTrack();
 		return 0;
 	case CG_R_LOADWORLDMAP:
 		re.LoadWorld( VMA(1) );
@@ -575,13 +583,19 @@ int CL_CgameSystemCalls( int *args ) {
 		re.SetColor( VMA(1) );
 		return 0;
 	case CG_R_DRAWSTRETCHPIC:
-		re.DrawStretchPic( VMF(1), VMF(2), VMF(3), VMF(4), VMF(5), VMF(6), VMF(7), VMF(8), args[9] );
+		re.DrawStretchPic( VMF(1), VMF(2), VMF(3), VMF(4), VMF(5), VMF(6), VMF(7),
+			VMF(8), args[9] );
 		return 0;
 	case CG_R_MODELBOUNDS:
 		re.ModelBounds( args[1], VMA(2), VMA(3) );
 		return 0;
 	case CG_R_LERPTAG:
 		return re.LerpTag( VMA(1), args[2], args[3], args[4], VMF(5), VMA(6) );
+	case CG_R_REMAP_SHADER:
+		re.RemapShader(VMA(1), VMA(2), VMA(3));
+		return 0;
+	case CG_R_INPVS:
+		return re.inPVS(VMA(1), VMA(2));
 	case CG_GETGLCONFIG:
 		CL_GetGlconfig( VMA(1) );
 		return 0;
@@ -604,17 +618,63 @@ int CL_CgameSystemCalls( int *args ) {
 		return 0;
 	case CG_MEMORY_REMAINING:
 		return Hunk_MemoryRemaining();
-  case CG_KEY_ISDOWN:
+	case CG_KEY_ISDOWN:
 		return Key_IsDown( args[1] );
-  case CG_KEY_GETCATCHER:
+	case CG_KEY_GETCATCHER:
 		return Key_GetCatcher();
-  case CG_KEY_SETCATCHER:
+	case CG_KEY_SETCATCHER:
 		Key_SetCatcher( args[1] );
-    return 0;
-  case CG_KEY_GETKEY:
+		return 0;
+	case CG_KEY_GETKEY:
 		return Key_GetKey( VMA(1) );
 
+	case CG_PC_ADD_GLOBAL_DEFINE:
+		return botlib_export->PC_AddGlobalDefine(VMA(1));
+	case CG_PC_LOAD_SOURCE:
+		return botlib_export->PC_LoadSourceHandle(VMA(1));
+	case CG_PC_FREE_SOURCE:
+		return botlib_export->PC_FreeSourceHandle(args[1]);
+	case CG_PC_READ_TOKEN:
+		return botlib_export->PC_ReadTokenHandle(args[1], VMA(2));
+	case CG_PC_SOURCE_FILE_AND_LINE:
+		return botlib_export->PC_SourceFileAndLine(args[1], VMA(2), VMA(3));
 
+	case CG_REAL_TIME:
+		return Com_RealTime(VMA(1));
+	case CG_SNAPVECTOR:
+		Sys_SnapVector(VMA(1));
+		return 0;
+
+	case CG_CIN_PLAYCINEMATIC:
+		return CIN_PlayCinematic(VMA(1), args[2], args[3], args[4], args[5], args[6]);
+
+	case CG_CIN_STOPCINEMATIC:
+		return CIN_StopCinematic(args[1]);
+
+	case CG_CIN_RUNCINEMATIC:
+		return CIN_RunCinematic(args[1]);
+
+	case CG_CIN_DRAWCINEMATIC:
+		CIN_DrawCinematic(args[1]);
+		return 0;
+
+	case CG_CIN_SETEXTENTS:
+		CIN_SetExtents(args[1], args[2], args[3], args[4], args[5]);
+		return 0;
+
+		/*
+			case CG_LOADCAMERA:
+				return loadCamera(VMA(1));
+
+			case CG_STARTCAMERA:
+				startCamera(args[1]);
+				return 0;
+
+			case CG_GETCAMERAINFO:
+				return getCameraInfo(args[1], VMA(2), VMA(3));
+		*/
+	case CG_GET_ENTITY_TOKEN:
+		return re.GetEntityToken(VMA(1), args[2]);
 
 	case CG_MEMSET:
 		Com_Memset( VMA(1), args[2], args[3] );
@@ -623,79 +683,21 @@ int CL_CgameSystemCalls( int *args ) {
 		Com_Memcpy( VMA(1), VMA(2), args[3] );
 		return 0;
 	case CG_STRNCPY:
-		return (int)strncpy( VMA(1), VMA(2), args[3] );
+		return (intptr_t)strncpy( VMA(1), VMA(2), args[3] );
 	case CG_SIN:
-		return FloatAsInt( sin( VMF(1) ) );
+		return VM_FloatAsInt( sin( VMF(1) ) );
 	case CG_COS:
-		return FloatAsInt( cos( VMF(1) ) );
+		return VM_FloatAsInt( cos( VMF(1) ) );
 	case CG_ATAN2:
-		return FloatAsInt( atan2( VMF(1), VMF(2) ) );
+		return VM_FloatAsInt( atan2( VMF(1), VMF(2) ) );
 	case CG_SQRT:
-		return FloatAsInt( sqrt( VMF(1) ) );
+		return VM_FloatAsInt( sqrt( VMF(1) ) );
 	case CG_FLOOR:
-		return FloatAsInt( floor( VMF(1) ) );
+		return VM_FloatAsInt( floor( VMF(1) ) );
 	case CG_CEIL:
-		return FloatAsInt( ceil( VMF(1) ) );
+		return VM_FloatAsInt( ceil( VMF(1) ) );
 	case CG_ACOS:
-		return FloatAsInt( Q_acos( VMF(1) ) );
-
-	case CG_PC_ADD_GLOBAL_DEFINE:
-		return botlib_export->PC_AddGlobalDefine( VMA(1) );
-	case CG_PC_LOAD_SOURCE:
-		return botlib_export->PC_LoadSourceHandle( VMA(1) );
-	case CG_PC_FREE_SOURCE:
-		return botlib_export->PC_FreeSourceHandle( args[1] );
-	case CG_PC_READ_TOKEN:
-		return botlib_export->PC_ReadTokenHandle( args[1], VMA(2) );
-	case CG_PC_SOURCE_FILE_AND_LINE:
-		return botlib_export->PC_SourceFileAndLine( args[1], VMA(2), VMA(3) );
-
-	case CG_S_STOPBACKGROUNDTRACK:
-		S_StopBackgroundTrack();
-		return 0;
-
-	case CG_REAL_TIME:
-		return Com_RealTime( VMA(1) );
-	case CG_SNAPVECTOR:
-		Sys_SnapVector( VMA(1) );
-		return 0;
-
-	case CG_CIN_PLAYCINEMATIC:
-	  return CIN_PlayCinematic(VMA(1), args[2], args[3], args[4], args[5], args[6]);
-
-	case CG_CIN_STOPCINEMATIC:
-	  return CIN_StopCinematic(args[1]);
-
-	case CG_CIN_RUNCINEMATIC:
-	  return CIN_RunCinematic(args[1]);
-
-	case CG_CIN_DRAWCINEMATIC:
-	  CIN_DrawCinematic(args[1]);
-	  return 0;
-
-	case CG_CIN_SETEXTENTS:
-	  CIN_SetExtents(args[1], args[2], args[3], args[4], args[5]);
-	  return 0;
-
-	case CG_R_REMAP_SHADER:
-		re.RemapShader( VMA(1), VMA(2), VMA(3) );
-		return 0;
-
-/*
-	case CG_LOADCAMERA:
-		return loadCamera(VMA(1));
-
-	case CG_STARTCAMERA:
-		startCamera(args[1]);
-		return 0;
-
-	case CG_GETCAMERAINFO:
-		return getCameraInfo(args[1], VMA(2), VMA(3));
-*/
-	case CG_GET_ENTITY_TOKEN:
-		return re.GetEntityToken( VMA(1), args[2] );
-	case CG_R_INPVS:
-		return re.inPVS( VMA(1), VMA(2) );
+		return VM_FloatAsInt( Q_acos( VMF(1) ) );
 
 	default:
 	        assert(0); // bk010102

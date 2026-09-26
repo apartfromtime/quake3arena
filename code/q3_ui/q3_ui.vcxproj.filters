@@ -161,8 +161,10 @@
     <CustomBuild Include="ui_local.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="ui_public.h">
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ui\ui_public.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -114,7 +114,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		if ( ( com_dedicated && com_dedicated->integer ) )
 		{
 			cmdString = CopyString( "quit" );
-			Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
+			Sys_QueEvent( 0, SE_CONSOLE, 0, 0, Q_strlen( cmdString ) + 1, cmdString );
 		}
 		else if ( s_wcd.quitOnClose )
 		{
@@ -144,7 +144,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				DeleteDC( hdcScaled );
 			}
 #endif
-			return ( long ) s_wcd.hbrEditBackground;
+			return (LONG_PTR) s_wcd.hbrEditBackground;
 		}
 		else if ( ( HWND ) lParam == s_wcd.hwndErrorBox )
 		{
@@ -158,7 +158,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				SetBkColor( ( HDC ) wParam, RGB( 0x80, 0x80, 0x80 ) );
 				SetTextColor( ( HDC ) wParam, RGB( 0x00, 0x0, 0x00 ) );
 			}
-			return ( long ) s_wcd.hbrErrorBackground;
+			return (LONG_PTR) s_wcd.hbrErrorBackground;
 		}
 		break;
 
@@ -177,7 +177,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			else
 			{
 				cmdString = CopyString( "quit" );
-				Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
+				Sys_QueEvent( 0, SE_CONSOLE, 0, 0, Q_strlen( cmdString ) + 1, cmdString );
 			}
 		}
 		else if ( wParam == CLEAR_ID )
@@ -416,7 +416,11 @@ void Sys_CreateConsole( void )
 												g_wv.hInstance, NULL );
 	SendMessage( s_wcd.hwndBuffer, WM_SETFONT, ( WPARAM ) s_wcd.hfBufferFont, 0 );
 
-	s_wcd.SysInputLineWndProc = ( WNDPROC ) SetWindowLong( s_wcd.hwndInputLine, GWL_WNDPROC, ( long ) InputLineWndProc );
+#ifdef _WIN64
+	s_wcd.SysInputLineWndProc = ( WNDPROC )SetWindowLongPtr( s_wcd.hwndInputLine, GWLP_WNDPROC, (LONG_PTR) InputLineWndProc );
+#else
+	s_wcd.SysInputLineWndProc = ( WNDPROC ) SetWindowLong( s_wcd.hwndInputLine, GWL_WNDPROC, (LONG_PTR) InputLineWndProc );
+#endif
 	SendMessage( s_wcd.hwndInputLine, WM_SETFONT, ( WPARAM ) s_wcd.hfBufferFont, 0 );
 
 	ShowWindow( s_wcd.hWnd, SW_SHOWDEFAULT);

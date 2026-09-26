@@ -200,38 +200,41 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .q3vm file
 ================
 */
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11  ) {
-	switch ( command ) {
+intptr_t vmMain(intptr_t command, intptr_t arg0, intptr_t arg1, intptr_t arg2,
+	intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7,
+	intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11)
+{
+	switch (command) {
 	case GAME_INIT:
-		G_InitGame( arg0, arg1, arg2 );
+		G_InitGame(arg0, arg1, arg2);
 		return 0;
 	case GAME_SHUTDOWN:
-		G_ShutdownGame( arg0 );
+		G_ShutdownGame(arg0);
 		return 0;
 	case GAME_CLIENT_CONNECT:
-		return (int)ClientConnect( arg0, arg1, arg2 );
+		return (int)ClientConnect(arg0, arg1, arg2);
 	case GAME_CLIENT_THINK:
-		ClientThink( arg0 );
+		ClientThink(arg0);
 		return 0;
 	case GAME_CLIENT_USERINFO_CHANGED:
-		ClientUserinfoChanged( arg0 );
+		ClientUserinfoChanged(arg0);
 		return 0;
 	case GAME_CLIENT_DISCONNECT:
-		ClientDisconnect( arg0 );
+		ClientDisconnect(arg0);
 		return 0;
 	case GAME_CLIENT_BEGIN:
-		ClientBegin( arg0 );
+		ClientBegin(arg0);
 		return 0;
 	case GAME_CLIENT_COMMAND:
-		ClientCommand( arg0 );
+		ClientCommand(arg0);
 		return 0;
 	case GAME_RUN_FRAME:
-		G_RunFrame( arg0 );
+		G_RunFrame(arg0);
 		return 0;
 	case GAME_CONSOLE_COMMAND:
 		return ConsoleCommand();
 	case BOTAI_START_FRAME:
-		return BotAIStartFrame( arg0 );
+		return BotAIStartFrame(arg0);
 	}
 
 	return -1;
@@ -1100,7 +1103,7 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 		return;
 	}
 
-	trap_FS_Write( string, strlen( string ), level.logFile );
+	trap_FS_Write( string, Q_strlen( string ), level.logFile );
 }
 
 /*
