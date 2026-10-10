@@ -103,7 +103,8 @@ typedef struct {
 //
 // system traps provided by the main engine
 //
-typedef enum {
+typedef enum
+{
 	//============== general Quake services ==================
 
 	G_PRINT,		// ( const char *string );
@@ -134,6 +135,8 @@ typedef enum {
 	G_FS_READ,		// ( void *buffer, int len, fileHandle_t f );
 	G_FS_WRITE,		// ( const void *buffer, int len, fileHandle_t f );
 	G_FS_FCLOSE_FILE,		// ( fileHandle_t f );
+	G_FS_GETFILELIST,
+	G_FS_SEEK,
 
 	G_SEND_CONSOLE_COMMAND,	// ( const char *text );
 	// add commands to the console as if they were typed in
@@ -179,6 +182,8 @@ typedef enum {
 	G_TRACE,	// ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
 	// collision detection against all linked entities
 
+	G_TRACECAPSULE,	// ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
+
 	G_POINT_CONTENTS,	// ( const vec3_t point, int passEntityNum );
 	// point contents against all linked entities
 
@@ -205,6 +210,8 @@ typedef enum {
 	G_ENTITY_CONTACT,	// ( const vec3_t mins, const vec3_t maxs, const gentity_t *ent );
 	// perform an exact check against inline brush models of non-square shape
 
+	G_ENTITY_CONTACTCAPSULE,	// ( const vec3_t mins, const vec3_t maxs, const gentity_t *ent );
+	
 	// access for bots to get and free a server client (FIXME?)
 	G_BOT_ALLOCATE_CLIENT,	// ( void );
 
@@ -217,23 +224,22 @@ typedef enum {
 	// false when all tokens have been parsed.
 	// This should only be done at GAME_INIT time.
 
-	G_FS_GETFILELIST,
 	G_DEBUG_POLYGON_CREATE,
 	G_DEBUG_POLYGON_DELETE,
 	G_REAL_TIME,
 	G_SNAPVECTOR,
 
-	G_TRACECAPSULE,	// ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
-	G_ENTITY_CONTACTCAPSULE,	// ( const vec3_t mins, const vec3_t maxs, const gentity_t *ent );
-	
-	// 1.32
-	G_FS_SEEK,
-
 	BOTLIB_SETUP = 200,				// ( void );
 	BOTLIB_SHUTDOWN,				// ( void );
 	BOTLIB_LIBVAR_SET,
 	BOTLIB_LIBVAR_GET,
+
 	BOTLIB_PC_ADD_GLOBAL_DEFINE,
+	BOTLIB_PC_LOAD_SOURCE,
+	BOTLIB_PC_FREE_SOURCE,
+	BOTLIB_PC_READ_TOKEN,
+	BOTLIB_PC_SOURCE_FILE_AND_LINE,
+
 	BOTLIB_START_FRAME,
 	BOTLIB_LOAD_MAP,
 	BOTLIB_UPDATENTITY,
@@ -382,11 +388,6 @@ typedef enum {
 	BOTLIB_AAS_ALTERNATIVE_ROUTE_GOAL,
 	BOTLIB_AAS_PREDICT_ROUTE,
 	BOTLIB_AAS_POINT_REACHABILITY_AREA_INDEX,
-
-	BOTLIB_PC_LOAD_SOURCE,
-	BOTLIB_PC_FREE_SOURCE,
-	BOTLIB_PC_READ_TOKEN,
-	BOTLIB_PC_SOURCE_FILE_AND_LINE
 
 } gameImport_t;
 

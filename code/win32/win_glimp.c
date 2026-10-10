@@ -592,7 +592,7 @@ static qboolean GLW_CreateWindow( const char *drivername, int width, int height,
 		memset( &wc, 0, sizeof( wc ) );
 
 		wc.style         = 0;
-		wc.lpfnWndProc   = (WNDPROC) glw_state.wndproc;
+		wc.lpfnWndProc   = (WNDPROC)glw_state.wndproc;
 		wc.cbClsExtra    = 0;
 		wc.cbWndExtra    = 0;
 		wc.hInstance     = g_wv.hInstance;
@@ -1365,10 +1365,17 @@ void GLimp_Init( void )
 
 	// save off hInstance and wndproc
 	cv = ri.Cvar_Get( "win_hinstance", "", 0 );
+#ifdef _M_IX86
 	sscanf( cv->string, "%i", (int *)&g_wv.hInstance );
-
+#else
+	sscanf(cv->string, "%p", (int *)&g_wv.hInstance);
+#endif
 	cv = ri.Cvar_Get( "win_wndproc", "", 0 );
+#ifdef _M_IX86
 	sscanf( cv->string, "%i", (int *)&glw_state.wndproc );
+#else
+	sscanf( cv->string, "%p", (int *)&glw_state.wndproc );
+#endif
 
 	r_allowSoftwareGL = ri.Cvar_Get( "r_allowSoftwareGL", "0", CVAR_LATCH );
 	r_maskMinidriver = ri.Cvar_Get( "r_maskMinidriver", "0", CVAR_LATCH );

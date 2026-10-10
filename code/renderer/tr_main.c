@@ -1003,7 +1003,7 @@ qsort replacement
 
 =================
 */
-#define	SWAP_DRAW_SURF(a,b) temp=((int *)a)[0];((int *)a)[0]=((int *)b)[0];((int *)b)[0]=temp; temp=((int *)a)[1];((int *)a)[1]=((int *)b)[1];((int *)b)[1]=temp;
+#define	SWAP_DRAW_SURF(a,b) temp=((intptr_t*)a)[0];((intptr_t*)a)[0]=((intptr_t*)b)[0];((intptr_t*)b)[0]=temp; temp=((intptr_t*)a)[1];((intptr_t*)a)[1]=((intptr_t*)b)[1];((intptr_t*)b)[1]=temp;
 
 /* this parameter defines the cutoff between using quick sort and
    insertion sort for arrays; arrays with lengths shorter or equal to the
@@ -1013,7 +1013,7 @@ qsort replacement
 
 static void shortsort( drawSurf_t *lo, drawSurf_t *hi ) {
     drawSurf_t	*p, *max;
-	int			temp;
+	intptr_t	temp;
 
     while (hi > lo) {
         max = lo;
@@ -1044,11 +1044,17 @@ void qsortFast (
     unsigned size;              /* size of the sub-array */
     char *lostk[30], *histk[30];
     int stkptr;                 /* stack for saving sub-array to be processed */
-	int	temp;
+	intptr_t	temp;
 
+#ifdef _M_X64
+	if (sizeof(drawSurf_t) != 16) {
+		ri.Error(ERR_DROP, "change SWAP_DRAW_SURF macro");
+	}
+#else
 	if ( sizeof(drawSurf_t) != 8 ) {
 		ri.Error( ERR_DROP, "change SWAP_DRAW_SURF macro" );
 	}
+#endif
 
     /* Note: the number of stack entries required is no more than
        1 + log2(size), so 30 is sufficient for any array */
@@ -1059,7 +1065,7 @@ void qsortFast (
     stkptr = 0;                 /* initialize stack */
 
     lo = base;
-    hi = (char *)base + width * (num-1);        /* initialize limits */
+	hi = (char *)base + width * (num-1);        /* initialize limits */
 
     /* this entry point is for pseudo-recursion calling: setting
        lo and hi and jumping to here is like recursion, but stkptr is
@@ -1071,8 +1077,7 @@ recurse:
     /* below a certain size, it is faster to use a O(n^2) sorting method */
     if (size <= CUTOFF) {
          shortsort((drawSurf_t *)lo, (drawSurf_t *)hi);
-    }
-    else {
+    } else {
         /* First we pick a partititioning element.  The efficiency of the
            algorithm demands that we find one that is approximately the
            median of the values, but also that we select one fast.  Using

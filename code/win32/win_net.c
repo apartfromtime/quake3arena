@@ -623,8 +623,8 @@ void NET_OpenSocks( int port ) {
 		int		plen;
 
 		// build the request
-		ulen = strlen( net_socksUsername->string );
-		plen = strlen( net_socksPassword->string );
+		ulen = Q_strlen( net_socksUsername->string );
+		plen = Q_strlen( net_socksPassword->string );
 
 		buf[0] = 1;		// username/password authentication version
 		buf[1] = ulen;

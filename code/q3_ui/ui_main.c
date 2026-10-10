@@ -40,8 +40,11 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .qvm file
 ================
 */
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11  ) {
-	switch ( command ) {
+intptr_t vmMain(intptr_t command, intptr_t arg0, intptr_t arg1, intptr_t arg2,
+	intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7,
+	intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11)
+{
+	switch (command) {
 	case UI_GETAPIVERSION:
 		return UI_API_VERSION;
 
@@ -54,29 +57,29 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
 		return 0;
 
 	case UI_KEY_EVENT:
-		UI_KeyEvent( arg0, arg1 );
+		UI_KeyEvent(arg0, arg1);
 		return 0;
 
 	case UI_MOUSE_EVENT:
-		UI_MouseEvent( arg0, arg1 );
+		UI_MouseEvent(arg0, arg1);
 		return 0;
 
 	case UI_REFRESH:
-		UI_Refresh( arg0 );
+		UI_Refresh(arg0);
 		return 0;
 
 	case UI_IS_FULLSCREEN:
 		return UI_IsFullscreen();
 
 	case UI_SET_ACTIVE_MENU:
-		UI_SetActiveMenu( arg0 );
+		UI_SetActiveMenu(arg0);
 		return 0;
 
 	case UI_CONSOLE_COMMAND:
 		return UI_ConsoleCommand(arg0);
 
 	case UI_DRAW_CONNECT_SCREEN:
-		UI_DrawConnectScreen( arg0 );
+		UI_DrawConnectScreen(arg0);
 		return 0;
 	case UI_HASUNIQUECDKEY:				// mod authors need to observe this
 		return qtrue;  // bk010117 - change this to qfalse for mods!

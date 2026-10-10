@@ -262,7 +262,7 @@ bool idStr::isNumeric
 		}
 
 	dot = false;
-	len = strlen( str );
+	len = Q_strlen( str );
 	for( i = 0; i < len; i++ )
 		{
 		if ( !isdigit( str[ i ] ) )
