@@ -137,12 +137,16 @@ float	FloatSwap (const float *f);
 #ifdef NDEBUG
 #ifdef _M_IX86
 #define	CPUSTRING	"win-x86"
+#elif _M_X64
+#define	CPUSTRING	"win-x64"
 #elif defined _M_ALPHA
 #define	CPUSTRING	"win-AXP"
 #endif
 #else
 #ifdef _M_IX86
 #define	CPUSTRING	"win-x86-debug"
+#elif defined _M_X64
+#define	CPUSTRING	"win-x64-debug"
 #elif defined _M_ALPHA
 #define	CPUSTRING	"win-AXP-debug"
 #endif
@@ -862,6 +866,8 @@ char	*Q_strlwr( char *s1 );
 char	*Q_strupr( char *s1 );
 char	*Q_strrchr( const char* string, int c );
 
+int Q_strlen(const char *pString);
+
 // buffer size safe library replacements
 void	Q_strncpyz( char *dest, const char *src, int destsize );
 void	Q_strcat( char *dest, int size, const char *src );
@@ -888,6 +894,12 @@ typedef struct
 } qint64;
 
 //=============================================
+
+typedef union {
+	float	f;
+	unsigned int i;
+} _FloatByteUnion;
+
 /*
 short	BigShort(short l);
 short	LittleShort(short l);

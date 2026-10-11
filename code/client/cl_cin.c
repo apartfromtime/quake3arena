@@ -531,7 +531,10 @@ int		spl;
 							data++;
 							break;
 						case	0x4000:										// motion compensation
-							move4_32( status[index] + cin.mcomp[(*data)], status[index], spl );
+							byte * src = status[index];
+							int ofs = cin.mcomp[(*data)];
+							src += ofs;
+							move4_32( src, status[index], spl );
 							data++;
 							break;
 					}
@@ -539,7 +542,10 @@ int		spl;
 				}
 				break;
 			case	0x4000:													// motion compensation
-				move8_32( status[index] + cin.mcomp[(*data)], status[index], spl );
+				byte * src = status[index];
+				int ofs = cin.mcomp[(*data)];
+				src += ofs;
+				move8_32( src, status[index], spl );
 				data++;
 				index += 5;
 				break;

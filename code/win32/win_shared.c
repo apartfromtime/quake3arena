@@ -53,6 +53,35 @@ int Sys_Milliseconds (void)
 	return sys_curtime;
 }
 
+#ifdef _M_X64
+#include <emmintrin.h>
+/*
+================
+Sys_SnapVector
+================
+*/
+long
+fastftol(float f)
+{
+	return (long)f;
+}
+
+void Sys_SnapVector(float *v)
+{
+	__m128i i;
+	__m128	a;
+	a.m128_f32[0] = v[0];
+	a.m128_f32[1] = v[1];
+	a.m128_f32[2] = v[2];
+	a.m128_f32[3] = 0;
+	i = _mm_cvtps_epi32(a);
+	*v = i.m128i_i32[0];
+	v++;
+	*v = i.m128i_i32[1];
+	v++;
+	*v = i.m128i_i32[2];
+}
+#else
 /*
 ================
 Sys_SnapVector
@@ -92,7 +121,7 @@ void Sys_SnapVector( float *v )
 	*v = fastftol(*v);
 	*/
 }
-
+#endif
 
 /*
 **
@@ -108,6 +137,20 @@ void Sys_SnapVector( float *v )
 **
 ** --------------------------------------------------------------------------------
 */
+#ifdef _M_X64
+static void CPUID(int func, unsigned regs[4])
+{
+	regs[0] = 0;
+	regs[1] = 0;
+	regs[2] = 0;
+	regs[3] = 0;
+}
+
+static int IsPentium(void)
+{
+	return qfalse;
+}
+#else
 static void CPUID( int func, unsigned regs[4] )
 {
 	unsigned regEAX, regEBX, regECX, regEDX;
@@ -165,6 +208,7 @@ err:
 good:
 	return qtrue;
 }
+#endif
 
 static int Is3DNOW( void )
 {

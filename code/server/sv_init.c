@@ -64,7 +64,7 @@ void SV_SetConfigstring (int index, const char *val) {
 				continue;
 			}
 
-			len = strlen( val );
+			len = Q_strlen( val );
 			if( len >= maxChunkSize ) {
 				int		sent = 0;
 				int		remaining = len;

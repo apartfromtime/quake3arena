@@ -1094,7 +1094,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 					// shaders, txt, arena files  by themselves do not count as a reference as 
 					// these are loaded from all pk3s 
 					// from every pk3 file.. 
-					l = strlen( filename );
+					l = Q_strlen( filename );
 					if ( !(pak->referenced & FS_GENERAL_REF)) {
 						if ( Q_stricmp(filename + l - 7, ".shader") != 0 &&
 							Q_stricmp(filename + l - 4, ".txt") != 0 &&
@@ -1161,7 +1161,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 
 			// if we are running restricted, the only files we
 			// will allow to come from the directory are .cfg files
-			l = strlen( filename );
+			l = Q_strlen( filename );
       // FIXME TTimo I'm not sure about the fs_numServerPaks test
       // if you are using FS_ReadFile to find out if a file exists,
       //   this test can make the search fail although the file is in the directory
@@ -1172,7 +1172,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 				if ( Q_stricmp( filename + l - 4, ".cfg" )		// for config files
 					&& Q_stricmp( filename + l - 5, ".menu" )	// menu files
 					&& Q_stricmp( filename + l - 5, ".game" )	// menu files
-					&& Q_stricmp( filename + l - strlen(demoExt), demoExt )	// menu files
+					&& Q_stricmp( filename + l - Q_strlen(demoExt), demoExt )	// menu files
 					&& Q_stricmp( filename + l - 4, ".dat" ) ) {	// for journal files
 					continue;
 				}
@@ -1358,7 +1358,7 @@ void QDECL FS_Printf( fileHandle_t h, const char *fmt, ... ) {
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
-	FS_Write(msg, strlen(msg), h);
+	FS_Write(msg, Q_strlen(msg), h);
 }
 
 /*
@@ -1707,7 +1707,7 @@ static pack_t *FS_LoadZipFile( char *zipfile, const char *basename )
 		if (err != UNZ_OK) {
 			break;
 		}
-		len += strlen(filename_inzip) + 1;
+		len += Q_strlen(filename_inzip) + 1;
 		unzGoToNextFile(uf);
 	}
 
@@ -1863,11 +1863,11 @@ char **FS_ListFilteredFiles( const char *path, const char *extension, char *filt
 		extension = "";
 	}
 
-	pathLength = strlen( path );
+	pathLength = Q_strlen( path );
 	if ( path[pathLength-1] == '\\' || path[pathLength-1] == '/' ) {
 		pathLength--;
 	}
-	extensionLength = strlen( extension );
+	extensionLength = Q_strlen( extension );
 	nfiles = 0;
 	FS_ReturnPath(path, zpath, &pathDepth);
 
@@ -2018,7 +2018,7 @@ int	FS_GetFileList(  const char *path, const char *extension, char *listbuf, int
 	pFiles = FS_ListFiles(path, extension, &nFiles);
 
 	for (i =0; i < nFiles; i++) {
-		nLen = strlen(pFiles[i]) + 1;
+		nLen = Q_strlen(pFiles[i]) + 1;
 		if (nTotal + nLen + 1 < bufsize) {
 			strcpy(listbuf, pFiles[i]);
 			listbuf += nLen;
@@ -2184,7 +2184,7 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
       }
 
       if (nPaks > 0) {
-        nLen = strlen(name) + 1;
+        nLen = Q_strlen(name) + 1;
         // nLen is the length of the mod path
         // we need to see if there is a description available
         descPath[0] = '\0';
@@ -2203,7 +2203,7 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
         } else {
           strcpy(descPath, name);
         }
-        nDescLen = strlen(descPath) + 1;
+        nDescLen = Q_strlen(descPath) + 1;
 
         if (nTotal + nLen + 1 + nDescLen + 1 < bufsize) {
           strcpy(listbuf, name);
@@ -2503,7 +2503,7 @@ static void FS_AddGameDirectory( const char *path, const char *dir ) {
 		sorted[i] = pakfiles[i];
 	}
 
-	qsort( sorted, numfiles, 4, paksort );
+	qsort( sorted, numfiles, sizeof(intptr_t), paksort);
 
 	for ( i = 0 ; i < numfiles ; i++ ) {
 		pakfile = FS_BuildOSPath( path, dir, sorted[i] );
@@ -3012,7 +3012,7 @@ const char *FS_ReferencedPakChecksums( void ) {
 	for ( search = fs_searchpaths ; search ; search = search->next ) {
 		// is the element a pak file?
 		if ( search->pack ) {
-			if (search->pack->referenced || Q_stricmpn(search->pack->pakGamename, BASEGAME, strlen(BASEGAME))) {
+			if (search->pack->referenced || Q_stricmpn(search->pack->pakGamename, BASEGAME, Q_strlen(BASEGAME))) {
 				Q_strcat( info, sizeof( info ), va("%i ", search->pack->checksum ) );
 			}
 		}
@@ -3094,7 +3094,7 @@ const char *FS_ReferencedPakNames( void ) {
 			if (*info) {
 				Q_strcat(info, sizeof( info ), " " );
 			}
-			if (search->pack->referenced || Q_stricmpn(search->pack->pakGamename, BASEGAME, strlen(BASEGAME))) {
+			if (search->pack->referenced || Q_stricmpn(search->pack->pakGamename, BASEGAME, Q_strlen(BASEGAME))) {
 				Q_strcat( info, sizeof( info ), search->pack->pakGamename );
 				Q_strcat( info, sizeof( info ), "/" );
 				Q_strcat( info, sizeof( info ), search->pack->pakBasename );

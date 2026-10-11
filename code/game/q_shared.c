@@ -174,11 +174,6 @@ qint64 Long64NoSwap (qint64 ll)
 	return ll;
 }
 
-typedef union {
-    float	f;
-    unsigned int i;
-} _FloatByteUnion;
-
 float FloatSwap (const float *f) {
 	const _FloatByteUnion *in;
 	_FloatByteUnion out;
@@ -809,12 +804,17 @@ char *Q_strupr( char *s1 ) {
     return s1;
 }
 
+int
+Q_strlen(const char *pString)
+{
+	return strlen(pString) & 0xFFFFFFFF;			// conversion from 'size_t' to 'int', possible loss of data
+}
 
 // never goes past bounds or leaves without a terminating 0
 void Q_strcat( char *dest, int size, const char *src ) {
 	int		l1;
 
-	l1 = strlen( dest );
+	l1 = strlen( dest ) & 0xFFFFFFFF;			// conversion from 'size_t' to 'int', possible loss of data
 	if ( l1 >= size ) {
 		Com_Error( ERR_FATAL, "Q_strcat: already overflowed" );
 	}
@@ -881,9 +881,7 @@ void QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {
 	if (len >= size) {
 		Com_Printf ("Com_sprintf: overflow of %i in %i\n", len, size);
 #ifdef	_DEBUG
-		__asm {
-			int 3;
-		}
+		__debugbreak();
 #endif
 	}
 	Q_strncpyz (dest, bigbuffer, size );
@@ -899,18 +897,20 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char	* QDECL va( char *format, ... ) {
-	va_list		argptr;
+char *QDECL
+va(char *format, ...)
+{
+	va_list			argptr;
 	static char		string[2][32000];	// in case va is called by nested functions
 	static int		index = 0;
-	char	*buf;
+	char *			buf;
 
 	buf = string[index & 1];
 	index++;
 
-	va_start (argptr, format);
-	vsprintf (buf, format,argptr);
-	va_end (argptr);
+	va_start(argptr, format);
+	vsprintf(buf, format, argptr);
+	va_end(argptr);
 
 	return buf;
 }

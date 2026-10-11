@@ -287,16 +287,12 @@ void SV_GetUsercmd( int clientNum, usercmd_t *cmd ) {
 
 //==============================================
 
-static int	FloatAsInt( float f ) {
-	union
-	{
-	    int i;
-	    float f;
-	} temp;
-	
-	temp.f = f;
-	return temp.i;
-}
+void *VM_ArgPtr(intptr_t intValue);
+float VM_ArgFlt(intptr_t intValue);
+int VM_FloatAsInt(float fltValue);
+
+#define	VMA(x)	VM_ArgPtr(args[x])
+#define	VMF(x)	VM_ArgFlt(args[x])
 
 /*
 ====================
@@ -305,16 +301,8 @@ SV_GameSystemCalls
 The module is making a system call
 ====================
 */
-//rcg010207 - see my comments in VM_DllSyscall(), in qcommon/vm.c ...
-#if ((defined __linux__) && (defined __powerpc__))
-#define VMA(x) ((void *) args[x])
-#else
-#define	VMA(x) VM_ArgPtr(args[x])
-#endif
-
-#define	VMF(x)	((float *)args)[x]
-
-int SV_GameSystemCalls( int *args ) {
+intptr_t SV_GameSystemCalls( intptr_t *args )
+{
 	switch( args[0] ) {
 	case G_PRINT:
 		Com_Printf( "%s", VMA(1) );
@@ -343,9 +331,6 @@ int SV_GameSystemCalls( int *args ) {
 	case G_ARGV:
 		Cmd_ArgvBuffer( args[1], VMA(2), args[3] );
 		return 0;
-	case G_SEND_CONSOLE_COMMAND:
-		Cbuf_ExecuteText( args[1], VMA(2) );
-		return 0;
 
 	case G_FS_FOPEN_FILE:
 		return FS_FOpenFileByMode( VMA(1), VMA(2), args[3] );
@@ -363,6 +348,9 @@ int SV_GameSystemCalls( int *args ) {
 	case G_FS_SEEK:
 		return FS_Seek( args[1], args[2], args[3] );
 
+	case G_SEND_CONSOLE_COMMAND:
+		Cbuf_ExecuteText(args[1], VMA(2));
+		return 0;
 	case G_LOCATE_GAME_DATA:
 		SV_LocateGameData( VMA(1), args[2], args[3], VMA(4), args[5] );
 		return 0;
@@ -372,6 +360,44 @@ int SV_GameSystemCalls( int *args ) {
 	case G_SEND_SERVER_COMMAND:
 		SV_GameSendServerCommand( args[1], VMA(2) );
 		return 0;
+	case G_SET_CONFIGSTRING:
+		SV_SetConfigstring(args[1], VMA(2));
+		return 0;
+	case G_GET_CONFIGSTRING:
+		SV_GetConfigstring(args[1], VMA(2), args[3]);
+		return 0;
+	case G_GET_USERINFO:
+		SV_GetUserinfo(args[1], VMA(2), args[3]);
+		return 0;
+	case G_SET_USERINFO:
+		SV_SetUserinfo(args[1], VMA(2));
+		return 0;
+	case G_GET_SERVERINFO:
+		SV_GetServerinfo(VMA(1), args[2]);
+		return 0;
+
+	case G_SET_BRUSH_MODEL:
+		SV_SetBrushModel(VMA(1), VMA(2));
+		return 0;
+	case G_TRACE:
+		SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7],
+			/*int capsule*/ qfalse);
+		return 0;
+	case G_TRACECAPSULE:
+		SV_Trace(VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7],
+			/*int capsule*/ qtrue);
+		return 0;
+	case G_POINT_CONTENTS:
+		return SV_PointContents(VMA(1), args[2]);
+	case G_IN_PVS:
+		return SV_inPVS(VMA(1), VMA(2));
+	case G_IN_PVS_IGNORE_PORTALS:
+		return SV_inPVSIgnorePortals(VMA(1), VMA(2));
+	case G_ADJUST_AREA_PORTAL_STATE:
+		SV_AdjustAreaPortalState(VMA(1), args[2]);
+		return 0;
+	case G_AREAS_CONNECTED:
+		return CM_AreasConnected(args[1], args[2]);
 	case G_LINKENTITY:
 		SV_LinkEntity( VMA(1) );
 		return 0;
@@ -384,42 +410,6 @@ int SV_GameSystemCalls( int *args ) {
 		return SV_EntityContact( VMA(1), VMA(2), VMA(3), /*int capsule*/ qfalse );
 	case G_ENTITY_CONTACTCAPSULE:
 		return SV_EntityContact( VMA(1), VMA(2), VMA(3), /*int capsule*/ qtrue );
-	case G_TRACE:
-		SV_Trace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qfalse );
-		return 0;
-	case G_TRACECAPSULE:
-		SV_Trace( VMA(1), VMA(2), VMA(3), VMA(4), VMA(5), args[6], args[7], /*int capsule*/ qtrue );
-		return 0;
-	case G_POINT_CONTENTS:
-		return SV_PointContents( VMA(1), args[2] );
-	case G_SET_BRUSH_MODEL:
-		SV_SetBrushModel( VMA(1), VMA(2) );
-		return 0;
-	case G_IN_PVS:
-		return SV_inPVS( VMA(1), VMA(2) );
-	case G_IN_PVS_IGNORE_PORTALS:
-		return SV_inPVSIgnorePortals( VMA(1), VMA(2) );
-
-	case G_SET_CONFIGSTRING:
-		SV_SetConfigstring( args[1], VMA(2) );
-		return 0;
-	case G_GET_CONFIGSTRING:
-		SV_GetConfigstring( args[1], VMA(2), args[3] );
-		return 0;
-	case G_SET_USERINFO:
-		SV_SetUserinfo( args[1], VMA(2) );
-		return 0;
-	case G_GET_USERINFO:
-		SV_GetUserinfo( args[1], VMA(2), args[3] );
-		return 0;
-	case G_GET_SERVERINFO:
-		SV_GetServerinfo( VMA(1), args[2] );
-		return 0;
-	case G_ADJUST_AREA_PORTAL_STATE:
-		SV_AdjustAreaPortalState( VMA(1), args[2] );
-		return 0;
-	case G_AREAS_CONNECTED:
-		return CM_AreasConnected( args[1], args[2] );
 
 	case G_BOT_ALLOCATE_CLIENT:
 		return SV_BotAllocateClient();
@@ -498,7 +488,8 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_AAS_AREA_INFO:
 		return botlib_export->aas.AAS_AreaInfo( args[1], VMA(2) );
 	case BOTLIB_AAS_ALTERNATIVE_ROUTE_GOAL:
-		return botlib_export->aas.AAS_AlternativeRouteGoals( VMA(1), args[2], VMA(3), args[4], args[5], VMA(6), args[7], args[8] );
+		return botlib_export->aas.AAS_AlternativeRouteGoals( VMA(1), args[2], VMA(3),
+			args[4], args[5], VMA(6), args[7], args[8] );
 	case BOTLIB_AAS_ENTITY_INFO:
 		botlib_export->aas.AAS_EntityInfo( args[1], VMA(2) );
 		return 0;
@@ -509,21 +500,23 @@ int SV_GameSystemCalls( int *args ) {
 		botlib_export->aas.AAS_PresenceTypeBoundingBox( args[1], VMA(2), VMA(3) );
 		return 0;
 	case BOTLIB_AAS_TIME:
-		return FloatAsInt( botlib_export->aas.AAS_Time() );
+		return VM_FloatAsInt( botlib_export->aas.AAS_Time() );
 
 	case BOTLIB_AAS_POINT_AREA_NUM:
 		return botlib_export->aas.AAS_PointAreaNum( VMA(1) );
 	case BOTLIB_AAS_POINT_REACHABILITY_AREA_INDEX:
 		return botlib_export->aas.AAS_PointReachabilityAreaIndex( VMA(1) );
 	case BOTLIB_AAS_TRACE_AREAS:
-		return botlib_export->aas.AAS_TraceAreas( VMA(1), VMA(2), VMA(3), VMA(4), args[5] );
+		return botlib_export->aas.AAS_TraceAreas( VMA(1), VMA(2), VMA(3), VMA(4),
+			args[5] );
 
 	case BOTLIB_AAS_POINT_CONTENTS:
 		return botlib_export->aas.AAS_PointContents( VMA(1) );
 	case BOTLIB_AAS_NEXT_BSP_ENTITY:
 		return botlib_export->aas.AAS_NextBSPEntity( args[1] );
 	case BOTLIB_AAS_VALUE_FOR_BSP_EPAIR_KEY:
-		return botlib_export->aas.AAS_ValueForBSPEpairKey( args[1], VMA(2), VMA(3), args[4] );
+		return botlib_export->aas.AAS_ValueForBSPEpairKey( args[1], VMA(2), VMA(3),
+			args[4] );
 	case BOTLIB_AAS_VECTOR_FOR_BSP_EPAIR_KEY:
 		return botlib_export->aas.AAS_VectorForBSPEpairKey( args[1], VMA(2), VMA(3) );
 	case BOTLIB_AAS_FLOAT_FOR_BSP_EPAIR_KEY:
@@ -535,17 +528,20 @@ int SV_GameSystemCalls( int *args ) {
 		return botlib_export->aas.AAS_AreaReachability( args[1] );
 
 	case BOTLIB_AAS_AREA_TRAVEL_TIME_TO_GOAL_AREA:
-		return botlib_export->aas.AAS_AreaTravelTimeToGoalArea( args[1], VMA(2), args[3], args[4] );
+		return botlib_export->aas.AAS_AreaTravelTimeToGoalArea( args[1], VMA(2),
+			args[3], args[4] );
 	case BOTLIB_AAS_ENABLE_ROUTING_AREA:
 		return botlib_export->aas.AAS_EnableRoutingArea( args[1], args[2] );
 	case BOTLIB_AAS_PREDICT_ROUTE:
-		return botlib_export->aas.AAS_PredictRoute( VMA(1), args[2], VMA(3), args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11] );
+		return botlib_export->aas.AAS_PredictRoute( VMA(1), args[2], VMA(3), args[4],
+			args[5], args[6], args[7], args[8], args[9], args[10], args[11] );
 
 	case BOTLIB_AAS_SWIMMING:
 		return botlib_export->aas.AAS_Swimming( VMA(1) );
 	case BOTLIB_AAS_PREDICT_CLIENT_MOVEMENT:
-		return botlib_export->aas.AAS_PredictClientMovement( VMA(1), args[2], VMA(3), args[4], args[5],
-			VMA(6), VMA(7), args[8], args[9], VMF(10), args[11], args[12], args[13] );
+		return botlib_export->aas.AAS_PredictClientMovement( VMA(1), args[2], VMA(3),
+			args[4], args[5], VMA(6), VMA(7), args[8], args[9], VMF(10), args[11],
+			args[12], args[13] );
 
 	case BOTLIB_EA_SAY:
 		botlib_export->ea.EA_Say( args[1], VMA(2) );
@@ -629,13 +625,15 @@ int SV_GameSystemCalls( int *args ) {
 		botlib_export->ai.BotFreeCharacter( args[1] );
 		return 0;
 	case BOTLIB_AI_CHARACTERISTIC_FLOAT:
-		return FloatAsInt( botlib_export->ai.Characteristic_Float( args[1], args[2] ) );
+		return VM_FloatAsInt( botlib_export->ai.Characteristic_Float( args[1], args[2] ) );
 	case BOTLIB_AI_CHARACTERISTIC_BFLOAT:
-		return FloatAsInt( botlib_export->ai.Characteristic_BFloat( args[1], args[2], VMF(3), VMF(4) ) );
+		return VM_FloatAsInt( botlib_export->ai.Characteristic_BFloat( args[1], args[2],
+			VMF(3), VMF(4) ) );
 	case BOTLIB_AI_CHARACTERISTIC_INTEGER:
 		return botlib_export->ai.Characteristic_Integer( args[1], args[2] );
 	case BOTLIB_AI_CHARACTERISTIC_BINTEGER:
-		return botlib_export->ai.Characteristic_BInteger( args[1], args[2], args[3], args[4] );
+		return botlib_export->ai.Characteristic_BInteger( args[1], args[2], args[3],
+			args[4] );
 	case BOTLIB_AI_CHARACTERISTIC_STRING:
 		botlib_export->ai.Characteristic_String( args[1], args[2], VMA(3), args[4] );
 		return 0;
@@ -656,12 +654,14 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_AI_NUM_CONSOLE_MESSAGE:
 		return botlib_export->ai.BotNumConsoleMessages( args[1] );
 	case BOTLIB_AI_INITIAL_CHAT:
-		botlib_export->ai.BotInitialChat( args[1], VMA(2), args[3], VMA(4), VMA(5), VMA(6), VMA(7), VMA(8), VMA(9), VMA(10), VMA(11) );
+		botlib_export->ai.BotInitialChat( args[1], VMA(2), args[3], VMA(4), VMA(5),
+			VMA(6), VMA(7), VMA(8), VMA(9), VMA(10), VMA(11) );
 		return 0;
 	case BOTLIB_AI_NUM_INITIAL_CHATS:
 		return botlib_export->ai.BotNumInitialChats( args[1], VMA(2) );
 	case BOTLIB_AI_REPLY_CHAT:
-		return botlib_export->ai.BotReplyChat( args[1], VMA(2), args[3], args[4], VMA(5), VMA(6), VMA(7), VMA(8), VMA(9), VMA(10), VMA(11), VMA(12) );
+		return botlib_export->ai.BotReplyChat( args[1], VMA(2), args[3], args[4],
+			VMA(5), VMA(6), VMA(7), VMA(8), VMA(9), VMA(10), VMA(11), VMA(12) );
 	case BOTLIB_AI_CHAT_LENGTH:
 		return botlib_export->ai.BotChatLength( args[1] );
 	case BOTLIB_AI_ENTER_CHAT:
@@ -726,11 +726,13 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_AI_CHOOSE_LTG_ITEM:
 		return botlib_export->ai.BotChooseLTGItem( args[1], VMA(2), VMA(3), args[4] );
 	case BOTLIB_AI_CHOOSE_NBG_ITEM:
-		return botlib_export->ai.BotChooseNBGItem( args[1], VMA(2), VMA(3), args[4], VMA(5), VMF(6) );
+		return botlib_export->ai.BotChooseNBGItem( args[1], VMA(2), VMA(3), args[4],
+			VMA(5), VMF(6) );
 	case BOTLIB_AI_TOUCHING_GOAL:
 		return botlib_export->ai.BotTouchingGoal( VMA(1), VMA(2) );
 	case BOTLIB_AI_ITEM_GOAL_IN_VIS_BUT_NOT_VISIBLE:
-		return botlib_export->ai.BotItemGoalInVisButNotVisible( args[1], VMA(2), VMA(3), VMA(4) );
+		return botlib_export->ai.BotItemGoalInVisButNotVisible( args[1], VMA(2), VMA(3),
+			VMA(4) );
 	case BOTLIB_AI_GET_LEVEL_ITEM_GOAL:
 		return botlib_export->ai.BotGetLevelItemGoal( args[1], VMA(2), VMA(3) );
 	case BOTLIB_AI_GET_NEXT_CAMP_SPOT_GOAL:
@@ -738,7 +740,7 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_AI_GET_MAP_LOCATION_GOAL:
 		return botlib_export->ai.BotGetMapLocationGoal( VMA(1), VMA(2) );
 	case BOTLIB_AI_AVOID_GOAL_TIME:
-		return FloatAsInt( botlib_export->ai.BotAvoidGoalTime( args[1], args[2] ) );
+		return VM_FloatAsInt( botlib_export->ai.BotAvoidGoalTime( args[1], args[2] ) );
 	case BOTLIB_AI_SET_AVOID_GOAL_TIME:
 		botlib_export->ai.BotSetAvoidGoalTime( args[1], args[2], VMF(3));
 		return 0;
@@ -778,7 +780,8 @@ int SV_GameSystemCalls( int *args ) {
 		botlib_export->ai.BotMoveToGoal( VMA(1), args[2], VMA(3), args[4] );
 		return 0;
 	case BOTLIB_AI_MOVE_IN_DIRECTION:
-		return botlib_export->ai.BotMoveInDirection( args[1], VMA(2), VMF(3), args[4] );
+		return botlib_export->ai.BotMoveInDirection( args[1], VMA(2), VMF(3),
+			args[4] );
 	case BOTLIB_AI_RESET_AVOID_REACH:
 		botlib_export->ai.BotResetAvoidReach( args[1] );
 		return 0;
@@ -788,9 +791,11 @@ int SV_GameSystemCalls( int *args ) {
 	case BOTLIB_AI_REACHABILITY_AREA:
 		return botlib_export->ai.BotReachabilityArea( VMA(1), args[2] );
 	case BOTLIB_AI_MOVEMENT_VIEW_TARGET:
-		return botlib_export->ai.BotMovementViewTarget( args[1], VMA(2), args[3], VMF(4), VMA(5) );
+		return botlib_export->ai.BotMovementViewTarget( args[1], VMA(2), args[3],
+			VMF(4), VMA(5) );
 	case BOTLIB_AI_PREDICT_VISIBLE_POSITION:
-		return botlib_export->ai.BotPredictVisiblePosition( VMA(1), args[2], VMA(3), args[4], VMA(5) );
+		return botlib_export->ai.BotPredictVisiblePosition( VMA(1), args[2], VMA(3),
+			args[4], VMA(5) );
 	case BOTLIB_AI_ALLOC_MOVE_STATE:
 		return botlib_export->ai.BotAllocMoveState();
 	case BOTLIB_AI_FREE_MOVE_STATE:
@@ -817,7 +822,8 @@ int SV_GameSystemCalls( int *args ) {
 		return 0;
 
 	case BOTLIB_AI_GENETIC_PARENTS_AND_CHILD_SELECTION:
-		return botlib_export->ai.GeneticParentsAndChildSelection(args[1], VMA(2), VMA(3), VMA(4), VMA(5));
+		return botlib_export->ai.GeneticParentsAndChildSelection(args[1], VMA(2), VMA(3),
+			VMA(4), VMA(5));
 
 	case TRAP_MEMSET:
 		Com_Memset( VMA(1), args[2], args[3] );
@@ -828,19 +834,19 @@ int SV_GameSystemCalls( int *args ) {
 		return 0;
 
 	case TRAP_STRNCPY:
-		return (int)strncpy( VMA(1), VMA(2), args[3] );
+		return (intptr_t)strncpy( VMA(1), VMA(2), args[3] );
 
 	case TRAP_SIN:
-		return FloatAsInt( sin( VMF(1) ) );
+		return VM_FloatAsInt( sin( VMF(1) ) );
 
 	case TRAP_COS:
-		return FloatAsInt( cos( VMF(1) ) );
+		return VM_FloatAsInt( cos( VMF(1) ) );
 
 	case TRAP_ATAN2:
-		return FloatAsInt( atan2( VMF(1), VMF(2) ) );
+		return VM_FloatAsInt( atan2( VMF(1), VMF(2) ) );
 
 	case TRAP_SQRT:
-		return FloatAsInt( sqrt( VMF(1) ) );
+		return VM_FloatAsInt( sqrt( VMF(1) ) );
 
 	case TRAP_MATRIXMULTIPLY:
 		MatrixMultiply( VMA(1), VMA(2), VMA(3) );
@@ -855,10 +861,10 @@ int SV_GameSystemCalls( int *args ) {
 		return 0;
 
 	case TRAP_FLOOR:
-		return FloatAsInt( floor( VMF(1) ) );
+		return VM_FloatAsInt( floor( VMF(1) ) );
 
 	case TRAP_CEIL:
-		return FloatAsInt( ceil( VMF(1) ) );
+		return VM_FloatAsInt( ceil( VMF(1) ) );
 
 
 	default:

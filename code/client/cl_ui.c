@@ -744,22 +744,12 @@ static int GetConfigString(int index, char *buf, int size)
 	return qtrue;
 }
 
-/*
-====================
-FloatAsInt
-====================
-*/
-static int FloatAsInt( float f ) {
-	int		temp;
+void *VM_ArgPtr(intptr_t intValue);
+float VM_ArgFlt(intptr_t intValue);
+int VM_FloatAsInt(float fltValue);
 
-	*(float *)&temp = f;
-
-	return temp;
-}
-
-void *VM_ArgPtr( int intValue );
-#define	VMA(x) VM_ArgPtr(args[x])
-#define	VMF(x)	((float *)args)[x]
+#define	VMA(x)	VM_ArgPtr(args[x])
+#define	VMF(x)	VM_ArgFlt(args[x])
 
 /*
 ====================
@@ -768,7 +758,8 @@ CL_UISystemCalls
 The ui module is making a system call
 ====================
 */
-int CL_UISystemCalls( int *args ) {
+intptr_t CL_UISystemCalls( intptr_t *args )
+{
 	switch( args[0] ) {
 	case UI_ERROR:
 		Com_Error( ERR_DROP, "%s", VMA(1) );
@@ -794,7 +785,7 @@ int CL_UISystemCalls( int *args ) {
 		return 0;
 
 	case UI_CVAR_VARIABLEVALUE:
-		return FloatAsInt( Cvar_VariableValue( VMA(1) ) );
+		return VM_FloatAsInt( Cvar_VariableValue( VMA(1) ) );
 
 	case UI_CVAR_VARIABLESTRINGBUFFER:
 		Cvar_VariableStringBuffer( VMA(1), VMA(2), args[3] );
@@ -882,19 +873,31 @@ int CL_UISystemCalls( int *args ) {
 		return 0;
 
 	case UI_R_DRAWSTRETCHPIC:
-		re.DrawStretchPic( VMF(1), VMF(2), VMF(3), VMF(4), VMF(5), VMF(6), VMF(7), VMF(8), args[9] );
+		re.DrawStretchPic( VMF(1), VMF(2), VMF(3), VMF(4), VMF(5), VMF(6), VMF(7),
+			VMF(8), args[9] );
 		return 0;
 
-  case UI_R_MODELBOUNDS:
+	case UI_CM_LERPTAG:
+		re.LerpTag(VMA(1), args[2], args[3], args[4], VMF(5), VMA(6));
+		return 0;
+
+	case UI_CM_LOADMODEL:
+		return 0;
+
+	case UI_R_REGISTERFONT:
+		re.RegisterFont(VMA(1), args[2], VMA(3));
+		return 0;
+
+	case UI_R_MODELBOUNDS:
 		re.ModelBounds( args[1], VMA(2), VMA(3) );
+		return 0;
+
+	case UI_R_REMAP_SHADER:
+		re.RemapShader(VMA(1), VMA(2), VMA(3));
 		return 0;
 
 	case UI_UPDATESCREEN:
 		SCR_UpdateScreen();
-		return 0;
-
-	case UI_CM_LERPTAG:
-		re.LerpTag( VMA(1), args[2], args[3], args[4], VMF(5), VMA(6) );
 		return 0;
 
 	case UI_S_REGISTERSOUND:
@@ -902,6 +905,14 @@ int CL_UISystemCalls( int *args ) {
 
 	case UI_S_STARTLOCALSOUND:
 		S_StartLocalSound( args[1], args[2] );
+		return 0;
+
+	case UI_S_STOPBACKGROUNDTRACK:
+		S_StopBackgroundTrack();
+		return 0;
+
+	case UI_S_STARTBACKGROUNDTRACK:
+		S_StartBackgroundTrack(VMA(1), VMA(2));
 		return 0;
 
 	case UI_KEY_KEYNUMTOSTRINGBUF:
@@ -952,6 +963,43 @@ int CL_UISystemCalls( int *args ) {
 	case UI_GETCONFIGSTRING:
 		return GetConfigString( args[1], VMA(2), args[3] );
 
+	case UI_LAN_GETPINGQUEUECOUNT:
+		return LAN_GetPingQueueCount();
+
+	case UI_LAN_CLEARPING:
+		LAN_ClearPing(args[1]);
+		return 0;
+
+	case UI_LAN_GETPING:
+		LAN_GetPing(args[1], VMA(2), args[3], VMA(4));
+		return 0;
+
+	case UI_LAN_GETPINGINFO:
+		LAN_GetPingInfo(args[1], VMA(2), args[3]);
+		return 0;
+
+	case UI_LAN_GETSERVERCOUNT:
+		return LAN_GetServerCount(args[1]);
+
+	case UI_LAN_GETSERVERADDRESSSTRING:
+		LAN_GetServerAddressString(args[1], args[2], VMA(3), args[4]);
+		return 0;
+
+	case UI_LAN_GETSERVERINFO:
+		LAN_GetServerInfo(args[1], args[2], VMA(3), args[4]);
+		return 0;
+
+	case UI_LAN_MARKSERVERVISIBLE:
+		LAN_MarkServerVisible(args[1], args[2], args[3]);
+		return 0;
+
+	case UI_LAN_UPDATEVISIBLEPINGS:
+		return LAN_UpdateVisiblePings(args[1]);
+
+	case UI_LAN_RESETPINGS:
+		LAN_ResetPings(args[1]);
+		return 0;
+
 	case UI_LAN_LOADCACHEDSERVERS:
 		LAN_LoadCachedServers();
 		return 0;
@@ -967,51 +1015,14 @@ int CL_UISystemCalls( int *args ) {
 		LAN_RemoveServer(args[1], VMA(2));
 		return 0;
 
-	case UI_LAN_GETPINGQUEUECOUNT:
-		return LAN_GetPingQueueCount();
-
-	case UI_LAN_CLEARPING:
-		LAN_ClearPing( args[1] );
-		return 0;
-
-	case UI_LAN_GETPING:
-		LAN_GetPing( args[1], VMA(2), args[3], VMA(4) );
-		return 0;
-
-	case UI_LAN_GETPINGINFO:
-		LAN_GetPingInfo( args[1], VMA(2), args[3] );
-		return 0;
-
-	case UI_LAN_GETSERVERCOUNT:
-		return LAN_GetServerCount(args[1]);
-
-	case UI_LAN_GETSERVERADDRESSSTRING:
-		LAN_GetServerAddressString( args[1], args[2], VMA(3), args[4] );
-		return 0;
-
-	case UI_LAN_GETSERVERINFO:
-		LAN_GetServerInfo( args[1], args[2], VMA(3), args[4] );
-		return 0;
+	case UI_LAN_SERVERSTATUS:
+		return LAN_GetServerStatus(VMA(1), VMA(2), args[3]);
 
 	case UI_LAN_GETSERVERPING:
 		return LAN_GetServerPing( args[1], args[2] );
 
-	case UI_LAN_MARKSERVERVISIBLE:
-		LAN_MarkServerVisible( args[1], args[2], args[3] );
-		return 0;
-
 	case UI_LAN_SERVERISVISIBLE:
 		return LAN_ServerIsVisible( args[1], args[2] );
-
-	case UI_LAN_UPDATEVISIBLEPINGS:
-		return LAN_UpdateVisiblePings( args[1] );
-
-	case UI_LAN_RESETPINGS:
-		LAN_ResetPings( args[1] );
-		return 0;
-
-	case UI_LAN_SERVERSTATUS:
-		return LAN_GetServerStatus( VMA(1), VMA(2), args[3] );
 
 	case UI_LAN_COMPARESERVERS:
 		return LAN_CompareServers( args[1], args[2], args[3], args[4], args[5] );
@@ -1027,12 +1038,47 @@ int CL_UISystemCalls( int *args ) {
 		CLUI_SetCDKey( VMA(1) );
 		return 0;
 	
+	case UI_PC_ADD_GLOBAL_DEFINE:
+		return botlib_export->PC_AddGlobalDefine(VMA(1));
+
+	case UI_PC_LOAD_SOURCE:
+		return botlib_export->PC_LoadSourceHandle(VMA(1));
+
+	case UI_PC_FREE_SOURCE:
+		return botlib_export->PC_FreeSourceHandle(args[1]);
+
+	case UI_PC_READ_TOKEN:
+		return botlib_export->PC_ReadTokenHandle(args[1], VMA(2));
+
+	case UI_PC_SOURCE_FILE_AND_LINE:
+		return botlib_export->PC_SourceFileAndLine(args[1], VMA(2), VMA(3));
+
+	case UI_REAL_TIME:
+		return Com_RealTime(VMA(1));
+
+	case UI_CIN_PLAYCINEMATIC:
+		Com_DPrintf("UI_CIN_PlayCinematic\n");
+		return CIN_PlayCinematic(VMA(1), args[2], args[3], args[4], args[5], args[6]);
+
+	case UI_CIN_STOPCINEMATIC:
+		return CIN_StopCinematic(args[1]);
+
+	case UI_CIN_RUNCINEMATIC:
+		return CIN_RunCinematic(args[1]);
+
+	case UI_CIN_DRAWCINEMATIC:
+		CIN_DrawCinematic(args[1]);
+		return 0;
+
+	case UI_CIN_SETEXTENTS:
+		CIN_SetExtents(args[1], args[2], args[3], args[4], args[5]);
+		return 0;
+
+	case UI_VERIFY_CDKEY:
+		return CL_CDKeyValidate(VMA(1), VMA(2));
+
 	case UI_SET_PBCLSTATUS:
 		return 0;	
-
-	case UI_R_REGISTERFONT:
-		re.RegisterFont( VMA(1), args[2], VMA(3));
-		return 0;
 
 	case UI_MEMSET:
 		Com_Memset( VMA(1), args[2], args[3] );
@@ -1043,73 +1089,25 @@ int CL_UISystemCalls( int *args ) {
 		return 0;
 
 	case UI_STRNCPY:
-		return (int)strncpy( VMA(1), VMA(2), args[3] );
+		return (intptr_t)strncpy( VMA(1), VMA(2), args[3] );
 
 	case UI_SIN:
-		return FloatAsInt( sin( VMF(1) ) );
+		return VM_FloatAsInt( sin( VMF(1) ) );
 
 	case UI_COS:
-		return FloatAsInt( cos( VMF(1) ) );
+		return VM_FloatAsInt( cos( VMF(1) ) );
 
 	case UI_ATAN2:
-		return FloatAsInt( atan2( VMF(1), VMF(2) ) );
+		return VM_FloatAsInt( atan2( VMF(1), VMF(2) ) );
 
 	case UI_SQRT:
-		return FloatAsInt( sqrt( VMF(1) ) );
+		return VM_FloatAsInt( sqrt( VMF(1) ) );
 
 	case UI_FLOOR:
-		return FloatAsInt( floor( VMF(1) ) );
+		return VM_FloatAsInt( floor( VMF(1) ) );
 
 	case UI_CEIL:
-		return FloatAsInt( ceil( VMF(1) ) );
-
-	case UI_PC_ADD_GLOBAL_DEFINE:
-		return botlib_export->PC_AddGlobalDefine( VMA(1) );
-	case UI_PC_LOAD_SOURCE:
-		return botlib_export->PC_LoadSourceHandle( VMA(1) );
-	case UI_PC_FREE_SOURCE:
-		return botlib_export->PC_FreeSourceHandle( args[1] );
-	case UI_PC_READ_TOKEN:
-		return botlib_export->PC_ReadTokenHandle( args[1], VMA(2) );
-	case UI_PC_SOURCE_FILE_AND_LINE:
-		return botlib_export->PC_SourceFileAndLine( args[1], VMA(2), VMA(3) );
-
-	case UI_S_STOPBACKGROUNDTRACK:
-		S_StopBackgroundTrack();
-		return 0;
-	case UI_S_STARTBACKGROUNDTRACK:
-		S_StartBackgroundTrack( VMA(1), VMA(2));
-		return 0;
-
-	case UI_REAL_TIME:
-		return Com_RealTime( VMA(1) );
-
-	case UI_CIN_PLAYCINEMATIC:
-	  Com_DPrintf("UI_CIN_PlayCinematic\n");
-	  return CIN_PlayCinematic(VMA(1), args[2], args[3], args[4], args[5], args[6]);
-
-	case UI_CIN_STOPCINEMATIC:
-	  return CIN_StopCinematic(args[1]);
-
-	case UI_CIN_RUNCINEMATIC:
-	  return CIN_RunCinematic(args[1]);
-
-	case UI_CIN_DRAWCINEMATIC:
-	  CIN_DrawCinematic(args[1]);
-	  return 0;
-
-	case UI_CIN_SETEXTENTS:
-	  CIN_SetExtents(args[1], args[2], args[3], args[4], args[5]);
-	  return 0;
-
-	case UI_R_REMAP_SHADER:
-		re.RemapShader( VMA(1), VMA(2), VMA(3) );
-		return 0;
-
-	case UI_VERIFY_CDKEY:
-		return CL_CDKeyValidate(VMA(1), VMA(2));
-
-
+		return VM_FloatAsInt( ceil( VMF(1) ) );
 		
 	default:
 		Com_Error( ERR_DROP, "Bad UI system trap: %i", args[0] );
@@ -1140,7 +1138,6 @@ void CL_ShutdownUI( void ) {
 CL_InitUI
 ====================
 */
-#define UI_OLD_API_VERSION	4
 
 void CL_InitUI( void ) {
 	int		v;

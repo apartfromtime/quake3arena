@@ -165,46 +165,49 @@ void _UI_KeyEvent( int key, qboolean down );
 void _UI_MouseEvent( int dx, int dy );
 void _UI_Refresh( int realtime );
 qboolean _UI_IsFullscreen( void );
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11  ) {
-  switch ( command ) {
-	  case UI_GETAPIVERSION:
-		  return UI_API_VERSION;
+intptr_t vmMain(intptr_t command, intptr_t arg0, intptr_t arg1, intptr_t arg2,
+	intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7,
+	intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11)
+{
+	switch (command) {
+	case UI_GETAPIVERSION:
+		return UI_API_VERSION;
 
-	  case UI_INIT:
-		  _UI_Init(arg0);
-		  return 0;
+	case UI_INIT:
+		_UI_Init(arg0);
+		return 0;
 
-	  case UI_SHUTDOWN:
-		  _UI_Shutdown();
-		  return 0;
+	case UI_SHUTDOWN:
+		_UI_Shutdown();
+		return 0;
 
-	  case UI_KEY_EVENT:
-		  _UI_KeyEvent( arg0, arg1 );
-		  return 0;
+	case UI_KEY_EVENT:
+		_UI_KeyEvent(arg0, arg1);
+		return 0;
 
-	  case UI_MOUSE_EVENT:
-		  _UI_MouseEvent( arg0, arg1 );
-		  return 0;
+	case UI_MOUSE_EVENT:
+		_UI_MouseEvent(arg0, arg1);
+		return 0;
 
-	  case UI_REFRESH:
-		  _UI_Refresh( arg0 );
-		  return 0;
+	case UI_REFRESH:
+		_UI_Refresh(arg0);
+		return 0;
 
-	  case UI_IS_FULLSCREEN:
-		  return _UI_IsFullscreen();
+	case UI_IS_FULLSCREEN:
+		return _UI_IsFullscreen();
 
-	  case UI_SET_ACTIVE_MENU:
-		  _UI_SetActiveMenu( arg0 );
-		  return 0;
+	case UI_SET_ACTIVE_MENU:
+		_UI_SetActiveMenu(arg0);
+		return 0;
 
-	  case UI_CONSOLE_COMMAND:
-		  return UI_ConsoleCommand(arg0);
+	case UI_CONSOLE_COMMAND:
+		return UI_ConsoleCommand(arg0);
 
-	  case UI_DRAW_CONNECT_SCREEN:
-		  UI_DrawConnectScreen( arg0 );
-		  return 0;
-	  case UI_HASUNIQUECDKEY: // mod authors need to observe this
-	    return qtrue; // bk010117 - change this to qfalse for mods!
+	case UI_DRAW_CONNECT_SCREEN:
+		UI_DrawConnectScreen(arg0);
+		return 0;
+	case UI_HASUNIQUECDKEY: // mod authors need to observe this
+		return qtrue; // bk010117 - change this to qfalse for mods!
 
 	}
 
@@ -288,7 +291,7 @@ int Text_Width(const char *text, float scale, int limit) {
 	useScale = scale * font->glyphScale;
   out = 0;
   if (text) {
-    len = strlen(text);
+    len = Q_strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -323,7 +326,7 @@ int Text_Height(const char *text, float scale, int limit) {
 	useScale = scale * font->glyphScale;
   max = 0;
   if (text) {
-    len = strlen(text);
+    len = Q_strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -369,7 +372,7 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char *text, f
     const char *s = text; // bk001206 - unsigned
 		trap_R_SetColor( color );
 		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
-    len = strlen(text);
+    len = Q_strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -438,7 +441,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
     const char *s = text; // bk001206 - unsigned
 		trap_R_SetColor( color );
 		memcpy(&newColor[0], &color[0], sizeof(vec4_t));
-    len = strlen(text);
+    len = Q_strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -536,7 +539,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t 
 		}
 		useScale = scale * font->glyphScale;
 		trap_R_SetColor( color );
-    len = strlen(text);					 
+    len = Q_strlen(text);
 		if (limit > 0 && len > limit) {
 			len = limit;
 		}
@@ -2825,7 +2828,7 @@ static void UI_LoadMods() {
 	numdirs = trap_FS_GetFileList( "$modlist", "", dirlist, sizeof(dirlist) );
 	dirptr  = dirlist;
 	for( i = 0; i < numdirs; i++ ) {
-		dirlen = strlen( dirptr ) + 1;
+		dirlen = Q_strlen( dirptr ) + 1;
     descptr = dirptr + dirlen;
 		uiInfo.modList[uiInfo.modCount].modName = String_Alloc(dirptr);
 		uiInfo.modList[uiInfo.modCount].modDescr = String_Alloc(descptr);
@@ -2854,7 +2857,7 @@ static void UI_LoadTeams() {
 	if (count) {
 		teamName = teamList;
 		for ( i = 0; i < count; i++ ) {
-			len = strlen( teamName );
+			len = Q_strlen( teamName );
 			UI_ParseTeamInfo(teamName);
 			teamName += len + 1;
 		}
@@ -2881,7 +2884,7 @@ static void UI_LoadMovies() {
 		}
 		moviename = movielist;
 		for ( i = 0; i < uiInfo.movieCount; i++ ) {
-			len = strlen( moviename );
+			len = Q_strlen( moviename );
 			if (!Q_stricmp(moviename +  len - 4,".roq")) {
 				moviename[len-4] = '\0';
 			}
@@ -2918,7 +2921,7 @@ static void UI_LoadDemos() {
 		}
 		demoname = demolist;
 		for ( i = 0; i < uiInfo.demoCount; i++ ) {
-			len = strlen( demoname );
+			len = Q_strlen( demoname );
 			if (!Q_stricmp(demoname +  len - strlen(demoExt), demoExt)) {
 				demoname[len-strlen(demoExt)] = '\0';
 			}
@@ -3744,10 +3747,10 @@ static void UI_BuildServerDisplayList(qboolean force) {
 
 	// do motd updates here too
 	trap_Cvar_VariableStringBuffer( "cl_motdString", uiInfo.serverStatus.motd, sizeof(uiInfo.serverStatus.motd) );
-	len = strlen(uiInfo.serverStatus.motd);
+	len = Q_strlen(uiInfo.serverStatus.motd);
 	if (len == 0) {
 		strcpy(uiInfo.serverStatus.motd, "Welcome to Team Arena!");
-		len = strlen(uiInfo.serverStatus.motd);
+		len = Q_strlen(uiInfo.serverStatus.motd);
 	} 
 	if (len != uiInfo.serverStatus.motdLen) {
 		uiInfo.serverStatus.motdLen = len;
@@ -3974,7 +3977,7 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 				name = p;
 				Com_sprintf(&info->pings[len], sizeof(info->pings)-len, "%d", i);
 				info->lines[info->numLines][0] = &info->pings[len];
-				len += strlen(&info->pings[len]) + 1;
+				len += Q_strlen(&info->pings[len]) + 1;
 				info->lines[info->numLines][1] = score;
 				info->lines[info->numLines][2] = ping;
 				info->lines[info->numLines][3] = name;
@@ -4974,7 +4977,7 @@ static void UI_BuildQ3Model_List( void )
 	dirptr  = dirlist;
 	for (i=0; i<numdirs && uiInfo.q3HeadCount < MAX_PLAYERMODELS; i++,dirptr+=dirlen+1)
 	{
-		dirlen = strlen(dirptr);
+		dirlen = Q_strlen(dirptr);
 		
 		if (dirlen && dirptr[dirlen-1]=='/') dirptr[dirlen-1]='\0';
 
@@ -4986,7 +4989,7 @@ static void UI_BuildQ3Model_List( void )
 		fileptr  = filelist;
 		for (j=0; j<numfiles && uiInfo.q3HeadCount < MAX_PLAYERMODELS;j++,fileptr+=filelen+1)
 		{
-			filelen = strlen(fileptr);
+			filelen = Q_strlen(fileptr);
 
 			COM_StripExtension(fileptr,skinname);
 
@@ -5316,11 +5319,11 @@ static void UI_ReadableSize ( char *buf, int bufsize, int value )
 {
 	if (value > 1024*1024*1024 ) { // gigs
 		Com_sprintf( buf, bufsize, "%d", value / (1024*1024*1024) );
-		Com_sprintf( buf+strlen(buf), bufsize-strlen(buf), ".%02d GB", 
+		Com_sprintf( buf+strlen(buf), bufsize- Q_strlen(buf), ".%02d GB",
 			(value % (1024*1024*1024))*100 / (1024*1024*1024) );
 	} else if (value > 1024*1024 ) { // megs
 		Com_sprintf( buf, bufsize, "%d", value / (1024*1024) );
-		Com_sprintf( buf+strlen(buf), bufsize-strlen(buf), ".%02d MB", 
+		Com_sprintf( buf+strlen(buf), bufsize- Q_strlen(buf), ".%02d MB",
 			(value % (1024*1024))*100 / (1024*1024) );
 	} else if (value > 1024 ) { // kilos
 		Com_sprintf( buf, bufsize, "%d KB", value / 1024 );

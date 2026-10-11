@@ -243,7 +243,7 @@ static void Demos_MenuInit( void ) {
 		s_demos.list.itemnames[i] = demoname;
 		
 		// strip extension
-		len = strlen( demoname );
+		len = Q_strlen( demoname );
 		if (!Q_stricmp(demoname +  len - 4,".dm3"))
 			demoname[len-4] = '\0';
 
